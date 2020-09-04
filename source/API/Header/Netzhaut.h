@@ -1,0 +1,375 @@
+#ifndef NH_NETZHAUT_H
+#define NH_NETZHAUT_H
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+/**
+ * Netzhaut - Web Browser Engine
+ * Copyright (C) 2020  Dajo Frey
+ * Published under LGPLv3
+ */
+
+#endif
+
+#ifdef DOXYGEN_JS_API
+
+/** \defgroup CCore Core
+ *  \ingroup C
+ *  \brief C Core module 
+ *
+ *  This is the core interface which lets you run Netzhaut. It also includes debugging and 
+ *  parsing interfaces. The interface can be accessed by including the Netzhaut/Netzhaut.h header.
+ */
+
+/** @addtogroup CCoreMacros Macros
+ *  \ingroup CCore 
+ *  @{
+ */ 
+
+#else
+
+/** \defgroup APICore Core
+ *  \ingroup API
+ *  \brief API Core module 
+ *
+ *  Primary interface of Netzhaut.
+ */
+
+/** @addtogroup APICoreMacros Macros
+ *  \ingroup APICore 
+ *  @{
+ */ 
+
+#endif
+
+    /**
+     * The official library name.
+     */
+    #define NH_NAME "Netzhaut"
+
+    /**
+     * MAJOR.MINOR.PATCH version of the library.
+     */
+    #define NH_VERSION "v0.0.0"
+
+    /**
+     * In case this is not a pre-release, this macro should have the value "none". 
+     * Otherwise it will declare the pre-release version using the STAGE.ITERATION format.
+     */
+    #define NH_PRE_RELEASE_VERSION "none"
+
+    /**
+     * NULL value.
+     */
+    #define NH_NULL 0
+
+/** @} */
+
+#ifdef DOXYGEN_JS_API
+
+/** @addtogroup CCoreData Data
+ *  \ingroup CCore 
+ *  @{
+ */ 
+
+#else
+
+/** @addtogroup APICoreData Data
+ *  \ingroup APICore 
+ *  @{
+ */ 
+
+#endif
+
+    extern const char *NH_RESULTS_PP[];
+
+/** @} */
+
+#ifdef DOXYGEN_JS_API
+
+/** @addtogroup CCoreTypes Types
+ *  \ingroup CCore 
+ *  @{
+ */ 
+
+#else
+
+/** @addtogroup APICoreTypes Types
+ *  \ingroup APICore 
+ *  @{
+ */ 
+
+#endif
+
+    typedef struct Nh_Output Nh_Output;
+    typedef void (Nh_OutputCallback)(Nh_Output *Output_p);
+
+/** @} */
+
+#ifdef DOXYGEN_JS_API
+
+/** @addtogroup CCoreEnums Enums
+ *  \ingroup CCore 
+ *  @{
+ */ 
+
+#else
+
+/** @addtogroup APICoreEnums Enums
+ *  \ingroup APICore 
+ *  @{
+ */ 
+
+#endif
+
+
+    /**
+     * Boolean values.
+     */
+    typedef enum NH_BOOL {
+        NH_FALSE = 0, /**<Indicates false.*/
+        NH_TRUE = 1,  /**<Indicates true.*/
+    } NH_BOOL;
+
+    /**
+     * Return values for functions.
+     */
+    typedef enum NH_RESULT 
+    {
+        NH_SUCCESS, /**<Indicates that something worked as planned.*/                   
+        NH_PENDING, 
+        NH_ERROR_NULL_POINTER,         
+        NH_ERROR_BAD_STATE, 
+        NH_ERROR_THREAD_INITIALIZATION,
+        NH_ERROR_THREADPOOL_CREATION,
+        NH_ERROR_MEMORY_INITIALIZATION,
+        NH_ERROR_VULKAN_HOST_CREATION_FAILED,
+        NH_ERROR_HTML_BASE_CREATION_FAILED,
+        NH_ERROR_HTML_THREAD_START_FAILED,
+        NH_ERROR_WINDOW_THREAD_START_FAILED,
+        NH_ERROR_INSUFFICIENT_RESOURCES,
+        NH_ERROR_MEMORY_ALLOCATION,
+        NH_ERROR_PARAMETERS,
+        NH_ERROR_NOT_ENOUGH_THREADS,
+        NH_ERROR_UNKNOWN_FILE_FORMAT,
+        NH_ERROR_TYPE_MISMATCH,
+        NH_ERROR_STRING_LENGTH,
+        NH_ERROR_RESIZE_NEEDED,
+        NH_ERROR_INVALID_FILE_FORMAT,
+        NH_ERROR_EXPECTED_TRUE,
+        NH_ERROR_EXPECTED_FALSE,
+
+        NH_INIT_ERROR_NO_GRAPHICS_API_AVAILABLE,
+        NH_INIT_ERROR_NO_GPU_INITIALIZED,           
+
+        NH_JS_ERROR_BAD_ALLOCATION,
+        NH_JS_ERROR_UNEXPECTED_TOKEN,             
+        NH_JS_ERROR_UNEXPECTED_NUMBER,            
+        NH_JS_ERROR_UNEXPECTED_STRING,            
+        NH_JS_ERROR_UNEXPECTED_IDENTIFIER,        
+        NH_JS_ERROR_UNEXPECTED_RESERVED,          
+        NH_JS_ERROR_UNEXPECTED_EOS,               
+        NH_JS_ERROR_NEWLINE_AFTER_THROW,          
+        NH_JS_ERROR_INVALID_REG_EXP,              
+        NH_JS_ERROR_UNTERMINATED_REG_EXP,         
+        NH_JS_ERROR_INVALIDL_HS_IN_ASSIGNMENT,    
+        NH_JS_ERROR_INVALIDL_HS_IN_FOR_IN,        
+        NH_JS_ERROR_MULTIPLE_DEFAULTS_IN_SWITCH,  
+        NH_JS_ERROR_NO_CATCH_OR_FINALLY,          
+        NH_JS_ERROR_UNKNOWN_LABEL,                
+        NH_JS_ERROR_REDECLARATION,                
+        NH_JS_ERROR_ILLEGAL_CONTINUE,             
+        NH_JS_ERROR_ILLEGAL_BREAK,                
+        NH_JS_ERROR_ILLEGAL_RETURN,               
+        NH_JS_ERROR_STRICT_MODE_WITH,             
+        NH_JS_ERROR_STRICT_CATCH_VARIABLE,        
+        NH_JS_ERROR_STRICT_VAR_NAME,              
+        NH_JS_ERROR_STRICT_PARAM_NAME,            
+        NH_JS_ERROR_STRICT_PARAM_DUPE,            
+        NH_JS_ERROR_STRICT_FUNCTION_NAME,         
+        NH_JS_ERROR_STRICT_OCTAL_LITERAL,         
+        NH_JS_ERROR_STRICT_DELETE,                
+        NH_JS_ERROR_STRICT_DUPLICATE_PROPERTY,    
+        NH_JS_ERROR_ACCESSOR_DATA_PROPERTY,       
+        NH_JS_ERROR_ACCESSOR_GET_SET,             
+        NH_JS_ERROR_STRICT_LHS_ASSIGNMENT,        
+        NH_JS_ERROR_STRICT_LHS_POSTFIX,           
+        NH_JS_ERROR_STRICT_LHS_PREFIX,            
+        NH_JS_ERROR_STRICT_RESERVED_WORD, 
+
+        NH_USAGE_ERROR_ALREADY_INITIALIZED,
+        NH_USAGE_ERROR_INIT_MISSING,
+        NH_USAGE_ERROR_NULL_INPUT,
+        NH_USAGE_ERROR_STILL_RUNNING,
+
+        NH_VULKAN_ERROR_VALIDATION_NOT_SUPPORTED,
+        NH_VULKAN_ERROR_LOADER_CANT_CREATE_DEBUG_MESSENGER,
+        NH_VULKAN_ERROR_NO_CORRESPONDING_RESULT,
+        NH_VULKAN_ERROR_DEVICE_NOT_SUITABLE,
+        NH_VULKAN_ERROR_HOST_CREATION_FAILED,
+        NH_VULKAN_ERROR_NO_DEVICE_SUITABLE,
+
+        NH_VULKAN_NOT_READY,
+        NH_VULKAN_TIMEOUT,
+        NH_VULKAN_EVENT_SET,
+        NH_VULKAN_EVENT_RESET,
+        NH_VULKAN_INCOMPLETE,
+        NH_VULKAN_ERROR_OUT_OF_HOST_MEMORY,
+        NH_VULKAN_ERROR_OUT_OF_DEVICE_MEMORY,
+        NH_VULKAN_ERROR_INITIALIZATION_FAILED,
+        NH_VULKAN_ERROR_DEVICE_LOST,
+        NH_VULKAN_ERROR_MEMORY_MAP_FAILED,
+        NH_VULKAN_ERROR_LAYER_NOT_PRESENT,
+        NH_VULKAN_ERROR_EXTENSION_NOT_PRESENT,
+        NH_VULKAN_ERROR_FEATURE_NOT_PRESENT,
+        NH_VULKAN_ERROR_INCOMPATIBLE_DRIVER,
+        NH_VULKAN_ERROR_TOO_MANY_OBJECTS,
+        NH_VULKAN_ERROR_FORMAT_NOT_SUPPORTED,
+        NH_VULKAN_ERROR_FRAGMENTED_POOL,
+        NH_VULKAN_ERROR_UNKNOWN,
+        NH_VULKAN_ERROR_OUT_OF_POOL_MEMORY,
+        NH_VULKAN_ERROR_INVALID_EXTERNAL_HANDLE,
+        NH_VULKAN_ERROR_FRAGMENTATION,
+        NH_VULKAN_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS,
+        NH_VULKAN_ERROR_SURFACE_LOST_KHR,
+        NH_VULKAN_ERROR_NATIVE_WINDOW_IN_USE_KHR,
+        NH_VULKAN_SUBOPTIMAL_KHR,
+        NH_VULKAN_ERROR_OUT_OF_DATE_KHR,
+        NH_VULKAN_ERROR_INCOMPATIBLE_DISPLAY_KHR,
+        NH_VULKAN_ERROR_VALIDATION_FAILED_EXT,
+        NH_VULKAN_ERROR_INVALID_SHADER_NV,
+        NH_VULKAN_ERROR_INCOMPATIBLE_VERSION_KHR,
+        NH_VULKAN_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT,
+        NH_VULKAN_ERROR_NOT_PERMITTED_EXT,
+        NH_VULKAN_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT,
+        NH_VULKAN_THREAD_IDLE_KHR,
+        NH_VULKAN_THREAD_DONE_KHR,
+        NH_VULKAN_OPERATION_DEFERRED_KHR,
+        NH_VULKAN_OPERATION_NOT_DEFERRED_KHR,
+        NH_VULKAN_PIPELINE_COMPILE_REQUIRED_EXT,
+        NH_VULKAN_ERROR_OUT_OF_POOL_MEMORY_KHR,
+        NH_VULKAN_ERROR_INVALID_EXTERNAL_HANDLE_KHR,
+        NH_VULKAN_RESULT_MAX_ENUM,
+
+        NH_HTML_ERROR_DOCTYPE_PARSING,
+        NH_HTML_ERROR_DOCUMENT_EMPTY,
+        NH_HTML_ERROR_INVALID_START_TAG,
+        NH_HTML_ERROR_ATTRIBUTE_UNKNOWN,
+
+        NH_BUILD_ERROR_GENERATE_DOCUMENTS_FAILURE,
+        NH_BUILD_ERROR_DOWNLOAD_FAILED,
+        NH_BUILD_ERROR_BUILD_EXTERNALS_FAILED,
+        NH_BUILD_ERROR_COPY_EXTERNAL_HEADER_FAILED,
+        NH_BUILD_ERROR_COPY_PUBLIC_LIBRARY_HEADER_FAILED,
+        NH_BUILD_ERROR_CREATE_LIBRARY_INCLUDES_FAILED,
+        NH_BUILD_ERROR_BUILD_LIBRARY_FAILED,
+        NH_BUILD_ERROR_WGET_EXECUTION_FAILED,
+        NH_BUILD_ERROR_UNZIP_EXECUTION_FAILED,
+        NH_BUILD_ERROR_DOXYGEN_EXECUTION_FAILED,
+        NH_BUILD_ERROR_GCC_EXECUTION_FAILED,
+        NH_BUILD_ERROR_AR_EXECUTION_FAILED,
+        NH_BUILD_ERROR_XXD_EXECUTION_FAILED,
+        NH_BUILD_ERROR_CP_EXECUTION_FAILED,
+        NH_BUILD_ERROR_WGET_NOT_FOUND,
+        NH_BUILD_ERROR_UNZIP_NOT_FOUND,
+        NH_BUILD_ERROR_DOXYGEN_NOT_FOUND,
+        NH_BUILD_ERROR_GCC_NOT_FOUND,
+        NH_BUILD_ERROR_AR_NOT_FOUND,
+        NH_BUILD_ERROR_CP_NOT_FOUND,
+        NH_BUILD_ERROR_GENERATE_VERSION_DEPENDENT_DOCS,
+        NH_BUILD_ERROR_GENERATE_DOCS_USING_DOXYGEN,
+        NH_BUILD_ERROR_GET_TOP_DIRECTORY,
+        NH_BUILD_ERROR_GET_WORK_DIRECTORY,
+        NH_BUILD_ERROR_CANT_OPEN_README,
+        NH_BUILD_ERROR_CANT_OPEN_HEADER,
+        NH_BUILD_ERROR_CANT_OPEN_DIR,
+        NH_BUILD_ERROR_CANT_DOWNLOAD_VULKAN_HEADERS,
+        NH_BUILD_ERROR_CANT_DOWNLOAD_VOLK,
+        NH_BUILD_ERROR_CANT_DOWNLOAD_FREETYPE,
+        NH_BUILD_ERROR_CANT_DOWNLOAD_OPENSSL,
+        NH_BUILD_ERROR_BUILD_XXD_FAILED,
+        NH_BUILD_ERROR_BUILD_HELPER_LIBRARY_FAILED,
+        NH_BUILD_ERROR_NOT_IMPLEMENTED,
+        NH_BUILD_ERROR_CANT_CREATE_DIRECTORY,
+        NH_BUILD_ERROR_CANT_CREATE_OBJECT_FILE,
+        NH_BUILD_ERROR_CANT_CREATE_LIBRARY_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_LIBRARY,
+        NH_BUILD_ERROR_CANT_CREATE_EXTERNAL_BIN_DIRECTORY,
+        NH_BUILD_ERROR_CANT_CREATE_EXTERNAL_BIN_OBJECT_DIRECTORY,
+        NH_BUILD_ERROR_CANT_CREATE_BIN_OBJECT_DIRECTORY,
+        NH_BUILD_ERROR_CANT_CREATE_BIN_DIRECTORY,
+        NH_BUILD_ERROR_CANT_CREATE_SHARED_LIB,
+        NH_BUILD_ERROR_CANT_CREATE_STATIC_LIB,
+        NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE,
+        NH_BUILD_ERROR_CANT_CREATE_INCLUDE_DIRECTORY,
+        NH_BUILD_ERROR_CANT_CREATE_EXTERNAL_DIRECTORY,
+        NH_BUILD_ERROR_COPY_EXTERNAL_HEADER_USING_CP_FAILED,
+        NH_BUILD_ERROR_COPY_PUBLIC_LIBRARY_HEADER_USING_CP_FAILED,
+        NH_BUILD_ERROR_COPY_FAILED,
+        NH_BUILD_ERROR_CANT_CREATE_CORE_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_IO_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_GRAPHICS_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_CSS_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_HTML_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_JAVASCRIPT_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_TTY_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_NETWORK_OBJECT_FILES,
+        NH_BUILD_ERROR_CANT_CREATE_API_OBJECT_FILES,
+        NH_BUILD_ERROR_THREAD_CREATION_FAILED,
+        NH_BUILD_ERROR_INSTALL_LIBRARY_FAILED,
+        NH_BUILD_ERROR_INSTALL_HELPER_LIBRARY_FAILED,
+        NH_BUILD_ERROR_INSTALL_BROWSER_FAILED,
+        NH_BUILD_ERROR_BUILD_BROWSER_FAILED,
+
+    } NH_RESULT;
+
+/** @} */
+
+#ifdef DOXYGEN_JS_API
+
+/** @addtogroup CCoreFunctions Functions
+ *  \ingroup CCore 
+ *  @{
+ */
+
+#else
+
+/** @addtogroup APICoreFunctions Functions
+ *  \ingroup APICore 
+ *  @{
+ */
+
+#endif
+
+    NH_RESULT Nh_init(
+        int argc, char **argv_pp, Nh_OutputCallback callback
+    );
+
+    NH_RESULT Nh_start(
+    );
+
+    NH_RESULT Nh_update(
+    );
+
+    NH_BOOL Nh_keepRunning(
+    );
+
+    NH_RESULT Nh_release(
+        Nh_Output *Output_p
+    );
+
+    Nh_Output *Nh_parse(
+        char *path_p
+    );
+
+    const char *Nh_stringify(
+        Nh_Output *Output_p
+    );
+
+    NH_RESULT Nh_print(
+        Nh_Output *Output_p
+    );
+
+/** @} */
+
+#endif // NH_NETZHAUT_H

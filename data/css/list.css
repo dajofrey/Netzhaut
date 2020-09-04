@@ -1,0 +1,30 @@
+/**
+ * Netzhaut - DHTML Engine
+ * Copyright (C) 2020  Dajo Frey
+ * Published under LGPLv3
+ */
+
+/* lists */
+
+ul {
+  list-style-type: disc;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  padding-inline-start: 40px;
+}
+ul > li {
+  padding-left: 35px;
+  display: list-item;
+  text-align: inherit;
+  background-position: 20px;
+  background-size: 6px;
+}
+ul[list-style-type=disc] > li {
+  background-image: url(nh:icon:disc);
+}
+ul[list-style-type=circle] > li {
+  background-image: url(nh:icon:circle);
+}
+ul[list-style-type=square] > li {
+  background-image: url(nh:icon:square);
+}

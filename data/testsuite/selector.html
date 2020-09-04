@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>CSS Selectors</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  
+  <body>
+    <h2>Basic Selectors</h2>
+    <p>Type Selector</p>
+    <p id="idSelector">Id Selector</p>
+    <p class="classSelector">Class Selector</p>
+    <h2>Combinators</h2>
+    <div id="back">
+      <div>Child Combinator</div>
+    </div>
+    <h2>Pseudo Classes</h2>
+    <p id="hover">Hover</p>
+    <p id="active">Active</p>
+    <p id="focus">Focus</p>
+  </body>
+  
+  <style>
+    #idSelector {
+      background-color: Violet;
+    }
+    .classSelector {
+      background-color: Orange;
+    }
+    p {
+      background-color: Red;
+    }
+    div > div {
+      background-color: Blue;
+      color: #FFFFFF;
+    }
+    #back {
+      background-color: Crimson;
+    }
+    p, div {
+      margin-left: 30px;
+      width: 200px;
+    }
+    #hover:hover {
+      background-color: Blue;
+      color: #FFFFFF;
+    }
+    #active:active {
+      background-color: Blue;
+      color: #FFFFFF;
+    }
+    #focus:focus {
+      background-color: Blue;
+      color: #FFFFFF;
+    }
+  </style>
+  
+  <script>
+  </script>
+
+</html>

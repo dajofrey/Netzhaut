@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Netzhaut Test Suite - Canvas</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  
+  <body>
+    <h1>Canvas test</h1>
+    <h3>2D:</h3>
+    <canvas id="canvas1"></canvas>
+
+  </body>
+  
+  <style>
+    canvas {background-color: Black;}
+  </style>
+  
+  <script>
+    var c = document.getElementById("canvas1");
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.arc(100, 75, 50, 0, 4);  
+    ctx.stroke();
+  </script>
+
+</html>

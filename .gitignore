@@ -1,0 +1,12 @@
+include/*
+bin/*
+
+external/downloads/*
+external/bin/*
+
+# external API will be copied at build time
+source/API/Header/External/*
+
+data/build/*
+!data/build/build.sh
+

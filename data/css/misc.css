@@ -1,0 +1,58 @@
+/**
+ * Netzhaut - DHTML Engine
+ * Copyright (C) 2020  Dajo Frey
+ * Published under LGPLv3
+ */
+
+/* misc */
+
+a, b, abbr, i, em, s, del, ins, small {
+  display: inline;
+}
+
+br {
+  display: block;
+  width: 0px;
+}
+
+text {
+  display: inline;
+  font-size: inherit;
+}
+
+body {
+  display: block;
+  margin: 8px;
+}
+dl, multicol, p {
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+}
+img, label {
+  display: inline;
+}
+
+/* input */
+
+  /* button */
+  input[type='button'] {
+    width: min-content;
+    padding: 10px 40px 10px 40px;
+    color: rgb(222, 222, 222);
+    background-color: rgb(55, 55, 55);
+  }
+  input[type='button']:hover {
+    background-color: rgb(75, 75, 75);
+  }
+  input[type='button']:active {
+    background-color: rgb(195, 195, 195);
+  }
+  
+  /* checkbox */
+  input[type='checkbox'] {
+    width: min-content;
+    padding: 10px 40px 10px 40px;
+    color: rgb(222, 222, 222);
+    background-color: rgb(55, 55, 55);
+  }
+

@@ -1,0 +1,25 @@
+var group__GraphicsFunctions =
+[
+    [ "Nh_Gfx_createNode", "group__GraphicsFunctions.html#ga6281ec10e0e17d1e10c2a172ef3e63ce", null ],
+    [ "Nh_Gfx_createTab", "group__GraphicsFunctions.html#gaf07bcff416be7e59fcb8979c4268338f", null ],
+    [ "Nh_Gfx_createWindow", "group__GraphicsFunctions.html#gab138797b95b235433e805808aa00f00b", null ],
+    [ "Nh_Gfx_deleteTexture", "group__GraphicsFunctions.html#ga7dd71c92ec7911254bdf3d89721baafa", null ],
+    [ "Nh_Gfx_deleteTextures", "group__GraphicsFunctions.html#gab8397233a5f1871d8ba33ad745f6bd5b", null ],
+    [ "Nh_Gfx_destroyNode", "group__GraphicsFunctions.html#gac6aa1230ed79e91ad65824261807b1d2", null ],
+    [ "Nh_Gfx_destroyTab", "group__GraphicsFunctions.html#gac7aa159675194865bd28c81f283a5acf", null ],
+    [ "Nh_Gfx_destroyWindow", "group__GraphicsFunctions.html#ga0415c998f7155f9bdc02049a6ff4a0f8", null ],
+    [ "Nh_Gfx_getScaledTextureRepeat", "group__GraphicsFunctions.html#gaf3809293979c18bf5b34036c4a7c6a37", null ],
+    [ "Nh_Gfx_getTexture", "group__GraphicsFunctions.html#gadda66cc6746871ca03985d45cb66bd23", null ],
+    [ "Nh_Gfx_getTextureHeight", "group__GraphicsFunctions.html#ga8a6fe3124df1de418810b4335c1c520c", null ],
+    [ "Nh_Gfx_getTextureScale", "group__GraphicsFunctions.html#gaf2dc153cd7875127e96a016fde09baa3", null ],
+    [ "Nh_Gfx_getTextureWidth", "group__GraphicsFunctions.html#ga34c66cc522eafa17161c87fec99367ae", null ],
+    [ "Nh_Gfx_initDefaultTextures", "group__GraphicsFunctions.html#ga5b0095a468c478b9181fa0fd6b30d667", null ],
+    [ "Nh_Gfx_initTexture", "group__GraphicsFunctions.html#gaefd2f75334294a017e96ab558162aea3", null ],
+    [ "Nh_Gfx_logVulkan", "group__GraphicsFunctions.html#gae06d60048f784e30227f9afb2644e917", null ],
+    [ "Nh_Gfx_prepareRendering", "group__GraphicsFunctions.html#ga953bd8b97b7ccbf15b36444bc4fdc8da", null ],
+    [ "Nh_Gfx_render", "group__GraphicsFunctions.html#gaec91909057bcaff66db0f7761e09039d", null ],
+    [ "Nh_Gfx_resize", "group__GraphicsFunctions.html#ga04a9a922e021c868965d2d63c88a308e", null ],
+    [ "Nh_Gfx_updateNodeProperty", "group__GraphicsFunctions.html#ga3f8e3de3c8ef7f2678ac7b2515d17915", null ],
+    [ "Nh_Gfx_updateTabRendering", "group__GraphicsFunctions.html#gac9842973303b6c5821b788e7fb271d65", null ],
+    [ "Nh_Gfx_updateText", "group__GraphicsFunctions.html#ga7506a3b3b243030b3784daee396c2e3c", null ]
+];

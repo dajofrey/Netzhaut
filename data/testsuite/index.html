@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Netzhaut Test Suite - Index</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  
+  <body>
+    <div id="all">
+      <label for="select">Open Example-Site: </label>
+      <select id="select" onchange="open()">
+        <option value="nh:test:selector" selected>selectors</option>
+        <option value="nh:test:border">borders</option>
+        <option value="nh:test:image">images</option>
+        <option value="nh:test:input">input</option>
+        <option value="nh:test:canvas">canvas</option>
+        <option value="nh:test:text">text</option>
+        <option value="nh:test:background">background</option>
+        <option value="nh:test:list">list</option>
+      </select>
+      <div id="text">[This is the test-suite index for Netzhaut development.]</div>
+    </div>
+  </body>
+  
+  <style>
+    body   {background-color: rgb(0, 0, 0, 0);}
+    select {margin-left: 10px;}
+    #all   {background-color: rgb(255, 0, 0); padding: 10px;}
+    #text  {display: inline; margin-left: 10px;}
+  </style>
+  
+  <script>
+    nhwindow.backgroundColor = "#ffffff";
+    nhtab.crop = true;
+    nhtab.alwaysOnTop = true;
+    function open() {
+      var site = document.getElementById("select").value;
+      nhtab.open(site, "tab1");
+    }
+  </script>
+
+</html>

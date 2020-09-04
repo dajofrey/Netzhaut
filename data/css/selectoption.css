@@ -1,0 +1,56 @@
+/**
+ * Netzhaut - DHTML Engine
+ * Copyright (C) 2020  Dajo Frey
+ * Published under LGPLv3
+ */
+
+/* select */
+
+select {
+  min-width: 40px;
+  min-height: 20px;
+  padding: 5px;
+  padding-right: 25px;
+  position: absolute;
+  background-color: rgb(245, 245, 245);
+  background-image: url(nh:icon:expand);
+  background-position: right;
+  background-size: 15px;
+  background-origin: padding-box;
+  display: inline;
+}
+select:hover {
+  background-color: rgb(200, 200, 200);
+}
+select:active {
+  background-color: rgb(200, 200, 200);
+}
+select:focus {
+  background-color: rgb(245, 245, 245);
+  padding-right: 5px;
+  background-position: top right;
+  background-origin: content-box;
+}
+
+/* option */
+
+option {
+  display: none;
+}
+option:hover {
+  background-color: rgb(200, 200, 200);
+}
+option[selected] {
+  background-color: rgb(200, 200, 200);
+}
+option:first-child {
+  margin-top: 20px;
+  border-style: solid;
+  border-width: 0px;
+  border-top-width: 2px;
+  border-color: rgb(25, 25, 25);
+}
+select:focus > option {
+  display: block;
+}
+
