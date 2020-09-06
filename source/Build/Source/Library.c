@@ -159,11 +159,12 @@ NH_BEGIN()
     CREATE("HTML/Source/Log.c", "../bin/object/HTMLLog.o", extra_p)
     CREATE("HTML/Source/Input.c", "../bin/object/HTMLInput.o", extra_p)
     CREATE("HTML/Source/Node.c", "../bin/object/HTMLNode.o", extra_p)
+    CREATE("HTML/Source/Tree.c", "../bin/object/HTMLTree.o", extra_p)
 
 NH_END((void*)NH_SUCCESS)
 }
 
-static void *Nh_Bld_buildJavaScript(
+static void *Nh_Bld_buildJavaScript1(
     void *extra_p)
 {
 NH_BEGIN()
@@ -185,6 +186,15 @@ NH_BEGIN()
     CREATE("JavaScript/DOM/Source/Location.c", "../bin/object/JSDOMLocation.o", extra_p)
     CREATE("JavaScript/DOM/Source/Document.c", "../bin/object/JSDOMDocument.o", extra_p)
     CREATE("JavaScript/DOM/Source/Console.c", "../bin/object/JSDOMConsole.o", extra_p)
+
+NH_END((void*)NH_SUCCESS)
+}
+
+static void *Nh_Bld_buildJavaScript2(
+    void *extra_p)
+{
+NH_BEGIN()
+
     CREATE("JavaScript/DOM/Source/HTMLElement.c", "../bin/object/JSDOMHTMLElement.o", extra_p)
     CREATE("JavaScript/DOM/Source/Window.c", "../bin/object/JSDOMWindow.o", extra_p)
     CREATE("JavaScript/DOM/Source/NhTab.c", "../bin/object/JSDOMNhTab.o", extra_p)
@@ -269,7 +279,7 @@ NH_BEGIN()
 
     char *extra_p = "-I/usr/include/freetype2 -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface";
 
-    pthread_t thread_p[9];
+    pthread_t thread_p[10];
     void *status_p;
 
     NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[0], NULL, Nh_Bld_buildCore, extra_p))
@@ -277,10 +287,11 @@ NH_BEGIN()
     NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[2], NULL, Nh_Bld_buildGraphics, extra_p))
     NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[3], NULL, Nh_Bld_buildCSS, extra_p))
     NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[4], NULL, Nh_Bld_buildHTML, extra_p))
-    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[5], NULL, Nh_Bld_buildJavaScript, extra_p))
-    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[6], NULL, Nh_Bld_buildTTY, extra_p))
-    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[7], NULL, Nh_Bld_buildNetwork, extra_p))
-    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[8], NULL, Nh_Bld_buildAPI, extra_p))
+    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[5], NULL, Nh_Bld_buildJavaScript1, extra_p))
+    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[6], NULL, Nh_Bld_buildJavaScript2, extra_p))
+    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[7], NULL, Nh_Bld_buildTTY, extra_p))
+    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[8], NULL, Nh_Bld_buildNetwork, extra_p))
+    NH_CHECK(NH_BUILD_ERROR_THREAD_CREATION_FAILED, pthread_create(&thread_p[9], NULL, Nh_Bld_buildAPI, extra_p))
 
     pthread_join(thread_p[0], &status_p);
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_CORE_OBJECT_FILES, (NH_RESULT)status_p)
@@ -295,10 +306,12 @@ NH_BEGIN()
     pthread_join(thread_p[5], &status_p);
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_JAVASCRIPT_OBJECT_FILES, (NH_RESULT)status_p)
     pthread_join(thread_p[6], &status_p);
-    NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_TTY_OBJECT_FILES, (NH_RESULT)status_p)
+    NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_JAVASCRIPT_OBJECT_FILES, (NH_RESULT)status_p)
     pthread_join(thread_p[7], &status_p);
-    NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_NETWORK_OBJECT_FILES, (NH_RESULT)status_p)
+    NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_TTY_OBJECT_FILES, (NH_RESULT)status_p)
     pthread_join(thread_p[8], &status_p);
+    NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_NETWORK_OBJECT_FILES, (NH_RESULT)status_p)
+    pthread_join(thread_p[9], &status_p);
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_API_OBJECT_FILES, (NH_RESULT)status_p)
 
 #elif defined(WIN_32)

@@ -19,7 +19,7 @@
  */
 
     NH_RESULT Nh_CSS_arrange(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted
+        Nh_Tab *Tab_p, NH_BOOL unformatted
     );
 
     char *Nh_CSS_stringifyArrangement(

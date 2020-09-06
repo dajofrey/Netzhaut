@@ -340,7 +340,7 @@ NH_BEGIN()
 
     if (aCount == 0) // get
     {
-        NH_JS_HTMLElement *Element_p = Function_p->Inherit_p->data_p;
+        Nh_JS_HTMLElement *Element_p = Function_p->Inherit_p->data_p;
         NH_END(Nh_JS_getResult(
             Element_p->Node_p->Computed.Attributes.selected ? NH_JS_TYPE_BOOLEAN_TRUE : NH_JS_TYPE_BOOLEAN_FALSE,
             false, NULL
@@ -348,7 +348,7 @@ NH_BEGIN()
     }
     else if (aCount == 1) // set
     {
-        NH_JS_HTMLElement *Element_p = Nh_JS_getObject(Function_p->Inherit_p, NH_JS_OBJECT_HTML_ELEMENT)->data_p;
+        Nh_JS_HTMLElement *Element_p = Nh_JS_getObject(Function_p->Inherit_p, NH_JS_OBJECT_HTML_ELEMENT)->data_p;
 
         if (Arguments_p[0].type == NH_JS_TYPE_BOOLEAN_TRUE) {
             Nh_HTML_addAttribute(&Element_p->Node_p->Attributes, NH_HTML_ATTRIBUTE_SELECTED, NULL);
@@ -370,14 +370,14 @@ NH_BEGIN()
 
     if (aCount == 0) // get
     {
-        NH_JS_HTMLElement *Element_p = Function_p->Inherit_p->data_p;
+        Nh_JS_HTMLElement *Element_p = Function_p->Inherit_p->data_p;
         NH_END(Nh_JS_getResult(
             NH_JS_TYPE_STRING, false, Element_p->Node_p->Computed.Attributes.value_p 
         ))
     }
     else if (aCount == 1 && Arguments_p[0].type == NH_JS_TYPE_STRING) // set
     {
-        NH_JS_HTMLElement *Element_p = Function_p->Inherit_p->data_p;
+        Nh_JS_HTMLElement *Element_p = Function_p->Inherit_p->data_p;
 
         char *text_p = Nh_allocate(sizeof(char) * (strlen(Arguments_p[0].data_p) + 1));
         NH_CHECK_NULL(Nh_JS_getNULLResult(), text_p)
@@ -411,7 +411,7 @@ void Nh_JS_destroyHTMLElementObject(
 {
 NH_BEGIN()
 
-    NH_JS_HTMLElement *Element_p = Object_p->data_p;
+    Nh_JS_HTMLElement *Element_p = Object_p->data_p;
 
     for (int i = 0; i < Element_p->Children.count; ++i) {
         Nh_JS_destroyHTMLElementObject(Nh_getListItem(&Element_p->Children, i));
@@ -428,17 +428,17 @@ NH_RESULT Nh_JS_createHTMLElementData(
 {
 NH_BEGIN()
 
-    Object_p->data_p = Nh_allocate(sizeof(NH_JS_HTMLElement));
+    Object_p->data_p = Nh_allocate(sizeof(Nh_JS_HTMLElement));
     NH_CHECK_MEM(Object_p->data_p)
 
-    NH_JS_HTMLElement *Element_p = Object_p->data_p;
+    Nh_JS_HTMLElement *Element_p = Object_p->data_p;
 
     Element_p->Node_p   = Node_p;
     Element_p->Parent_p = Parent_p;
     NH_INIT_LIST(Element_p->Children)
 
     if (Parent_p != NULL) {
-        NH_JS_HTMLElement *ParentElement_p = Nh_JS_getObject(Parent_p, NH_JS_OBJECT_HTML_ELEMENT)->data_p;
+        Nh_JS_HTMLElement *ParentElement_p = Nh_JS_getObject(Parent_p, NH_JS_OBJECT_HTML_ELEMENT)->data_p;
         NH_CHECK(Nh_addListItem(&ParentElement_p->Children, Object_p))
     }
 
@@ -450,7 +450,7 @@ void Nh_JS_destroyHTMLElementData(
 {
 NH_BEGIN()
 
-    Nh_destroyList(&((NH_JS_HTMLElement*)Object_p->data_p)->Children, false);
+    Nh_destroyList(&((Nh_JS_HTMLElement*)Object_p->data_p)->Children, false);
     Nh_free(Object_p->data_p);
 
 NH_SILENT_END()
@@ -463,11 +463,11 @@ NH_BEGIN()
   
     if (!Script_p->Flags.loaded) {NH_END(NULL)}
 
-    NH_JS_Document *Document_p = Script_p->DOM.Objects.Document_p->data_p;
+    Nh_JS_Document *Document_p = Script_p->DOM.Objects.Document_p->data_p;
 
     for (int i = 0; i < Document_p->Tree.Flat.count; ++i) {
         Nh_JS_Object *Object_p = Nh_getListItem(&Document_p->Tree.Flat, i);
-        if (((NH_JS_HTMLElement*)Object_p->data_p)->Node_p == Node_p) {NH_END(Object_p)}
+        if (((Nh_JS_HTMLElement*)Object_p->data_p)->Node_p == Node_p) {NH_END(Object_p)}
     }
 
 NH_END(NULL)
@@ -484,8 +484,8 @@ NH_BEGIN()
 
     Nh_String *String_p = Nh_allocateString(NULL);
 
-    NH_JS_HTMLElement *Element_p = Object_p->data_p;
-    NH_CHECK(NULL, Nh_appendFormatToString(String_p, "%s", Nh_HTML_getTagNames(NULL)[Element_p->Node_p->tag]))
+    Nh_JS_HTMLElement *Element_p = Object_p->data_p;
+    NH_CHECK(NULL, Nh_appendFormatToString(String_p, "%s", NH_HTML_TAGS_PP[Element_p->Node_p->tag]))
 
     if (newline) {NH_CHECK(NULL, Nh_appendToString(String_p, "\n"))}
 

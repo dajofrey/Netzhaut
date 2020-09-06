@@ -26,80 +26,12 @@
 
 // DECLARE ==========================================================================================
 
-static void Nh_CSS_getEnclosingBoxRecursively(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_Box *Enclosing_p
-);
-
 static inline void Nh_CSS_transformToFixedSize(
     Nh_Window *Window_p, Nh_CSS_Box *Box_p, bool x, bool y
 );
 static inline void Nh_CSS_transformToAdaptiveSize(
     Nh_Window *Window_p, Nh_CSS_Box *Box_p, bool x, bool y
 );
-
-// ENCLOSING BOX ===================================================================================
-
-void Nh_CSS_getEnclosingBox(
-    Nh_Tab *Tab_p, Nh_CSS_Box *Box_p)
-{
-NH_BEGIN()
-
-//    Nh_HTML_Node *Body_p = Nh_HTML_getNode(Tab_p, NH_HTML_TAG_BODY);
-//    if (Body_p == NULL || Body_p->tag != NH_HTML_TAG_BODY) {NH_SILENT_END()}
-//
-//    Nh_CSS_Box Enclosing;
-//    Enclosing.TopLeft.z = Enclosing.BottomRight.z = 0.99999f;
-//    Enclosing.TopLeft.x = Enclosing.TopLeft.y = 2.0f;
-//    Enclosing.BottomRight.x = Enclosing.BottomRight.y = 0.0f;
-//
-//    Nh_CSS_getEnclosingBoxRecursively(Tab_p, Body_p, &Enclosing);
-//
-//    Enclosing.TopLeft.x -= 1.0f;
-//    Enclosing.TopLeft.y -= 1.0f;
-//    Enclosing.BottomRight.x -= 1.0f;
-//    Enclosing.BottomRight.y -= 1.0f;
-//
-//    *Box_p = Enclosing;
-
-NH_END()
-}
-
-static void Nh_CSS_getEnclosingBoxRecursively(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_Box *Enclosing_p)
-{
-NH_BEGIN()
-
-//    Nh_CSS_Box Box = Nh_CSS_getDefaultBox();
-//
-//    bool multiInline = false, discardUpper = false;
-//
-//    for (int i = 0; i < Node_p->Children.count; ++i) 
-//    {
-//        Nh_HTML_Node *Child_p = Nh_getListItem(&Node_p->Children, i);
-//        bool isInline = Child_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE || Child_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE_BLOCK;
-//
-//             if (isInline && multiInline) {discardUpper = true;}
-//        else if (isInline)                {multiInline = true;}
-//        else if (multiInline)             {multiInline = false; discardUpper = false;}
-//
-//        bool updateTarget = false;
-//        Nh_CSS_arrange(Tab_p, Node_p, Child_p, &Box, &Box, &updateTarget);
-//
-//        Box.TopLeft.x += 1.0f;
-//        Box.TopLeft.y += 1.0f;
-//        Box.BottomRight.x += 1.0f;
-//        Box.BottomRight.y += 1.0f;
-//
-//        if (!discardUpper && (Box.TopLeft.x < Enclosing_p->TopLeft.x)) {Enclosing_p->TopLeft.x = Box.TopLeft.x;}
-//        if (!discardUpper && (Box.TopLeft.y < Enclosing_p->TopLeft.y)) {Enclosing_p->TopLeft.y = Box.TopLeft.y;}
-//        if (Box.BottomRight.x > Enclosing_p->BottomRight.x) {Enclosing_p->BottomRight.x = Box.BottomRight.x;}
-//        if (Box.BottomRight.y > Enclosing_p->BottomRight.y) {Enclosing_p->BottomRight.y = Box.BottomRight.y;}
-//
-//        Nh_CSS_getEnclosingBoxRecursively(Tab_p, Child_p, Enclosing_p);
-//    }
-
-NH_END()
-}
 
 // BACKGROUND IMAGE BOX ============================================================================
 
@@ -376,8 +308,12 @@ Nh_CSS_Box Nh_CSS_initBox()
 NH_BEGIN()
 
     Nh_CSS_Box Box;
-    Box.TopLeft.z = Box.BottomRight.z = 1.0f;
-    Box.TopLeft.x = Box.TopLeft.y = Box.BottomRight.x = Box.BottomRight.y = -1.0f;
+    Box.TopLeft.z = 1.0f;
+    Box.BottomRight.z = 1.0f;
+    Box.TopLeft.x = -1.0f;
+    Box.TopLeft.y = -1.0f;
+    Box.BottomRight.x = -1.0f;
+    Box.BottomRight.y = -1.0f;
 
 NH_END(Box)
 }

@@ -88,7 +88,7 @@ NH_BEGIN()
 NH_END(Nh_getListItem(Scripts_p, index))
 }
 
-NH_JS_Document *Nh_JS_getDocument(
+Nh_JS_Document *Nh_JS_getDocument(
     Nh_JS_Script *Script_p)
 {
 NH_BEGIN()
@@ -174,11 +174,12 @@ NH_BEGIN()
     if (Node_p->tag == NH_HTML_TAG_SCRIPT) 
     {
         Nh_JS_Script Script = {0};
-        
-        if (Node_p->text_p != NULL)
+        Nh_HTML_Node *Script_p = Nh_getListItem(&Node_p->Children.Unformatted, 0); 
+
+        if (Script_p != NULL && Script_p->text_p != NULL)
         {
             Script.Flags.external = false;
-            Script.URI = Nh_createInternalURL(Node_p, NH_INTERNAL_URL_HTML_NODE_TEXT);
+            Script.URI = Nh_createInternalURL(Script_p, NH_INTERNAL_URL_HTML_NODE_TEXT);
         }
         else {
             for (int i = 0; i < Node_p->Attributes.count; ++i) 

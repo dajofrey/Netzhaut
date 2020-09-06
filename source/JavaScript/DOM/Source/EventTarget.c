@@ -45,7 +45,7 @@ NH_BEGIN()
         while (Object_p->Inheriting_p != NULL) {Object_p = Object_p->Inheriting_p;}
 
         if (Object_p->type == NH_JS_OBJECT_DOCUMENT) {
-            Object_p = ((NH_JS_Document*)Object_p->data_p)->Tree.Root_p;
+            Object_p = ((Nh_JS_Document*)Object_p->data_p)->Tree.Root_p;
         }
 
         Nh_JS_addEventListener(Script_p, HashValue_p->number, Arguments_p[1].data_p, Object_p);

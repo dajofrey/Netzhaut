@@ -15,6 +15,7 @@
 #include "../../Core/Header/Tab.h"
 #include "../../Core/Header/Memory.h"
 #include "../../Core/Header/External/freetype-gl.h"
+#include "../../Core/Header/String.h"
 
 #include "../../CSS/Header/Box.h"
 #include "../../CSS/Header/Associate.h"
@@ -104,7 +105,9 @@ NH_BEGIN()
 
     NH_CHECK_NULL(Tab_p, Parent_p, Node_p)
 
-    if (!Nh_HTML_isTextNode(Node_p)) {NH_END(NH_ERROR_BAD_STATE)}
+    if (!Nh_HTML_isTextNode(Node_p) || Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_NONE) {
+        NH_END(NH_ERROR_BAD_STATE)
+    }
 
     uint32_t *linebreaks_p = Nh_allocate(sizeof(uint32_t) * Nh_HTML_getLineBreaks(Tab_p, Node_p, NULL));
     NH_CHECK_MEM(linebreaks_p)
@@ -199,22 +202,25 @@ NH_SILENT_END()
 }
 
 void Nh_HTML_destroyFormattedTextNodes(
-    Nh_HTML_Document *Document_p)
+    Nh_HTML_Tree *Tree_p)
 {
 NH_BEGIN()
 
-    for (int i = 0; i < Document_p->Tree.Flat.Formatted.count; ++i) 
+    for (int i = 0; i < Tree_p->Flat.Formatted.count; ++i) 
     {
-        Nh_HTML_Node *Node_p = Nh_getListItem(&Document_p->Tree.Flat.Formatted, i);
+        Nh_HTML_Node *Node_p = Nh_getListItem(&Tree_p->Flat.Formatted, i);
         if (!Nh_HTML_isTextNode(Node_p)) {continue;}
 
         NH_BOOL destroy = NH_TRUE;
-        for (int j = 0; j < Document_p->Tree.Flat.Unformatted.count; ++j) {
-            Nh_HTML_Node *Tmp_p = Nh_getListItem(&Document_p->Tree.Flat.Unformatted, j);
+        for (int j = 0; j < Tree_p->Flat.Unformatted.count; ++j) {
+            Nh_HTML_Node *Tmp_p = Nh_getListItem(&Tree_p->Flat.Unformatted, j);
             if (Tmp_p == Node_p) {destroy = NH_FALSE;}
         }
 
-        if (destroy) {Nh_HTML_destroyNode(Node_p, NH_FALSE);}
+        if (destroy) {
+            Nh_HTML_destroyNode(Node_p, NH_FALSE);
+            Nh_free(Node_p);
+        }
     }
 
 NH_SILENT_END()
@@ -405,5 +411,47 @@ NH_BEGIN()
     }
 
 NH_SILENT_END()
+}
+
+// GET =============================================================================================
+
+static NH_RESULT Nh_HTML_getTextRecursively(
+    Nh_HTML_Node *Node_p, Nh_String *String_p)
+{
+NH_BEGIN()
+
+    for (int i = 0; i < Node_p->Children.Unformatted.count; ++i)  
+    {
+        Nh_HTML_Node *Child_p = Nh_getListItem(&Node_p->Children.Unformatted, i);
+        if (Nh_HTML_isTextNode(Child_p)) {NH_CHECK(Nh_appendToString(String_p, Child_p->text_p))}
+        NH_CHECK(Nh_HTML_getTextRecursively(Child_p, String_p))
+    }
+
+NH_END(NH_SUCCESS)
+}
+
+char *Nh_HTML_getText(
+    Nh_HTML_Node *Node_p, NH_BOOL recursive)
+{
+NH_BEGIN()
+
+    char *result_p = NULL;
+
+    Nh_String *String_p = Nh_allocateString(NULL);
+
+    if (!recursive) {    
+        for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) {
+            Nh_HTML_Node *Child_p = Nh_getListItem(&Node_p->Children.Unformatted, i);
+            if (Nh_HTML_isTextNode(Child_p)) {
+                if (Nh_appendToString(String_p, Child_p->text_p) != NH_SUCCESS) {NH_END(NULL)}
+            }
+        }
+    }
+    else if (Nh_HTML_getTextRecursively(Node_p, String_p) != NH_SUCCESS) {NH_END(NULL)}
+
+    result_p = Nh_getChars(String_p);
+    Nh_freeString(String_p, false);
+   
+NH_END(result_p)
 }
 

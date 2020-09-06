@@ -263,6 +263,9 @@ NH_BEGIN()
     {
         char *displayValue = Property_p->values_pp[0];
 
+        if (Node_p->Parent_p != NULL 
+        &&  Node_p->Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_NONE) {NH_SILENT_END()}
+
              if (!strcmp(displayValue, "inline"))             {Node_p->Computed.Properties.Position.display = NH_CSS_DISPLAY_INLINE;}
         else if (!strcmp(displayValue, "block"))              {Node_p->Computed.Properties.Position.display = NH_CSS_DISPLAY_BLOCK;}
         else if (!strcmp(displayValue, "contents"))           {Node_p->Computed.Properties.Position.display = NH_CSS_DISPLAY_CONTENTS;}

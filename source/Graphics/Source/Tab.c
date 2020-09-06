@@ -48,7 +48,7 @@ NH_BEGIN()
         for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i) 
         {
             Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Formatted, i);
-            if (Node_p->tag == NH_HTML_TAG_HTML || Nh_HTML_isMetaNode(Node_p)) {continue;}
+            if (Node_p->tag == NH_HTML_TAG_HTML) {continue;}
 
             switch (Tab_p->Window_p->GPU.API)
             {

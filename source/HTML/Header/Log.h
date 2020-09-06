@@ -18,8 +18,8 @@
  *  @{
  */
 
-    NH_RESULT Nh_HTML_logDocument(
-        Nh_HTML_Document *Document_p, NH_BOOL unformatted
+    NH_RESULT Nh_HTML_logTree(
+        Nh_HTML_Tree *Tree_p, NH_BOOL unformatted
     );
 
 /** @} */

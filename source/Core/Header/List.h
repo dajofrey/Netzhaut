@@ -53,6 +53,17 @@
     );
    
     /**
+     * Prepends \p data_p to the list pointed by \p List_p.
+     *
+     * @param  List_p A pointer to the list to which \p data_p will be prepended.
+     * @param  data_p A pointer to data that you want to prepend. Must be allocated beforehand.
+     * @return        @ref NH_SUCCESS when \p data_p was prepended, various error codes if something went wrong. 
+     */
+    NH_RESULT Nh_prependListItem(
+        Nh_List *List_p, void *data_p
+    );
+
+    /**
      * Get item data specified by \p index from \p List_p.
      *
      * @param  List_p A pointer to the list that you want to get data from.

@@ -83,7 +83,7 @@ NH_BEGIN()
         }
         else if (Node_p == NULL && Sheet_p->Apply_p == NULL) {
             NH_CHECK(Nh_CSS_dispatchRuleSet(
-                Sheet_p, &Sheet_p->RuleSets_p[i], Nh_HTML_getNode(Tab_p, NH_HTML_TAG_BODY), Maps_p, 
+                Sheet_p, &Sheet_p->RuleSets_p[i], Nh_HTML_getNode(Tab_p, NH_HTML_TAG_BODY, NH_TRUE), Maps_p, 
                 true, true, handleDependentSelectors
             ))
         }

@@ -221,7 +221,7 @@ NH_BEGIN()
 
     int parsableCount = 0;
     char *current_p = Nh_JS_seekNext(Nh_getData(Script_p->URI, NULL), 0);
-    
+
     while (current_p != NULL) 
     {
         parsableCount++;

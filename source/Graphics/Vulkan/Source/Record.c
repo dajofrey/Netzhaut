@@ -141,9 +141,8 @@ NH_BEGIN()
     {
         int wh_p[2] = {0}, xy_p[2] = {0};
 
-        Nh_CSS_Box Box;
-        Nh_CSS_getEnclosingBox(Tab_p, &Box);
-  
+        Nh_CSS_Box Box = Nh_HTML_getNode(Tab_p, NH_HTML_TAG_BODY, NH_FALSE)->Computed.Margin;
+
         Nh_CSS_getBoxSize(Tab_p, &Box, wh_p);
         Nh_CSS_getBoxOffsetRelToWindow(Tab_p, &Box, xy_p);
 
@@ -164,7 +163,7 @@ NH_BEGIN()
 
     bool *inFlow_p = Nh_allocate(sizeof(bool) * Tab_p->Document.Tree.Flat.Formatted.count);
     NH_CHECK_MEM(inFlow_p);
-    for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i) {inFlow_p[i] = true;}
+    memset(inFlow_p, true, sizeof(bool) * Tab_p->Document.Tree.Flat.Formatted.count);
 
     for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i)
     {

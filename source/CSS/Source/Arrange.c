@@ -17,6 +17,7 @@
 #include "../Header/Arrange.h"
 #include "../Header/Helper.h"
 #include "../Header/Macros.h"
+#include "../Header/Log.h"
 
 #include "../../Core/Header/Tab.h"
 #include "../../Core/Header/String.h"
@@ -51,7 +52,7 @@ static inline void Nh_CSS_initBottomRightX(
 );
 
 static inline void Nh_CSS_updateParents(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
 );
 
 //static inline void Nh_CSS_updateTarget(
@@ -72,7 +73,7 @@ static inline float Nh_CSS_getContentHeight(
 
 // ARRANGE =========================================================================================
 
-NH_RESULT Nh_CSS_arrange(
+static NH_RESULT Nh_CSS_arrangeRecursively(
     Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted)
 {
 NH_BEGIN()
@@ -85,7 +86,7 @@ NH_BEGIN()
         Nh_CSS_initBottomRightY(Tab_p->Window_p, Node_p);
         Nh_CSS_initBottomRightX(Tab_p, Node_p, unformatted);
 
-        Nh_CSS_updateParents(Tab_p, Node_p, unformatted);
+        Nh_CSS_updateParents(Tab_p, Node_p);
     }
  
     Nh_List *Children_p = unformatted ? &Node_p->Children.Unformatted : &Node_p->Children.Formatted;
@@ -95,9 +96,20 @@ NH_BEGIN()
         Nh_HTML_Node *Child_p = Nh_getListItem(Children_p, i);
         if (i == 0) {Child_p->Computed.Margin = Nh_CSS_getContentBox(Node_p);}
 
-        NH_CHECK(Nh_CSS_arrange(Tab_p, Child_p, unformatted))
+        NH_CHECK(Nh_CSS_arrangeRecursively(Tab_p, Child_p, unformatted))
         Nh_CSS_advance(Child_p, Nh_getListItem(Children_p, i + 1), unformatted);
     }
+
+NH_END(NH_SUCCESS)
+}
+
+NH_RESULT Nh_CSS_arrange(
+    Nh_Tab *Tab_p, NH_BOOL unformatted)
+{
+NH_BEGIN()
+
+    NH_CHECK(Nh_CSS_arrangeRecursively(Tab_p, Tab_p->Document.Tree.Root_p, unformatted))
+    NH_CHECK(Nh_CSS_logMargins(&Tab_p->Document, unformatted))
 
 NH_END(NH_SUCCESS)
 }
@@ -179,7 +191,6 @@ NH_BEGIN()
 
     // start with 0 height
     Node_p->Computed.Margin.BottomRight.y = Node_p->Computed.Margin.TopLeft.y;
-
     float contentHeight = 0.0f;
 
     switch (Node_p->Computed.Properties.Position.display)
@@ -334,11 +345,11 @@ NH_SILENT_END()
 // PARENT ==========================================================================================
 
 static inline void Nh_CSS_updateParents(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
 
-    Nh_HTML_Node *Parent_p = unformatted ? Node_p->Parent_p : Node_p->Parent_p;
+    Nh_HTML_Node *Parent_p = Node_p->Parent_p;
 
     while (Parent_p != NULL) 
     {
@@ -349,7 +360,8 @@ NH_BEGIN()
                 NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Margin.BottomRight.y) 
               - NH_CSS_NORMALIZED_LENGTH(ParentContentBox.BottomRight.y);
         }
-        if (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE) {
+        if (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE
+        || (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_BLOCK && Parent_p->Computed.Properties.Position.Width.type == NH_CSS_SIZE_AUTO)) {
             if (ParentContentBox.BottomRight.x < Node_p->Computed.Margin.BottomRight.x) {
                 Parent_p->Computed.Margin.BottomRight.x += 
                     NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Margin.BottomRight.x) 
@@ -358,7 +370,7 @@ NH_BEGIN()
         }
 
         Node_p = Parent_p;
-        Parent_p = unformatted ? Parent_p->Parent_p : Parent_p->Parent_p;
+        Parent_p = Parent_p->Parent_p;
     }
 
 NH_SILENT_END()
@@ -480,8 +492,10 @@ NH_BEGIN()
 
 #define INDENT() for (int ind = 0; ind < depth; ++ind) {NH_CHECK(Nh_appendToString(String_p, "  "))}
 
-    INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "\e[1;32m%s\e[0m {\n", Nh_HTML_getTagName(Node_p->tag)))
-    if (!Nh_HTML_isMetaNode(Node_p)) {  
+    INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "\e[1;32m%s\e[0m {\n", NH_HTML_TAGS_PP[Node_p->tag]))
+
+    if (!Nh_HTML_isMetaNode(Node_p)) 
+    {  
         if (Nh_HTML_isTextNode(Node_p)) {INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "\"%s\"\n", Node_p->text_p))}
         INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "  x: %f %f\n", Node_p->Computed.Margin.TopLeft.x, Node_p->Computed.Margin.BottomRight.x))
         INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "  y: %f\n", Node_p->Computed.Margin.TopLeft.y))
@@ -489,7 +503,8 @@ NH_BEGIN()
         INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "  z: %f\n", Node_p->Computed.Margin.TopLeft.z))
     }
 
-    for (int i = 0; i < (unformatted ? Node_p->Children.Unformatted.count : Node_p->Children.Formatted.count); ++i) {
+    for (int i = 0; i < (unformatted ? Node_p->Children.Unformatted.count : Node_p->Children.Formatted.count); ++i) 
+    {
         NH_CHECK(Nh_CSS_stringifyElement(
             Nh_getListItem(unformatted ? &Node_p->Children.Unformatted : &Node_p->Children.Formatted, i), String_p, depth + 1, unformatted
         ))

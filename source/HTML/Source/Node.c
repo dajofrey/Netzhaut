@@ -17,17 +17,18 @@
 #include "../../Core/Header/Memory.h"
 #include "../../Core/Header/Tab.h"
 #include "../../Core/Header/List.h"
-#include "../../Core/Header/String.h"
 #include "../../Core/Header/HashMap.h"
 
 #include "../../CSS/Header/Input.h"
 #include "../../CSS/Header/Associate.h"
 #include "../../CSS/Header/Log.h"
 #include "../../CSS/Header/Properties.h"
+#include "../../CSS/Header/Arrange.h"
 
 #include "../../JavaScript/Header/Input.h"
 #include "../../JavaScript/Header/Debug.h"
 #include "../../JavaScript/Header/Loader.h"
+#include "../../JavaScript/DOM/Header/Document.h"
 
 #include "../../Graphics/Header/Text.h"
 #include "../../Graphics/Header/Node.h"
@@ -50,13 +51,9 @@ typedef struct Nh_HTML_NodeData {
     Nh_HTML_Attribute *Attributes_pp[NH_HTML_ATTRIBUTE_COUNT]; 
 } Nh_HTML_NodeData;
 
-static NH_RESULT Nh_HTML_stringifyElement(
-    Nh_HTML_Node *Node_p, Nh_String *String_p, int depth
-);
-
 // DATA ============================================================================================
 
-const char *tagNames_pp[] = 
+const char *NH_HTML_TAGS_PP[] = 
 {
     "a",           
     "abbr",       
@@ -187,6 +184,8 @@ const char *tagNames_pp[] =
     "undefined",
 };
 
+size_t NH_HTML_TAGS_PP_COUNT = sizeof(NH_HTML_TAGS_PP) / sizeof(NH_HTML_TAGS_PP[0]);
+
 // INIT ============================================================================================
 
 NH_RESULT Nh_HTML_initNode(
@@ -208,8 +207,6 @@ NH_BEGIN()
     NH_INIT_LIST(Node_p->Vulkan.Descriptors)
 
     Node_p->Parent_p = Parent_p;
-    Node_p->Parent_p = Parent_p;
-
     Node_p->text_p   = NULL;
 
     Node_p->Computed.Margin = Nh_CSS_initBox();
@@ -226,8 +223,8 @@ NH_RESULT Nh_HTML_computeNode(
 NH_BEGIN()
 
     Nh_HTML_NodeData Data = {0};
-    for (int j = 0; j < NH_CSS_PROPERTY_COUNT; ++j)   {Data.Properties_pp[j] = NULL;}
-    for (int j = 0; j < NH_HTML_ATTRIBUTE_COUNT; ++j) {Data.Attributes_pp[j] = NULL;}
+    for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i)   {Data.Properties_pp[i] = NULL;}
+    for (int i = 0; i < NH_HTML_ATTRIBUTE_COUNT; ++i) {Data.Attributes_pp[i] = NULL;}
 
     Nh_HTML_getAttributes(Tab_p, Node_p, Data.Attributes_pp);
     Nh_CSS_getGenericProperties(Tab_p, Node_p, Data.Properties_pp, false);
@@ -238,6 +235,63 @@ NH_BEGIN()
 
     NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p, Data.Attributes_pp))
     NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, (void**)Data.Properties_pp))
+
+    if (Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_createNormalizedText(Tab_p, Node_p))}
+
+NH_END(NH_SUCCESS)
+}
+
+// MANIPULATE ======================================================================================
+
+NH_RESULT Nh_HTML_replaceChildren(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Replace_p)
+{
+NH_BEGIN()
+
+    Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU);
+
+    for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) {
+        Nh_HTML_destroyNode(Nh_getListItem(&Node_p->Children.Unformatted, i), NH_TRUE);
+    }
+
+    Nh_destroyList(&Node_p->Children.Unformatted, true);
+    NH_CHECK(Nh_addListItem(&Node_p->Children.Unformatted, Replace_p))
+
+    NH_CHECK(Nh_CSS_associateSheets(Tab_p, Replace_p))
+    NH_CHECK(Nh_HTML_computeNode(Tab_p, Replace_p))
+
+    Nh_HTML_recreateFlatTree(&Tab_p->Document.Tree, Tab_p->Document.Tree.Root_p, NH_TRUE);
+
+    if (Tab_p->Document.Scripts.count > 0) {
+        NH_CHECK(Nh_JS_updateDocumentObject(Nh_getListItem(&Tab_p->Document.Scripts, 0)))
+    }
+
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
+    Nh_HTML_computeFormattedTree(Tab_p);
+
+NH_END(NH_SUCCESS)
+}
+
+NH_RESULT Nh_HTML_prependChild(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Prepend_p)
+{
+NH_BEGIN()
+
+    Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU);
+
+    NH_CHECK(Nh_prependListItem(&Node_p->Children.Unformatted, Prepend_p))
+
+    NH_CHECK(Nh_CSS_associateSheets(Tab_p, Prepend_p))
+    NH_CHECK(Nh_HTML_computeNode(Tab_p, Prepend_p))
+
+    Nh_HTML_recreateFlatTree(&Tab_p->Document.Tree, Tab_p->Document.Tree.Root_p, NH_TRUE);
+
+    if (Tab_p->Document.Scripts.count > 0) {
+        NH_CHECK(Nh_JS_updateDocumentObject(Nh_getListItem(&Tab_p->Document.Scripts, 0)))
+    }
+
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
+    Nh_HTML_computeFormattedTree(Tab_p);
 
 NH_END(NH_SUCCESS)
 }
@@ -267,33 +321,18 @@ NH_SILENT_END()
 // GET =============================================================================================
 
 Nh_HTML_Node *Nh_HTML_getNode(
-    Nh_Tab *Tab_p, NH_HTML_TAG tag)
+    Nh_Tab *Tab_p, NH_HTML_TAG tag, NH_BOOL unformatted)
 {
 NH_BEGIN()
 
-    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
-        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i);
+    Nh_List *List_p = unformatted ? &Tab_p->Document.Tree.Flat.Unformatted : &Tab_p->Document.Tree.Flat.Formatted;
+
+    for (int i = 0; i < List_p->count; ++i) {
+        Nh_HTML_Node *Node_p = Nh_getListItem(List_p, i);
         if (Node_p->tag == tag) {NH_END(Node_p)}
     }
  
 NH_END(NULL)
-}
-
-const char** Nh_HTML_getTagNames(
-    size_t *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL) {*size_p = sizeof(tagNames_pp) / sizeof(tagNames_pp[0]);}
-
-NH_END(tagNames_pp);
-}
-
-const char* Nh_HTML_getTagName(
-    NH_HTML_TAG tag)
-{
-NH_BEGIN()
-NH_END(tagNames_pp[tag]);
 }
 
 NH_BOOL Nh_HTML_isMetaNode(

@@ -1,5 +1,7 @@
 var NAVTREEINDEX38 =
 {
+"structNh__JS__CallExpression.html#a9a9cae74a5cb4ae6f46481174bf8d960":[3,5,3,5,1],
+"structNh__JS__CallExpression.html#ac59ab9c70e39503c2dcb31c36746a72d":[3,5,3,5,0],
 "structNh__JS__ConstructorCall.html":[3,5,3,16],
 "structNh__JS__ConstructorCall.html#ad8ff6b34eb45d3f3e5b7fabd1a8a16fa":[3,5,3,16,0],
 "structNh__JS__ExpressionStatement.html":[3,5,3,4],
@@ -247,7 +249,5 @@ var NAVTREEINDEX38 =
 "structNh__Vk__Driver.html#aa155f05478efbe67ca53715d68a8cd9c":[3,8,0,2,0,6],
 "structNh__Vk__Driver.html#acd70b4abd38c017644d1db9ce019d1cc":[3,8,0,2,0,7],
 "structNh__Vk__Driver.html#acf052b08a1a21def5070194868725280":[3,8,0,2,0,1],
-"structNh__Vk__Driver.html#aed57dce1161e3e494a36a199d821ccfe":[3,8,0,2,0,2],
-"structNh__Vk__Driver.html#af4d6b852336bca32dc75ce51b6ca80ab":[3,8,0,2,0,3],
-"structNh__Vk__DriverInfo.html":[3,0,1,2,0]
+"structNh__Vk__Driver.html#aed57dce1161e3e494a36a199d821ccfe":[3,8,0,2,0,2]
 };

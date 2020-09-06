@@ -13,10 +13,11 @@
  *  @{
  */
 
-    typedef struct NH_JS_HTMLCollection {
+    typedef struct Nh_JS_HTMLCollection {
+        Nh_JS_Object *Origin_p;
         char *match_p;
         Nh_List List;
-    } NH_JS_HTMLCollection;
+    } Nh_JS_HTMLCollection;
 
 /** @} */
 
@@ -45,13 +46,18 @@
 // INTERNAL
 
     NH_RESULT Nh_JS_createHTMLCollectionObject(
-        Nh_JS_Script *Script_p, Nh_JS_Object **Object_pp, Nh_List List, char *match_p
+        Nh_JS_Script *Script_p, Nh_JS_Object **Object_pp, Nh_List List, char *match_p,
+        Nh_JS_Object *Origin_p
     );
 
     NH_RESULT Nh_JS_destroyHTMLCollectionObject(
        Nh_JS_Object *Object_p
     );
  
+    NH_RESULT Nh_JS_updateHTMLCollection(
+        Nh_JS_HTMLCollection *Collection_p
+    );
+
 /** @} */
 
 #endif 

@@ -200,3 +200,5 @@ const char *NH_RESULTS_PP[] =
     "NH_BUILD_ERROR_BUILD_BROWSER_FAILED",
 };
 
+unsigned int NH_RESULTS_PP_COUNT = sizeof(NH_RESULTS_PP) / sizeof(NH_RESULTS_PP[0]);
+

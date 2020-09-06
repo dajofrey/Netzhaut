@@ -13,11 +13,11 @@
  *  @{
  */
 
-    typedef struct NH_JS_HTMLElement {
+    typedef struct Nh_JS_HTMLElement {
         Nh_HTML_Node *Node_p;
         Nh_List Children;
         struct Nh_JS_Object *Parent_p;
-    } NH_JS_HTMLElement;
+    } Nh_JS_HTMLElement;
 
 /** @} */
 

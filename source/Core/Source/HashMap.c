@@ -63,7 +63,7 @@ static void Nh_freeHashMap(
     map_t map, size_t size, const char **names_pp
 );
 
-NH_RESULT Nh_getNames(
+static NH_RESULT Nh_getNames(
     NH_HASHMAP type, char ***array_ppp, size_t *size_p
 );
 
@@ -239,7 +239,7 @@ NH_SILENT_END()
 
 // HELPER ==========================================================================================
 
-NH_RESULT Nh_getNames(
+static NH_RESULT Nh_getNames(
     NH_HASHMAP type, char ***array_ppp, size_t *size_p)
 {
 NH_BEGIN()
@@ -248,7 +248,12 @@ NH_BEGIN()
     {
         case NH_HASHMAP_MEDIA_TYPE          : *array_ppp = (char**) Nh_getMediaTypeTemplates(size_p); break;
         case NH_HASHMAP_HTML_ATTRIBUTES     : *array_ppp = (char**) Nh_HTML_getAttributeNames(size_p); break;
-        case NH_HASHMAP_HTML_TAGS           : *array_ppp = (char**) Nh_HTML_getTagNames(size_p); break;
+        case NH_HASHMAP_HTML_TAGS           : 
+        {
+            *array_ppp = (char**) NH_HTML_TAGS_PP; 
+            *size_p = NH_HTML_TAGS_PP_COUNT; 
+            break;
+        }
         case NH_HASHMAP_CSS_PROPERTIES      : *array_ppp = (char**) Nh_CSS_getPropertyNames(size_p); break;
         case NH_HASHMAP_CSS_COLORS          : *array_ppp = (char**) Nh_CSS_getColorNames(size_p); break;
         case NH_HASHMAP_CSS_PSEUDO_CLASSES  : *array_ppp = (char**) Nh_CSS_getPseudoClassNames(size_p); break;

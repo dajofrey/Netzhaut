@@ -59,6 +59,29 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+NH_RESULT Nh_prependListItem( // TODO multithreading
+    Nh_List *List_p, void *data_p)
+{
+NH_BEGIN()
+
+    NH_CHECK_NULL(List_p, data_p)
+
+    if (List_p->Head_p == NULL) {NH_END(Nh_addListItem(List_p, data_p))}
+    else {
+
+        Nh_ListItem *Next_p = List_p->Head_p;
+        List_p->Head_p = Nh_allocate(sizeof(Nh_ListItem));
+        NH_CHECK_MEM(List_p->Head_p)
+
+        List_p->Head_p->data_p = data_p;
+        List_p->Head_p->Next_p = Next_p;
+
+        List_p->count++;
+    }
+
+NH_END(NH_SUCCESS)
+}
+
 void *Nh_getListItem(
     Nh_List *List_p, int index)
 {
@@ -141,7 +164,7 @@ NH_BEGIN()
         Item_pp = &(*Item_pp)->Next_p;
     }
 
-    if (Item_pp == NULL || (*Item_pp)->data_p != pointer) {NH_SILENT_END()}
+    if (Item_pp == NULL || index == List_p->count) {NH_SILENT_END()}
 
     Nh_ListItem *Next_p = (*Item_pp)->Next_p;
 

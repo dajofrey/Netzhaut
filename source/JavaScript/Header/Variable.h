@@ -41,6 +41,10 @@
         Nh_List *Variables_p, char *name_p, int depth, NH_JS_KEYWORD kind
     );
 
+    NH_RESULT Nh_JS_updateScriptVariables(
+        Nh_JS_Script *Script_p
+    );
+
     void Nh_JS_resetScriptVariables(
         Nh_JS_Script *Script_p
     );

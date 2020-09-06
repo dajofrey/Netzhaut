@@ -20,7 +20,7 @@
 
 #include <stdbool.h>
 
-typedef struct NH_JS_Document NH_JS_Document;
+typedef struct Nh_JS_Document Nh_JS_Document;
 typedef struct Nh_HTML_Document Nh_HTML_Document;
 typedef struct Nh_Tab Nh_Tab;
 
@@ -100,7 +100,7 @@ typedef struct Nh_Tab Nh_Tab;
         Nh_List *Scripts_p, int index
     );
 
-    NH_JS_Document *Nh_JS_getDocument(
+    Nh_JS_Document *Nh_JS_getDocument(
         Nh_JS_Script *Script_p
     );
    

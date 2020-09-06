@@ -11,6 +11,7 @@
 
 #include "Input.h"
 #include "Node.h"
+#include "Tree.h"
 
 #include "../../CSS/Header/Properties.h"
 #include "../../Core/Header/URI.h"
@@ -23,20 +24,6 @@
  *  \ingroup HTML
  *  @{
  */
-
-    /** 
-     * HTML document tree.
-     */
-    typedef struct Nh_HTML_Tree { 
-
-        Nh_HTML_Node *Root_p;    /**<A pointer to the root node.*/
-
-        struct Nh_HTML_Flat {
-            Nh_List Unformatted; /**<Contains nodes gathered using unformatted traversal.*/
-            Nh_List Formatted;   /**<Contains nodes gathered using formatted traversal.*/
-        } Flat;                  /**<Flattened tree for quick traversal. Must be kept up-to-date with the actual tree.*/
-
-    } Nh_HTML_Tree;
 
     /**
      * Represents a HTML document. It holds the document tree and all other related resources.
@@ -72,7 +59,7 @@
     );
 
     NH_RESULT Nh_HTML_computeDocument(
-        Nh_Tab *Tab_p, NH_BOOL resize
+        Nh_Tab *Tab_p
     );
 
     NH_RESULT Nh_HTML_updateDocument(

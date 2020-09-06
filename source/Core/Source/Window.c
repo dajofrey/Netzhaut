@@ -233,26 +233,29 @@ static NH_RESULT Nh_resize(
 {
 NH_BEGIN();
 
-    Nh_syncResizeBegin(Window_p);
+printf("resize!!!!!!!!!!!\n");
+exit(0);
 
-    NH_CHECK(Nh_Gfx_resize(Window_p))
-
-    Window_p->Internal.resizeFactors_p[0] = 
-       ((float)Window_p->Info.pxSize_p[0]) / ((float)Window_p->Info.originalPxSize_p[0]);
-    Window_p->Internal.resizeFactors_p[1] = 
-       (((float)Window_p->Info.pxSize_p[1]) / ((float)Window_p->Info.originalPxSize_p[1]));
-
-    for (int i = 0; i < Window_p->Tabs.count; ++i) 
-    {
-        Nh_Tab *Tab_p = Nh_getTab(Window_p, i);
-        Tab_p->Info.pxSize_p[0] *= Window_p->Internal.resizeFactors_p[0];
-        Tab_p->Info.pxSize_p[1] *= Window_p->Internal.resizeFactors_p[1];
-
-        NH_CHECK(Nh_HTML_destroyDocument(&Tab_p->Document, &Window_p->GPU, NH_TRUE))
-        NH_CHECK(Nh_HTML_computeDocument(Tab_p, NH_TRUE))
-    }
-
-    Nh_syncResizeEnd(Window_p);
+//    Nh_syncResizeBegin(Window_p);
+//
+//    NH_CHECK(Nh_Gfx_resize(Window_p))
+//
+//    Window_p->Internal.resizeFactors_p[0] = 
+//       ((float)Window_p->Info.pxSize_p[0]) / ((float)Window_p->Info.originalPxSize_p[0]);
+//    Window_p->Internal.resizeFactors_p[1] = 
+//       (((float)Window_p->Info.pxSize_p[1]) / ((float)Window_p->Info.originalPxSize_p[1]));
+//
+//    for (int i = 0; i < Window_p->Tabs.count; ++i) 
+//    {
+//        Nh_Tab *Tab_p = Nh_getTab(Window_p, i);
+//        Tab_p->Info.pxSize_p[0] *= Window_p->Internal.resizeFactors_p[0];
+//        Tab_p->Info.pxSize_p[1] *= Window_p->Internal.resizeFactors_p[1];
+//
+//        NH_CHECK(Nh_HTML_destroyDocument(&Tab_p->Document, &Window_p->GPU, NH_TRUE))
+//        NH_CHECK(Nh_HTML_computeDocument(Tab_p))
+//    }
+//
+//    Nh_syncResizeEnd(Window_p);
 
 NH_END(NH_SUCCESS);
 }

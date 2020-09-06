@@ -50,7 +50,7 @@
     /**
      * MAJOR.MINOR.PATCH version of the library.
      */
-    #define NH_VERSION "v0.0.0"
+    #define NH_VERSION "v0.0.1"
 
     /**
      * In case this is not a pre-release, this macro should have the value "none". 
@@ -82,6 +82,7 @@
 #endif
 
     extern const char *NH_RESULTS_PP[];
+    extern unsigned int NH_RESULTS_PP_COUNT;
 
 /** @} */
 

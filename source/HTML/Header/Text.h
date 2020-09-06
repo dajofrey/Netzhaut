@@ -9,6 +9,8 @@
  * Published under LGPLv3
  */
 
+#include "Tree.h"
+
 #include "../../Core/Header/Window.h"
 #include "../../API/Header/Netzhaut.h"
 
@@ -62,7 +64,11 @@ typedef struct Nh_HTML_Document Nh_HTML_Document;
     );
 
     void Nh_HTML_destroyFormattedTextNodes(
-        Nh_HTML_Document *Document_p
+        Nh_HTML_Tree *Tree_p
+    );
+
+    char *Nh_HTML_getText(
+        Nh_HTML_Node *Node_p, NH_BOOL recursive
     );
 
 /** @} */

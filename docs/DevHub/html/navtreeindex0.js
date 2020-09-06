@@ -214,6 +214,8 @@ var NAVTREEINDEX0 =
 "Record_8h_source.html":[5,0,1,4,1,0,8],
 "Release1.html":[2,0],
 "Release1Detail.html":[2,0,0],
+"Release2.html":[2,1],
+"Release2Detail.html":[2,1,0],
 "Render_8h.html":[5,0,1,4,1,0,9],
 "Render_8h_source.html":[5,0,1,4,1,0,9],
 "Result_8h.html":[5,0,1,7,1,8],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "Target.html#Debugging":[1,4],
 "Target.html#Interface":[1,0],
 "Target.html#Internal":[1,1],
-"Target.html#Rendering":[1,2],
-"Terminal_8h.html":[5,0,1,9,0,6],
-"Terminal_8h_source.html":[5,0,1,9,0,6]
+"Target.html#Rendering":[1,2]
 };

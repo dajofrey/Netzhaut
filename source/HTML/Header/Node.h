@@ -21,6 +21,15 @@
 
 #endif
 
+/** @addtogroup HTMLData Data
+ *  \ingroup HTML
+ *  @{
+ */
+    extern const char *NH_HTML_TAGS_PP[];
+    extern size_t NH_HTML_TAGS_PP_COUNT;
+
+/** @} */
+
 /** @addtogroup HTMLEnums Enums
  *  \ingroup HTML
  *  @{
@@ -216,22 +225,21 @@
         Nh_HTML_Node *Node_p, NH_BOOL destroyTextData
     );
 
+    NH_RESULT Nh_HTML_replaceChildren(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Replace_p
+    );
+
+    NH_RESULT Nh_HTML_prependChild(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Prepend_p
+    );
+
     Nh_HTML_Node *Nh_HTML_getNode(
-        Nh_Tab *Tab_p, NH_HTML_TAG tag
-    );
-
-    const char** Nh_HTML_getTagNames(
-        size_t *size_p
-    );
-
-    const char* Nh_HTML_getTagName(
-        NH_HTML_TAG tag
+        Nh_Tab *Tab_p, NH_HTML_TAG tag, NH_BOOL unformatted
     );
 
     NH_BOOL Nh_HTML_isMetaNode(
         Nh_HTML_Node *Node_p
     );
-
 
 /** @} */
 

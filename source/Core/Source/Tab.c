@@ -94,7 +94,7 @@ NH_BEGIN()
     NH_CHECK(Nh_Gfx_createTab(Tab_p))
     NH_CHECK(Nh_HTML_createDocument(Args_p->documentURI_p, Tab_p))
     NH_CHECK(Nh_Gfx_initDefaultTextures(Tab_p))
-    NH_CHECK(Nh_HTML_computeDocument(Tab_p, NH_FALSE))
+    NH_CHECK(Nh_HTML_computeDocument(Tab_p))
     NH_CHECK(Nh_focusTab(Tab_p))
     NH_CHECK(Nh_addListItem(&Tab_p->Window_p->Tabs, Tab_p)) // TODO possible race condition
 
@@ -193,7 +193,7 @@ NH_BEGIN()
     // create
     NH_CHECK(Nh_HTML_createDocument(documentURI_p, Tab_p))
     NH_CHECK(Nh_Gfx_initDefaultTextures(Tab_p))
-    NH_CHECK(Nh_HTML_computeDocument(Tab_p, NH_FALSE))
+    NH_CHECK(Nh_HTML_computeDocument(Tab_p))
 
     NH_CHECK(Nh_addListItem(&Tab_p->Window_p->Tabs, Tab_p)) // TODO possible race condition
     NH_CHECK(Nh_focusTab(Tab_p))

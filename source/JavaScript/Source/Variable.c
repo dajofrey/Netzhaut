@@ -13,6 +13,8 @@
 #include "../Header/Script.h"
 #include "../Header/Memory.h"
 
+#include "../DOM/Header/HTMLCollection.h"
+
 #include "../../Core/Header/Memory.h"
 
 #include NH_DEFAULT_CHECK
@@ -20,18 +22,30 @@
 #include NH_JS_UTILS
 
 #include <string.h>
+#include <stdio.h>
 
 // DECLARE =========================================================================================
 
+static NH_RESULT Nh_JS_updateVariablesRecursively(
+    Nh_JS_Parsable *Parsable_p, NH_BOOL reset
+);
+
+// INIT ============================================================================================
+
 static void Nh_JS_initVariable(
-    Nh_JS_Variable *Variable_p, char *name_p, int depth, NH_JS_KEYWORD kind
-);
-static void Nh_JS_resetVariableRecursively(
-    Nh_JS_Parsable *Parsable_p
-);
-static void Nh_JS_resetVariable(
-    Nh_JS_Variable *Variable_p
-);
+    Nh_JS_Variable *Variable_p, char *name_p, int depth, NH_JS_KEYWORD kind)
+{
+NH_BEGIN()
+
+    Variable_p->depth    = depth;
+    Variable_p->type     = -1; // NOTE type deduction happens at interpreter level 
+    Variable_p->data_p   = NULL;   
+    Variable_p->name_p   = name_p;
+    Variable_p->kind     = kind;
+    Variable_p->freeData = false; 
+
+NH_SILENT_END()
+}
 
 // ADD =============================================================================================
 
@@ -49,7 +63,21 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
-// RESET ===========================================================================================
+// UPDATE ==========================================================================================
+
+NH_RESULT Nh_JS_updateScriptVariables(
+    Nh_JS_Script *Script_p)
+{
+NH_BEGIN()
+
+    Nh_JS_Parsable Parsable = {
+        .type   = NH_JS_PARSABLE_BLOCK_STATEMENT, 
+        .Data_p = &Script_p->Container,
+    };
+    NH_CHECK(Nh_JS_updateVariablesRecursively(&Parsable, NH_FALSE))
+
+NH_END(NH_SUCCESS)
+}
 
 void Nh_JS_resetScriptVariables(
     Nh_JS_Script *Script_p)
@@ -60,7 +88,7 @@ NH_BEGIN()
         .type   = NH_JS_PARSABLE_BLOCK_STATEMENT, 
         .Data_p = &Script_p->Container,
     };
-    Nh_JS_resetVariableRecursively(&Parsable);
+    Nh_JS_updateVariablesRecursively(&Parsable, NH_TRUE);
 
 NH_SILENT_END()
 }
@@ -71,19 +99,56 @@ void Nh_JS_resetBlockVariables(
 NH_BEGIN()
 
     if (Parsable_p->type != NH_JS_PARSABLE_BLOCK_STATEMENT) {NH_SILENT_END()}
-
     Nh_JS_BlockStatement *Block_p = Parsable_p->Data_p;
 
-    for (int i = 0; i < Block_p->Variables.count; ++i) {
+    for (int i = 0; i < Block_p->Variables.count; ++i) 
+    {
         Nh_JS_Variable *Variable_p = Nh_getListItem(&Block_p->Variables, i);
-        Nh_JS_resetVariable(Variable_p);
+        if (!Variable_p->freeData) {NH_SILENT_END()}
+        Nh_JS_free(Variable_p->type, Variable_p->data_p);
+        Nh_JS_initVariable(Variable_p, Variable_p->name_p, Variable_p->depth, Variable_p->kind);
     }
     
 NH_SILENT_END()
 }
 
-static void Nh_JS_resetVariableRecursively(
+static NH_RESULT Nh_JS_updateBlockVariables(
     Nh_JS_Parsable *Parsable_p)
+{
+NH_BEGIN()
+
+    if (Parsable_p->type != NH_JS_PARSABLE_BLOCK_STATEMENT) {NH_END(NH_ERROR_BAD_STATE)}
+    Nh_JS_BlockStatement *Block_p = Parsable_p->Data_p;
+
+    for (int i = 0; i < Block_p->Variables.count; ++i) 
+    {
+        Nh_JS_Variable *Variable_p = Nh_getListItem(&Block_p->Variables, i);
+        
+        switch (Variable_p->type) 
+        {
+            case NH_JS_TYPE_OBJECT :
+            {
+                Nh_JS_Object *Object_p = Variable_p->data_p;
+                
+                switch (Object_p->type)
+                {
+                    case NH_JS_OBJECT_HTML_COLLECTION : 
+                    {
+                        NH_CHECK(Nh_JS_updateHTMLCollection(Object_p->data_p))
+                        break;
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+NH_END(NH_SUCCESS)
+}
+
+static NH_RESULT Nh_JS_updateVariablesRecursively(
+    Nh_JS_Parsable *Parsable_p, NH_BOOL reset)
 {
 NH_BEGIN()
 
@@ -92,15 +157,15 @@ NH_BEGIN()
         case NH_JS_PARSABLE_ASSIGNMENT_EXPRESSION : 
             {
                 Nh_JS_AssignmentExpression *AssignmentExpression_p = Parsable_p->Data_p;               
-                Nh_JS_resetVariableRecursively(&AssignmentExpression_p->Left);
-                Nh_JS_resetVariableRecursively(&AssignmentExpression_p->Right);
+                Nh_JS_updateVariablesRecursively(&AssignmentExpression_p->Left, reset);
+                Nh_JS_updateVariablesRecursively(&AssignmentExpression_p->Right, reset);
             }
             break;
 
         case NH_JS_PARSABLE_EXPRESSION_STATEMENT : 
             {
                 Nh_JS_ExpressionStatement *ExpressionStatement_p = Parsable_p->Data_p;
-                Nh_JS_resetVariableRecursively(&ExpressionStatement_p->Parsable);
+                Nh_JS_updateVariablesRecursively(&ExpressionStatement_p->Parsable, reset);
             }
             break;
 
@@ -108,17 +173,18 @@ NH_BEGIN()
             {
                 Nh_JS_BlockStatement *BlockStatement_p = Parsable_p->Data_p;
                 for (int i = 0; i < BlockStatement_p->parsableCount; ++i) {
-                    Nh_JS_resetVariableRecursively(&BlockStatement_p->Parsables_p[i]);
+                    Nh_JS_updateVariablesRecursively(&BlockStatement_p->Parsables_p[i], reset);
                 }
-                Nh_JS_resetBlockVariables(Parsable_p);
+                if (reset)  {Nh_JS_resetBlockVariables(Parsable_p);}
+                else {NH_CHECK(Nh_JS_updateBlockVariables(Parsable_p))}
             } 
             break;
 
         case NH_JS_PARSABLE_MEMBER_EXPRESSION : 
             {
                 Nh_JS_MemberExpression *MemberExpression_p = Parsable_p->Data_p;
-                Nh_JS_resetVariableRecursively(&MemberExpression_p->Left);
-                Nh_JS_resetVariableRecursively(&MemberExpression_p->Right);
+                Nh_JS_updateVariablesRecursively(&MemberExpression_p->Left, reset);
+                Nh_JS_updateVariablesRecursively(&MemberExpression_p->Right, reset);
             }
             break;
 
@@ -129,9 +195,9 @@ NH_BEGIN()
             {
                 Nh_JS_CallExpression *CallExpression_p = Parsable_p->Data_p;
                 for (int i = 0; i < CallExpression_p->argumentCount; ++i) {
-                    Nh_JS_resetVariableRecursively(&CallExpression_p->Arguments_p[i]);
+                    Nh_JS_updateVariablesRecursively(&CallExpression_p->Arguments_p[i], reset);
                 }
-                Nh_JS_resetVariableRecursively(&CallExpression_p->Parsable);
+                Nh_JS_updateVariablesRecursively(&CallExpression_p->Parsable, reset);
             }
             break;
 
@@ -141,19 +207,19 @@ NH_BEGIN()
         case NH_JS_PARSABLE_FUNCTION_DECLARATION : 
             {
                 Nh_JS_FunctionDeclaration *Function_p = Parsable_p->Data_p;
-                Nh_JS_resetVariableRecursively(&Function_p->Name);
+                Nh_JS_updateVariablesRecursively(&Function_p->Name, reset);
                 for (int i = 0; i < Function_p->parameterCount; ++i) {
-                    Nh_JS_resetVariableRecursively(&Function_p->Parameters_p[i]);
+                    Nh_JS_updateVariablesRecursively(&Function_p->Parameters_p[i], reset);
                 }
-                Nh_JS_resetVariableRecursively(&Function_p->Block);
+                Nh_JS_updateVariablesRecursively(&Function_p->Block, reset);
             }
             break;
 
         case NH_JS_PARSABLE_VARIABLE_DECLARATION :  
             {
                 Nh_JS_VariableDeclaration *Declaration_p = Parsable_p->Data_p;
-                Nh_JS_resetVariableRecursively(&Declaration_p->Declarator.Identifier);
-                Nh_JS_resetVariableRecursively(&Declaration_p->Declarator.Parsable);
+                Nh_JS_updateVariablesRecursively(&Declaration_p->Declarator.Identifier, reset);
+                Nh_JS_updateVariablesRecursively(&Declaration_p->Declarator.Parsable, reset);
             }
             break;
 
@@ -161,9 +227,9 @@ NH_BEGIN()
             {
                 Nh_JS_ForStatement *For_p = Parsable_p->Data_p;
                 for (int i = 0; i < For_p->expressionCount; ++i) {
-                    Nh_JS_resetVariableRecursively(&For_p->Expressions_p[i]);
+                    Nh_JS_updateVariablesRecursively(&For_p->Expressions_p[i], reset);
                 } 
-                Nh_JS_resetVariableRecursively(&For_p->Statement);
+                Nh_JS_updateVariablesRecursively(&For_p->Statement, reset);
             }
             break;
 
@@ -171,7 +237,7 @@ NH_BEGIN()
             {
                 Nh_JS_IfStatement *If_p = Parsable_p->Data_p;
                 for (int i = 0; i < If_p->parsableCount; ++i) {
-                    Nh_JS_resetVariableRecursively(&If_p->Parsables_p[i]);
+                    Nh_JS_updateVariablesRecursively(&If_p->Parsables_p[i], reset);
                 } 
             }
             break;
@@ -179,28 +245,15 @@ NH_BEGIN()
         case NH_JS_PARSABLE_BINARY_EXPRESSION :
             {
                 Nh_JS_BinaryExpression *Binary_p = Parsable_p->Data_p;
-                Nh_JS_resetVariableRecursively(&Binary_p->Left);
-                Nh_JS_resetVariableRecursively(&Binary_p->Right);
+                Nh_JS_updateVariablesRecursively(&Binary_p->Left, reset);
+                Nh_JS_updateVariablesRecursively(&Binary_p->Right, reset);
             }
             break;
 
         default: break;
     }
 
-NH_SILENT_END()
-}
-
-static void Nh_JS_resetVariable(
-    Nh_JS_Variable *Variable_p)
-{
-NH_BEGIN()
-
-    if (!Variable_p->freeData) {NH_SILENT_END()}
-
-    Nh_JS_free(Variable_p->type, Variable_p->data_p);
-    Nh_JS_initVariable(Variable_p, Variable_p->name_p, Variable_p->depth, Variable_p->kind);
-
-NH_SILENT_END()
+NH_END(NH_SUCCESS)
 }
 
 // GET =============================================================================================
@@ -229,22 +282,5 @@ NH_BEGIN()
     }
 
 NH_END(NULL)
-}
-
-// INIT ============================================================================================
-
-static void Nh_JS_initVariable(
-    Nh_JS_Variable *Variable_p, char *name_p, int depth, NH_JS_KEYWORD kind)
-{
-NH_BEGIN()
-
-    Variable_p->depth    = depth;
-    Variable_p->type     = -1; // note: type deduction happens at interpreter level 
-    Variable_p->data_p   = NULL;   
-    Variable_p->name_p   = name_p;
-    Variable_p->kind     = kind;
-    Variable_p->freeData = false; 
-
-NH_SILENT_END()
 }
 

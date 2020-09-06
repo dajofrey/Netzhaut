@@ -325,16 +325,13 @@ NH_BEGIN()
     strcpy(tagName_p, current_p);
     current_p[length] = replace;
 
-    size_t size = 0;
-    const char **tagNames_pp = Nh_HTML_getTagNames(&size);
-
     int values_p[1000] = {-1}; // TODO should be safe but who knows
-    for (int i = 0; i < size; ++i) {
-        values_p[i] = Nh_levenshteinDistance((char*)tagNames_pp[i], tagName_p, NH_FALSE); 
+    for (int i = 0; i < NH_HTML_TAGS_PP_COUNT; ++i) {
+        values_p[i] = Nh_levenshteinDistance((char*)NH_HTML_TAGS_PP[i], tagName_p, NH_FALSE); 
     }
 
     int lowest = 100, index = -1;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < NH_HTML_TAGS_PP_COUNT; ++i) {
         if (values_p[i] < lowest) {index = i; lowest = values_p[i];}
     }
 

@@ -68,7 +68,7 @@ NH_BEGIN()
         else if (strstr(selectorString_p, "*"))                              {selector = NH_CSS_SELECTOR_UNIVERSAL;}
         else if (selectorString_p[0] == '#')                                 {selector = NH_CSS_SELECTOR_ID;}
         else if (selectorString_p[0] == '.')                                 {selector = NH_CSS_SELECTOR_CLASS;}
-        else if (!strcmp(selectorString_p, Nh_HTML_getTagName(Node_p->tag))) {selector = NH_CSS_SELECTOR_TYPE;}
+        else if (!strcmp(selectorString_p, NH_HTML_TAGS_PP[Node_p->tag])) {selector = NH_CSS_SELECTOR_TYPE;}
     }
     else {
              if (strstr(selectorString_p, ">"))                {selector = NH_CSS_SELECTOR_CHILD_COMBINATOR;}
@@ -208,7 +208,7 @@ NH_BEGIN()
     for (int i = 0; i < strlen(selector_p); ++i) {if (selector_p[i] == '[') {break;}++count;}
     memcpy((void*)element_p, (void*)selector_p, sizeof(char) * count);
     
-    if (!strcmp(element_p, Nh_HTML_getTagName(Node_p->tag)))
+    if (!strcmp(element_p, NH_HTML_TAGS_PP[Node_p->tag]))
     {
         char attr_p[256] = {'\0'}, val_p[256] = {'\0'};
         bool attr = false, val = false;

@@ -39,5 +39,6 @@ var searchData=
   ['dumpmark_127',['dumpMark',['../structNH__IO__Mouse.html#ac3df4d53c738fc55cf5388063a31cc1d',1,'NH_IO_Mouse']]],
   ['duration_128',['duration',['../structNH__CSS__Animation.html#a0a93c11f3147ca822e6020bbf4ee7986',1,'NH_CSS_Animation']]],
   ['definitions_129',['Definitions',['../group__NetworkDefinitions.html',1,'']]],
-  ['detailed_20report_130',['Detailed Report',['../Release1Detail.html',1,'Release1']]]
+  ['detailed_20report_130',['Detailed Report',['../Release1Detail.html',1,'Release1']]],
+  ['detailed_20report_131',['Detailed Report',['../Release2Detail.html',1,'Release2']]]
 ];

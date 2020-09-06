@@ -1,5 +1,7 @@
 var NAVTREEINDEX39 =
 {
+"structNh__Vk__Driver.html#af4d6b852336bca32dc75ce51b6ca80ab":[3,8,0,2,0,3],
+"structNh__Vk__DriverInfo.html":[3,0,1,2,0],
 "structNh__Vk__DriverInfo.html#a0de75b0bd652cbd29044014e21f13fe7":[3,0,1,2,0,3],
 "structNh__Vk__DriverInfo.html#a4c23d1da306399ef7d5750fc2585b17b":[3,0,1,2,0,0],
 "structNh__Vk__DriverInfo.html#a569376da887652af2dfefc6539e2179a":[3,0,1,2,0,2],

@@ -9,7 +9,7 @@ var options = document.getElementsByTagName("OPTION");
 for (const option of options) {
     option.addEventListener("click", clickOption()); 
     if (option.selected) {
-        option.parentElement.textContent = option.textContent;
+        option.parentElement.prepend = option.textContent;
         option.parentElement.value = option.value;
     }
 }

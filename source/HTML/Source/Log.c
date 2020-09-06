@@ -24,8 +24,8 @@
 
 // DEBUG ===========================================================================================
 
-NH_RESULT Nh_HTML_logDocument( // TODO multithreading
-    Nh_HTML_Document *Document_p, NH_BOOL unformatted)
+NH_RESULT Nh_HTML_logTree( // TODO multithreading
+    Nh_HTML_Tree *Tree_p, NH_BOOL unformatted)
 {
 NH_BEGIN()
 
@@ -33,7 +33,7 @@ NH_BEGIN()
     {
         Nh_String *String_p = Nh_allocateString(NULL);
 
-        char *document_p = Nh_HTML_stringifyDocument(Document_p, unformatted);
+        char *document_p = Nh_HTML_stringifyTree(Tree_p, unformatted);
         NH_CHECK_NULL(document_p)
 
         NH_CHECK((Nh_appendFormatToString(String_p, "%s\n", document_p)))

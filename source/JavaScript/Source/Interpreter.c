@@ -417,7 +417,7 @@ NH_BEGIN()
             {
                 case NH_JS_OBJECT_HTML_COLLECTION : 
                 {
-                    NH_JS_HTMLCollection *HTMLCollection_p = Object_p->data_p;
+                    Nh_JS_HTMLCollection *HTMLCollection_p = Object_p->data_p;
                     for (int i = 0; i < HTMLCollection_p->List.count; ++i) 
                     {
                         Variable_p->type   = NH_JS_TYPE_OBJECT;
