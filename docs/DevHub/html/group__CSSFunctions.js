@@ -1,5 +1,7 @@
 var group__CSSFunctions =
 [
+    [ "Nh_CSS_activate", "group__CSSFunctions.html#ga4907c1488ab99e922ec24c472f8f99b3", null ],
+    [ "Nh_CSS_activateChild", "group__CSSFunctions.html#ga9868c9ecf9e7cd216fdd902d997820a0", null ],
     [ "Nh_CSS_addGenericProperty", "group__CSSFunctions.html#gaea5da9044321d1250a450943c671fe5c", null ],
     [ "Nh_CSS_addImage", "group__CSSFunctions.html#ga33d706d25e96f9fe887e28c1d9057fbc", null ],
     [ "Nh_CSS_addSheet", "group__CSSFunctions.html#gad41eaf51859dc10cec45cf2f8353ff62", null ],
@@ -11,9 +13,10 @@ var group__CSSFunctions =
     [ "Nh_CSS_computeMarginProperties", "group__CSSFunctions.html#ga183d339e1b5a6a712e9d12250318c0ac", null ],
     [ "Nh_CSS_computePaddingProperties", "group__CSSFunctions.html#ga2c2bccd410b083f8fd32f856a0a7af05", null ],
     [ "Nh_CSS_computePositionProperties", "group__CSSFunctions.html#ga45281d7776ce816c42a8714e47a35ea8", null ],
-    [ "Nh_CSS_computeProperties", "group__CSSFunctions.html#ga07e67ee0a2667531ad978e33bba3df95", null ],
+    [ "Nh_CSS_computeProperties", "group__CSSFunctions.html#ga66de7a52d4ec6ec51d5169681ee09bae", null ],
     [ "Nh_CSS_computeTextProperties", "group__CSSFunctions.html#gaa1ef79d8f47f9f386262295904d41bfe", null ],
     [ "Nh_CSS_configureGenericProperty", "group__CSSFunctions.html#gaf4535aca69095eb37219936d9e824380", null ],
+    [ "Nh_CSS_deactivate", "group__CSSFunctions.html#gae58439576e0f709450e78437d4ba914c", null ],
     [ "Nh_CSS_destroyGenericProperties", "group__CSSFunctions.html#gac30cfd5f9d15b799855b401584f4db42", null ],
     [ "Nh_CSS_destroyImages", "group__CSSFunctions.html#gab526c134e200b01f4aea874ee6e3b8fc", null ],
     [ "Nh_CSS_destroyProperties", "group__CSSFunctions.html#gac7758c464fa8f8a35f35214f78bffa40", null ],
@@ -32,17 +35,16 @@ var group__CSSFunctions =
     [ "Nh_CSS_getColorFromName", "group__CSSFunctions.html#ga372d241fa5d5f44e6a8f319672608012", null ],
     [ "Nh_CSS_getColorNames", "group__CSSFunctions.html#ga953672ffecfed3fdb2d9cf470428dd2d", null ],
     [ "Nh_CSS_getContentBox", "group__CSSFunctions.html#ga071dbb2a46af08684e92d128894c74bf", null ],
+    [ "Nh_CSS_getCropBox", "group__CSSFunctions.html#gae52c6875ae492144e6b636d1b8218c32", null ],
     [ "Nh_CSS_getDefaultIcon", "group__CSSFunctions.html#ga2cbae6a703801a402095032c18cf4028", null ],
     [ "Nh_CSS_getDefaultSheet", "group__CSSFunctions.html#gac81197308fa6e62bcf0fedef10fe9d9a", null ],
-    [ "Nh_CSS_getEnclosingBox", "group__CSSFunctions.html#gaa1f559f3032365319e8f38541a12e5a4", null ],
-    [ "Nh_CSS_getGenericProperties", "group__CSSFunctions.html#gad09c84607146c3a7e6aeedf16fb832e4", null ],
+    [ "Nh_CSS_getGenericProperties", "group__CSSFunctions.html#ga43b40b2cc48b3072eef9576895b3ff52", null ],
     [ "Nh_CSS_getImage", "group__CSSFunctions.html#ga99933d01a63d12451e33d3f41c22ed30", null ],
     [ "Nh_CSS_getImageVertices", "group__CSSFunctions.html#ga9130221a6e2ec414fd732334944d6b4d", null ],
     [ "Nh_CSS_getLengthInPixel", "group__CSSFunctions.html#ga2da43a3641702b5dd5696b66594db7fe", null ],
     [ "Nh_CSS_getPaddingBox", "group__CSSFunctions.html#ga51393d64e9be4b3034b2c442f55a0500", null ],
     [ "Nh_CSS_getPrecedence", "group__CSSFunctions.html#ga3f415c2ec699876ffdb84649002dc865", null ],
     [ "Nh_CSS_getProperty", "group__CSSFunctions.html#ga421009538e46f0a39fa653222a9b90db", null ],
-    [ "Nh_CSS_getPropertyNames", "group__CSSFunctions.html#ga0550396adf91fa28fc542b5a76b4c21e", null ],
     [ "Nh_CSS_getPseudoClassNames", "group__CSSFunctions.html#gaa393ab8a2470a6e1843c125bbcb08d2b", null ],
     [ "Nh_CSS_getPseudoElementNames", "group__CSSFunctions.html#gaa947cc8c400655e4e8192a5ce0e9c14c", null ],
     [ "Nh_CSS_getSheet", "group__CSSFunctions.html#ga886f71d1e763f8ff968a5437715858bf", null ],
@@ -79,6 +81,5 @@ var group__CSSFunctions =
     [ "Nh_CSS_setDefaultTextProperties", "group__CSSFunctions.html#gae33f93143b5119b5506da1dc67be79ec", null ],
     [ "Nh_CSS_setDefaultTextProperty", "group__CSSFunctions.html#ga8de93cf5f295486b65640ae05d63dd84", null ],
     [ "Nh_CSS_stringifySheet", "group__CSSFunctions.html#ga103df08ddc423432f7791ab2bc363817", null ],
-    [ "Nh_CSS_strip", "group__CSSFunctions.html#ga8674fe05f71f835002c170d44784852a", null ],
-    [ "Nh_CSS_updateProperties", "group__CSSFunctions.html#gada581cd431e1e8a7ecb2c9e92e7c7c4c", null ]
+    [ "Nh_CSS_strip", "group__CSSFunctions.html#ga8674fe05f71f835002c170d44784852a", null ]
 ];

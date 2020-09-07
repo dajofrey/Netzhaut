@@ -1,5 +1,5 @@
 /**
- * Netzhaut - DHTML Engine
+ * Netzhaut - Web Browser Engine 
  * Copyright (C) 2020  Dajo Frey
  * Published under LGPLv3
  */

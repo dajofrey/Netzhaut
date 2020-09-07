@@ -54,7 +54,5 @@ var group__VulkanFunctions =
     [ "Nh_Vk_updateBackgroundVertices", "group__VulkanFunctions.html#ga2d8e76eceebd814e8c7bef9f03960c4f", null ],
     [ "Nh_Vk_updateBorderVertices", "group__VulkanFunctions.html#ga8f84f64f28196cdd3246a6e5475f5751", null ],
     [ "Nh_Vk_updateImageVertices", "group__VulkanFunctions.html#ga186a888ed596064992ea2bc703c33cbb", null ],
-    [ "Nh_Vk_updateNodeProperty", "group__VulkanFunctions.html#gad346757ddbbbcc2845cc2560f009bf77", null ],
-    [ "Nh_Vk_updateNodeVertices", "group__VulkanFunctions.html#ga8e784214f539642bdf7edbaccbe0f811", null ],
     [ "Nh_Vk_updateText", "group__VulkanFunctions.html#gafa4f817833c6067c8e35aacccdbb74f1", null ]
 ];

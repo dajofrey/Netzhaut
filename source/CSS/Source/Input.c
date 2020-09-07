@@ -11,6 +11,7 @@
 #include "../Header/Input.h"
 #include "../Header/Associate.h"
 #include "../Header/Macros.h"
+#include "../Header/Arrange.h"
 
 #include "../../Core/Header/Memory.h"
 #include "../../Core/Header/Tab.h"
@@ -81,6 +82,7 @@ NH_BEGIN()
         NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
     }
 
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
     NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
 
 NH_END(NH_SUCCESS)
@@ -123,6 +125,7 @@ NH_BEGIN()
     }
 
     NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
     NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
 
 NH_END(NH_SUCCESS)
@@ -161,6 +164,7 @@ NH_BEGIN()
     }
 
     NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
     NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
 
 NH_END(NH_SUCCESS)

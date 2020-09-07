@@ -13,7 +13,7 @@ var group__JSFunctions =
     [ "Nh_JS_destroyScriptList", "group__JSFunctions.html#gaf762dd0bf4b3d41c46c4f583e445ca57", null ],
     [ "Nh_JS_free", "group__JSFunctions.html#gaef369a9369221398ca32bab2db49fa00", null ],
     [ "Nh_JS_getDefaultScript", "group__JSFunctions.html#ga4e0f774a11eb577626c4171e0427ba65", null ],
-    [ "Nh_JS_getDocument", "group__JSFunctions.html#ga499060278b58f98360e625dd8993eb12", null ],
+    [ "Nh_JS_getDocument", "group__JSFunctions.html#ga0ddfb0b48abeed5adf868877d991c3c5", null ],
     [ "Nh_JS_getEventTypes", "group__JSFunctions.html#ga821dce252e8516fb7ef512a2db4e07eb", null ],
     [ "Nh_JS_getFunctionDeclaration", "group__JSFunctions.html#ga1504bb956a9c4ca5510f3f517fd5af46", null ],
     [ "Nh_JS_getFunctionNames", "group__JSFunctions.html#ga85e2e022164a89ee569b2f85d62f43ff", null ],
@@ -36,5 +36,6 @@ var group__JSFunctions =
     [ "Nh_JS_resetScriptVariables", "group__JSFunctions.html#ga87e87659f9cc885550ff7f7fd17feab3", null ],
     [ "Nh_JS_stringifyScript", "group__JSFunctions.html#ga0b036864136c81f57b38dd85727e35cf", null ],
     [ "Nh_JS_unloadScript", "group__JSFunctions.html#gaa98e460cbb355ebf1d113cb624700e4b", null ],
-    [ "Nh_JS_unparseScript", "group__JSFunctions.html#ga0bd0626cf6ef2eef6ce9f521c57e5ce1", null ]
+    [ "Nh_JS_unparseScript", "group__JSFunctions.html#ga0bd0626cf6ef2eef6ce9f521c57e5ce1", null ],
+    [ "Nh_JS_updateScriptVariables", "group__JSFunctions.html#ga17c346f3396e21f5f968ca5e7e0952ab", null ]
 ];

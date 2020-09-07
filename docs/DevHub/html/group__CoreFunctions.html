@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-04 15:09:39<br>v0.0.0 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-07 23:29:34<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.png"
@@ -172,6 +172,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gab469ecbf3554a8bc50e9fc4b7e40b3f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CoreFunctions.html#gab469ecbf3554a8bc50e9fc4b7e40b3f4">Nh_addListItem</a> (<a class="el" href="structNh__List.html">Nh_List</a> *List_p, void *data_p)</td></tr>
 <tr class="memdesc:gab469ecbf3554a8bc50e9fc4b7e40b3f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds <code>data_p</code> to the list pointed by <code>List_p</code>.  <a href="group__CoreFunctions.html#gab469ecbf3554a8bc50e9fc4b7e40b3f4">More...</a><br /></td></tr>
 <tr class="separator:gab469ecbf3554a8bc50e9fc4b7e40b3f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab5c98a87b6a91fb3b264fd641321a08b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CoreFunctions.html#gab5c98a87b6a91fb3b264fd641321a08b">Nh_prependListItem</a> (<a class="el" href="structNh__List.html">Nh_List</a> *List_p, void *data_p)</td></tr>
+<tr class="memdesc:gab5c98a87b6a91fb3b264fd641321a08b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepends <code>data_p</code> to the list pointed by <code>List_p</code>.  <a href="group__CoreFunctions.html#gab5c98a87b6a91fb3b264fd641321a08b">More...</a><br /></td></tr>
+<tr class="separator:gab5c98a87b6a91fb3b264fd641321a08b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga54e9aa2b30325cbf6a64bc1f38872947"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CoreFunctions.html#ga54e9aa2b30325cbf6a64bc1f38872947">Nh_getListItem</a> (<a class="el" href="structNh__List.html">Nh_List</a> *List_p, int index)</td></tr>
 <tr class="memdesc:ga54e9aa2b30325cbf6a64bc1f38872947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get item data specified by <code>index</code> from <code>List_p</code>.  <a href="group__CoreFunctions.html#ga54e9aa2b30325cbf6a64bc1f38872947">More...</a><br /></td></tr>
 <tr class="separator:ga54e9aa2b30325cbf6a64bc1f38872947"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2622,6 +2625,44 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="gab5c98a87b6a91fb3b264fd641321a08b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab5c98a87b6a91fb3b264fd641321a08b">&#9670;&nbsp;</a></span>Nh_prependListItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> Nh_prependListItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structNh__List.html">Nh_List</a> *&#160;</td>
+          <td class="paramname"><em>List_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data_p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prepends <code>data_p</code> to the list pointed by <code>List_p</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">List_p</td><td>A pointer to the list to which <code>data_p</code> will be prepended. </td></tr>
+    <tr><td class="paramname">data_p</td><td>A pointer to data that you want to prepend. Must be allocated beforehand. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61ae9fff781cc6dc5200a1cc8546e6fae9b">NH_SUCCESS</a> when <code>data_p</code> was prepended, various error codes if something went wrong. </dd></dl>
 
 </div>
 </div>

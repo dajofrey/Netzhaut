@@ -35,6 +35,10 @@ typedef struct Nh_Tab Nh_Tab;
  *  @{
  */
 
+    Nh_CSS_Box Nh_CSS_getCropBox(
+        Nh_Tab *Tab_p
+    );
+
     Nh_CSS_Box Nh_CSS_getBackgroundImageBox(
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_Image *Image_p, float subtractFromZ
     );

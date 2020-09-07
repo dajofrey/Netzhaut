@@ -197,5 +197,6 @@ var Netzhaut_8h =
     [ "Nh_start", "group__CCoreFunctions.html#ga1a482776d19455414e5bcc3f9600b9c5", null ],
     [ "Nh_stringify", "group__CCoreFunctions.html#ga747a1061736429f76ced6275af2d06f9", null ],
     [ "Nh_update", "group__CCoreFunctions.html#gaba5a819662402b8979912f18e5ee121f", null ],
-    [ "NH_RESULTS_PP", "group__CCoreData.html#ga4afb124a98c519338b36ca43f65b1dbc", null ]
+    [ "NH_RESULTS_PP", "group__CCoreData.html#ga4afb124a98c519338b36ca43f65b1dbc", null ],
+    [ "NH_RESULTS_PP_COUNT", "group__CCoreData.html#gac58b0e1ebfd379df37659826dd7c5cbe", null ]
 ];

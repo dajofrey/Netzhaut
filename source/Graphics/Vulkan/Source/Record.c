@@ -141,7 +141,7 @@ NH_BEGIN()
     {
         int wh_p[2] = {0}, xy_p[2] = {0};
 
-        Nh_CSS_Box Box = Nh_HTML_getNode(Tab_p, NH_HTML_TAG_BODY, NH_FALSE)->Computed.Margin;
+        Nh_CSS_Box Box = Nh_CSS_getCropBox(Tab_p);
 
         Nh_CSS_getBoxSize(Tab_p, &Box, wh_p);
         Nh_CSS_getBoxOffsetRelToWindow(Tab_p, &Box, xy_p);

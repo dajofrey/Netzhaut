@@ -33,6 +33,28 @@ static inline void Nh_CSS_transformToAdaptiveSize(
     Nh_Window *Window_p, Nh_CSS_Box *Box_p, bool x, bool y
 );
 
+// CROP ============================================================================================
+
+Nh_CSS_Box Nh_CSS_getCropBox(
+    Nh_Tab *Tab_p)
+{
+NH_BEGIN()
+
+    Nh_CSS_Box Box = Nh_CSS_initBox();
+
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i) {
+        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Formatted, i);
+        if (Node_p->Computed.Margin.BottomRight.x > Box.BottomRight.x) {
+            Box.BottomRight.x = Node_p->Computed.Margin.BottomRight.x;
+        }
+        if (Node_p->Computed.Margin.BottomRight.y > Box.BottomRight.y) {
+            Box.BottomRight.y = Node_p->Computed.Margin.BottomRight.y;
+        }
+    }
+
+NH_END(Box)
+}
+
 // BACKGROUND IMAGE BOX ============================================================================
 
 Nh_CSS_Box Nh_CSS_getBackgroundImageBox(

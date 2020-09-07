@@ -101,6 +101,7 @@ var group__CoreFunctions =
     [ "Nh_lineLineIntersection", "group__CoreFunctions.html#ga26e26e492265e438c10b8705ec23d3d2", null ],
     [ "Nh_norm2D", "group__CoreFunctions.html#ga0d0f1cfed9cf79f0a6e9da50d670dbf9", null ],
     [ "Nh_pointInBox", "group__CoreFunctions.html#ga99393da04c1fbf4e28efba8d15a61178", null ],
+    [ "Nh_prependListItem", "group__CoreFunctions.html#gab5c98a87b6a91fb3b264fd641321a08b", null ],
     [ "Nh_radiansToDegrees", "group__CoreFunctions.html#gaebfdf35ba2114a7051d9e49ecec89dc8", null ],
     [ "NH_reloadTab", "group__CoreFunctions.html#ga2bc140d87454bf86eb30504e1331c38c", null ],
     [ "Nh_removeTab", "group__CoreFunctions.html#ga92a09328ece3709b898e9fdd798597c3", null ],

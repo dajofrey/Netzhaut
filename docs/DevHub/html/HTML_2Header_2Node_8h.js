@@ -132,11 +132,13 @@ var HTML_2Header_2Node_8h =
       [ "NH_HTML_TAG_TEXT", "group__HTMLEnums.html#gga943494f6405ac44a581774cdc5eb91ada4e104f7e0f58e058ba14c3032c58a78f", null ],
       [ "NH_HTML_TAG_UNDEFINED", "group__HTMLEnums.html#gga943494f6405ac44a581774cdc5eb91ada1fe81806ab189528f225df3a2d42667c", null ]
     ] ],
-    [ "Nh_HTML_computeNode", "group__HTMLFunctions.html#ga0caf19618a0373a3ebaf0bef26d5b852", null ],
+    [ "Nh_HTML_computeNode", "group__HTMLFunctions.html#gad00fd257e88e28515064d7f0da78a33c", null ],
     [ "Nh_HTML_destroyNode", "group__HTMLFunctions.html#gaf4363dc7c5ab65c2aeacd74b93023748", null ],
-    [ "Nh_HTML_getNode", "group__HTMLFunctions.html#ga83d864620d684cc1d53eacb96b8742a2", null ],
-    [ "Nh_HTML_getTagName", "group__HTMLFunctions.html#gaaff06f9643f51c0fd5b4c3835bdd92e7", null ],
-    [ "Nh_HTML_getTagNames", "group__HTMLFunctions.html#gac66295fafa99c7170788505ae4e3cf64", null ],
+    [ "Nh_HTML_getNode", "group__HTMLFunctions.html#ga2c7fc2a467459ed04495b587fa5e337b", null ],
     [ "Nh_HTML_initNode", "group__HTMLFunctions.html#ga908b17f72c09be03e378c036dabe01f1", null ],
-    [ "Nh_HTML_isMetaNode", "group__HTMLFunctions.html#ga9a8554e1c3fd2237e85a5c738eb82d75", null ]
+    [ "Nh_HTML_isMetaNode", "group__HTMLFunctions.html#ga9a8554e1c3fd2237e85a5c738eb82d75", null ],
+    [ "Nh_HTML_prependChild", "group__HTMLFunctions.html#ga513577eafb9b55303738b7e94ef35a80", null ],
+    [ "Nh_HTML_replaceChildren", "group__HTMLFunctions.html#ga4813dcc74fe2ac91dbea213663ea0651", null ],
+    [ "NH_HTML_TAGS_PP", "group__HTMLData.html#ga530f2c7edacb1beb26536bbec8fb358f", null ],
+    [ "NH_HTML_TAGS_PP_COUNT", "group__HTMLData.html#ga77530e0a6800bd21f042c221f5831843", null ]
 ];

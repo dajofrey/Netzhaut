@@ -200,7 +200,7 @@ var Attribute_8h =
       [ "NH_HTML_TYPE_WEEK", "group__HTMLEnums.html#ggaf06e851467b64397bfeb20a6f7f26bd1a28e50678bb72ca0c30124448af0ba0c2", null ]
     ] ],
     [ "Nh_HTML_addAttribute", "group__HTMLFunctions.html#gae12e111b8eb9cadfde01a1a8c5b3426b", null ],
-    [ "Nh_HTML_computeAttributes", "group__HTMLFunctions.html#ga7e3bf24f27d42de855067e61c73ac17d", null ],
+    [ "Nh_HTML_computeAttributes", "group__HTMLFunctions.html#ga087ddefb8cd4fdc7cd0565e47a61cab5", null ],
     [ "Nh_HTML_destroyAttributes", "group__HTMLFunctions.html#gae9295cdd63925dccdfeb531089e4ec51", null ],
     [ "Nh_HTML_getAttribute", "group__HTMLFunctions.html#gaca68d83cd6a3fa1ea8ee18dd37e88a8a", null ],
     [ "Nh_HTML_getAttributeFromType", "group__HTMLFunctions.html#gaf7e42c1007cd0c3af940af07cb011441", null ],

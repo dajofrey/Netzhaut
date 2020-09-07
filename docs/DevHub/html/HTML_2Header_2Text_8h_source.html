@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-04 15:09:39<br>v0.0.0 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-07 23:29:34<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.png"
@@ -105,65 +105,74 @@ $(document).ready(function(){initNavTree('HTML_2Header_2Text_8h_source.html','')
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;../../Core/Header/Window.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;../../API/Header/Netzhaut.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Tree_8h.html">Tree.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../../Core/Header/Window.h&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;../../API/Header/Netzhaut.h&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a>;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structNh__HTML__Document.html">Nh_HTML_Document</a> <a class="code" href="structNh__HTML__Document.html">Nh_HTML_Document</a>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structNh__HTML__Document.html">Nh_HTML_Document</a> <a class="code" href="structNh__HTML__Document.html">Nh_HTML_Document</a>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html">   30</a></span>&#160;    <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structNh__HTML__Text.html">Nh_HTML_Text</a> {</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#a6439bd72e6002b8d4d9d672d4cb6ef08">   31</a></span>&#160;        <span class="keywordtype">float</span> <a class="code" href="structNh__HTML__Text.html#a6439bd72e6002b8d4d9d672d4cb6ef08">yOffset</a>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#aaaede90e0deb1868689e6894387dd33a">   32</a></span>&#160;        <span class="keywordtype">float</span> <a class="code" href="structNh__HTML__Text.html#aaaede90e0deb1868689e6894387dd33a">width</a>;         </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#afa9f7575d0e9fd33e5806fbd0b374413">   33</a></span>&#160;        <span class="keywordtype">float</span> *<a class="code" href="structNh__HTML__Text.html#afa9f7575d0e9fd33e5806fbd0b374413">vertices_p</a>;   </div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#a8209e3b711ca0bbc7a719bc110f6caed">   34</a></span>&#160;        uint32_t *<a class="code" href="structNh__HTML__Text.html#a8209e3b711ca0bbc7a719bc110f6caed">indices_p</a>; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    } <a class="code" href="structNh__HTML__Text.html">Nh_HTML_Text</a>;               </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga3b196ad05e6cea6664dad2061448b807">   44</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#ga3b196ad05e6cea6664dad2061448b807">Nh_HTML_initText</a>(</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="structNh__HTML__Text.html">Nh_HTML_Text</a> *Text_p</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    );</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga6f0f720476e1e422a266be8fdae83855">   48</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a> <a class="code" href="group__HTMLFunctions.html#ga6f0f720476e1e422a266be8fdae83855">Nh_HTML_isTextNode</a>(</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    );</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gac4d8049825b71191537d8f1ea0252737">   52</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> <a class="code" href="group__HTMLFunctions.html#gac4d8049825b71191537d8f1ea0252737">Nh_HTML_createNormalizedText</a>(</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    );</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga1ac0887bd9ade4dbcb835d65ea407389">   56</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> <a class="code" href="group__HTMLFunctions.html#ga1ac0887bd9ade4dbcb835d65ea407389">Nh_HTML_createTextNodes</a>(</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Parent_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    );</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaa956901a58a75b8203de9c73e9c29e98">   60</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#gaa956901a58a75b8203de9c73e9c29e98">Nh_HTML_destroyText</a>(</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    );</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga88f84a72d8216715281943bc654739d1">   64</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#ga88f84a72d8216715281943bc654739d1">Nh_HTML_destroyFormattedTextNodes</a>(</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="structNh__HTML__Document.html">Nh_HTML_Document</a> *Document_p</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    );</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#endif </span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html">   32</a></span>&#160;    <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structNh__HTML__Text.html">Nh_HTML_Text</a> {</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#a6439bd72e6002b8d4d9d672d4cb6ef08">   33</a></span>&#160;        <span class="keywordtype">float</span> <a class="code" href="structNh__HTML__Text.html#a6439bd72e6002b8d4d9d672d4cb6ef08">yOffset</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#aaaede90e0deb1868689e6894387dd33a">   34</a></span>&#160;        <span class="keywordtype">float</span> <a class="code" href="structNh__HTML__Text.html#aaaede90e0deb1868689e6894387dd33a">width</a>;         </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#afa9f7575d0e9fd33e5806fbd0b374413">   35</a></span>&#160;        <span class="keywordtype">float</span> *<a class="code" href="structNh__HTML__Text.html#afa9f7575d0e9fd33e5806fbd0b374413">vertices_p</a>;   </div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structNh__HTML__Text.html#a8209e3b711ca0bbc7a719bc110f6caed">   36</a></span>&#160;        uint32_t *<a class="code" href="structNh__HTML__Text.html#a8209e3b711ca0bbc7a719bc110f6caed">indices_p</a>; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    } <a class="code" href="structNh__HTML__Text.html">Nh_HTML_Text</a>;               </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga3b196ad05e6cea6664dad2061448b807">   46</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#ga3b196ad05e6cea6664dad2061448b807">Nh_HTML_initText</a>(</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="structNh__HTML__Text.html">Nh_HTML_Text</a> *Text_p</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    );</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga6f0f720476e1e422a266be8fdae83855">   50</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a> <a class="code" href="group__HTMLFunctions.html#ga6f0f720476e1e422a266be8fdae83855">Nh_HTML_isTextNode</a>(</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    );</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gac4d8049825b71191537d8f1ea0252737">   54</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> <a class="code" href="group__HTMLFunctions.html#gac4d8049825b71191537d8f1ea0252737">Nh_HTML_createNormalizedText</a>(</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    );</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga1ac0887bd9ade4dbcb835d65ea407389">   58</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> <a class="code" href="group__HTMLFunctions.html#ga1ac0887bd9ade4dbcb835d65ea407389">Nh_HTML_createTextNodes</a>(</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Parent_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    );</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaa956901a58a75b8203de9c73e9c29e98">   62</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#gaa956901a58a75b8203de9c73e9c29e98">Nh_HTML_destroyText</a>(</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    );</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaa911e251ff5c0a5121b439abd81fb756">   66</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#gaa911e251ff5c0a5121b439abd81fb756">Nh_HTML_destroyFormattedTextNodes</a>(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <a class="code" href="structNh__HTML__Tree.html">Nh_HTML_Tree</a> *Tree_p</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    );</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaf02e9cc76de4a055e686dfa87cebf55f">   70</a></span>&#160;    <span class="keywordtype">char</span> *<a class="code" href="group__HTMLFunctions.html#gaf02e9cc76de4a055e686dfa87cebf55f">Nh_HTML_getText</a>(</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p, <a class="code" href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a> recursive</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    );</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif </span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="agroup__HTMLFunctions_html_ga1ac0887bd9ade4dbcb835d65ea407389"><div class="ttname"><a href="group__HTMLFunctions.html#ga1ac0887bd9ade4dbcb835d65ea407389">Nh_HTML_createTextNodes</a></div><div class="ttdeci">NH_RESULT Nh_HTML_createTextNodes(Nh_Tab *Tab_p, Nh_HTML_Node *Parent_p, Nh_HTML_Node *Node_p)</div></div>
 <div class="ttc" id="agroup__HTMLFunctions_html_ga6f0f720476e1e422a266be8fdae83855"><div class="ttname"><a href="group__HTMLFunctions.html#ga6f0f720476e1e422a266be8fdae83855">Nh_HTML_isTextNode</a></div><div class="ttdeci">NH_BOOL Nh_HTML_isTextNode(Nh_HTML_Node *Node_p)</div></div>
-<div class="ttc" id="agroup__APICoreEnums_html_gaa5bc4d468ba7fc657a127fa6ffca469c"><div class="ttname"><a href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a></div><div class="ttdeci">NH_BOOL</div><div class="ttdoc">Boolean values.</div><div class="ttdef"><b>Definition:</b> Netzhaut.h:129</div></div>
+<div class="ttc" id="agroup__APICoreEnums_html_gaa5bc4d468ba7fc657a127fa6ffca469c"><div class="ttname"><a href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a></div><div class="ttdeci">NH_BOOL</div><div class="ttdoc">Boolean values.</div><div class="ttdef"><b>Definition:</b> Netzhaut.h:130</div></div>
 <div class="ttc" id="agroup__HTMLFunctions_html_gaa956901a58a75b8203de9c73e9c29e98"><div class="ttname"><a href="group__HTMLFunctions.html#gaa956901a58a75b8203de9c73e9c29e98">Nh_HTML_destroyText</a></div><div class="ttdeci">void Nh_HTML_destroyText(Nh_HTML_Node *Node_p)</div></div>
-<div class="ttc" id="astructNh__HTML__Text_html_aaaede90e0deb1868689e6894387dd33a"><div class="ttname"><a href="structNh__HTML__Text.html#aaaede90e0deb1868689e6894387dd33a">Nh_HTML_Text::width</a></div><div class="ttdeci">float width</div><div class="ttdoc">Text width.</div><div class="ttdef"><b>Definition:</b> Text.h:32</div></div>
-<div class="ttc" id="astructNh__HTML__Text_html_a6439bd72e6002b8d4d9d672d4cb6ef08"><div class="ttname"><a href="structNh__HTML__Text.html#a6439bd72e6002b8d4d9d672d4cb6ef08">Nh_HTML_Text::yOffset</a></div><div class="ttdeci">float yOffset</div><div class="ttdef"><b>Definition:</b> Text.h:31</div></div>
+<div class="ttc" id="astructNh__HTML__Text_html_aaaede90e0deb1868689e6894387dd33a"><div class="ttname"><a href="structNh__HTML__Text.html#aaaede90e0deb1868689e6894387dd33a">Nh_HTML_Text::width</a></div><div class="ttdeci">float width</div><div class="ttdoc">Text width.</div><div class="ttdef"><b>Definition:</b> Text.h:34</div></div>
+<div class="ttc" id="agroup__HTMLFunctions_html_gaa911e251ff5c0a5121b439abd81fb756"><div class="ttname"><a href="group__HTMLFunctions.html#gaa911e251ff5c0a5121b439abd81fb756">Nh_HTML_destroyFormattedTextNodes</a></div><div class="ttdeci">void Nh_HTML_destroyFormattedTextNodes(Nh_HTML_Tree *Tree_p)</div></div>
+<div class="ttc" id="astructNh__HTML__Text_html_a6439bd72e6002b8d4d9d672d4cb6ef08"><div class="ttname"><a href="structNh__HTML__Text.html#a6439bd72e6002b8d4d9d672d4cb6ef08">Nh_HTML_Text::yOffset</a></div><div class="ttdeci">float yOffset</div><div class="ttdef"><b>Definition:</b> Text.h:33</div></div>
 <div class="ttc" id="agroup__HTMLFunctions_html_ga3b196ad05e6cea6664dad2061448b807"><div class="ttname"><a href="group__HTMLFunctions.html#ga3b196ad05e6cea6664dad2061448b807">Nh_HTML_initText</a></div><div class="ttdeci">void Nh_HTML_initText(Nh_HTML_Text *Text_p)</div></div>
-<div class="ttc" id="astructNh__HTML__Document_html"><div class="ttname"><a href="structNh__HTML__Document.html">Nh_HTML_Document</a></div><div class="ttdoc">Represents a HTML document.</div><div class="ttdef"><b>Definition:</b> Document.h:44</div></div>
-<div class="ttc" id="agroup__APICoreEnums_html_ga69553903dccbc47bc4a7b65724517c61"><div class="ttname"><a href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a></div><div class="ttdeci">NH_RESULT</div><div class="ttdoc">Return values for functions.</div><div class="ttdef"><b>Definition:</b> Netzhaut.h:138</div></div>
-<div class="ttc" id="agroup__HTMLFunctions_html_ga88f84a72d8216715281943bc654739d1"><div class="ttname"><a href="group__HTMLFunctions.html#ga88f84a72d8216715281943bc654739d1">Nh_HTML_destroyFormattedTextNodes</a></div><div class="ttdeci">void Nh_HTML_destroyFormattedTextNodes(Nh_HTML_Document *Document_p)</div></div>
-<div class="ttc" id="astructNh__HTML__Text_html_a8209e3b711ca0bbc7a719bc110f6caed"><div class="ttname"><a href="structNh__HTML__Text.html#a8209e3b711ca0bbc7a719bc110f6caed">Nh_HTML_Text::indices_p</a></div><div class="ttdeci">uint32_t * indices_p</div><div class="ttdoc">Vertex indices.</div><div class="ttdef"><b>Definition:</b> Text.h:34</div></div>
-<div class="ttc" id="astructNh__HTML__Node_html"><div class="ttname"><a href="structNh__HTML__Node.html">Nh_HTML_Node</a></div><div class="ttdoc">Represents a HTML document node.</div><div class="ttdef"><b>Definition:</b> Node.h:169</div></div>
+<div class="ttc" id="astructNh__HTML__Document_html"><div class="ttname"><a href="structNh__HTML__Document.html">Nh_HTML_Document</a></div><div class="ttdoc">Represents a HTML document.</div><div class="ttdef"><b>Definition:</b> Document.h:31</div></div>
+<div class="ttc" id="agroup__APICoreEnums_html_ga69553903dccbc47bc4a7b65724517c61"><div class="ttname"><a href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a></div><div class="ttdeci">NH_RESULT</div><div class="ttdoc">Return values for functions.</div><div class="ttdef"><b>Definition:</b> Netzhaut.h:139</div></div>
+<div class="ttc" id="astructNh__HTML__Text_html_a8209e3b711ca0bbc7a719bc110f6caed"><div class="ttname"><a href="structNh__HTML__Text.html#a8209e3b711ca0bbc7a719bc110f6caed">Nh_HTML_Text::indices_p</a></div><div class="ttdeci">uint32_t * indices_p</div><div class="ttdoc">Vertex indices.</div><div class="ttdef"><b>Definition:</b> Text.h:36</div></div>
+<div class="ttc" id="aTree_8h_html"><div class="ttname"><a href="Tree_8h.html">Tree.h</a></div></div>
+<div class="ttc" id="astructNh__HTML__Node_html"><div class="ttname"><a href="structNh__HTML__Node.html">Nh_HTML_Node</a></div><div class="ttdoc">Represents a HTML document node.</div><div class="ttdef"><b>Definition:</b> Node.h:178</div></div>
 <div class="ttc" id="astructNh__Tab_html"><div class="ttname"><a href="structNh__Tab.html">Nh_Tab</a></div><div class="ttdef"><b>Definition:</b> Tab.h:39</div></div>
-<div class="ttc" id="astructNh__HTML__Text_html_afa9f7575d0e9fd33e5806fbd0b374413"><div class="ttname"><a href="structNh__HTML__Text.html#afa9f7575d0e9fd33e5806fbd0b374413">Nh_HTML_Text::vertices_p</a></div><div class="ttdeci">float * vertices_p</div><div class="ttdoc">Normalized vertices.</div><div class="ttdef"><b>Definition:</b> Text.h:33</div></div>
-<div class="ttc" id="astructNh__HTML__Text_html"><div class="ttname"><a href="structNh__HTML__Text.html">Nh_HTML_Text</a></div><div class="ttdoc">Contains text-related data for Nh_HTML_Node.</div><div class="ttdef"><b>Definition:</b> Text.h:30</div></div>
+<div class="ttc" id="agroup__HTMLFunctions_html_gaf02e9cc76de4a055e686dfa87cebf55f"><div class="ttname"><a href="group__HTMLFunctions.html#gaf02e9cc76de4a055e686dfa87cebf55f">Nh_HTML_getText</a></div><div class="ttdeci">char * Nh_HTML_getText(Nh_HTML_Node *Node_p, NH_BOOL recursive)</div></div>
+<div class="ttc" id="astructNh__HTML__Text_html_afa9f7575d0e9fd33e5806fbd0b374413"><div class="ttname"><a href="structNh__HTML__Text.html#afa9f7575d0e9fd33e5806fbd0b374413">Nh_HTML_Text::vertices_p</a></div><div class="ttdeci">float * vertices_p</div><div class="ttdoc">Normalized vertices.</div><div class="ttdef"><b>Definition:</b> Text.h:35</div></div>
+<div class="ttc" id="astructNh__HTML__Tree_html"><div class="ttname"><a href="structNh__HTML__Tree.html">Nh_HTML_Tree</a></div><div class="ttdoc">HTML document tree.</div><div class="ttdef"><b>Definition:</b> Tree.h:29</div></div>
+<div class="ttc" id="astructNh__HTML__Text_html"><div class="ttname"><a href="structNh__HTML__Text.html">Nh_HTML_Text</a></div><div class="ttdoc">Contains text-related data for Nh_HTML_Node.</div><div class="ttdef"><b>Definition:</b> Text.h:32</div></div>
 <div class="ttc" id="agroup__HTMLFunctions_html_gac4d8049825b71191537d8f1ea0252737"><div class="ttname"><a href="group__HTMLFunctions.html#gac4d8049825b71191537d8f1ea0252737">Nh_HTML_createNormalizedText</a></div><div class="ttdeci">NH_RESULT Nh_HTML_createNormalizedText(Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)</div></div>
     <!-- HTML footer for doxygen 1.8.15-->
     <!-- start footer part -->

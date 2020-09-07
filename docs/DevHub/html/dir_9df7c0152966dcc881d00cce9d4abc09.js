@@ -7,5 +7,6 @@ var dir_9df7c0152966dcc881d00cce9d4abc09 =
     [ "Macros.h", "HTML_2Header_2Macros_8h.html", null ],
     [ "Node.h", "HTML_2Header_2Node_8h.html", "HTML_2Header_2Node_8h" ],
     [ "Parser.h", "HTML_2Header_2Parser_8h.html", "HTML_2Header_2Parser_8h" ],
-    [ "Text.h", "HTML_2Header_2Text_8h.html", "HTML_2Header_2Text_8h" ]
+    [ "Text.h", "HTML_2Header_2Text_8h.html", "HTML_2Header_2Text_8h" ],
+    [ "Tree.h", "Tree_8h.html", "Tree_8h" ]
 ];

@@ -13,14 +13,6 @@ var group__HTMLStructs =
       [ "type", "structNh__HTML__Attributes.html#ab87d1ee5232d4b410b307baa43f3d4e7", null ],
       [ "value_p", "structNh__HTML__Attributes.html#ae66b068937357f5154ace51776b9f298", null ]
     ] ],
-    [ "Nh_HTML_Tree", "structNh__HTML__Tree.html", [
-      [ "Nh_HTML_Flat", "structNh__HTML__Tree_1_1Nh__HTML__Flat.html", [
-        [ "Formatted", "structNh__HTML__Tree_1_1Nh__HTML__Flat.html#aaa6f83950602591b08f5c5fc07dc6ec6", null ],
-        [ "Unformatted", "structNh__HTML__Tree_1_1Nh__HTML__Flat.html#af22cd71098ab751072fdb53feb721bb9", null ]
-      ] ],
-      [ "Flat", "structNh__HTML__Tree.html#a1125e348a4fec2b435efc27dfd2e058c", null ],
-      [ "Root_p", "structNh__HTML__Tree.html#a2c09fac2c80ce0d35708876157d1ae24", null ]
-    ] ],
     [ "Nh_HTML_Document", "structNh__HTML__Document.html", [
       [ "Input", "structNh__HTML__Document.html#a7dfd7e99502a1aa45a7073119c062478", null ],
       [ "Scripts", "structNh__HTML__Document.html#a025937dc69c0f2b3d9155d3b17100d7e", null ],
@@ -73,5 +65,13 @@ var group__HTMLStructs =
       [ "tag", "structNh__HTML__Node.html#a0feb544e52903f6eaf4f8015b55f6022", null ],
       [ "text_p", "structNh__HTML__Node.html#a5aa20279a34fab57e587b2dac3548163", null ],
       [ "Vulkan", "structNh__HTML__Node.html#ad41ab638dced33d3367d8e9037fcee29", null ]
+    ] ],
+    [ "Nh_HTML_Tree", "structNh__HTML__Tree.html", [
+      [ "Nh_HTML_Flat", "structNh__HTML__Tree_1_1Nh__HTML__Flat.html", [
+        [ "Formatted", "structNh__HTML__Tree_1_1Nh__HTML__Flat.html#aaa6f83950602591b08f5c5fc07dc6ec6", null ],
+        [ "Unformatted", "structNh__HTML__Tree_1_1Nh__HTML__Flat.html#af22cd71098ab751072fdb53feb721bb9", null ]
+      ] ],
+      [ "Flat", "structNh__HTML__Tree.html#a1125e348a4fec2b435efc27dfd2e058c", null ],
+      [ "Root_p", "structNh__HTML__Tree.html#a2c09fac2c80ce0d35708876157d1ae24", null ]
     ] ]
 ];
