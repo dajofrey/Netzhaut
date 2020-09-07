@@ -168,9 +168,6 @@ NH_BEGIN()
     for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i)
     {
         Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Formatted, i);
-
-        if (Node_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_NONE) {continue;}
-        if (Node_p->tag == NH_HTML_TAG_HTML) {continue;}
         if (!Nh_CSS_respectFlow(Node_p, NH_TRUE)) {inFlow_p[i] = false; continue;}
 
         Nh_Vk_recordExternal(CommandBuffer_p, Viewport, Driver_p, Tab_p, Pipelines_p, Node_p);

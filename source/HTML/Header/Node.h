@@ -218,7 +218,7 @@
     );
 
     NH_RESULT Nh_HTML_computeNode(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text
     ); 
 
     void Nh_HTML_destroyNode(

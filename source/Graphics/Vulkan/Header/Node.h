@@ -28,14 +28,6 @@
         Nh_Vk_GPU *GPU_p, Nh_HTML_Node *Node_p
     );
 
-    NH_RESULT Nh_Vk_updateNodeProperty(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
-    );
-
-    NH_RESULT Nh_Vk_updateNodeVertices(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
-    );
-
 /** @} */
 
 #endif 

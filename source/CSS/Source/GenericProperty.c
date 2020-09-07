@@ -13,6 +13,7 @@
 #include "../Header/Macros.h"
 
 #include "../../Core/Header/Memory.h"
+#include "../../Core/Header/Tab.h"
 #include "../../HTML/Header/Document.h"
 
 #include NH_DEBUG
@@ -24,7 +25,7 @@
 
 // DATA ============================================================================================
 
-const char *propertyNames_pp[] = 
+const char *NH_CSS_PROPERTIES_PP[] = 
 {
     "-webkit-line-clamp",
     "align-content",             
@@ -366,6 +367,8 @@ const char *propertyNames_pp[] =
     "z-index", 	                
 };
 
+size_t NH_CSS_PROPERTIES_PP_COUNT = sizeof(NH_CSS_PROPERTIES_PP) / sizeof(NH_CSS_PROPERTIES_PP[0]);
+
 // CONFIGURE =======================================================================================
 
 void Nh_CSS_configureGenericProperty(
@@ -383,8 +386,7 @@ NH_SILENT_END()
 // GET =============================================================================================
 
 void Nh_CSS_getGenericProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT], 
-    bool forceInit)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT])
 {
 NH_BEGIN()
 
@@ -402,12 +404,59 @@ NH_BEGIN()
             } 
             else {Properties_pp[Property_p->type] = Property_p;}
         } 
-        else if (forceInit && Properties_pp[Property_p->type] == NULL) {
-            Nh_CSS_setDefaultProperty(Tab_p, Node_p, Property_p->type);
-        }
     }
 
 NH_SILENT_END()
+}
+
+// ACTIVATE/DEACTIVATE =============================================================================
+
+NH_RESULT Nh_CSS_deactivate(
+    Nh_Tab *Tab_p, NH_CSS_PSEUDO_CLASS pseudoClass)
+{
+NH_BEGIN()
+
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) 
+    {
+        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i);
+
+        for (int j = 0; j < Node_p->Properties.count; ++j) 
+        {
+            NH_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, j);
+
+            if ((Property_p->Pseudo._class == pseudoClass || Property_p->Pseudo.parentClass == pseudoClass) && Property_p->active)
+            {
+                Property_p->active = false;
+                Property_p->update = true;
+            }
+        }
+    }
+
+NH_END(NH_SUCCESS)
+}
+
+NH_RESULT Nh_CSS_activate(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
+{
+NH_BEGIN()
+
+    if (Property_p->Pseudo._class == pseudoClass && !Property_p->active) {
+        Property_p->update = Property_p->active = true;
+    }
+
+NH_END(NH_SUCCESS)
+}
+
+NH_RESULT Nh_CSS_activateChild(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
+{
+NH_BEGIN()
+
+    if (Property_p->Pseudo.parentClass == pseudoClass && !Property_p->active) {
+        Property_p->update = Property_p->active = true;
+    }
+
+NH_END(NH_SUCCESS)
 }
 
 // PROPERTY LIST ===================================================================================
@@ -457,17 +506,5 @@ NH_BEGIN()
     Nh_destroyList(Properties_p, true);
 
 NH_SILENT_END()
-}
-
-// NAMES ===========================================================================================
-
-const char** Nh_CSS_getPropertyNames(
-    size_t *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL) {*size_p = sizeof(propertyNames_pp) / sizeof(propertyNames_pp[0]);}
-
-NH_END(propertyNames_pp);
 }
 

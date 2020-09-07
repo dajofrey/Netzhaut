@@ -254,7 +254,7 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
  */
 
     NH_RESULT Nh_HTML_computeAttributes(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Attribute **Attributes_p
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
     );
 
     void Nh_HTML_initAttributes(

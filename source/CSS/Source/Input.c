@@ -25,13 +25,13 @@
 // DECLARE ========================================================================================
 
 static NH_RESULT Nh_CSS_processMouseRelease(
-    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, bool clear
+    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, NH_BOOL clear
 );
 static NH_RESULT Nh_CSS_processMouseClick(
-    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, bool clear
+    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, NH_BOOL clear
 );
 static NH_RESULT Nh_CSS_processMouseMove(
-    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, bool clear
+    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, NH_BOOL clear
 );
 
 // API =============================================================================================
@@ -41,7 +41,7 @@ NH_RESULT Nh_CSS_processInput(
 {
 NH_BEGIN()
 
-    bool clear = false;
+    NH_BOOL clear = NH_FALSE;
     NH_IO_TRIGGER oldTrigger = -1;
 
     while (1) 
@@ -70,23 +70,36 @@ NH_END(NH_SUCCESS)
 // HELPER ==========================================================================================
 
 static NH_RESULT Nh_CSS_processMouseRelease(
-    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, bool clear)
+    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, NH_BOOL clear)
 {
 NH_BEGIN()
 
-    if (clear) {Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_ACTIVE);}
+    if (!clear) {NH_END(NH_SUCCESS)}
+
+    Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_ACTIVE);
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+        NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
+    }
+
+    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
 
 NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_CSS_processMouseClick(
-    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, bool clear)
+    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, NH_BOOL clear)
 {
 NH_BEGIN()
 
-    if (clear) {Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_FOCUS);}
+    if (clear) {
+        Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_FOCUS);
+        for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+            NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
+        }
+    }
 
     Nh_HTML_Node *Node_p = MouseEvent_p->Node_p;
+    if (Node_p == NULL) {NH_END(NH_SUCCESS)}
 
     for (int i = 0; i < Node_p->Properties.count; ++i) 
     {
@@ -109,36 +122,46 @@ NH_BEGIN()
         }
     }
 
+    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
+
 NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_CSS_processMouseMove(
-    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, bool clear)
+    Nh_Tab *Tab_p, Nh_HTML_MouseEvent *MouseEvent_p, NH_BOOL clear)
 {
 NH_BEGIN()
 
-    if (clear) {Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_HOVER);}
-
-    Nh_HTML_Node *Node_p = MouseEvent_p->Node_p;
-
-    if (Node_p != NULL)
-    {
-        for (int i = 0; i < Node_p->Properties.count; ++i) {
-            NH_CHECK(Nh_CSS_activate(
-                Tab_p, Node_p, Nh_CSS_getProperty(&Node_p->Properties, i), NH_CSS_PSEUDO_CLASS_HOVER
-            ))
-        }
-        for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) 
-        {
-            Nh_HTML_Node *Child_p = Nh_getListItem(&Node_p->Children.Unformatted, i);
-
-            for (int j = 0; j < Child_p->Properties.count; ++j)
-            {
-                NH_CSS_GenericProperty *ChildProperty_p = Nh_CSS_getProperty(&Child_p->Properties, j);
-                Nh_CSS_activateChild(Tab_p, Child_p, ChildProperty_p, NH_CSS_PSEUDO_CLASS_HOVER);
-            }
+    if (clear) {
+        Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_HOVER);
+        for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+            NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
         }
     }
+
+    Nh_HTML_Node *Node_p = MouseEvent_p->Node_p;
+    if (Node_p == NULL) {NH_END(NH_SUCCESS)}
+
+    for (int i = 0; i < Node_p->Properties.count; ++i) {
+        NH_CHECK(Nh_CSS_activate(
+            Tab_p, Node_p, Nh_CSS_getProperty(&Node_p->Properties, i), NH_CSS_PSEUDO_CLASS_HOVER
+        ))
+    }
+
+    for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) 
+    {
+        Nh_HTML_Node *Child_p = Nh_getListItem(&Node_p->Children.Unformatted, i);
+
+        for (int j = 0; j < Child_p->Properties.count; ++j)
+        {
+            NH_CSS_GenericProperty *ChildProperty_p = Nh_CSS_getProperty(&Child_p->Properties, j);
+            Nh_CSS_activateChild(Tab_p, Child_p, ChildProperty_p, NH_CSS_PSEUDO_CLASS_HOVER);
+        }
+    }
+
+    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
 
 NH_END(NH_SUCCESS)
 }

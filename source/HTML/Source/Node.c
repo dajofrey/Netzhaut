@@ -44,13 +44,6 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-// DECLARE ========================================================================================
-
-typedef struct Nh_HTML_NodeData {
-    NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT];
-    Nh_HTML_Attribute *Attributes_pp[NH_HTML_ATTRIBUTE_COUNT]; 
-} Nh_HTML_NodeData;
-
 // DATA ============================================================================================
 
 const char *NH_HTML_TAGS_PP[] = 
@@ -218,25 +211,14 @@ NH_END(NH_SUCCESS)
 // COMPUTE =========================================================================================
 
 NH_RESULT Nh_HTML_computeNode(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p) 
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text) 
 {
 NH_BEGIN()
 
-    Nh_HTML_NodeData Data = {0};
-    for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i)   {Data.Properties_pp[i] = NULL;}
-    for (int i = 0; i < NH_HTML_ATTRIBUTE_COUNT; ++i) {Data.Attributes_pp[i] = NULL;}
+    NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p))
+    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_TRUE))
 
-    Nh_HTML_getAttributes(Tab_p, Node_p, Data.Attributes_pp);
-    Nh_CSS_getGenericProperties(Tab_p, Node_p, Data.Properties_pp, false);
-
-    Nh_CSS_initProperties(&Node_p->Computed.Properties);
-    Nh_CSS_setDefaultProperties(Tab_p, Node_p);
-    Nh_HTML_initAttributes(Node_p);
-
-    NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p, Data.Attributes_pp))
-    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, (void**)Data.Properties_pp))
-
-    if (Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_createNormalizedText(Tab_p, Node_p))}
+    if (text && Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_createNormalizedText(Tab_p, Node_p))}
 
 NH_END(NH_SUCCESS)
 }
@@ -248,7 +230,7 @@ NH_RESULT Nh_HTML_replaceChildren(
 {
 NH_BEGIN()
 
-    Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU);
+    NH_CHECK(Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU))
 
     for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) {
         Nh_HTML_destroyNode(Nh_getListItem(&Node_p->Children.Unformatted, i), NH_TRUE);
@@ -258,7 +240,7 @@ NH_BEGIN()
     NH_CHECK(Nh_addListItem(&Node_p->Children.Unformatted, Replace_p))
 
     NH_CHECK(Nh_CSS_associateSheets(Tab_p, Replace_p))
-    NH_CHECK(Nh_HTML_computeNode(Tab_p, Replace_p))
+    NH_CHECK(Nh_HTML_computeNode(Tab_p, Replace_p, NH_TRUE))
 
     Nh_HTML_recreateFlatTree(&Tab_p->Document.Tree, Tab_p->Document.Tree.Root_p, NH_TRUE);
 
@@ -267,7 +249,7 @@ NH_BEGIN()
     }
 
     NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    Nh_HTML_computeFormattedTree(Tab_p);
+    NH_CHECK(Nh_HTML_computeFormattedTree(Tab_p))
 
 NH_END(NH_SUCCESS)
 }
@@ -277,12 +259,12 @@ NH_RESULT Nh_HTML_prependChild(
 {
 NH_BEGIN()
 
-    Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU);
+    NH_CHECK(Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU))
 
     NH_CHECK(Nh_prependListItem(&Node_p->Children.Unformatted, Prepend_p))
 
     NH_CHECK(Nh_CSS_associateSheets(Tab_p, Prepend_p))
-    NH_CHECK(Nh_HTML_computeNode(Tab_p, Prepend_p))
+    NH_CHECK(Nh_HTML_computeNode(Tab_p, Prepend_p, NH_TRUE))
 
     Nh_HTML_recreateFlatTree(&Tab_p->Document.Tree, Tab_p->Document.Tree.Root_p, NH_TRUE);
 
@@ -291,7 +273,7 @@ NH_BEGIN()
     }
 
     NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    Nh_HTML_computeFormattedTree(Tab_p);
+    NH_CHECK(Nh_HTML_computeFormattedTree(Tab_p))
 
 NH_END(NH_SUCCESS)
 }
@@ -313,6 +295,7 @@ NH_BEGIN()
     for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) {
         Nh_HTML_destroyNode(Nh_getListItem(&Node_p->Children.Unformatted, i), destroyTextData);
     }
+
     Nh_destroyList(&Node_p->Children.Unformatted, true);
 
 NH_SILENT_END()

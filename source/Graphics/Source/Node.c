@@ -28,15 +28,13 @@
  * Creates resources for text rendering based on \p Node_p.
  *
  * @param  Tab_p  The tab which contains the document holding \p Node_p.
- * @param  Node_p Must be a text node. 
+ * @param  Node_p Expects pointer to a text-node. 
  * @return        @ref NH_SUCCESS when the text-rendering resources were created, various error codes if not.
  */
 static NH_RESULT Nh_Gfx_createText(
     Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
-
-    if (!Nh_HTML_isTextNode(Node_p)) {NH_END(NH_SUCCESS)}
 
     float *vertices_p = NULL;
     uint32_t *indices_p = NULL;
@@ -58,8 +56,6 @@ NH_RESULT Nh_Gfx_createNode(
 {
 NH_BEGIN()
 
-    if (Node_p->tag == NH_HTML_TAG_HTML || Nh_HTML_isMetaNode(Node_p)) {NH_END(NH_SUCCESS)}
-
     if (Nh_HTML_isTextNode(Node_p)) {NH_CHECK(Nh_Gfx_createText(Tab_p, Node_p))}
 
     switch (Tab_p->Window_p->GPU.API)
@@ -77,8 +73,6 @@ void Nh_Gfx_destroyNode(
 {
 NH_BEGIN()
 
-    if (Node_p->tag == NH_HTML_TAG_HTML || Nh_HTML_isMetaNode(Node_p)) {NH_SILENT_END()}
-
     switch (GPU_p->API)
     {
         case NH_API_VULKAN : Nh_Vk_destroyNode(GPU_p->Pointer, Node_p);
@@ -86,22 +80,4 @@ NH_BEGIN()
 
 NH_SILENT_END()
 }
-
-// UPDATE ==========================================================================================
-
-NH_RESULT Nh_Gfx_updateNodeProperty(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
-{
-NH_BEGIN()
-
-    if (Node_p->tag == NH_HTML_TAG_HTML || Nh_HTML_isMetaNode(Node_p)) {NH_END(NH_SUCCESS)}
-
-    switch (Tab_p->Window_p->GPU.API)
-    {
-        case NH_API_VULKAN : NH_CHECK(Nh_Vk_updateNodeProperty(Tab_p, Node_p, Property_p))
-    }
-
-NH_END(NH_SUCCESS)
-}
-
 

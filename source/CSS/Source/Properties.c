@@ -98,49 +98,27 @@ NH_SILENT_END()
 // COMPUTE =========================================================================================
 
 NH_RESULT Nh_CSS_computeProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, void **Properties_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL init)
 {
 NH_BEGIN()
 
-    // em length has text-font dependency, so we calculate text first
-    Nh_CSS_computeTextProperties(Tab_p, Node_p, (NH_CSS_GenericProperty**)Properties_pp);
-    
-    Nh_CSS_computeBackgroundProperties(Tab_p, Node_p, (NH_CSS_GenericProperty**)Properties_pp);
-    Nh_CSS_computeBorderProperties(Tab_p, Node_p, (NH_CSS_GenericProperty**)Properties_pp);
-    Nh_CSS_computePositionProperties(Tab_p, Node_p, (NH_CSS_GenericProperty**)Properties_pp);
-    Nh_CSS_computeMarginProperties(Tab_p, Node_p, (NH_CSS_GenericProperty**)Properties_pp);
-    Nh_CSS_computePaddingProperties(Tab_p, Node_p, (NH_CSS_GenericProperty**)Properties_pp);
-    Nh_CSS_computeListProperties(Node_p, (NH_CSS_GenericProperty**)Properties_pp);
-
-NH_END(NH_SUCCESS)
-}
-
-// UPDATE ==========================================================================================
-
-NH_RESULT Nh_CSS_updateProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
-{
-NH_BEGIN()
+    if (init) {Nh_CSS_initProperties(&Node_p->Computed.Properties);}
 
     NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT];
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {Properties_pp[i] = NULL;}
 
-    Nh_CSS_getGenericProperties(Tab_p, Node_p, Properties_pp, false);
+    Nh_CSS_getGenericProperties(Tab_p, Node_p, Properties_pp);
     Nh_CSS_setDefaultProperties(Tab_p, Node_p);
-    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, (void**)Properties_pp))
 
-    bool updated = false;
-    for (int i = 0; i < Node_p->Properties.count; ++i) 
-    {
-        NH_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, i);
-        if (Property_p->update) {
-            NH_CHECK(Nh_Gfx_updateNodeProperty(Tab_p, Node_p, Property_p))
-            Property_p->update = false;
-            updated = true;
-        }
-    }
-
-    if (updated) {Tab_p->Flags.updateGraphics = true;}
+    // em length has text-font dependency, so we calculate text first
+    Nh_CSS_computeTextProperties(Tab_p, Node_p, Properties_pp);
+    
+    Nh_CSS_computeBackgroundProperties(Tab_p, Node_p, Properties_pp);
+    Nh_CSS_computeBorderProperties(Tab_p, Node_p, Properties_pp);
+    Nh_CSS_computePositionProperties(Tab_p, Node_p, Properties_pp);
+    Nh_CSS_computeMarginProperties(Tab_p, Node_p, Properties_pp);
+    Nh_CSS_computePaddingProperties(Tab_p, Node_p, Properties_pp);
+    Nh_CSS_computeListProperties(Node_p, Properties_pp);
 
 NH_END(NH_SUCCESS)
 }

@@ -27,12 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 
-// DECLARE ========================================================================================
-
-static NH_RESULT Nh_CSS_associateSheet(
-    Nh_Tab *Tab_p, NH_CSS_Sheet *Sheet_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p, 
-    bool handleDependentSelectors
-);
+// DECLARE =========================================================================================
 
 static NH_RESULT Nh_CSS_dispatchRuleSet(
     NH_CSS_Sheet *Sheet_p, NH_CSS_RuleSet *RuleSet_p, Nh_HTML_Node *Node_p, Nh_HashMaps *Maps_p, 
@@ -48,25 +43,6 @@ static NH_RESULT Nh_CSS_addStyleProperties(
 );
 
 // APPLY ===========================================================================================
-
-NH_RESULT Nh_CSS_associateSheets(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
-{   
-NH_BEGIN()
-
-    for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
-        NH_CHECK(Nh_CSS_associateSheet(
-            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Nh_getHashMaps(), Node_p, false
-        ))
-    }
-    for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
-        NH_CHECK(Nh_CSS_associateSheet(
-            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Nh_getHashMaps(), Node_p, true
-        ))
-    }
-
-NH_END(NH_SUCCESS)
-}
 
 static NH_RESULT Nh_CSS_associateSheet(
     Nh_Tab *Tab_p, NH_CSS_Sheet *Sheet_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p, 
@@ -98,57 +74,20 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
-// ACTIVATE/DEACTIVATE =============================================================================
-
-NH_RESULT Nh_CSS_deactivate(
-    Nh_Tab *Tab_p, NH_CSS_PSEUDO_CLASS pseudoClass)
-{
+NH_RESULT Nh_CSS_associateSheets(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
+{   
 NH_BEGIN()
 
-    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) 
-    {
-        bool deactivated = false;
-        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i);
-
-        for (int j = 0; j < Node_p->Properties.count; ++j) 
-        {
-            NH_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, j);
-
-            if ((Property_p->Pseudo._class == pseudoClass || Property_p->Pseudo.parentClass == pseudoClass) && Property_p->active)
-            {
-                Property_p->active = false;
-                Property_p->update = true;
-                deactivated = true;
-            }
-        }
-
-        if (deactivated) {NH_CHECK(Nh_CSS_updateProperties(Tab_p, Node_p))}
+    for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
+        NH_CHECK(Nh_CSS_associateSheet(
+            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Nh_getHashMaps(), Node_p, false
+        ))
     }
-
-NH_END(NH_SUCCESS)
-}
-
-NH_RESULT Nh_CSS_activate(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
-{
-NH_BEGIN()
-
-    if (Property_p->Pseudo._class == pseudoClass && !Property_p->active) {
-        Property_p->update = Property_p->active = true;
-        NH_CHECK(Nh_CSS_updateProperties(Tab_p, Node_p))
-    }
-
-NH_END(NH_SUCCESS)
-}
-
-NH_RESULT Nh_CSS_activateChild(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
-{
-NH_BEGIN()
-
-    if (Property_p->Pseudo.parentClass == pseudoClass && !Property_p->active) {
-        Property_p->update = Property_p->active = true;
-        NH_CHECK(Nh_CSS_updateProperties(Tab_p, Node_p))
+    for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
+        NH_CHECK(Nh_CSS_associateSheet(
+            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Nh_getHashMaps(), Node_p, true
+        ))
     }
 
 NH_END(NH_SUCCESS)

@@ -18,6 +18,15 @@ typedef struct Nh_Tab Nh_Tab;
 
 #endif
 
+/** @addtogroup CSSData Data
+ *  \ingroup CSS
+ *  @{
+ */
+    extern const char *NH_CSS_PROPERTIES_PP[];
+    extern size_t NH_CSS_PROPERTIES_PP_COUNT;
+
+/** @} */
+
 /** @addtogroup CSSEnums Enums
  *  \ingroup CSS
  *  @{
@@ -395,8 +404,7 @@ typedef struct Nh_Tab Nh_Tab;
     );
     
     void Nh_CSS_getGenericProperties(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT], 
-        bool forceInit
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT]
     );
     
     NH_RESULT Nh_CSS_addGenericProperty(
@@ -410,11 +418,19 @@ typedef struct Nh_Tab Nh_Tab;
     void Nh_CSS_destroyGenericProperties(
         Nh_List *Properties_p
     );
-
-    const char** Nh_CSS_getPropertyNames(
-        size_t *size_p
-    );
   
+    NH_RESULT Nh_CSS_deactivate(
+        Nh_Tab *Tab_p, NH_CSS_PSEUDO_CLASS pseudoClass
+    );
+    
+    NH_RESULT Nh_CSS_activate(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
+    );
+
+    NH_RESULT Nh_CSS_activateChild(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
+    );
+
 /** @} */
 
 #endif 

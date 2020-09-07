@@ -43,22 +43,6 @@ NH_RESULT Nh_Gfx_updateTabRendering(
 {
 NH_BEGIN()
 
-    if (Tab_p->Flags.updateGraphics) 
-    {
-        for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i) 
-        {
-            Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Formatted, i);
-            if (Node_p->tag == NH_HTML_TAG_HTML) {continue;}
-
-            switch (Tab_p->Window_p->GPU.API)
-            {
-                case NH_API_VULKAN : NH_CHECK(Nh_Vk_updateNodeVertices(Tab_p, Node_p)) break;
-            }
-        }
-
-        Tab_p->Flags.updateGraphics = false;
-    }
-
     Nh_syncRecordCommandBufferBegin(Tab_p);
 
     for (int i = 0; i < 2; ++i)

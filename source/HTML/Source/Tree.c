@@ -68,9 +68,9 @@ NH_BEGIN()
     {
         Nh_HTML_Node *Child_p = Nh_getListItem(&Node_p->Children.Unformatted, i);
 
-        if (Nh_HTML_isTextNode(Child_p) && Node_p->Computed.Properties.Position.display != NH_CSS_DISPLAY_NONE) {
-            NH_CHECK(Nh_HTML_createTextNodes(Tab_p, Node_p, Child_p))
-        }
+        if (Child_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_NONE) {continue;}
+
+        if (Nh_HTML_isTextNode(Child_p)) {NH_CHECK(Nh_HTML_createTextNodes(Tab_p, Node_p, Child_p))}
         else if (!Nh_HTML_isMetaNode(Child_p)) {NH_CHECK(Nh_addListItem(&Node_p->Children.Formatted, Child_p))}
 
         NH_CHECK(Nh_HTML_computeFormattedTreeRecursively(Tab_p, Child_p))
@@ -89,7 +89,7 @@ NH_BEGIN()
     NH_CHECK(Nh_HTML_recreateFlatTree(&Tab_p->Document.Tree, Tab_p->Document.Tree.Root_p, NH_FALSE))
     NH_CHECK(Nh_CSS_arrange(Tab_p, NH_FALSE))
 
-   for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i) {
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i) {
         NH_CHECK(Nh_Gfx_createNode(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Formatted, i)))
     }
 
@@ -101,10 +101,8 @@ NH_RESULT Nh_HTML_destroyFormattedTree(
 {
 NH_BEGIN()
 
-    for (int i = 0; i < Tree_p->Flat.Formatted.count; ++i) 
-    {
-        Nh_HTML_Node *Node_p = Nh_getListItem(&Tree_p->Flat.Formatted, i);
-        Nh_Gfx_destroyNode(GPU_p, Node_p);
+    for (int i = 0; i < Tree_p->Flat.Formatted.count; ++i) {
+        Nh_Gfx_destroyNode(GPU_p, Nh_getListItem(&Tree_p->Flat.Formatted, i));
     }
 
     Nh_HTML_destroyFormattedTextNodes(Tree_p);
@@ -120,6 +118,17 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+NH_RESULT Nh_HTML_recomputeFormattedTree(
+    Nh_Tab *Tab_p)
+{
+NH_BEGIN()
+
+    NH_CHECK(Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU))
+    NH_CHECK(Nh_HTML_computeFormattedTree(Tab_p))
+
+NH_END(NH_SUCCESS)
+}
+
 // STRINGIFY =======================================================================================
 
 static NH_RESULT Nh_HTML_stringifyElement(
@@ -129,8 +138,12 @@ NH_BEGIN()
 
 #define INDENT() for (int ind = 0; ind < depth; ++ind) {NH_CHECK(Nh_appendToString(String_p, "  "))}
 
-    INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "%s {\n", NH_HTML_TAGS_PP[Node_p->tag]))
-  
+    if (Node_p->tag == NH_HTML_TAG_HTML) {
+        INDENT() NH_CHECK(Nh_appendFormatToString(String_p, unformatted ? "\e[1;32mhtml\e[0m { // UNFORMATTED\n" : "\e[1;32mhtml\e[0m { // FORMATTED\n"))
+    } else {
+        INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "\e[1;32m%s\e[0m {\n", NH_HTML_TAGS_PP[Node_p->tag]))
+    }
+
     if (Node_p->text_p != NULL) {
         INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "  %s\n", Node_p->text_p))
     }

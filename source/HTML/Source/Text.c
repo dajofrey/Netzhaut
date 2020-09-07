@@ -21,6 +21,7 @@
 #include "../../CSS/Header/Associate.h"
 
 #include NH_DEBUG
+#include NH_UTILS
 #include NH_DEFAULT_CHECK
 #include NH_HTML_UTILS
 #include NH_CSS_UTILS
@@ -114,47 +115,44 @@ NH_BEGIN()
     linebreaks_p[0] = 0;
     int lineCount = Nh_HTML_getLineBreaks(Tab_p, Node_p, linebreaks_p);
 
-    if (lineCount > 1) 
-    {
-        for (int i = 0; i < lineCount; ++i) 
-        {     
-            Nh_HTML_Node *Child_p = Nh_allocate(sizeof(Nh_HTML_Node));
+    for (int i = 0; lineCount > 1 && i < lineCount; ++i) 
+    {     
+        Nh_HTML_Node *Child_p = Nh_allocate(sizeof(Nh_HTML_Node));
+        NH_CHECK_MEM(Child_p)
+
+        Nh_HTML_initNode(Child_p, Parent_p, NH_HTML_TAG_TEXT);
+        Nh_CSS_associateSheets(Tab_p, Child_p);
+        Nh_HTML_computeNode(Tab_p, Child_p, NH_FALSE);
+
+        int start = linebreaks_p[i];
+        int end = i + 1 < lineCount ? linebreaks_p[i + 1] : strlen(Node_p->text_p);
+
+        Child_p->text_p = Nh_allocate(sizeof(char) * (end - start + 1));
+        NH_CHECK_MEM(Child_p->text_p)
+        memcpy(Child_p->text_p, Node_p->text_p + start, (end - start) * sizeof(char));
+        Child_p->text_p[end - start] = '\0';
+
+        float width1 = NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Text.vertices_p[start * 20 - 10]);
+        float width2 = NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Text.vertices_p[end * 20 - 10]);
+
+        Child_p->Computed.Text.width = width2 - width1;
+        Child_p->Computed.Text.yOffset = Node_p->Computed.Text.yOffset;
+        Child_p->Computed.Text.vertices_p = &Node_p->Computed.Text.vertices_p[start * 20];
+        Child_p->Computed.Text.indices_p = Node_p->Computed.Text.indices_p;
+
+        NH_CHECK(Nh_addListItem(&Parent_p->Children.Formatted, Child_p))
+
+        if (i + 1 < lineCount) 
+        {
+            Child_p = Nh_allocate(sizeof(Nh_HTML_Node));
             NH_CHECK_MEM(Child_p)
-
-            Nh_HTML_initNode(Child_p, Parent_p, NH_HTML_TAG_TEXT);
+            Nh_HTML_initNode(Child_p, Parent_p, NH_HTML_TAG_BR);
             Nh_CSS_associateSheets(Tab_p, Child_p);
-            Nh_HTML_computeNode(Tab_p, Child_p);
-
-            int start = linebreaks_p[i];
-            int end = i + 1 < lineCount ? linebreaks_p[i + 1] : strlen(Node_p->text_p);
-
-            Child_p->text_p = Nh_allocate(sizeof(char) * (end - start + 1));
-            NH_CHECK_MEM(Child_p->text_p)
-            memcpy(Child_p->text_p, Node_p->text_p + start, (end - start) * sizeof(char));
-            Child_p->text_p[end - start] = '\0';
-
-            float width1 = NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Text.vertices_p[start * 20 - 10]);
-            float width2 = NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Text.vertices_p[end * 20 - 10]);
-
-            Child_p->Computed.Text.width = width2 - width1;
-            Child_p->Computed.Text.yOffset = Node_p->Computed.Text.yOffset;
-            Child_p->Computed.Text.vertices_p = &Node_p->Computed.Text.vertices_p[start * 20];
-            Child_p->Computed.Text.indices_p = Node_p->Computed.Text.indices_p;
-
+            Nh_HTML_computeNode(Tab_p, Child_p, NH_FALSE);
             NH_CHECK(Nh_addListItem(&Parent_p->Children.Formatted, Child_p))
-
-            if (i + 1 < lineCount) 
-            {
-                Child_p = Nh_allocate(sizeof(Nh_HTML_Node));
-                NH_CHECK_MEM(Child_p)
-                Nh_HTML_initNode(Child_p, Parent_p, NH_HTML_TAG_BR);
-                Nh_CSS_associateSheets(Tab_p, Child_p);
-                Nh_HTML_computeNode(Tab_p, Child_p);
-                NH_CHECK(Nh_addListItem(&Parent_p->Children.Formatted, Child_p))
-            }
         }
     }
-    else {NH_CHECK(Nh_addListItem(&Parent_p->Children.Formatted, Node_p))}
+    if (lineCount <= 1) {NH_CHECK(Nh_addListItem(&Parent_p->Children.Formatted, Node_p))}
 
     Node_p->Computed.Text.width = NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Text.vertices_p[strlen(Node_p->text_p) * 20 - 10]);
 
@@ -206,12 +204,14 @@ void Nh_HTML_destroyFormattedTextNodes(
 {
 NH_BEGIN()
 
+    Nh_List List;
+    NH_INIT_LIST(List)
+
     for (int i = 0; i < Tree_p->Flat.Formatted.count; ++i) 
     {
-        Nh_HTML_Node *Node_p = Nh_getListItem(&Tree_p->Flat.Formatted, i);
-        if (!Nh_HTML_isTextNode(Node_p)) {continue;}
-
         NH_BOOL destroy = NH_TRUE;
+        Nh_HTML_Node *Node_p = Nh_getListItem(&Tree_p->Flat.Formatted, i);
+
         for (int j = 0; j < Tree_p->Flat.Unformatted.count; ++j) {
             Nh_HTML_Node *Tmp_p = Nh_getListItem(&Tree_p->Flat.Unformatted, j);
             if (Tmp_p == Node_p) {destroy = NH_FALSE;}
@@ -219,9 +219,14 @@ NH_BEGIN()
 
         if (destroy) {
             Nh_HTML_destroyNode(Node_p, NH_FALSE);
-            Nh_free(Node_p);
+            Nh_addListItem(&List, Node_p);
         }
     }
+
+    for (int i = 0; i < List.count; ++i) {
+        Nh_destroyListItemFromPointer(&Tree_p->Flat.Formatted, Nh_getListItem(&List, i), false);
+    }
+    Nh_destroyList(&List, true);
 
 NH_SILENT_END()
 }

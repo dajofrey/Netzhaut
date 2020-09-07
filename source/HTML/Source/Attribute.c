@@ -287,9 +287,15 @@ NH_SILENT_END()
 // COMPUTE =========================================================================================
 
 NH_RESULT Nh_HTML_computeAttributes(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Attribute **Attributes_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
+
+    Nh_HTML_Attribute *Attributes_pp[NH_HTML_ATTRIBUTE_COUNT];
+    for (int i = 0; i < NH_HTML_ATTRIBUTE_COUNT; ++i) {Attributes_pp[i] = NULL;}
+
+    Nh_HTML_getAttributes(Tab_p, Node_p, Attributes_pp);
+    Nh_HTML_initAttributes(Node_p);
 
     Nh_HTML_setId(Node_p, Attributes_pp[NH_HTML_ATTRIBUTE_ID]);
     Nh_HTML_setOnClick(Node_p, Attributes_pp[NH_HTML_ATTRIBUTE_ON_CLICK]);
@@ -314,21 +320,24 @@ NH_RESULT Nh_HTML_updateAttributes(
 {
 NH_BEGIN()
 
-    Nh_HTML_Attribute *Attributes_pp[NH_HTML_ATTRIBUTE_COUNT];
-    for (int i = 0; i < NH_HTML_ATTRIBUTE_COUNT; ++i) {Attributes_pp[i] = NULL;}
+printf("update attrbs\n");
+exit(0);
 
-    Nh_HTML_getAttributes(Tab_p, Node_p, Attributes_pp);
-    Nh_HTML_initAttributes(Node_p);
-    NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p, Attributes_pp))
-
-//    Nh_CSS_destroyGenericProperties(&Node_p->Properties);
-//    for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
-//        NH_CHECK(Nh_CSS_associateSheet(
-//            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Nh_getHashMaps(), Node_p
-//        ))
-//    }
-
-    NH_END(Nh_CSS_updateProperties(Tab_p, Node_p))
+//    Nh_HTML_Attribute *Attributes_pp[NH_HTML_ATTRIBUTE_COUNT];
+//    for (int i = 0; i < NH_HTML_ATTRIBUTE_COUNT; ++i) {Attributes_pp[i] = NULL;}
+//
+//    Nh_HTML_getAttributes(Tab_p, Node_p, Attributes_pp);
+//    Nh_HTML_initAttributes(Node_p);
+//    NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p, Attributes_pp))
+//
+////    Nh_CSS_destroyGenericProperties(&Node_p->Properties);
+////    for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
+////        NH_CHECK(Nh_CSS_associateSheet(
+////            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Nh_getHashMaps(), Node_p
+////        ))
+////    }
+//
+//    NH_END(Nh_CSS_computeProperties(Tab_p, Node_p))
 
 NH_END(NH_SUCCESS)
 }

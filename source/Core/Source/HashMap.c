@@ -254,7 +254,12 @@ NH_BEGIN()
             *size_p = NH_HTML_TAGS_PP_COUNT; 
             break;
         }
-        case NH_HASHMAP_CSS_PROPERTIES      : *array_ppp = (char**) Nh_CSS_getPropertyNames(size_p); break;
+        case NH_HASHMAP_CSS_PROPERTIES      : 
+        {
+            *array_ppp = (char**) NH_CSS_PROPERTIES_PP;
+            *size_p = NH_CSS_PROPERTIES_PP_COUNT;
+            break;
+        }
         case NH_HASHMAP_CSS_COLORS          : *array_ppp = (char**) Nh_CSS_getColorNames(size_p); break;
         case NH_HASHMAP_CSS_PSEUDO_CLASSES  : *array_ppp = (char**) Nh_CSS_getPseudoClassNames(size_p); break;
         case NH_HASHMAP_CSS_PSEUDO_ELEMENTS : *array_ppp = (char**) Nh_CSS_getPseudoElementNames(size_p); break;

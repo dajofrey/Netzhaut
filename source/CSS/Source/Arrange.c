@@ -48,11 +48,11 @@ static inline void Nh_CSS_initBottomRightY(
     Nh_Window *Window_p, Nh_HTML_Node *Node_p
 );
 static inline void Nh_CSS_initBottomRightX(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
 );
 
 static inline void Nh_CSS_updateParents(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted
 );
 
 //static inline void Nh_CSS_updateTarget(
@@ -61,7 +61,7 @@ static inline void Nh_CSS_updateParents(
 //);
 
 static inline void Nh_CSS_advance(
-    Nh_HTML_Node *Current_p, Nh_HTML_Node *Next_p, NH_BOOL unformatted
+    Nh_HTML_Node *Current_p, Nh_HTML_Node *Next_p
 );
 
 static inline float Nh_CSS_getContentWidth(
@@ -84,9 +84,9 @@ NH_BEGIN()
         Nh_CSS_initTopLeftX(Node_p);
         Nh_CSS_initTopLeftY(Node_p);
         Nh_CSS_initBottomRightY(Tab_p->Window_p, Node_p);
-        Nh_CSS_initBottomRightX(Tab_p, Node_p, unformatted);
+        Nh_CSS_initBottomRightX(Tab_p, Node_p);
 
-        Nh_CSS_updateParents(Tab_p, Node_p);
+        Nh_CSS_updateParents(Tab_p, Node_p, unformatted);
     }
  
     Nh_List *Children_p = unformatted ? &Node_p->Children.Unformatted : &Node_p->Children.Formatted;
@@ -97,7 +97,7 @@ NH_BEGIN()
         if (i == 0) {Child_p->Computed.Margin = Nh_CSS_getContentBox(Node_p);}
 
         NH_CHECK(Nh_CSS_arrangeRecursively(Tab_p, Child_p, unformatted))
-        Nh_CSS_advance(Child_p, Nh_getListItem(Children_p, i + 1), unformatted);
+        Nh_CSS_advance(Child_p, Nh_getListItem(Children_p, i + 1));
     }
 
 NH_END(NH_SUCCESS)
@@ -123,11 +123,11 @@ NH_BEGIN()
 
     float depth = 1.0f;
     
-    Nh_HTML_Node *Parent_p = unformatted == NH_TRUE ? Node_p->Parent_p : Node_p->Parent_p;
+    Nh_HTML_Node *Parent_p = Node_p->Parent_p;
     while (Parent_p != NULL) 
     {
         depth -= 0.0001f;
-        Parent_p = unformatted == NH_TRUE ? Parent_p->Parent_p : Parent_p->Parent_p;
+        Parent_p = Parent_p->Parent_p;
     }
     
     Node_p->Computed.Margin.TopLeft.z = depth;
@@ -238,7 +238,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_initBottomRightX(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
 
@@ -261,9 +261,7 @@ NH_BEGIN()
                        // root element fills entire tab width
                        case NH_HTML_TAG_HTML : Node_p->Computed.Margin.BottomRight.x = 1.0f; break;
                        // default is full width of parent content
-                       default : Node_p->Computed.Margin.BottomRight.x = unformatted == NH_TRUE ? 
-                           Nh_CSS_getContentBox(Node_p->Parent_p).BottomRight.x :
-                           Nh_CSS_getContentBox(Node_p->Parent_p).BottomRight.x;
+                       default : Node_p->Computed.Margin.BottomRight.x = Nh_CSS_getContentBox(Node_p->Parent_p).BottomRight.x;
                     }
                     NH_SILENT_END()
                 }
@@ -345,7 +343,7 @@ NH_SILENT_END()
 // PARENT ==========================================================================================
 
 static inline void Nh_CSS_updateParents(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted)
 {
 NH_BEGIN()
 
@@ -360,12 +358,20 @@ NH_BEGIN()
                 NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Margin.BottomRight.y) 
               - NH_CSS_NORMALIZED_LENGTH(ParentContentBox.BottomRight.y);
         }
-        if (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE
-        || (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_BLOCK && Parent_p->Computed.Properties.Position.Width.type == NH_CSS_SIZE_AUTO)) {
-            if (ParentContentBox.BottomRight.x < Node_p->Computed.Margin.BottomRight.x) {
-                Parent_p->Computed.Margin.BottomRight.x += 
-                    NH_CSS_NORMALIZED_LENGTH(Node_p->Computed.Margin.BottomRight.x) 
-                  - NH_CSS_NORMALIZED_LENGTH(ParentContentBox.TopLeft.x);
+
+        if (Node_p->tag != NH_HTML_TAG_TEXT || !unformatted) {
+            if (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE
+            || (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_BLOCK && Parent_p->Computed.Properties.Position.Width.type == NH_CSS_SIZE_AUTO)) 
+            {
+                if (ParentContentBox.BottomRight.x < Node_p->Computed.Margin.BottomRight.x) 
+                {
+                    Parent_p->Computed.Margin.BottomRight.x = Node_p->Computed.Margin.BottomRight.x;
+                    Parent_p->Computed.Margin.BottomRight.x += Parent_p->Computed.Properties.Padding.right;
+                    if (Parent_p->Computed.Properties.Border.Style.left != NH_CSS_BORDER_STYLE_NONE) {
+                        Parent_p->Computed.Margin.BottomRight.x += Parent_p->Computed.Properties.Border.Width.right;
+                    }
+
+                }
             }
         }
 
@@ -379,7 +385,7 @@ NH_SILENT_END()
 // MOVE ============================================================================================
 
 static inline void Nh_CSS_advance(
-    Nh_HTML_Node *Current_p, Nh_HTML_Node *Next_p, NH_BOOL unformatted)
+    Nh_HTML_Node *Current_p, Nh_HTML_Node *Next_p)
 {
 NH_BEGIN()
 
@@ -392,12 +398,10 @@ NH_BEGIN()
     Next_p->Computed.Margin.BottomRight.x = Current_p->Computed.Margin.BottomRight.x; \
     Next_p->Computed.Margin.BottomRight.y = Current_p->Computed.Margin.TopLeft.y; 
 
-#define BREAK()                                                                                                                         \
-    Next_p->Computed.Margin.TopLeft.x = unformatted == NH_TRUE ?                                                                               \
-        Current_p->Parent_p != NULL ? Nh_CSS_getContentBox(Current_p->Parent_p).TopLeft.x : -1.0f         \
-      : Current_p->Parent_p != NULL ? Nh_CSS_getContentBox(Current_p->Parent_p).TopLeft.x : -1.0f; \
-    Next_p->Computed.Margin.TopLeft.y = Current_p->Computed.Margin.BottomRight.y;                                                           \
-    Next_p->Computed.Margin.BottomRight.x = Next_p->Computed.Margin.TopLeft.x;                                                               \
+#define BREAK()                                                                                                                   \
+    Next_p->Computed.Margin.TopLeft.x = Current_p->Parent_p != NULL ? Nh_CSS_getContentBox(Current_p->Parent_p).TopLeft.x : -1.0f; \
+    Next_p->Computed.Margin.TopLeft.y = Current_p->Computed.Margin.BottomRight.y;                                                   \
+    Next_p->Computed.Margin.BottomRight.x = Next_p->Computed.Margin.TopLeft.x;                                                       \
     Next_p->Computed.Margin.BottomRight.y = Current_p->Computed.Margin.BottomRight.y; 
 
     if (Next_p == NULL) {NH_SILENT_END()}
@@ -492,7 +496,11 @@ NH_BEGIN()
 
 #define INDENT() for (int ind = 0; ind < depth; ++ind) {NH_CHECK(Nh_appendToString(String_p, "  "))}
 
-    INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "\e[1;32m%s\e[0m {\n", NH_HTML_TAGS_PP[Node_p->tag]))
+    if (Node_p->tag == NH_HTML_TAG_HTML) {
+        INDENT() NH_CHECK(Nh_appendFormatToString(String_p, unformatted ? "\e[1;32mhtml\e[0m { // UNFORMATTED\n" : "\e[1;32mhtml\e[0m { // FORMATTED\n"))
+    } else {
+        INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "\e[1;32m%s\e[0m {\n", NH_HTML_TAGS_PP[Node_p->tag]))
+    }
 
     if (!Nh_HTML_isMetaNode(Node_p)) 
     {  

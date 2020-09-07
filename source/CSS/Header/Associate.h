@@ -26,18 +26,6 @@
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
     );
 
-    NH_RESULT Nh_CSS_deactivate(
-        Nh_Tab *Tab_p, NH_CSS_PSEUDO_CLASS pseudoClass
-    );
-    
-    NH_RESULT Nh_CSS_activate(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
-    );
-
-    NH_RESULT Nh_CSS_activateChild(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
-    );
-
 /** @} */
 
 #endif 

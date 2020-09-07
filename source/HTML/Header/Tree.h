@@ -56,6 +56,10 @@ typedef struct Nh_GPU Nh_GPU;
         Nh_HTML_Tree *Tree_p, Nh_GPU *GPU_p
     );
 
+    NH_RESULT Nh_HTML_recomputeFormattedTree(
+        Nh_Tab *Tab_p
+    );
+
     char *Nh_HTML_stringifyTree(
         Nh_HTML_Tree *Tree_p, NH_BOOL unformatted
     );
