@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['settings_5127',['Settings',['../structNh__Config_1_1Settings.html',1,'Nh_Config']]]
+  ['settings_5133',['Settings',['../structNh__Config_1_1Settings.html',1,'Nh_Config']]]
 ];

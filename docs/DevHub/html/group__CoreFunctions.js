@@ -105,6 +105,7 @@ var group__CoreFunctions =
     [ "Nh_radiansToDegrees", "group__CoreFunctions.html#gaebfdf35ba2114a7051d9e49ecec89dc8", null ],
     [ "NH_reloadTab", "group__CoreFunctions.html#ga2bc140d87454bf86eb30504e1331c38c", null ],
     [ "Nh_removeTab", "group__CoreFunctions.html#ga92a09328ece3709b898e9fdd798597c3", null ],
+    [ "Nh_replaceListItem", "group__CoreFunctions.html#ga730ba192156c186ddb9bb8d7dc424123", null ],
     [ "Nh_runTab", "group__CoreFunctions.html#ga6728dcb147136750f3c237da033a7fc5", null ],
     [ "Nh_runVirtualThreads", "group__CoreFunctions.html#ga3462431f95b7d5e011fc4ac4d903c117", null ],
     [ "Nh_runWindow", "group__CoreFunctions.html#ga04b2199d5e7b3a7d8a2d4de737b37abb", null ],

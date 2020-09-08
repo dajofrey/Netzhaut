@@ -10,6 +10,7 @@
 #include "Event.h"
 
 #include "../../Header/Interpreter.h"
+#include "../../Header/Variable.h"
 
 /** @addtogroup Structs
  *  @{
@@ -17,7 +18,7 @@
 
     typedef struct Nh_JS_EventListener {
         NH_JS_EVENT eventType;  /**<Defines the event type which triggers the listener.*/
-        Nh_JS_Object *Target_p;
+        Nh_JS_Variable Target;
     } Nh_JS_EventListener;
    
 /** @} */

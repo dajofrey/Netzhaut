@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-07 23:29:34<br>v0.0.1 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-08 22:45:04<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.png"
@@ -342,43 +342,39 @@ $(document).ready(function(){initNavTree('Attribute_8h_source.html',''); initRes
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p, <a class="code" href="group__HTMLEnums.html#ga657bede94774c988c589a044a85eb3b3">NH_HTML_ATTRIBUTE</a> type</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    );</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga348f190c579d9cebb14c12822ad132ba">  268</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> <a class="code" href="group__HTMLFunctions.html#ga348f190c579d9cebb14c12822ad132ba">Nh_HTML_updateAttributes</a>(</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p</div>
+<div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga47365507e18ea7e7a51b63fad488c845">  268</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#ga47365507e18ea7e7a51b63fad488c845">Nh_HTML_getAttributes</a>(</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p, <a class="code" href="structNh__HTML__Attribute.html">Nh_HTML_Attribute</a> *Attributes_pp[<a class="code" href="group__HTMLEnums.html#gga657bede94774c988c589a044a85eb3b3aa2cc0315ad1015a7289f77ec27cbd04a">NH_HTML_ATTRIBUTE_COUNT</a>]</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    );</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
-<div class="line"><a name="l00272"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga47365507e18ea7e7a51b63fad488c845">  272</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#ga47365507e18ea7e7a51b63fad488c845">Nh_HTML_getAttributes</a>(</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p, <a class="code" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p, <a class="code" href="structNh__HTML__Attribute.html">Nh_HTML_Attribute</a> *Attributes_pp[<a class="code" href="group__HTMLEnums.html#gga657bede94774c988c589a044a85eb3b3aa2cc0315ad1015a7289f77ec27cbd04a">NH_HTML_ATTRIBUTE_COUNT</a>]</div>
+<div class="line"><a name="l00272"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gae12e111b8eb9cadfde01a1a8c5b3426b">  272</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> <a class="code" href="group__HTMLFunctions.html#gae12e111b8eb9cadfde01a1a8c5b3426b">Nh_HTML_addAttribute</a>(</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <a class="code" href="group__HTMLEnums.html#ga657bede94774c988c589a044a85eb3b3">NH_HTML_ATTRIBUTE</a> type, <span class="keywordtype">char</span> *value_p</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    );</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
-<div class="line"><a name="l00276"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gae12e111b8eb9cadfde01a1a8c5b3426b">  276</a></span>&#160;    <a class="code" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a> <a class="code" href="group__HTMLFunctions.html#gae12e111b8eb9cadfde01a1a8c5b3426b">Nh_HTML_addAttribute</a>(</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <a class="code" href="group__HTMLEnums.html#ga657bede94774c988c589a044a85eb3b3">NH_HTML_ATTRIBUTE</a> type, <span class="keywordtype">char</span> *value_p</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    </div>
+<div class="line"><a name="l00276"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaca68d83cd6a3fa1ea8ee18dd37e88a8a">  276</a></span>&#160;    <a class="code" href="structNh__HTML__Attribute.html">Nh_HTML_Attribute</a> *<a class="code" href="group__HTMLFunctions.html#gaca68d83cd6a3fa1ea8ee18dd37e88a8a">Nh_HTML_getAttribute</a>(</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <span class="keywordtype">int</span> index</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    );</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    </div>
-<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaca68d83cd6a3fa1ea8ee18dd37e88a8a">  280</a></span>&#160;    <a class="code" href="structNh__HTML__Attribute.html">Nh_HTML_Attribute</a> *<a class="code" href="group__HTMLFunctions.html#gaca68d83cd6a3fa1ea8ee18dd37e88a8a">Nh_HTML_getAttribute</a>(</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <span class="keywordtype">int</span> index</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
+<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaf7e42c1007cd0c3af940af07cb011441">  280</a></span>&#160;    <a class="code" href="structNh__HTML__Attribute.html">Nh_HTML_Attribute</a> *<a class="code" href="group__HTMLFunctions.html#gaf7e42c1007cd0c3af940af07cb011441">Nh_HTML_getAttributeFromType</a>(</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <a class="code" href="group__HTMLEnums.html#ga657bede94774c988c589a044a85eb3b3">NH_HTML_ATTRIBUTE</a> type</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    );</div>
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160; </div>
-<div class="line"><a name="l00284"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaf7e42c1007cd0c3af940af07cb011441">  284</a></span>&#160;    <a class="code" href="structNh__HTML__Attribute.html">Nh_HTML_Attribute</a> *<a class="code" href="group__HTMLFunctions.html#gaf7e42c1007cd0c3af940af07cb011441">Nh_HTML_getAttributeFromType</a>(</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <a class="code" href="group__HTMLEnums.html#ga657bede94774c988c589a044a85eb3b3">NH_HTML_ATTRIBUTE</a> type</div>
+<div class="line"><a name="l00284"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94">  284</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94">Nh_HTML_removeAttribute</a>(</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;       <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <a class="code" href="group__HTMLEnums.html#ga657bede94774c988c589a044a85eb3b3">NH_HTML_ATTRIBUTE</a> type</div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    );</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
-<div class="line"><a name="l00288"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94">  288</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94">Nh_HTML_removeAttribute</a>(</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;       <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p, <a class="code" href="group__HTMLEnums.html#ga657bede94774c988c589a044a85eb3b3">NH_HTML_ATTRIBUTE</a> type</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;  </div>
+<div class="line"><a name="l00288"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gae9295cdd63925dccdfeb531089e4ec51">  288</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#gae9295cdd63925dccdfeb531089e4ec51">Nh_HTML_destroyAttributes</a>(</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p</div>
 <div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    );</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  </div>
-<div class="line"><a name="l00292"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gae9295cdd63925dccdfeb531089e4ec51">  292</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#gae9295cdd63925dccdfeb531089e4ec51">Nh_HTML_destroyAttributes</a>(</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;        <a class="code" href="structNh__List.html">Nh_List</a> *Attributes_p</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
+<div class="line"><a name="l00292"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga6d5f61b41a9631c7e945400700c50c12">  292</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>** <a class="code" href="group__HTMLFunctions.html#ga6d5f61b41a9631c7e945400700c50c12">Nh_HTML_getAttributeNames</a>(</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;        <span class="keywordtype">size_t</span> *size_p</div>
 <div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    );</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
-<div class="line"><a name="l00296"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga6d5f61b41a9631c7e945400700c50c12">  296</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>** <a class="code" href="group__HTMLFunctions.html#ga6d5f61b41a9631c7e945400700c50c12">Nh_HTML_getAttributeNames</a>(</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keywordtype">size_t</span> *size_p</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    </div>
+<div class="line"><a name="l00296"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga5d0521ce4e1aeb5361d649bba53edbd8">  296</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="group__HTMLFunctions.html#ga5d0521ce4e1aeb5361d649bba53edbd8">Nh_HTML_getAttributeName</a>(</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keywordtype">int</span> attribute</div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    );</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    </div>
-<div class="line"><a name="l00300"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga5d0521ce4e1aeb5361d649bba53edbd8">  300</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="group__HTMLFunctions.html#ga5d0521ce4e1aeb5361d649bba53edbd8">Nh_HTML_getAttributeName</a>(</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <span class="keywordtype">int</span> attribute</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    );</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;<span class="preprocessor">#endif </span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="preprocessor">#endif </span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="agroup__HTMLEnums_html_ggaf06e851467b64397bfeb20a6f7f26bd1a59033f9fc1b53261f599020e71f44c5b"><div class="ttname"><a href="group__HTMLEnums.html#ggaf06e851467b64397bfeb20a6f7f26bd1a59033f9fc1b53261f599020e71f44c5b">NH_HTML_TYPE_IMAGE</a></div><div class="ttdeci">@ NH_HTML_TYPE_IMAGE</div><div class="ttdef"><b>Definition:</b> Attribute.h:211</div></div>
@@ -485,7 +481,6 @@ $(document).ready(function(){initNavTree('Attribute_8h_source.html',''); initRes
 <div class="ttc" id="agroup__HTMLEnums_html_gga657bede94774c988c589a044a85eb3b3a13d623179183342c71a922672e424446"><div class="ttname"><a href="group__HTMLEnums.html#gga657bede94774c988c589a044a85eb3b3a13d623179183342c71a922672e424446">NH_HTML_ATTRIBUTE_ON_MOUSE_OVER</a></div><div class="ttdeci">@ NH_HTML_ATTRIBUTE_ON_MOUSE_OVER</div><div class="ttdef"><b>Definition:</b> Attribute.h:128</div></div>
 <div class="ttc" id="agroup__HTMLEnums_html_gga657bede94774c988c589a044a85eb3b3a2436ef851706461523320f67da62f957"><div class="ttname"><a href="group__HTMLEnums.html#gga657bede94774c988c589a044a85eb3b3a2436ef851706461523320f67da62f957">NH_HTML_ATTRIBUTE_ON_COPY</a></div><div class="ttdeci">@ NH_HTML_ATTRIBUTE_ON_COPY</div><div class="ttdef"><b>Definition:</b> Attribute.h:99</div></div>
 <div class="ttc" id="astructNh__HTML__Attributes_html_aafd769d3fa55b68223ad853478de6d63"><div class="ttname"><a href="structNh__HTML__Attributes.html#aafd769d3fa55b68223ad853478de6d63">Nh_HTML_Attributes::Texture_p</a></div><div class="ttdeci">Nh_Gfx_Texture * Texture_p</div><div class="ttdef"><b>Definition:</b> Attribute.h:243</div></div>
-<div class="ttc" id="agroup__HTMLFunctions_html_ga348f190c579d9cebb14c12822ad132ba"><div class="ttname"><a href="group__HTMLFunctions.html#ga348f190c579d9cebb14c12822ad132ba">Nh_HTML_updateAttributes</a></div><div class="ttdeci">NH_RESULT Nh_HTML_updateAttributes(Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)</div></div>
 <div class="ttc" id="agroup__HTMLEnums_html_gga657bede94774c988c589a044a85eb3b3a956535c0659c803d3f57ef86df5415cb"><div class="ttname"><a href="group__HTMLEnums.html#gga657bede94774c988c589a044a85eb3b3a956535c0659c803d3f57ef86df5415cb">NH_HTML_ATTRIBUTE_DISABLED</a></div><div class="ttdeci">@ NH_HTML_ATTRIBUTE_DISABLED</div><div class="ttdef"><b>Definition:</b> Attribute.h:57</div></div>
 <div class="ttc" id="agroup__HTMLEnums_html_gga657bede94774c988c589a044a85eb3b3a90275afa158be641a1dd6aaa08b2004f"><div class="ttname"><a href="group__HTMLEnums.html#gga657bede94774c988c589a044a85eb3b3a90275afa158be641a1dd6aaa08b2004f">NH_HTML_ATTRIBUTE_DATETIME</a></div><div class="ttdeci">@ NH_HTML_ATTRIBUTE_DATETIME</div><div class="ttdef"><b>Definition:</b> Attribute.h:52</div></div>
 <div class="ttc" id="agroup__HTMLEnums_html_gga657bede94774c988c589a044a85eb3b3a85943b8eaa19501510fd90078211276e"><div class="ttname"><a href="group__HTMLEnums.html#gga657bede94774c988c589a044a85eb3b3a85943b8eaa19501510fd90078211276e">NH_HTML_ATTRIBUTE_BG_COLOR</a></div><div class="ttdeci">@ NH_HTML_ATTRIBUTE_BG_COLOR</div><div class="ttdef"><b>Definition:</b> Attribute.h:37</div></div>

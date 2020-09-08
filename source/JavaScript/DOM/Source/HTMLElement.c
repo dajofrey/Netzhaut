@@ -357,7 +357,7 @@ NH_BEGIN()
             Nh_HTML_removeAttribute(&Element_p->Node_p->Attributes, NH_HTML_ATTRIBUTE_SELECTED);
         }
 
-        Nh_HTML_updateAttributes(Script_p->Run.Tab_p, Element_p->Node_p);
+        Nh_HTML_recomputeNode(Script_p->Run.Tab_p, Element_p->Node_p, NH_FALSE);
     }
 
 NH_END(Nh_JS_getNULLResult())
@@ -383,8 +383,8 @@ NH_BEGIN()
         NH_CHECK_NULL(Nh_JS_getNULLResult(), text_p)
         strcpy(text_p, Arguments_p[0].data_p);
 
-        Nh_HTML_addAttribute(&Element_p->Node_p->Attributes, NH_HTML_ATTRIBUTE_VALUE, text_p);
-        Nh_HTML_updateAttributes(Script_p->Run.Tab_p, Element_p->Node_p);
+        NH_CHECK(Nh_JS_getNULLResult(), Nh_HTML_addAttribute(&Element_p->Node_p->Attributes, NH_HTML_ATTRIBUTE_VALUE, text_p))
+        NH_CHECK(Nh_JS_getNULLResult(), Nh_HTML_recomputeNode(Script_p->Run.Tab_p, Element_p->Node_p, NH_FALSE))
     }
 
 NH_END(Nh_JS_getNULLResult())

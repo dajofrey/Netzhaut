@@ -138,6 +138,8 @@ var HTML_2Header_2Node_8h =
     [ "Nh_HTML_initNode", "group__HTMLFunctions.html#ga908b17f72c09be03e378c036dabe01f1", null ],
     [ "Nh_HTML_isMetaNode", "group__HTMLFunctions.html#ga9a8554e1c3fd2237e85a5c738eb82d75", null ],
     [ "Nh_HTML_prependChild", "group__HTMLFunctions.html#ga513577eafb9b55303738b7e94ef35a80", null ],
+    [ "Nh_HTML_recomputeNode", "group__HTMLFunctions.html#ga71f0ccb7122e67afb47d77df04695e93", null ],
+    [ "Nh_HTML_replaceChild", "group__HTMLFunctions.html#gaba8ffc8efa1170c5e416d8bf829e9647", null ],
     [ "Nh_HTML_replaceChildren", "group__HTMLFunctions.html#ga4813dcc74fe2ac91dbea213663ea0651", null ],
     [ "NH_HTML_TAGS_PP", "group__HTMLData.html#ga530f2c7edacb1beb26536bbec8fb358f", null ],
     [ "NH_HTML_TAGS_PP_COUNT", "group__HTMLData.html#ga77530e0a6800bd21f042c221f5831843", null ]

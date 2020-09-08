@@ -239,7 +239,8 @@ NH_BEGIN()
 
     if (aCount == 1)
     {
-        Nh_JS_HTMLElement *Element_p = Nh_JS_getObject(Function_p->Inherit_p, NH_JS_OBJECT_HTML_ELEMENT)->data_p;
+        Nh_JS_Object *Object_p = Nh_JS_getObject(Function_p->Inherit_p, NH_JS_OBJECT_HTML_ELEMENT);
+        Nh_JS_HTMLElement *Element_p = Object_p == NULL ? NULL : Object_p->data_p;
 
         if (Arguments_p->type == NH_JS_TYPE_STRING && Element_p != NULL) 
         {
@@ -376,13 +377,11 @@ NH_BEGIN()
         {
             Nh_JS_HTMLElement *Element_p = Object_p->data_p;
 
-            const char *str_p = NH_HTML_TAGS_PP[Element_p->Node_p->tag];
-    
-            char *tagName_p = Nh_allocate(sizeof(char) * (strlen(str_p) + 1));
+            char *tagName_p = Nh_allocate(sizeof(char) * (strlen(NH_HTML_TAGS_PP[Element_p->Node_p->tag]) + 1));
             NH_CHECK_NULL(Nh_JS_getNULLResult(), tagName_p)
                        
-            strcpy(tagName_p, str_p);
-            for (int i = 0; i < strlen(str_p); ++i) {tagName_p[i] = toupper(tagName_p[i]);}
+            strcpy(tagName_p, NH_HTML_TAGS_PP[Element_p->Node_p->tag]);
+            for (int i = 0; i < strlen(NH_HTML_TAGS_PP[Element_p->Node_p->tag]); ++i) {tagName_p[i] = toupper(tagName_p[i]);}
     
             NH_END(Nh_JS_getResult(NH_JS_TYPE_STRING, true, tagName_p))
         }
@@ -627,6 +626,23 @@ Nh_JS_Result Nh_JS_Element_replaceWith(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
+
+    if (aCount == 1)
+    {
+        Nh_JS_Object *Object_p = Nh_JS_getObject(Function_p->Inherit_p, NH_JS_OBJECT_HTML_ELEMENT);
+        Nh_JS_HTMLElement *Element_p = Object_p == NULL ? NULL : Object_p->data_p;
+
+        if (Arguments_p->type == NH_JS_TYPE_STRING && Element_p != NULL) 
+        {
+            Nh_HTML_Node *Text_p = Nh_allocate(sizeof(Nh_HTML_Node));
+            NH_CHECK_MEM(Nh_JS_getNULLResult(), Text_p)
+ 
+            NH_CHECK(Nh_JS_getNULLResult(), Nh_HTML_initNode(Text_p, Element_p->Node_p->Parent_p, NH_HTML_TAG_TEXT))
+            Text_p->text_p = Nh_allocateChars(Arguments_p[0].data_p);
+
+            NH_CHECK(Nh_JS_getNULLResult(), Nh_HTML_replaceChild(Script_p->Run.Tab_p, Element_p->Node_p, Text_p))
+        }
+    }
 
 NH_END(Nh_JS_getNULLResult())
 }

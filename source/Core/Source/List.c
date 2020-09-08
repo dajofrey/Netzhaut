@@ -82,6 +82,26 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+NH_RESULT Nh_replaceListItem(
+    Nh_List *List_p, void *replace_p, void *replacement_p)
+{
+NH_BEGIN()
+
+    NH_CHECK_NULL(List_p, replace_p, replacement_p)
+
+    int index = 0;
+    Nh_ListItem **Item_pp = &List_p->Head_p;
+    while (*Item_pp != NULL && (*Item_pp)->data_p != replace_p) {
+        Item_pp = &((*Item_pp)->Next_p);
+        index++;
+    }
+
+    if (index == List_p->count) {NH_END(NH_ERROR_BAD_STATE)}
+    (*Item_pp)->data_p = replacement_p;
+
+NH_END(NH_SUCCESS)
+}
+
 void *Nh_getListItem(
     Nh_List *List_p, int index)
 {

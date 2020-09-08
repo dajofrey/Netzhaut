@@ -308,9 +308,10 @@ NH_BEGIN()
     {
         Nh_JS_Variable *Variable_p = Nh_JS_getVariableFromName(Parsable_p, ((Nh_JS_Identifier*)Declaration_p->Declarator.Identifier.Data_p)->name_p);
 
-        Variable_p->data_p   = Result.data_p;
-        Variable_p->type     = Result.type;
-        Variable_p->freeData = Result.freeData;
+        Variable_p->data_p     = Result.data_p;
+        Variable_p->type       = Result.type;
+        Variable_p->freeData   = Result.freeData;
+        Variable_p->distinct_p = Nh_JS_getDistinction(Script_p, Variable_p->data_p);
 
         if (!Variable_p->freeData && Variable_p->type == NH_JS_TYPE_NUMBER) // dont want to override internal values
         {
@@ -406,7 +407,7 @@ NH_BEGIN()
             Nh_JS_Variable *Variable_p = Nh_JS_getVariableFromName(
                 Parsable_p, ((Nh_JS_Identifier*)Declaration_p->Declarator.Identifier.Data_p)->name_p
             );
-            
+ 
             NH_CHECK_NULL(Nh_JS_getNULLResult(), Variable_p)
             if (Result.type != NH_JS_TYPE_OBJECT) {FREE(Result) NH_END(Nh_JS_getNULLResult())}
 
@@ -417,11 +418,12 @@ NH_BEGIN()
             {
                 case NH_JS_OBJECT_HTML_COLLECTION : 
                 {
-                    Nh_JS_HTMLCollection *HTMLCollection_p = Object_p->data_p;
-                    for (int i = 0; i < HTMLCollection_p->List.count; ++i) 
+                    Nh_JS_HTMLCollection *Collection_p = Object_p->data_p;
+                    for (int i = 0; i < Collection_p->List.count; ++i) 
                     {
-                        Variable_p->type   = NH_JS_TYPE_OBJECT;
-                        Variable_p->data_p = Nh_getListItem(&HTMLCollection_p->List, i);
+                        Variable_p->type       = NH_JS_TYPE_OBJECT;
+                        Variable_p->data_p     = Nh_getListItem(&Collection_p->List, i);
+                        Variable_p->distinct_p = Nh_JS_getDistinction(Script_p, Variable_p->data_p);
                         FREE(INTERPRET(ForStatement_p->Statement))
                     }
                     break;

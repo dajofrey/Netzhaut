@@ -116,7 +116,9 @@ NH_BEGIN()
     NH_CHECK(Nh_CSS_associateSheets(Tab_p, NULL))
 
     for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
-        NH_CHECK(Nh_HTML_computeNode(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_TRUE))
+        NH_CHECK(Nh_HTML_computeNode(
+            Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_TRUE
+        ))
     }
 
     NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))

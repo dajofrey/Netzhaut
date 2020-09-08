@@ -14,6 +14,9 @@
 #include "../Header/Memory.h"
 
 #include "../DOM/Header/HTMLCollection.h"
+#include "../DOM/Header/HTMLElement.h"
+#include "../DOM/Header/Document.h"
+#include "../DOM/Header/EventListener.h"
 
 #include "../../Core/Header/Memory.h"
 
@@ -27,22 +30,26 @@
 // DECLARE =========================================================================================
 
 static NH_RESULT Nh_JS_updateVariablesRecursively(
-    Nh_JS_Parsable *Parsable_p, NH_BOOL reset
+    Nh_JS_Script *Script_p, Nh_JS_Parsable *Parsable_p, NH_BOOL reset
+);
+static NH_RESULT Nh_JS_updateVariable(
+    Nh_JS_Script *Script_p, Nh_JS_Variable *Variable_p
 );
 
 // INIT ============================================================================================
 
-static void Nh_JS_initVariable(
+void Nh_JS_initVariable(
     Nh_JS_Variable *Variable_p, char *name_p, int depth, NH_JS_KEYWORD kind)
 {
 NH_BEGIN()
 
-    Variable_p->depth    = depth;
-    Variable_p->type     = -1; // NOTE type deduction happens at interpreter level 
-    Variable_p->data_p   = NULL;   
-    Variable_p->name_p   = name_p;
-    Variable_p->kind     = kind;
-    Variable_p->freeData = false; 
+    Variable_p->depth      = depth;
+    Variable_p->type       = -1; // NOTE type deduction happens at interpreter level 
+    Variable_p->data_p     = NULL;   
+    Variable_p->name_p     = name_p;
+    Variable_p->kind       = kind;
+    Variable_p->freeData   = false; 
+    Variable_p->distinct_p = NULL;
 
 NH_SILENT_END()
 }
@@ -74,7 +81,13 @@ NH_BEGIN()
         .type   = NH_JS_PARSABLE_BLOCK_STATEMENT, 
         .Data_p = &Script_p->Container,
     };
-    NH_CHECK(Nh_JS_updateVariablesRecursively(&Parsable, NH_FALSE))
+    NH_CHECK(Nh_JS_updateVariablesRecursively(Script_p, &Parsable, NH_FALSE))
+
+    for (int i = 0; i < Script_p->DOM.EventListeners.count; ++i) {
+        Nh_JS_Object *Object_p = Nh_getListItem(&Script_p->DOM.EventListeners, i);
+        Nh_JS_EventListener *Listener_p = Object_p->data_p;
+        NH_CHECK(Nh_JS_updateVariable(Script_p, &Listener_p->Target))
+    }
 
 NH_END(NH_SUCCESS)
 }
@@ -88,7 +101,7 @@ NH_BEGIN()
         .type   = NH_JS_PARSABLE_BLOCK_STATEMENT, 
         .Data_p = &Script_p->Container,
     };
-    Nh_JS_updateVariablesRecursively(&Parsable, NH_TRUE);
+    Nh_JS_updateVariablesRecursively(Script_p, &Parsable, NH_TRUE);
 
 NH_SILENT_END()
 }
@@ -113,34 +126,50 @@ NH_SILENT_END()
 }
 
 static NH_RESULT Nh_JS_updateBlockVariables(
-    Nh_JS_Parsable *Parsable_p)
+    Nh_JS_Script *Script_p, Nh_JS_Parsable *Parsable_p)
 {
 NH_BEGIN()
 
     if (Parsable_p->type != NH_JS_PARSABLE_BLOCK_STATEMENT) {NH_END(NH_ERROR_BAD_STATE)}
     Nh_JS_BlockStatement *Block_p = Parsable_p->Data_p;
 
-    for (int i = 0; i < Block_p->Variables.count; ++i) 
+    for (int i = 0; i < Block_p->Variables.count; ++i) {
+        NH_CHECK(Nh_JS_updateVariable(Script_p, Nh_getListItem(&Block_p->Variables, i)))
+    }
+
+NH_END(NH_SUCCESS)
+}
+
+static NH_RESULT Nh_JS_updateVariable(
+    Nh_JS_Script *Script_p, Nh_JS_Variable *Variable_p)
+{
+NH_BEGIN()
+
+    switch (Variable_p->type) 
     {
-        Nh_JS_Variable *Variable_p = Nh_getListItem(&Block_p->Variables, i);
-        
-        switch (Variable_p->type) 
+        case NH_JS_TYPE_OBJECT :
         {
-            case NH_JS_TYPE_OBJECT :
+            if (Variable_p->distinct_p != NULL) 
             {
-                Nh_JS_Object *Object_p = Variable_p->data_p;
-                
-                switch (Object_p->type)
+                Nh_JS_Document *Document_p = Script_p->DOM.Objects.Document_p->data_p;
+                for (int i = 0; i < Document_p->Tree.Flat.count; ++i) 
                 {
-                    case NH_JS_OBJECT_HTML_COLLECTION : 
-                    {
-                        NH_CHECK(Nh_JS_updateHTMLCollection(Object_p->data_p))
-                        break;
+                    Nh_JS_Object *Object_p = Nh_getListItem(&Document_p->Tree.Flat, i);
+                    Nh_JS_HTMLElement *Element_p = Object_p->data_p;
+
+                    if (Element_p->Node_p == Variable_p->distinct_p) {
+                        Variable_p->data_p = Object_p; 
+                        NH_END(NH_SUCCESS)
                     }
                 }
-
-                break;
             }
+
+            Nh_JS_Object *Object_p = Nh_JS_getObject(Variable_p->data_p, NH_JS_OBJECT_HTML_COLLECTION);
+            if (Object_p != NULL) {
+                NH_END(Nh_JS_updateHTMLCollection(Object_p->data_p))
+            }
+
+            break;
         }
     }
 
@@ -148,7 +177,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_updateVariablesRecursively(
-    Nh_JS_Parsable *Parsable_p, NH_BOOL reset)
+    Nh_JS_Script *Script_p, Nh_JS_Parsable *Parsable_p, NH_BOOL reset)
 {
 NH_BEGIN()
 
@@ -157,15 +186,15 @@ NH_BEGIN()
         case NH_JS_PARSABLE_ASSIGNMENT_EXPRESSION : 
             {
                 Nh_JS_AssignmentExpression *AssignmentExpression_p = Parsable_p->Data_p;               
-                Nh_JS_updateVariablesRecursively(&AssignmentExpression_p->Left, reset);
-                Nh_JS_updateVariablesRecursively(&AssignmentExpression_p->Right, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &AssignmentExpression_p->Left, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &AssignmentExpression_p->Right, reset);
             }
             break;
 
         case NH_JS_PARSABLE_EXPRESSION_STATEMENT : 
             {
                 Nh_JS_ExpressionStatement *ExpressionStatement_p = Parsable_p->Data_p;
-                Nh_JS_updateVariablesRecursively(&ExpressionStatement_p->Parsable, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &ExpressionStatement_p->Parsable, reset);
             }
             break;
 
@@ -173,18 +202,18 @@ NH_BEGIN()
             {
                 Nh_JS_BlockStatement *BlockStatement_p = Parsable_p->Data_p;
                 for (int i = 0; i < BlockStatement_p->parsableCount; ++i) {
-                    Nh_JS_updateVariablesRecursively(&BlockStatement_p->Parsables_p[i], reset);
+                    Nh_JS_updateVariablesRecursively(Script_p, &BlockStatement_p->Parsables_p[i], reset);
                 }
-                if (reset)  {Nh_JS_resetBlockVariables(Parsable_p);}
-                else {NH_CHECK(Nh_JS_updateBlockVariables(Parsable_p))}
+                if (reset) {Nh_JS_resetBlockVariables(Parsable_p);}
+                else {NH_CHECK(Nh_JS_updateBlockVariables(Script_p, Parsable_p))}
             } 
             break;
 
         case NH_JS_PARSABLE_MEMBER_EXPRESSION : 
             {
                 Nh_JS_MemberExpression *MemberExpression_p = Parsable_p->Data_p;
-                Nh_JS_updateVariablesRecursively(&MemberExpression_p->Left, reset);
-                Nh_JS_updateVariablesRecursively(&MemberExpression_p->Right, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &MemberExpression_p->Left, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &MemberExpression_p->Right, reset);
             }
             break;
 
@@ -195,9 +224,9 @@ NH_BEGIN()
             {
                 Nh_JS_CallExpression *CallExpression_p = Parsable_p->Data_p;
                 for (int i = 0; i < CallExpression_p->argumentCount; ++i) {
-                    Nh_JS_updateVariablesRecursively(&CallExpression_p->Arguments_p[i], reset);
+                    Nh_JS_updateVariablesRecursively(Script_p, &CallExpression_p->Arguments_p[i], reset);
                 }
-                Nh_JS_updateVariablesRecursively(&CallExpression_p->Parsable, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &CallExpression_p->Parsable, reset);
             }
             break;
 
@@ -207,19 +236,19 @@ NH_BEGIN()
         case NH_JS_PARSABLE_FUNCTION_DECLARATION : 
             {
                 Nh_JS_FunctionDeclaration *Function_p = Parsable_p->Data_p;
-                Nh_JS_updateVariablesRecursively(&Function_p->Name, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &Function_p->Name, reset);
                 for (int i = 0; i < Function_p->parameterCount; ++i) {
-                    Nh_JS_updateVariablesRecursively(&Function_p->Parameters_p[i], reset);
+                    Nh_JS_updateVariablesRecursively(Script_p, &Function_p->Parameters_p[i], reset);
                 }
-                Nh_JS_updateVariablesRecursively(&Function_p->Block, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &Function_p->Block, reset);
             }
             break;
 
         case NH_JS_PARSABLE_VARIABLE_DECLARATION :  
             {
                 Nh_JS_VariableDeclaration *Declaration_p = Parsable_p->Data_p;
-                Nh_JS_updateVariablesRecursively(&Declaration_p->Declarator.Identifier, reset);
-                Nh_JS_updateVariablesRecursively(&Declaration_p->Declarator.Parsable, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &Declaration_p->Declarator.Identifier, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &Declaration_p->Declarator.Parsable, reset);
             }
             break;
 
@@ -227,9 +256,9 @@ NH_BEGIN()
             {
                 Nh_JS_ForStatement *For_p = Parsable_p->Data_p;
                 for (int i = 0; i < For_p->expressionCount; ++i) {
-                    Nh_JS_updateVariablesRecursively(&For_p->Expressions_p[i], reset);
+                    Nh_JS_updateVariablesRecursively(Script_p, &For_p->Expressions_p[i], reset);
                 } 
-                Nh_JS_updateVariablesRecursively(&For_p->Statement, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &For_p->Statement, reset);
             }
             break;
 
@@ -237,7 +266,7 @@ NH_BEGIN()
             {
                 Nh_JS_IfStatement *If_p = Parsable_p->Data_p;
                 for (int i = 0; i < If_p->parsableCount; ++i) {
-                    Nh_JS_updateVariablesRecursively(&If_p->Parsables_p[i], reset);
+                    Nh_JS_updateVariablesRecursively(Script_p, &If_p->Parsables_p[i], reset);
                 } 
             }
             break;
@@ -245,8 +274,8 @@ NH_BEGIN()
         case NH_JS_PARSABLE_BINARY_EXPRESSION :
             {
                 Nh_JS_BinaryExpression *Binary_p = Parsable_p->Data_p;
-                Nh_JS_updateVariablesRecursively(&Binary_p->Left, reset);
-                Nh_JS_updateVariablesRecursively(&Binary_p->Right, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &Binary_p->Left, reset);
+                Nh_JS_updateVariablesRecursively(Script_p, &Binary_p->Right, reset);
             }
             break;
 
@@ -280,6 +309,19 @@ NH_BEGIN()
         }
         Container_p = Container_p->Parent_p;
     }
+
+NH_END(NULL)
+}
+
+void *Nh_JS_getDistinction(
+    Nh_JS_Script *Script_p, Nh_JS_Object *Object_p)
+{
+NH_BEGIN()
+
+    Nh_JS_Object *Object2_p = Nh_JS_getObject(Object_p, NH_JS_OBJECT_HTML_ELEMENT);
+    if (Object2_p != NULL) {NH_END(((Nh_JS_HTMLElement*)Object2_p->data_p)->Node_p)}
+
+    // ...
 
 NH_END(NULL)
 }

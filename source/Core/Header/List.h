@@ -63,6 +63,10 @@
         Nh_List *List_p, void *data_p
     );
 
+    NH_RESULT Nh_replaceListItem(
+        Nh_List *List_p, void *replace_p, void *replacement_p
+    );
+
     /**
      * Get item data specified by \p index from \p List_p.
      *

@@ -99,6 +99,20 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+NH_RESULT Nh_HTML_recreateNormalizedText(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
+{
+NH_BEGIN()
+
+    NH_CHECK_NULL(Tab_p, Node_p)
+    if (!Nh_HTML_isTextNode(Node_p)) {NH_END(NH_SUCCESS)}
+
+    Nh_HTML_destroyText(Node_p);
+    NH_CHECK(Nh_HTML_createNormalizedText(Tab_p, Node_p))
+   
+NH_END(NH_SUCCESS)
+}
+
 NH_RESULT Nh_HTML_createTextNodes(
     Nh_Tab *Tab_p, Nh_HTML_Node *Parent_p, Nh_HTML_Node *Node_p)
 {
@@ -161,23 +175,6 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
-// UPDATE ==========================================================================================
-
-//NH_RESULT Nh_HTML_updateText(
-//    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
-//{
-//NH_BEGIN()
-//
-//    NH_CHECK_NULL(Tab_p, Node_p)
-//    if (!Nh_HTML_isTextNode(Node_p)) {NH_END(NH_SUCCESS)}
-//
-//    Nh_HTML_destroyText(Node_p);
-//    NH_CHECK(Nh_HTML_createNormalizedText(Tab_p, Node_p))
-//    NH_CHECK(Nh_HTML_createTextNodes(Tab_p, Node_p))
-//   
-//NH_END(NH_SUCCESS)
-//}
-//
 // DESTROY =========================================================================================
 
 void Nh_HTML_destroyText(

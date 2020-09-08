@@ -410,7 +410,9 @@ NH_BEGIN()
             replace = tmp_p[count];
             tmp_p[count] = '\0';
 
-            GET_TYPE_AND_PARSE(For_p->Expressions_p[0], tmp_p, true)
+
+            For_p->Expressions_p[0].type = NH_JS_PARSABLE_VARIABLE_DECLARATION;
+            PARSE(For_p->Expressions_p[0], tmp_p)
 
             tmp_p[count] = replace;
 

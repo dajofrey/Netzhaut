@@ -223,7 +223,48 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+NH_RESULT Nh_HTML_recomputeNode(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text) 
+{
+NH_BEGIN()
+
+    NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p))
+    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+
+    if (text && Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_recreateNormalizedText(Tab_p, Node_p))}
+
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
+    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
+
+NH_END(NH_SUCCESS)
+}
+
 // MANIPULATE ======================================================================================
+
+NH_RESULT Nh_HTML_replaceChild(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Replace_p, Nh_HTML_Node *Replacement_p)
+{
+NH_BEGIN()
+
+    NH_CHECK(Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU))
+
+    NH_CHECK(Nh_replaceListItem(&Replace_p->Parent_p->Children.Unformatted, Replace_p, Replacement_p))
+    Nh_HTML_destroyNode(Replace_p, NH_TRUE);
+
+    NH_CHECK(Nh_CSS_associateSheets(Tab_p, Replacement_p))
+    NH_CHECK(Nh_HTML_computeNode(Tab_p, Replacement_p, NH_TRUE))
+
+    Nh_HTML_recreateFlatTree(&Tab_p->Document.Tree, Tab_p->Document.Tree.Root_p, NH_TRUE);
+
+    if (Tab_p->Document.Scripts.count > 0) {
+        NH_CHECK(Nh_JS_updateDocumentObject(Nh_getListItem(&Tab_p->Document.Scripts, 0)))
+    }
+
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
+    NH_CHECK(Nh_HTML_computeFormattedTree(Tab_p))
+
+NH_END(NH_SUCCESS)
+}
 
 NH_RESULT Nh_HTML_replaceChildren(
     Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Replace_p)

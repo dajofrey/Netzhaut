@@ -11,6 +11,8 @@
 
 #include "Parser.h"
 
+#include "../Core/Header/Object.h"
+
 #include "../../API/Header/Netzhaut.h"
 #include "../../Core/Header/List.h"
 
@@ -28,6 +30,7 @@
         bool freeData;
         char *name_p;
         void *data_p;
+        void *distinct_p;
     } Nh_JS_Variable;
 
 /** @} */
@@ -59,6 +62,14 @@
     
     Nh_JS_Variable *Nh_JS_getVariableFromName(
         Nh_JS_Parsable *Parsable_p, char *name_p
+    );
+
+    void *Nh_JS_getDistinction(
+        Nh_JS_Script *Script_p, Nh_JS_Object *Object_p
+    );
+
+    void Nh_JS_initVariable(
+        Nh_JS_Variable *Variable_p, char *name_p, int depth, NH_JS_KEYWORD kind
     );
 
 /** @} */

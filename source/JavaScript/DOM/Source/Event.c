@@ -331,7 +331,7 @@ NH_BEGIN()
         Nh_JS_Object *ListenerObject_p = Nh_getListItem(&Script_p->DOM.EventListeners, i);
         Nh_JS_EventListener *Listener_p = ListenerObject_p->data_p;
 
-        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target_p == Event_p->Target_p) 
+        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target.data_p == Event_p->Target_p) 
         {
             Nh_JS_Result Result = {
                 .freeData = false,
@@ -359,7 +359,7 @@ NH_BEGIN()
         Nh_JS_Object *ListenerObject_p = Nh_getListItem(&Script_p->DOM.EventListeners, i);
         Nh_JS_EventListener *Listener_p = ListenerObject_p->data_p;
 
-        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target_p == Event_p->Target_p) 
+        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target.data_p == Event_p->Target_p) 
         {
             Nh_JS_Object *Object_p = Nh_allocate(sizeof(Nh_JS_Object));
             NH_CHECK_MEM(Object_p)

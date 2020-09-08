@@ -265,10 +265,6 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
         Nh_HTML_Node *Node_p, NH_HTML_ATTRIBUTE type
     );
 
-    NH_RESULT Nh_HTML_updateAttributes(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
-    );
-
     void Nh_HTML_getAttributes(
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_HTML_Attribute *Attributes_pp[NH_HTML_ATTRIBUTE_COUNT]
     );

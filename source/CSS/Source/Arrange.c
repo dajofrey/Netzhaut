@@ -341,12 +341,12 @@ NH_SILENT_END()
 
 // PARENT ==========================================================================================
 
-static inline void Nh_CSS_updateParents(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted)
+static inline void Nh_CSS_inlineFlow(
+    Nh_HTML_Node *Node_p, NH_BOOL *float_p, NH_BOOL *inline_p)
 {
 NH_BEGIN()
 
-    NH_BOOL ignoreFlow = NH_FALSE, tmp = NH_FALSE, _inline = NH_FALSE, block = NH_FALSE;
+    NH_BOOL block = NH_FALSE, tmp = NH_FALSE;
     Nh_HTML_Node *Parent_p = Node_p;
 
     while (Parent_p != NULL) 
@@ -355,21 +355,30 @@ NH_BEGIN()
             block = NH_TRUE; tmp = NH_FALSE;
         }
         if (Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE) {
-            _inline = NH_TRUE; tmp = NH_TRUE;
+            *inline_p = NH_TRUE; tmp = NH_TRUE;
         }
-        if (block && tmp) {ignoreFlow = NH_TRUE; break;}
+        if (block && tmp) {*float_p = NH_TRUE; break;}
 
         Parent_p = Parent_p->Parent_p;
     }
 
-    NH_BOOL expandHeight = NH_TRUE;
-    Parent_p = Node_p->Parent_p;
+NH_SILENT_END()
+}
+
+static inline void Nh_CSS_updateParents(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted)
+{
+NH_BEGIN()
+
+    NH_BOOL _float = NH_FALSE, _inline = NH_FALSE, expandHeight = NH_TRUE;
+    Nh_CSS_inlineFlow(Node_p, &_float, &_inline);
+    Nh_HTML_Node *Parent_p = Node_p->Parent_p;
 
     while (Parent_p != NULL) 
     {
         Nh_CSS_Box ParentContentBox = Nh_CSS_getContentBox(Parent_p);
    
-        if (ignoreFlow && Node_p->tag != NH_HTML_TAG_TEXT && Node_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE) {
+        if (_float && Node_p->tag != NH_HTML_TAG_TEXT && Node_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_INLINE) {
             expandHeight = NH_FALSE;
         }
 
@@ -379,16 +388,22 @@ NH_BEGIN()
               - NH_CSS_NORMALIZED_LENGTH(ParentContentBox.BottomRight.y);
         }
 
-        if (Node_p->tag != NH_HTML_TAG_TEXT 
-        ||  !unformatted 
-        ||  _inline 
-        || Parent_p->Computed.Properties.Position.display == NH_CSS_DISPLAY_BLOCK 
-        && Parent_p->Computed.Properties.Position.Width.type == NH_CSS_SIZE_AUTO) {
-            if (ParentContentBox.BottomRight.x < Node_p->Computed.Margin.BottomRight.x) {
+        if (Node_p->tag != NH_HTML_TAG_TEXT || (_inline && _float) || !unformatted) 
+        {
+            if (ParentContentBox.BottomRight.x < Node_p->Computed.Margin.BottomRight.x) 
+            {
                 Parent_p->Computed.Margin.BottomRight.x = Node_p->Computed.Margin.BottomRight.x;
                 Parent_p->Computed.Margin.BottomRight.x += Parent_p->Computed.Properties.Padding.right;
+
                 if (Parent_p->Computed.Properties.Border.Style.left != NH_CSS_BORDER_STYLE_NONE) {
                     Parent_p->Computed.Margin.BottomRight.x += Parent_p->Computed.Properties.Border.Width.right;
+                }
+
+                for (int i = 0; i < Parent_p->Children.Formatted.count; ++i) {
+                    Nh_HTML_Node *Child_p = Nh_getListItem(&Parent_p->Children.Formatted, i);
+                    if (Nh_CSS_getContentBox(Parent_p).BottomRight.x > Child_p->Computed.Margin.BottomRight.x) {
+                        Child_p->Computed.Margin.BottomRight.x = Nh_CSS_getContentBox(Parent_p).BottomRight.x;
+                    }
                 }
             }
         }

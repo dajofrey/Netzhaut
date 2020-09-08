@@ -42,11 +42,13 @@ var group__HTMLFunctions =
     [ "Nh_HTML_prependChild", "group__HTMLFunctions.html#ga513577eafb9b55303738b7e94ef35a80", null ],
     [ "Nh_HTML_processInput", "group__HTMLFunctions.html#ga17e28f457a46ea083f0f3fe962ae4755", null ],
     [ "Nh_HTML_recomputeFormattedTree", "group__HTMLFunctions.html#gaecfca4263df15f2044a930b357c34210", null ],
+    [ "Nh_HTML_recomputeNode", "group__HTMLFunctions.html#ga71f0ccb7122e67afb47d77df04695e93", null ],
     [ "Nh_HTML_recreateFlatTree", "group__HTMLFunctions.html#ga5964c8c9e05eb8c8adc72f97f607fa24", null ],
+    [ "Nh_HTML_recreateNormalizedText", "group__HTMLFunctions.html#ga6c9471bd54db50d5793545f03f00af3f", null ],
     [ "Nh_HTML_removeAttribute", "group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94", null ],
+    [ "Nh_HTML_replaceChild", "group__HTMLFunctions.html#gaba8ffc8efa1170c5e416d8bf829e9647", null ],
     [ "Nh_HTML_replaceChildren", "group__HTMLFunctions.html#ga4813dcc74fe2ac91dbea213663ea0651", null ],
     [ "Nh_HTML_stringifyDocument", "group__HTMLFunctions.html#ga4b17539663997b431238703531425dda", null ],
     [ "Nh_HTML_stringifyTree", "group__HTMLFunctions.html#ga1ec7797d6a41ed84cad27aaccd19deb2", null ],
-    [ "Nh_HTML_updateAttributes", "group__HTMLFunctions.html#ga348f190c579d9cebb14c12822ad132ba", null ],
     [ "Nh_HTML_updateDocument", "group__HTMLFunctions.html#gafa870319f68ec928225011fdc41d6e73", null ]
 ];

@@ -221,8 +221,16 @@
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text
     ); 
 
+    NH_RESULT Nh_HTML_recomputeNode(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text
+    );
+
     void Nh_HTML_destroyNode(
         Nh_HTML_Node *Node_p, NH_BOOL destroyTextData
+    );
+
+    NH_RESULT Nh_HTML_replaceChild(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Replace_p, Nh_HTML_Node *Replacement_p
     );
 
     NH_RESULT Nh_HTML_replaceChildren(

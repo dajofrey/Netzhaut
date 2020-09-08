@@ -15,6 +15,7 @@
 #include "../Header/Macros.h"
 
 #include "../../Header/Debug.h"
+#include "../../Header/Variable.h"
 
 #include "../../Core/Header/Function.h"
 
@@ -64,7 +65,7 @@ NH_BEGIN()
     for (int i = 0; i < Script_p->DOM.EventListeners.count; ++i) {
         Nh_JS_Object *Object_p = Nh_getListItem(&Script_p->DOM.EventListeners, i);
         Nh_JS_EventListener *Listener_p = Object_p->data_p;
-        if (Listener_p->eventType == eventType && Listener_p->Target_p == Target_p && ((Nh_JS_Function*)Object_p->Functions_p[0].data_p)->external_p == Function_p) {NH_END(NH_SUCCESS)}
+        if (Listener_p->eventType == eventType && Listener_p->Target.data_p == Target_p && ((Nh_JS_Function*)Object_p->Functions_p[0].data_p)->external_p == Function_p) {NH_END(NH_SUCCESS)}
     }
 
     Nh_JS_Object *ListenerObject_p;
@@ -77,8 +78,11 @@ NH_BEGIN()
     Nh_JS_EventListener *ListenerData_p = Nh_allocate(sizeof(Nh_JS_EventListener));
     NH_CHECK_MEM(ListenerData_p)
 
-    ListenerData_p->eventType = eventType;
-    ListenerData_p->Target_p  = Target_p;
+    Nh_JS_initVariable(&ListenerData_p->Target, NULL, -1, 0);
+    ListenerData_p->Target.data_p     = Target_p;
+    ListenerData_p->Target.type       = NH_JS_TYPE_OBJECT;
+    ListenerData_p->Target.distinct_p = Nh_JS_getDistinction(Script_p, Target_p);
+    ListenerData_p->eventType         = eventType;
 
     ListenerObject_p->data_p = ListenerData_p;
 
@@ -114,17 +118,17 @@ NH_BEGIN()
 
     Nh_String *String_p = Nh_allocateString(NULL);
 
-    char *obj_p = Nh_JS_stringifyObject(Listener_p->Target_p, false, true);
-    NH_CHECK_NULL(NULL, obj_p)
+    char *object_p = Nh_JS_stringifyObject(Listener_p->Target.data_p, false, true);
+    NH_CHECK_NULL(NULL, object_p)
 
     NH_CHECK(NULL, Nh_appendFormatToString(String_p, 
         "for %s on %s", 
-        Nh_JS_getEventTypes(NULL)[Listener_p->eventType], obj_p
+        Nh_JS_getEventTypes(NULL)[Listener_p->eventType], object_p
     ))
 
     if (newline) {NH_CHECK(NULL, Nh_appendToString(String_p, "\n"))}
 
-    Nh_free(obj_p);
+    Nh_free(object_p);
 
     char *chars_p = Nh_getChars(String_p);
     Nh_freeString(String_p, false);

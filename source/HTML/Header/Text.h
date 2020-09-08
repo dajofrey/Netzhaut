@@ -55,6 +55,10 @@ typedef struct Nh_HTML_Document Nh_HTML_Document;
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
     );
 
+    NH_RESULT Nh_HTML_recreateNormalizedText(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
+    );
+
     NH_RESULT Nh_HTML_createTextNodes(
         Nh_Tab *Tab_p, Nh_HTML_Node *Parent_p, Nh_HTML_Node *Node_p
     );

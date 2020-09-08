@@ -64,6 +64,15 @@ Nh_JS_Result Nh_JS_Node_firstChild(
 {
 NH_BEGIN()
 
+    if (aCount == 0) {
+        Nh_JS_Object *Object_p = Nh_JS_getObject(Function_p->Inherit_p, NH_JS_OBJECT_HTML_ELEMENT);
+        if (Object_p != NULL) {
+            Nh_JS_HTMLElement *Element_p = Object_p->data_p;
+            if (Element_p->Children.count <= 0) {NH_END(Nh_JS_getNULLResult())}
+            else {NH_END(Nh_JS_getResult(NH_JS_TYPE_OBJECT, false, Nh_getListItem(&Element_p->Children, 0)))}
+        }
+    }
+
 NH_END(Nh_JS_getNULLResult())
 }
 

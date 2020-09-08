@@ -95,9 +95,6 @@ NH_BEGIN()
 
     if (clear) {
         Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_FOCUS);
-        for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
-            NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
-        }
     }
 
     Nh_HTML_Node *Node_p = MouseEvent_p->Node_p;
@@ -124,7 +121,9 @@ NH_BEGIN()
         }
     }
 
-    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+        NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
+    }
     NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
     NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
 
@@ -138,9 +137,6 @@ NH_BEGIN()
 
     if (clear) {
         Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_HOVER);
-        for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
-            NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
-        }
     }
 
     Nh_HTML_Node *Node_p = MouseEvent_p->Node_p;
@@ -163,7 +159,9 @@ NH_BEGIN()
         }
     }
 
-    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+        NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
+    }
     NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
     NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
 

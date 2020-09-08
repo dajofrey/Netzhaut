@@ -9,7 +9,7 @@ var options = document.getElementsByTagName("OPTION");
 for (const option of options) {
     option.addEventListener("click", clickOption()); 
     if (option.selected) {
-        option.parentElement.prepend = option.textContent;
+        option.parentElement.prepend(option.textContent);
         option.parentElement.value = option.value;
     }
 }
@@ -20,16 +20,16 @@ function clickOption(event)
 
     if (target.parentElement.tagName == "SELECT") 
     {
-        target.parentElement.textContent = target.textContent;
+        target.parentElement.firstChild.replaceWith(target.textContent);
         target.parentElement.value = target.value;
-//        for (option of options) {
-//            if (option.selected) {
-//                option.selected = false;
-//            }
-//        }
+        for (option of options) {
+            if (option.selected) {
+                option.selected = false;
+            }
+        }
         target.selected = true;
-        var selchng = new Event('selectionchange');
-        target.parentElement.dispatchEvent(selchng);
+//        var selchng = new Event('selectionchange');
+//        target.parentElement.dispatchEvent(selchng);
     }
 }
 

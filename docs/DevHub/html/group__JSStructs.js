@@ -114,6 +114,7 @@ var group__JSStructs =
     [ "Nh_JS_Variable", "structNh__JS__Variable.html", [
       [ "data_p", "structNh__JS__Variable.html#ab91731b155168160de88e2052c9b2554", null ],
       [ "depth", "structNh__JS__Variable.html#a630ae1eb0abdda05f02e6736a017dff8", null ],
+      [ "distinct_p", "structNh__JS__Variable.html#abe9edcd47950f60d21d9433da8f1a1aa", null ],
       [ "freeData", "structNh__JS__Variable.html#a122a53987de2f61bb5e2503c24975ce8", null ],
       [ "kind", "structNh__JS__Variable.html#a56db8d15886346eda1d5819a04f5048b", null ],
       [ "name_p", "structNh__JS__Variable.html#a1daa52f2c87c635be6f7e921e9b437d3", null ],
