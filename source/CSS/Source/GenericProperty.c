@@ -379,6 +379,9 @@ NH_BEGIN()
     if (Node_p->Parent_p != NULL && Nh_getListItem(&Node_p->Parent_p->Children.Unformatted, 0) == Node_p) {
         if (Property_p->Pseudo._class == NH_CSS_PSEUDO_CLASS_FIRST_CHILD) {Property_p->active = true;}
     }
+    if (Property_p->selector == NH_CSS_SELECTOR_ATTRIBUTE) {
+        Property_p->active = Nh_CSS_attributeSelectorHit(Property_p->selector_p, Node_p);
+    } 
 
 NH_SILENT_END()
 }
@@ -480,6 +483,8 @@ NH_BEGIN()
     Property_p->Pseudo.parentClass = Copy_p->Pseudo.parentClass;
     Property_p->active             = Copy_p->active;
     Property_p->update             = Copy_p->update;
+    Property_p->selector_p         = Copy_p->selector_p;
+
 
     if (Copy_p->valueCount > 0) {
         Property_p->values_pp  = Copy_p->values_pp;

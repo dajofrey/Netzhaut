@@ -29,7 +29,7 @@
 
 // API =============================================================================================
 
-Nh_JS_Result NH_JS_EVENT_LISTENER_EventListener(
+Nh_JS_Result Nh_JS_EventListener_EventListener(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -37,7 +37,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_EVENT_LISTENER_handleEvent(
+Nh_JS_Result Nh_JS_EventListener_handleEvent(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()

@@ -13,6 +13,16 @@
 
 #endif
 
+/** @addtogroup CoreData Data
+ *  \ingroup Core
+ *  @{
+ */
+
+    extern const char *NH_MEDIA_TYPE_TEMPLATES_PP[];
+    extern size_t NH_MEDIA_TYPE_TEMPLATES_PP_COUNT;
+
+/** @} */
+
 /** @addtogroup CoreEnums Enums
  *  \ingroup Core
  *  @{
@@ -1875,10 +1885,6 @@
 
     NH_MEDIA Nh_getMediaTypeFromPath(
         char *path_p
-    );
-
-    const char** Nh_getMediaTypeTemplates(
-        size_t *size_p
     );
 
 /** @} */

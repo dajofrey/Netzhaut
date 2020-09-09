@@ -26,7 +26,7 @@
 
 // DATA ============================================================================================
 
-Nh_HashMaps Maps;
+Nh_HashMaps NH_HASHMAPS;
 
 // DECLARE =========================================================================================
 
@@ -73,19 +73,19 @@ NH_RESULT Nh_createHashMaps()
 {
 NH_BEGIN()
 
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_MEDIA_TYPE, &Maps.MediaTypes))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_HTML_ATTRIBUTES, &Maps.HTML.Attributes))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_HTML_TAGS, &Maps.HTML.Tags))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_PROPERTIES, &Maps.CSS.Properties))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_COLORS, &Maps.CSS.Colors))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_PSEUDO_CLASSES, &Maps.CSS.PseudoClasses))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_PSEUDO_ELEMENTS, &Maps.CSS.PseudoElements))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_JS_KEYWORDS, &Maps.JS.Keywords))
-    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_JS_EVENT_TYPES, &Maps.JS.EventTypes))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_MEDIA_TYPE, &NH_HASHMAPS.MediaTypes))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_HTML_ATTRIBUTES, &NH_HASHMAPS.HTML.Attributes))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_HTML_TAGS, &NH_HASHMAPS.HTML.Tags))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_PROPERTIES, &NH_HASHMAPS.CSS.Properties))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_COLORS, &NH_HASHMAPS.CSS.Colors))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_PSEUDO_CLASSES, &NH_HASHMAPS.CSS.PseudoClasses))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_CSS_PSEUDO_ELEMENTS, &NH_HASHMAPS.CSS.PseudoElements))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_JS_KEYWORDS, &NH_HASHMAPS.JS.Keywords))
+    NH_CHECK(Nh_createSingleHashMap(NH_HASHMAP_JS_EVENT_TYPES, &NH_HASHMAPS.JS.EventTypes))
 
-    Maps.JS.Functions_p = Nh_allocate(sizeof(map_t) * NH_JS_OBJECT_COUNT);
-    NH_CHECK_MEM(Maps.JS.Functions_p)
-    NH_CHECK(Nh_createHashMapArray(NH_HASHMAP_JS_FUNCTIONS, Maps.JS.Functions_p))
+    NH_HASHMAPS.JS.Functions_p = Nh_allocate(sizeof(map_t) * NH_JS_OBJECT_COUNT);
+    NH_CHECK_MEM(NH_HASHMAPS.JS.Functions_p)
+    NH_CHECK(Nh_createHashMapArray(NH_HASHMAP_JS_FUNCTIONS, NH_HASHMAPS.JS.Functions_p))
 
 NH_END(NH_SUCCESS)
 }
@@ -94,18 +94,18 @@ void Nh_freeHashMaps()
 {
 NH_BEGIN()
 
-    Nh_freeSingleHashMap(NH_HASHMAP_MEDIA_TYPE, Maps.MediaTypes);
-    Nh_freeSingleHashMap(NH_HASHMAP_HTML_ATTRIBUTES, Maps.HTML.Attributes);
-    Nh_freeSingleHashMap(NH_HASHMAP_HTML_TAGS, Maps.HTML.Tags);  
-    Nh_freeSingleHashMap(NH_HASHMAP_CSS_PROPERTIES, Maps.CSS.Properties);    
-    Nh_freeSingleHashMap(NH_HASHMAP_CSS_COLORS, Maps.CSS.Colors);  
-    Nh_freeSingleHashMap(NH_HASHMAP_CSS_PSEUDO_CLASSES, Maps.CSS.PseudoClasses);
-    Nh_freeSingleHashMap(NH_HASHMAP_CSS_PSEUDO_ELEMENTS, Maps.CSS.PseudoElements);
-    Nh_freeSingleHashMap(NH_HASHMAP_JS_KEYWORDS, Maps.JS.Keywords);      
-    Nh_freeSingleHashMap(NH_HASHMAP_JS_EVENT_TYPES, Maps.JS.EventTypes);    
+    Nh_freeSingleHashMap(NH_HASHMAP_MEDIA_TYPE, NH_HASHMAPS.MediaTypes);
+    Nh_freeSingleHashMap(NH_HASHMAP_HTML_ATTRIBUTES, NH_HASHMAPS.HTML.Attributes);
+    Nh_freeSingleHashMap(NH_HASHMAP_HTML_TAGS, NH_HASHMAPS.HTML.Tags);  
+    Nh_freeSingleHashMap(NH_HASHMAP_CSS_PROPERTIES, NH_HASHMAPS.CSS.Properties);    
+    Nh_freeSingleHashMap(NH_HASHMAP_CSS_COLORS, NH_HASHMAPS.CSS.Colors);  
+    Nh_freeSingleHashMap(NH_HASHMAP_CSS_PSEUDO_CLASSES, NH_HASHMAPS.CSS.PseudoClasses);
+    Nh_freeSingleHashMap(NH_HASHMAP_CSS_PSEUDO_ELEMENTS, NH_HASHMAPS.CSS.PseudoElements);
+    Nh_freeSingleHashMap(NH_HASHMAP_JS_KEYWORDS, NH_HASHMAPS.JS.Keywords);      
+    Nh_freeSingleHashMap(NH_HASHMAP_JS_EVENT_TYPES, NH_HASHMAPS.JS.EventTypes);    
 
-    Nh_freeHashMapArray(NH_HASHMAP_JS_FUNCTIONS, Maps.JS.Functions_p);
-    Nh_free(Maps.JS.Functions_p);
+    Nh_freeHashMapArray(NH_HASHMAP_JS_FUNCTIONS, NH_HASHMAPS.JS.Functions_p);
+    Nh_free(NH_HASHMAPS.JS.Functions_p);
 
 NH_SILENT_END()
 }
@@ -113,7 +113,7 @@ NH_SILENT_END()
 Nh_HashMaps *Nh_getHashMaps()
 {
 NH_BEGIN()
-NH_END(&Maps)
+NH_END(&NH_HASHMAPS)
 }
 
 // CREATE ==========================================================================================
@@ -246,8 +246,18 @@ NH_BEGIN()
 
     switch (type)
     {
-        case NH_HASHMAP_MEDIA_TYPE          : *array_ppp = (char**) Nh_getMediaTypeTemplates(size_p); break;
-        case NH_HASHMAP_HTML_ATTRIBUTES     : *array_ppp = (char**) Nh_HTML_getAttributeNames(size_p); break;
+        case NH_HASHMAP_MEDIA_TYPE          :
+        {
+            *array_ppp = (char**) NH_MEDIA_TYPE_TEMPLATES_PP; 
+            *size_p = NH_MEDIA_TYPE_TEMPLATES_PP_COUNT; 
+            break;
+        }
+        case NH_HASHMAP_HTML_ATTRIBUTES     :
+        {
+            *array_ppp = (char**) NH_HTML_ATTRIBUTES_PP; 
+            *size_p = NH_HTML_ATTRIBUTES_PP_COUNT; 
+            break;
+        }
         case NH_HASHMAP_HTML_TAGS           : 
         {
             *array_ppp = (char**) NH_HTML_TAGS_PP; 

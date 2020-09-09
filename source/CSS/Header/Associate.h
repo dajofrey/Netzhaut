@@ -26,6 +26,10 @@
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
     );
 
+    NH_RESULT Nh_CSS_reassociateSheets(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p
+    );
+
 /** @} */
 
 #endif 

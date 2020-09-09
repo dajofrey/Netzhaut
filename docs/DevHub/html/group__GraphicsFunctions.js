@@ -19,7 +19,7 @@ var group__GraphicsFunctions =
     [ "Nh_Gfx_prepareRendering", "group__GraphicsFunctions.html#ga953bd8b97b7ccbf15b36444bc4fdc8da", null ],
     [ "Nh_Gfx_render", "group__GraphicsFunctions.html#gaec91909057bcaff66db0f7761e09039d", null ],
     [ "Nh_Gfx_resize", "group__GraphicsFunctions.html#ga04a9a922e021c868965d2d63c88a308e", null ],
-    [ "Nh_Gfx_updateNodeProperty", "group__GraphicsFunctions.html#ga3f8e3de3c8ef7f2678ac7b2515d17915", null ],
+    [ "Nh_Gfx_updateNodes", "group__GraphicsFunctions.html#ga69cd30da4db77973b64e198460d1a153", null ],
     [ "Nh_Gfx_updateTabRendering", "group__GraphicsFunctions.html#gac9842973303b6c5821b788e7fb271d65", null ],
     [ "Nh_Gfx_updateText", "group__GraphicsFunctions.html#ga7506a3b3b243030b3784daee396c2e3c", null ]
 ];

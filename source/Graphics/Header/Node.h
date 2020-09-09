@@ -28,8 +28,8 @@
         Nh_GPU *GPU_p, Nh_HTML_Node *Node_p
     );
 
-    NH_RESULT Nh_Gfx_updateNodeProperty(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    NH_RESULT Nh_Gfx_updateNodes(
+        Nh_Tab *Tab_p
     );
 
 /** @} */

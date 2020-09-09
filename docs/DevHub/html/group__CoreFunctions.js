@@ -70,7 +70,6 @@ var group__CoreFunctions =
     [ "Nh_getMediaType", "group__CoreFunctions.html#gad33881689548523d4dab1e87c08cdfbf", null ],
     [ "Nh_getMediaTypeFromPath", "group__CoreFunctions.html#ga278426e03cec5f3f8b389d1f01b251fc", null ],
     [ "Nh_getMediaTypeFromTemplate", "group__CoreFunctions.html#gaf71cd16cc7d139393ad5a62e42c2114b", null ],
-    [ "Nh_getMediaTypeTemplates", "group__CoreFunctions.html#gadf0567570cd5c35219338185e11b6c8a", null ],
     [ "Nh_getOutputCallbackCount", "group__CoreFunctions.html#gafe37268565835accebba01f021a8ae03", null ],
     [ "Nh_getPointOnCircle", "group__CoreFunctions.html#gaebe0e3014076853d28cdbe6d0af0460b", null ],
     [ "Nh_getSystem", "group__CoreFunctions.html#ga7d281a7dee7490be05060e8ff8097862", null ],

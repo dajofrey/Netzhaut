@@ -28,8 +28,8 @@ function clickOption(event)
             }
         }
         target.selected = true;
-//        var selchng = new Event('selectionchange');
-//        target.parentElement.dispatchEvent(selchng);
+        var selchng = new Event('selectionchange');
+        target.parentElement.dispatchEvent(selchng);
     }
 }
 

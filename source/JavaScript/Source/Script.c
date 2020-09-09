@@ -173,6 +173,8 @@ NH_BEGIN()
 
     if (Node_p->tag == NH_HTML_TAG_SCRIPT) 
     {
+        NH_BOOL add = NH_FALSE;
+
         Nh_JS_Script Script = {0};
         Nh_HTML_Node *Script_p = Nh_getListItem(&Node_p->Children.Unformatted, 0); 
 
@@ -180,6 +182,7 @@ NH_BEGIN()
         {
             Script.Flags.external = false;
             Script.URI = Nh_createInternalURL(Script_p, NH_INTERNAL_URL_HTML_NODE_TEXT);
+            add = NH_TRUE;
         }
         else {
             for (int i = 0; i < Node_p->Attributes.count; ++i) 
@@ -188,10 +191,12 @@ NH_BEGIN()
                 {
                     Script.Flags.external = true;
                     Script.URI = Nh_createInternalURL(Nh_HTML_getAttribute(&Node_p->Attributes, i), NH_INTERNAL_URL_HTML_NODE_ATTRIBUTE_VALUE);
+                    add = NH_TRUE;
                 }
             }
         }
-        NH_CHECK(Nh_JS_addScript(&Document_p->Scripts, &Script))
+
+        if (add) {NH_CHECK(Nh_JS_addScript(&Document_p->Scripts, &Script))}
     }
 
     for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) {

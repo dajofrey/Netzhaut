@@ -9,6 +9,7 @@
 
 #include "../../Header/Data.h"
 #include "../../Header/Interpreter.h"
+#include "../../Header/Variable.h"
 
 #include "../../../Core/Header/System.h"
 #include "../../../Core/Header/Tab.h"
@@ -199,7 +200,7 @@
     typedef struct Nh_JS_Event {
         NH_JS_EVENT type;
         char *type_p;
-        Nh_JS_Object *Target_p;
+        Nh_JS_Variable Target;
     } Nh_JS_Event;
 
 /** @} */

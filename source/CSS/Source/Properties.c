@@ -49,7 +49,7 @@ NH_SILENT_END()
 
 // SET DEFAULT =====================================================================================
 
-void Nh_CSS_setDefaultProperties(
+static void Nh_CSS_configureProperties(
     Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
@@ -71,7 +71,7 @@ NH_BEGIN()
 NH_SILENT_END()
 }
 
-void Nh_CSS_setDefaultProperty(
+static void Nh_CSS_configureProperty(
     Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_PROPERTY type)
 {
 NH_BEGIN()
@@ -107,8 +107,8 @@ NH_BEGIN()
     NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT];
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {Properties_pp[i] = NULL;}
 
+    Nh_CSS_configureProperties(Tab_p, Node_p);
     Nh_CSS_getGenericProperties(Tab_p, Node_p, Properties_pp);
-    Nh_CSS_setDefaultProperties(Tab_p, Node_p);
 
     // em length has text-font dependency, so we calculate text first
     Nh_CSS_computeTextProperties(Tab_p, Node_p, Properties_pp);

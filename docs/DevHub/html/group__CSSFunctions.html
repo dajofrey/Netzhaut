@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-08 22:45:04<br>v0.0.1 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-09 17:08:37<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.png"
@@ -234,8 +234,11 @@ Functions</h2></td></tr>
 <tr class="separator:ga66de7a52d4ec6ec51d5169681ee09bae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac7758c464fa8f8a35f35214f78bffa40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CSSFunctions.html#gac7758c464fa8f8a35f35214f78bffa40">Nh_CSS_destroyProperties</a> (<a class="el" href="structNH__CSS__Properties.html">NH_CSS_Properties</a> *Properties_p)</td></tr>
 <tr class="separator:gac7758c464fa8f8a35f35214f78bffa40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae0371cb0519666b660b2d5f0967ea078"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CSSFunctions.html#gae0371cb0519666b660b2d5f0967ea078">Nh_CSS_selectorHit</a> (<a class="el" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p, <a class="el" href="structNh__HashMaps.html">Nh_HashMaps</a> *Maps_p, char *selectorString_p, <a class="el" href="structNH__CSS__Pseudo.html">NH_CSS_Pseudo</a> *Pseudo_p, <a class="el" href="group__CSSEnums.html#ga6fb6d6200456d0602f9e51408e791418">NH_CSS_SELECTOR</a> *selector_p, bool handleDependentSelectors)</td></tr>
-<tr class="separator:gae0371cb0519666b660b2d5f0967ea078"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae91494b237250cbdd81b779c5bd58c09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CSSFunctions.html#gae91494b237250cbdd81b779c5bd58c09">Nh_CSS_selectorHit</a> (<a class="el" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p, char *selectorString_p, <a class="el" href="structNH__CSS__Pseudo.html">NH_CSS_Pseudo</a> *Pseudo_p, <a class="el" href="group__CSSEnums.html#ga6fb6d6200456d0602f9e51408e791418">NH_CSS_SELECTOR</a> *selector_p, bool handleDependentSelectors)</td></tr>
+<tr class="separator:gae91494b237250cbdd81b779c5bd58c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga15c90c6cbde2afd174dcc2a32bd07bfa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CSSFunctions.html#ga15c90c6cbde2afd174dcc2a32bd07bfa">Nh_CSS_attributeSelectorHit</a> (const char *selector_p, <a class="el" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *Node_p)</td></tr>
+<tr class="memdesc:ga15c90c6cbde2afd174dcc2a32bd07bfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the attribute selector matches a specific node attribute.  <a href="group__CSSFunctions.html#ga15c90c6cbde2afd174dcc2a32bd07bfa">More...</a><br /></td></tr>
+<tr class="separator:ga15c90c6cbde2afd174dcc2a32bd07bfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6207e062b61b65e4c13f2813ae7ddc5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CSSFunctions.html#ga6207e062b61b65e4c13f2813ae7ddc5b">Nh_CSS_addSheets</a> (<a class="el" href="structNh__HTML__Document.html">Nh_HTML_Document</a> *Document_p, bool addDefaultSheets)</td></tr>
 <tr class="separator:ga6207e062b61b65e4c13f2813ae7ddc5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad41eaf51859dc10cec45cf2f8353ff62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CSSFunctions.html#gad41eaf51859dc10cec45cf2f8353ff62">Nh_CSS_addSheet</a> (<a class="el" href="structNh__List.html">Nh_List</a> *Sheets_p, <a class="el" href="structNH__CSS__Sheet.html">NH_CSS_Sheet</a> *Sheet_p)</td></tr>
@@ -462,6 +465,37 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga15c90c6cbde2afd174dcc2a32bd07bfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga15c90c6cbde2afd174dcc2a32bd07bfa">&#9670;&nbsp;</a></span>Nh_CSS_attributeSelectorHit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Nh_CSS_attributeSelectorHit </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>selector_p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *&#160;</td>
+          <td class="paramname"><em>Node_p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the attribute selector matches a specific node attribute. </p>
+<p>The implementation currently also checks for matching node properties. </p>
 
 </div>
 </div>
@@ -2011,8 +2045,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gae0371cb0519666b660b2d5f0967ea078"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae0371cb0519666b660b2d5f0967ea078">&#9670;&nbsp;</a></span>Nh_CSS_selectorHit()</h2>
+<a id="gae91494b237250cbdd81b779c5bd58c09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae91494b237250cbdd81b779c5bd58c09">&#9670;&nbsp;</a></span>Nh_CSS_selectorHit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2022,12 +2056,6 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *&#160;</td>
           <td class="paramname"><em>Node_p</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structNh__HashMaps.html">Nh_HashMaps</a> *&#160;</td>
-          <td class="paramname"><em>Maps_p</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

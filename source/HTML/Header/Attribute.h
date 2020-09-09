@@ -18,6 +18,16 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
 
 #endif
 
+/** @addtogroup HTMLData Data
+ *  \ingroup HTML
+ *  @{
+ */
+
+    extern const char *NH_HTML_ATTRIBUTES_PP[];
+    extern size_t NH_HTML_ATTRIBUTES_PP_COUNT;
+
+/** @} */
+
 /** @addtogroup HTMLEnums Enums
  *  \ingroup HTML
  *  @{

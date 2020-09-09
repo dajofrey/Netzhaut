@@ -43,6 +43,7 @@ var group__HTMLFunctions =
     [ "Nh_HTML_processInput", "group__HTMLFunctions.html#ga17e28f457a46ea083f0f3fe962ae4755", null ],
     [ "Nh_HTML_recomputeFormattedTree", "group__HTMLFunctions.html#gaecfca4263df15f2044a930b357c34210", null ],
     [ "Nh_HTML_recomputeNode", "group__HTMLFunctions.html#ga71f0ccb7122e67afb47d77df04695e93", null ],
+    [ "Nh_HTML_recomputeTrees", "group__HTMLFunctions.html#ga813c14aebb7fd189797e03b94a01706c", null ],
     [ "Nh_HTML_recreateFlatTree", "group__HTMLFunctions.html#ga5964c8c9e05eb8c8adc72f97f607fa24", null ],
     [ "Nh_HTML_recreateNormalizedText", "group__HTMLFunctions.html#ga6c9471bd54db50d5793545f03f00af3f", null ],
     [ "Nh_HTML_removeAttribute", "group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94", null ],

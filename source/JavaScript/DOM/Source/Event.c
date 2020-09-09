@@ -44,12 +44,12 @@ NH_BEGIN()
     if (aCount == 1 && Arguments_p[0].type == NH_JS_TYPE_STRING)
     {
         Nh_JS_Event Event;
-        Event.type     = -1;
-        Event.type_p   = NULL;
-        Event.Target_p = NULL;
+        Event.type = -1;
+        Event.type_p = NULL;
+        Nh_JS_initVariable(&Event.Target, NULL, -1, 0);
 
         Nh_HashValue *HashValue_p = NULL;
-        hashmap_get(Nh_getHashMaps()->JS.EventTypes, Arguments_p[0].data_p, (void**)(&HashValue_p));
+        hashmap_get(NH_HASHMAPS.JS.EventTypes, Arguments_p[0].data_p, (void**)(&HashValue_p));
 
         if (HashValue_p != NULL) {Event.type = HashValue_p->number;}
         else {Event.type_p = Arguments_p[0].data_p;}
@@ -168,7 +168,7 @@ NH_BEGIN()
     {
         Nh_JS_Object *Object_p = Nh_JS_getObject(Function_p, NH_JS_OBJECT_EVENT);
         Nh_JS_Event *Event_p = Object_p->data_p;
-        NH_END(Nh_JS_getResult(NH_JS_TYPE_OBJECT, false, Event_p->Target_p))
+        NH_END(Nh_JS_getResult(NH_JS_TYPE_OBJECT, false, Event_p->Target.data_p))
     }
 
 NH_END(Nh_JS_getNULLResult())
@@ -263,7 +263,7 @@ NH_BEGIN()
     Nh_JS_Event Event;
     Event.type     = -1;
     Event.type_p   = NULL;
-    Event.Target_p = NULL;        
+    Nh_JS_initVariable(&Event.Target, NULL, -1, 0);
 
     *((Nh_JS_Event*)(*Object_pp)->data_p) = Event_p == NULL ? Event : *Event_p;
 
@@ -306,9 +306,10 @@ NH_BEGIN()
         Nh_JS_Script *Script_p = Nh_getListItem(&Tab_p->Document.Scripts, i);
 
         Nh_JS_Event Event;
-        Event.type     = type;
-        Event.type_p   = type_p;
-        Event.Target_p = Nh_JS_getHTMLElementObject(Script_p, Node_p);
+        Event.type   = type;
+        Event.type_p = type_p;
+        Event.Target.data_p     = Nh_JS_getHTMLElementObject(Script_p, Node_p);
+        Event.Target.distinct_p = Nh_JS_getDistinction(Script_p, Event.Target.data_p);
 
         NH_CHECK(Nh_JS_dispatchInternalEvent(Script_p, &Event, args))
 
@@ -331,7 +332,7 @@ NH_BEGIN()
         Nh_JS_Object *ListenerObject_p = Nh_getListItem(&Script_p->DOM.EventListeners, i);
         Nh_JS_EventListener *Listener_p = ListenerObject_p->data_p;
 
-        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target.data_p == Event_p->Target_p) 
+        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target.data_p == Event_p->Target.data_p) 
         {
             Nh_JS_Result Result = {
                 .freeData = false,
@@ -359,7 +360,7 @@ NH_BEGIN()
         Nh_JS_Object *ListenerObject_p = Nh_getListItem(&Script_p->DOM.EventListeners, i);
         Nh_JS_EventListener *Listener_p = ListenerObject_p->data_p;
 
-        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target.data_p == Event_p->Target_p) 
+        if (Listener_p != NULL && Listener_p->eventType == Event_p->type && Listener_p->Target.data_p == Event_p->Target.data_p) 
         {
             Nh_JS_Object *Object_p = Nh_allocate(sizeof(Nh_JS_Object));
             NH_CHECK_MEM(Object_p)
@@ -403,7 +404,7 @@ NH_BEGIN()
 
     Nh_String *String_p = Nh_allocateString(NULL);
 
-    char *obj_p = Nh_JS_stringifyObject(Event_p->Target_p, false, true);
+    char *obj_p = Nh_JS_stringifyObject(Event_p->Target.data_p, false, true);
     NH_CHECK_NULL(NULL, obj_p)
 
     NH_CHECK(NULL, Nh_appendFormatToString(String_p, "%s %s", Nh_JS_getEventTypes(NULL)[Event_p->type], obj_p))

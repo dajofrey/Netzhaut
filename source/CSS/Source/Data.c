@@ -299,7 +299,7 @@ NH_BEGIN()
 
     Nh_HashValue *HashValue_p;
     
-    if (hashmap_get(Nh_getHashMaps()->CSS.Colors, nameCpy_p, (void**)&HashValue_p) != MAP_OK) {
+    if (hashmap_get(NH_HASHMAPS.CSS.Colors, nameCpy_p, (void**)&HashValue_p) != MAP_OK) {
         NH_END(NH_ERROR_BAD_STATE)
     }
     

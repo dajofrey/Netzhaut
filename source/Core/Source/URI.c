@@ -441,6 +441,7 @@ NH_BEGIN()
 
     URI.size = size;
     URI.payload_p = payload_p;
+
     if (size_p != NULL) {*size_p = size;}
 
 NH_END(payload_p)

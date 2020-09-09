@@ -22,7 +22,7 @@
 
 // API =============================================================================================
 
-Nh_JS_Result NH_JS_HTML_COLLECTION_HTMLCollection(
+Nh_JS_Result Nh_JS_HTMLCollection_HTMLCollection(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -30,7 +30,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_HTML_COLLECTION_length(
+Nh_JS_Result Nh_JS_HTMLCollection_length(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -38,7 +38,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_HTML_COLLECTION_item(
+Nh_JS_Result Nh_JS_HTMLCollection_item(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -46,7 +46,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_HTML_COLLECTION_namedItem(
+Nh_JS_Result Nh_JS_HTMLCollection_namedItem(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()

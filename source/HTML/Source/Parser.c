@@ -48,34 +48,34 @@
 // DECLARE =========================================================================================
 
 static NH_RESULT Nh_HTML_parseElement(
-    char *current_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Parent_p, NH_HTML_TAG parent, char **end_pp
+    char *current_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Parent_p, NH_HTML_TAG parent, char **end_pp
 );
 static NH_RESULT Nh_HTML_parseAttributes(
-    char *current_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p
+    char *current_p, Nh_HTML_Node *Node_p
 );
 static NH_RESULT Nh_HTML_parseContent(
-    char *current_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p, NH_HTML_TAG parent
+    char *current_p, Nh_HTML_Node *Node_p, NH_HTML_TAG parent
 );
 static NH_RESULT Nh_HTML_allocateAttributes(
-    Nh_HashMaps *Maps_p, Nh_List *Attributes_p, Nh_String **Name_pp, Nh_String **Value_pp
+    Nh_List *Attributes_p, Nh_String **Name_pp, Nh_String **Value_pp
 );
 
 static NH_HTML_TAG Nh_HTML_getTag(
-    Nh_HashMaps *Maps_p, char *current_p
+    char *current_p
 );
 
 static char *Nh_HTML_seekNext(
     char *current_p, int offset
 );
 static char *Nh_HTML_seekEndOfElement(
-    Nh_HashMaps *Maps_p, char *current_p, NH_HTML_TAG parent
+    char *current_p, NH_HTML_TAG parent
 );
 static char *Nh_HTML_seekEndOfNormalDocType(
     char *begin_p
 );
 
 static NH_HTML_TAG Nh_HTML_getClosestMatchingTag(
-    Nh_HashMaps *Maps_p, char *current_p
+    char *current_p
 );
 
 // PARSER ==========================================================================================
@@ -85,7 +85,6 @@ NH_RESULT Nh_HTML_parseDocument(
 {
 NH_BEGIN()
 
-    Nh_HashMaps *Maps_p = Nh_getHashMaps();
     char *data_p = Nh_getData(Document_p->URI, NULL);
     if (data_p == NULL) {NH_END(NH_ERROR_BAD_STATE)}
 
@@ -98,7 +97,7 @@ NH_BEGIN()
 
     Document_p->Tree.Root_p = Nh_allocate(sizeof(Nh_HTML_Node));
     NH_CHECK_MEM(Document_p->Tree.Root_p)
-    NH_CHECK(Nh_HTML_parseElement(begin_p, Maps_p, Document_p->Tree.Root_p, NULL, -1, &end_p))
+    NH_CHECK(Nh_HTML_parseElement(begin_p, Document_p->Tree.Root_p, NULL, -1, &end_p))
 
     Nh_freeData(Document_p->URI);
 
@@ -106,24 +105,24 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_HTML_parseElement(
-    char *current_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Parent_p, NH_HTML_TAG parent, char **end_pp)
+    char *current_p, Nh_HTML_Node *Node_p, Nh_HTML_Node *Parent_p, NH_HTML_TAG parent, char **end_pp)
 {
 NH_BEGIN()
 
     char replace;
-    *end_pp = Nh_HTML_seekEndOfElement(Maps_p, current_p, parent);
+    *end_pp = Nh_HTML_seekEndOfElement(current_p, parent);
     NH_CHECK_NULL(*end_pp)
     replace = **end_pp;
     
     **end_pp = '\0';
 
-    NH_HTML_TAG tag = Nh_HTML_getTag(Maps_p, current_p);
+    NH_HTML_TAG tag = Nh_HTML_getTag(current_p);
 
     NH_CHECK(Nh_HTML_initNode(Node_p, Parent_p, tag))
 
     if (!IS_VOID_TAG(tag)) {
-        NH_CHECK(Nh_HTML_parseAttributes(current_p, Maps_p, Node_p))
-        NH_CHECK(Nh_HTML_parseContent(current_p, Maps_p, Node_p, tag))
+        NH_CHECK(Nh_HTML_parseAttributes(current_p, Node_p))
+        NH_CHECK(Nh_HTML_parseContent(current_p, Node_p, tag))
     }
 
     **end_pp = replace;
@@ -132,7 +131,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_HTML_parseAttributes(
-    char *current_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p)
+    char *current_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
 
@@ -161,9 +160,9 @@ NH_BEGIN()
 
         if (!inText) 
         {
-            if (!inAttributeName && inAttributeValue) {NH_CHECK(Nh_HTML_allocateAttributes(Maps_p, &Attributes, &Name_p, &Value_p))} // end of attribute=value reached 
+            if (!inAttributeName && inAttributeValue) {NH_CHECK(Nh_HTML_allocateAttributes(&Attributes, &Name_p, &Value_p))} // end of attribute=value reached 
             if (inAttributeName && current_p[i] == '>' && Nh_getChars(Name_p) != NULL) {
-                NH_CHECK(Nh_HTML_allocateAttributes(Maps_p, &Attributes, &Name_p, &Value_p)) // corner case (attribute without value at the end)
+                NH_CHECK(Nh_HTML_allocateAttributes(&Attributes, &Name_p, &Value_p)) // corner case (attribute without value at the end)
             }
 
             if (current_p[i] != ' ') { // must be new attribute
@@ -173,7 +172,7 @@ NH_BEGIN()
         } 
 
         if (!inText && inAttributeName && current_p[i] == ' ' && Nh_getChars(Name_p) != NULL) {
-            NH_CHECK(Nh_HTML_allocateAttributes(Maps_p, &Attributes, &Name_p, &Value_p)) // handle attribute without value
+            NH_CHECK(Nh_HTML_allocateAttributes(&Attributes, &Name_p, &Value_p)) // handle attribute without value
         }
         if (!inText && inAttributeName && current_p[i] == '=') {inAttributeName = false; inAttributeValue = true;}
 
@@ -196,7 +195,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_HTML_parseContent(
-    char *current_p, Nh_HashMaps *Maps_p, Nh_HTML_Node *Node_p, NH_HTML_TAG parent)
+    char *current_p, Nh_HTML_Node *Node_p, NH_HTML_TAG parent)
 {
 NH_BEGIN()
 
@@ -234,14 +233,14 @@ NH_BEGIN()
             Nh_clearString(String_p);
         }
 
-        NH_HTML_TAG tag = Nh_HTML_getTag(Maps_p, current_p);
+        NH_HTML_TAG tag = Nh_HTML_getTag(current_p);
 
         if (tag != -1 && current_p[0] == '<' && current_p[1] != '/' && current_p[1] != ' ') 
         {
             Nh_HTML_Node *Child_p = Nh_allocate(sizeof(Nh_HTML_Node));
             NH_CHECK_MEM(Child_p)
             char *end_p = NULL;
-            NH_CHECK(Nh_HTML_parseElement(current_p, Maps_p, Child_p, Node_p, parent, &end_p))
+            NH_CHECK(Nh_HTML_parseElement(current_p, Child_p, Node_p, parent, &end_p))
             NH_CHECK(Nh_addListItem(&Node_p->Children.Unformatted, Child_p))
             current_p = end_p;
         } 
@@ -254,7 +253,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_HTML_allocateAttributes(
-    Nh_HashMaps *Maps_p, Nh_List *Attributes_p, Nh_String **Name_pp, Nh_String **Value_pp)
+    Nh_List *Attributes_p, Nh_String **Name_pp, Nh_String **Value_pp)
 {
 NH_BEGIN()
 
@@ -262,7 +261,7 @@ NH_BEGIN()
     for (int i = 0; i < strlen(attributeName_p); ++i) {attributeName_p[i] = tolower(attributeName_p[i]);}
 
     Nh_HashValue *HashValue_p;
-    if (hashmap_get(Maps_p->HTML.Attributes, attributeName_p, (void**)(&HashValue_p)) != MAP_OK) {
+    if (hashmap_get(NH_HASHMAPS.HTML.Attributes, attributeName_p, (void**)(&HashValue_p)) != MAP_OK) {
         NH_END(NH_HTML_ERROR_ATTRIBUTE_UNKNOWN)
     }
 
@@ -282,7 +281,7 @@ NH_END(NH_SUCCESS)
 // GET =============================================================================================
 
 static NH_HTML_TAG Nh_HTML_getTag(
-    Nh_HashMaps *Maps_p, char *current_p)
+    char *current_p)
 {
 NH_BEGIN()
     
@@ -301,15 +300,15 @@ NH_BEGIN()
     current_p[length] = replace;
 
     Nh_HashValue *HashValue_p;
-    if (hashmap_get(Maps_p->HTML.Tags, tagName_p, (void**)(&HashValue_p)) != MAP_OK) {
-        NH_END(Nh_HTML_getClosestMatchingTag(Maps_p, current_p))
+    if (hashmap_get(NH_HASHMAPS.HTML.Tags, tagName_p, (void**)(&HashValue_p)) != MAP_OK) {
+        NH_END(Nh_HTML_getClosestMatchingTag(current_p))
     }
 
 NH_END(HashValue_p->number)
 }
 
 static NH_HTML_TAG Nh_HTML_getClosestMatchingTag(
-    Nh_HashMaps *Maps_p, char *current_p)
+    char *current_p)
 {
 NH_BEGIN()
 
@@ -369,11 +368,11 @@ NH_END(NULL)
 }
 
 static char *Nh_HTML_seekEndOfElement(
-    Nh_HashMaps *Maps_p, char *current_p, NH_HTML_TAG parent)
+    char *current_p, NH_HTML_TAG parent)
 {
 NH_BEGIN()
 
-    NH_HTML_TAG tag = Nh_HTML_getTag(Maps_p, current_p);
+    NH_HTML_TAG tag = Nh_HTML_getTag(current_p);
     if (tag == -1) {NH_END(NULL)}
 
     if (IS_VOID_TAG(tag)) {
@@ -399,15 +398,15 @@ NH_BEGIN()
         }
         if ( inContent && current_p[i] == '<' && current_p[i + 1] == '/') 
         {
-            int endTag = Nh_HTML_getTag(Maps_p, &current_p[i]);
+            int endTag = Nh_HTML_getTag(&current_p[i]);
             if (endTag == tag) {inEndTag = true; inContent = false;}
             else {NH_END(tmp_p != NULL ? tmp_p : &current_p[i - 1])}
         }
         if ( inContent && current_p[i] == '<' && current_p[i + 1] != '/' && current_p[i + 1] != ' ') 
         {
-            NH_HTML_TAG next = Nh_HTML_getTag(Maps_p, &current_p[i]);
+            NH_HTML_TAG next = Nh_HTML_getTag(&current_p[i]);
             if (!IS_PHRASING_CONTENT(next) && item == 0) {tmp_p = &current_p[i]; item++;}
-            current_p = Nh_HTML_seekEndOfElement(Maps_p, &current_p[i], tag);
+            current_p = Nh_HTML_seekEndOfElement(&current_p[i], tag);
             i = -1;
         }
         if (inEndTag && current_p[i] == '>') {

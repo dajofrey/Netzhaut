@@ -386,6 +386,7 @@ typedef struct Nh_Tab Nh_Tab;
         NH_CSS_SELECTOR selector;
         NH_CSS_PROPERTY type;
         NH_CSS_Pseudo Pseudo;
+        void *selector_p;
         char **values_pp;     
         int valueCount;      
         bool active;          

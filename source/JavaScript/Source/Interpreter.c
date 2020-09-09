@@ -44,7 +44,7 @@
 // DECLARE =========================================================================================
 
 static Nh_JS_Object *Nh_JS_getFunctionObject(
-    Nh_HashMaps *Maps_p, Nh_JS_Object *Owner_p, char *functionName_p
+    Nh_JS_Object *Owner_p, char *functionName_p
 );
 
 static Nh_JS_Result Nh_JS_interpretBlockStatement(
@@ -272,7 +272,7 @@ NH_BEGIN()
     if (Left.type == NH_JS_TYPE_OBJECT) 
     {
         Nh_JS_Object *Function_p = Nh_JS_getFunctionObject(
-            Nh_getHashMaps(), Left.data_p, ((Nh_JS_Identifier*)MemberExpression_p->Right.Data_p)->name_p
+            Left.data_p, ((Nh_JS_Identifier*)MemberExpression_p->Right.Data_p)->name_p
         );
 
         if (Function_p != NULL && (!Script_p->Run.callPending || !unresolvedArguments)) {
@@ -311,7 +311,7 @@ NH_BEGIN()
         Variable_p->data_p     = Result.data_p;
         Variable_p->type       = Result.type;
         Variable_p->freeData   = Result.freeData;
-        Variable_p->distinct_p = Nh_JS_getDistinction(Script_p, Variable_p->data_p);
+        Variable_p->distinct_p = Variable_p->type == NH_JS_TYPE_OBJECT ? Nh_JS_getDistinction(Script_p, Variable_p->data_p) : NULL;
 
         if (!Variable_p->freeData && Variable_p->type == NH_JS_TYPE_NUMBER) // dont want to override internal values
         {
@@ -668,14 +668,14 @@ NH_END(Interpreter_pp[type])
 }
 
 static Nh_JS_Object *Nh_JS_getFunctionObject(
-    Nh_HashMaps *Maps_p, Nh_JS_Object *Owner_p, char *functionName_p)
+    Nh_JS_Object *Owner_p, char *functionName_p)
 {
 NH_BEGIN()
 
     while (Owner_p != NULL)
     {
         Nh_HashValue *HashValue_p;
-        if (hashmap_get(Maps_p->JS.Functions_p[Owner_p->type], functionName_p, (void**)(&HashValue_p)) == MAP_OK) {
+        if (hashmap_get(NH_HASHMAPS.JS.Functions_p[Owner_p->type], functionName_p, (void**)(&HashValue_p)) == MAP_OK) {
             NH_END(&Owner_p->Functions_p[HashValue_p->number])
         }
         Owner_p = Owner_p->Inherit_p;

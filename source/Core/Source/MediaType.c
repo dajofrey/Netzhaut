@@ -25,7 +25,7 @@
 // DATA ============================================================================================
 
 // mostly from https://www.iana.org/assignments/media-types/media-types.xhtml
-const char *templates_pp[] = {
+const char *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/1d-interleaved-parityfec",                                            
     "application/3gpdash-qoe-report+xml",                                              
     "application/3gpp-ims+xml",                                                        
@@ -1869,6 +1869,8 @@ const char *templates_pp[] = {
     "video/VP8",
 };
 
+size_t NH_MEDIA_TYPE_TEMPLATES_PP_COUNT = sizeof(NH_MEDIA_TYPE_TEMPLATES_PP) / sizeof(NH_MEDIA_TYPE_TEMPLATES_PP[0]);
+
 // GET =============================================================================================
 
 NH_MEDIA Nh_getMediaTypeFromTemplate(
@@ -1877,7 +1879,7 @@ NH_MEDIA Nh_getMediaTypeFromTemplate(
 NH_BEGIN()
 
     Nh_HashValue *HashValue_p = NULL;
-    if (hashmap_get(Nh_getHashMaps()->MediaTypes, template_p, (void**)(&HashValue_p)) != MAP_OK) {
+    if (hashmap_get(NH_HASHMAPS.MediaTypes, template_p, (void**)(&HashValue_p)) != MAP_OK) {
         NH_END(-1)
     }
     if (HashValue_p == NULL) {NH_END(-1)}
@@ -1905,13 +1907,3 @@ NH_BEGIN()
 NH_END(-1)
 }
 
-const char** Nh_getMediaTypeTemplates(
-    size_t *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL) {*size_p = sizeof(templates_pp) / sizeof(templates_pp[0]);}
-
-NH_END(templates_pp);
-}
- 

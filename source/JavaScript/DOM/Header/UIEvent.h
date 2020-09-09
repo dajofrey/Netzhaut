@@ -19,43 +19,43 @@
  *  @{
  */
 
-    Nh_JS_Result NH_JS_UI_EVENT_UIEvent(
+    Nh_JS_Result Nh_JS_UIEvent_UIEvent(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
 
-    Nh_JS_Result NH_JS_UI_EVENT_detail(
+    Nh_JS_Result Nh_JS_UIEvent_detail(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_isChar(
+    Nh_JS_Result Nh_JS_UIEvent_isChar(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_layerX(
+    Nh_JS_Result Nh_JS_UIEvent_layerX(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_layerY(
+    Nh_JS_Result Nh_JS_UIEvent_layerY(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_pageX(
+    Nh_JS_Result Nh_JS_UIEvent_pageX(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_pageY(
+    Nh_JS_Result Nh_JS_UIEvent_pageY(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_sourceCapabilities(
+    Nh_JS_Result Nh_JS_UIEvent_sourceCapabilities(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_view(
+    Nh_JS_Result Nh_JS_UIEvent_view(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_UI_EVENT_which(
+    Nh_JS_Result Nh_JS_UIEvent_which(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
 

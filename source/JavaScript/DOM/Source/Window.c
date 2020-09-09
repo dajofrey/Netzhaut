@@ -21,7 +21,7 @@
 
 // API =============================================================================================
 
-Nh_JS_Result NH_JS_WINDOW_Window(
+Nh_JS_Result Nh_JS_Window_Window(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -29,7 +29,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_closed(
+Nh_JS_Result Nh_JS_Window_closed(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -37,7 +37,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_console(
+Nh_JS_Result Nh_JS_Window_console(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -45,7 +45,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_controllers(
+Nh_JS_Result Nh_JS_Window_controllers(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -53,7 +53,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_customElements(
+Nh_JS_Result Nh_JS_Window_customElements(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -61,7 +61,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_crypto(
+Nh_JS_Result Nh_JS_Window_crypto(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -69,7 +69,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_devicePixelRatio(
+Nh_JS_Result Nh_JS_Window_devicePixelRatio(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -77,7 +77,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_dialogArguments(
+Nh_JS_Result Nh_JS_Window_dialogArguments(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -85,7 +85,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_document(
+Nh_JS_Result Nh_JS_Window_document(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -93,7 +93,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_DOMMatrix(
+Nh_JS_Result Nh_JS_Window_DOMMatrix(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -101,7 +101,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_DOMMatrixReadOnly(
+Nh_JS_Result Nh_JS_Window_DOMMatrixReadOnly(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -109,7 +109,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_DOMPoint(
+Nh_JS_Result Nh_JS_Window_DOMPoint(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -117,7 +117,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_DOMPointReadOnly(
+Nh_JS_Result Nh_JS_Window_DOMPointReadOnly(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -125,7 +125,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_DOMQuad(
+Nh_JS_Result Nh_JS_Window_DOMQuad(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -133,7 +133,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_DOMRect(
+Nh_JS_Result Nh_JS_Window_DOMRect(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -141,7 +141,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_DOMRectReadOnly(
+Nh_JS_Result Nh_JS_Window_DOMRectReadOnly(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -149,7 +149,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_event(
+Nh_JS_Result Nh_JS_Window_event(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -157,7 +157,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_frameElement(
+Nh_JS_Result Nh_JS_Window_frameElement(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -165,7 +165,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_frames(
+Nh_JS_Result Nh_JS_Window_frames(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -173,7 +173,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_fullScreen(
+Nh_JS_Result Nh_JS_Window_fullScreen(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -181,7 +181,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_history(
+Nh_JS_Result Nh_JS_Window_history(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -189,7 +189,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_innerHeight(
+Nh_JS_Result Nh_JS_Window_innerHeight(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -197,7 +197,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_innerWidth(
+Nh_JS_Result Nh_JS_Window_innerWidth(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -205,7 +205,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_isSecureContext(
+Nh_JS_Result Nh_JS_Window_isSecureContext(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -213,7 +213,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_length(
+Nh_JS_Result Nh_JS_Window_length(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -221,7 +221,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_location(
+Nh_JS_Result Nh_JS_Window_location(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -229,7 +229,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_locationbar(
+Nh_JS_Result Nh_JS_Window_locationbar(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -237,7 +237,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_localStorage(
+Nh_JS_Result Nh_JS_Window_localStorage(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -245,7 +245,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_menubar(
+Nh_JS_Result Nh_JS_Window_menubar(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -253,7 +253,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_messageManager(
+Nh_JS_Result Nh_JS_Window_messageManager(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -262,7 +262,7 @@ NH_END(Nh_JS_getNULLResult())
 
 }
 
-Nh_JS_Result NH_JS_WINDOW_mozInnerScreenX(
+Nh_JS_Result Nh_JS_Window_mozInnerScreenX(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -270,7 +270,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_mozInnerScreenY(
+Nh_JS_Result Nh_JS_Window_mozInnerScreenY(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -278,7 +278,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_name(
+Nh_JS_Result Nh_JS_Window_name(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -286,7 +286,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_navigator(
+Nh_JS_Result Nh_JS_Window_navigator(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -294,7 +294,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_opener(
+Nh_JS_Result Nh_JS_Window_opener(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -302,7 +302,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_orientation(
+Nh_JS_Result Nh_JS_Window_orientation(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -310,7 +310,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_outerHeight(
+Nh_JS_Result Nh_JS_Window_outerHeight(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -318,7 +318,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_outerWidth(
+Nh_JS_Result Nh_JS_Window_outerWidth(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -326,7 +326,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_pageXOffset(
+Nh_JS_Result Nh_JS_Window_pageXOffset(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -334,7 +334,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_pageYOffset(
+Nh_JS_Result Nh_JS_Window_pageYOffset(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -342,7 +342,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_parent(
+Nh_JS_Result Nh_JS_Window_parent(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -350,7 +350,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_performance(
+Nh_JS_Result Nh_JS_Window_performance(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -358,7 +358,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_personalbar(
+Nh_JS_Result Nh_JS_Window_personalbar(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -366,7 +366,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_screen(
+Nh_JS_Result Nh_JS_Window_screen(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -374,7 +374,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_screenX(
+Nh_JS_Result Nh_JS_Window_screenX(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -382,7 +382,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_screenY(
+Nh_JS_Result Nh_JS_Window_screenY(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -390,7 +390,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollbars(
+Nh_JS_Result Nh_JS_Window_scrollbars(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -398,7 +398,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollMaxX(
+Nh_JS_Result Nh_JS_Window_scrollMaxX(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -406,7 +406,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollMaxY(
+Nh_JS_Result Nh_JS_Window_scrollMaxY(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -414,7 +414,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollX(
+Nh_JS_Result Nh_JS_Window_scrollX(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -422,7 +422,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollY(
+Nh_JS_Result Nh_JS_Window_scrollY(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -430,7 +430,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_self(
+Nh_JS_Result Nh_JS_Window_self(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -438,7 +438,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_sessionStorage(
+Nh_JS_Result Nh_JS_Window_sessionStorage(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -446,7 +446,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_sidebar(
+Nh_JS_Result Nh_JS_Window_sidebar(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -454,7 +454,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_speechSynthesis(
+Nh_JS_Result Nh_JS_Window_speechSynthesis(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -463,7 +463,7 @@ NH_END(Nh_JS_getNULLResult())
 }
 
 
-Nh_JS_Result NH_JS_WINDOW_status(
+Nh_JS_Result Nh_JS_Window_status(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -471,7 +471,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_statusbar(
+Nh_JS_Result Nh_JS_Window_statusbar(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -479,7 +479,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_toolbar(
+Nh_JS_Result Nh_JS_Window_toolbar(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -487,7 +487,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_top(
+Nh_JS_Result Nh_JS_Window_top(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -495,7 +495,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_visualViewport(
+Nh_JS_Result Nh_JS_Window_visualViewport(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -503,7 +503,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_window(
+Nh_JS_Result Nh_JS_Window_window(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -511,7 +511,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_caches(
+Nh_JS_Result Nh_JS_Window_caches(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -519,7 +519,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_indexedDB(
+Nh_JS_Result Nh_JS_Window_indexedDB(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -527,7 +527,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_origin(
+Nh_JS_Result Nh_JS_Window_origin(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -535,7 +535,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_content(
+Nh_JS_Result Nh_JS_Window_content(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -543,7 +543,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_defaultStatus(
+Nh_JS_Result Nh_JS_Window_defaultStatus(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -551,7 +551,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_directories(
+Nh_JS_Result Nh_JS_Window_directories(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -559,7 +559,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_globalStorage(
+Nh_JS_Result Nh_JS_Window_globalStorage(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -567,7 +567,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_mozAnimationStartTime(
+Nh_JS_Result Nh_JS_Window_mozAnimationStartTime(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -575,7 +575,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_mozPaintCount(
+Nh_JS_Result Nh_JS_Window_mozPaintCount(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -583,7 +583,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_pkcs11(
+Nh_JS_Result Nh_JS_Window_pkcs11(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -591,7 +591,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_returnValue(
+Nh_JS_Result Nh_JS_Window_returnValue(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -599,7 +599,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_alert(
+Nh_JS_Result Nh_JS_Window_alert(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -607,7 +607,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_blur(
+Nh_JS_Result Nh_JS_Window_blur(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -615,7 +615,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_cancelAnimationFrame(
+Nh_JS_Result Nh_JS_Window_cancelAnimationFrame(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -623,7 +623,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_cancelIdleCallback(
+Nh_JS_Result Nh_JS_Window_cancelIdleCallback(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -631,7 +631,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_clearImmediate(
+Nh_JS_Result Nh_JS_Window_clearImmediate(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -639,7 +639,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_close(
+Nh_JS_Result Nh_JS_Window_close(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -647,7 +647,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_confirm(
+Nh_JS_Result Nh_JS_Window_confirm(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -655,7 +655,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_dump(
+Nh_JS_Result Nh_JS_Window_dump(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -663,7 +663,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_find(
+Nh_JS_Result Nh_JS_Window_find(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -671,7 +671,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_focus(
+Nh_JS_Result Nh_JS_Window_focus(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -679,7 +679,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_getComputedStyle(
+Nh_JS_Result Nh_JS_Window_getComputedStyle(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -687,7 +687,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_getDefaultComputedStyle(
+Nh_JS_Result Nh_JS_Window_getDefaultComputedStyle(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -695,7 +695,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_getSelection(
+Nh_JS_Result Nh_JS_Window_getSelection(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -703,7 +703,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_matchMedia(
+Nh_JS_Result Nh_JS_Window_matchMedia(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -711,7 +711,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_maximize(
+Nh_JS_Result Nh_JS_Window_maximize(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -719,7 +719,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_minimize(
+Nh_JS_Result Nh_JS_Window_minimize(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -727,7 +727,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_moveBy(
+Nh_JS_Result Nh_JS_Window_moveBy(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -735,7 +735,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_moveTo(
+Nh_JS_Result Nh_JS_Window_moveTo(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -743,7 +743,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_open(
+Nh_JS_Result Nh_JS_Window_open(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -751,7 +751,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_postMessage(
+Nh_JS_Result Nh_JS_Window_postMessage(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -760,7 +760,7 @@ NH_END(Nh_JS_getNULLResult())
 }
 
 
-Nh_JS_Result NH_JS_WINDOW_print(
+Nh_JS_Result Nh_JS_Window_print(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -768,7 +768,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_prompt(
+Nh_JS_Result Nh_JS_Window_prompt(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -776,7 +776,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_requestAnimationFrame(
+Nh_JS_Result Nh_JS_Window_requestAnimationFrame(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -784,7 +784,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_requestIdleCallback(
+Nh_JS_Result Nh_JS_Window_requestIdleCallback(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -792,7 +792,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_resizeBy(
+Nh_JS_Result Nh_JS_Window_resizeBy(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -800,7 +800,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_resizeTo(
+Nh_JS_Result Nh_JS_Window_resizeTo(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -808,7 +808,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scroll(
+Nh_JS_Result Nh_JS_Window_scroll(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -816,7 +816,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollBy(
+Nh_JS_Result Nh_JS_Window_scrollBy(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -831,7 +831,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollByLines(
+Nh_JS_Result Nh_JS_Window_scrollByLines(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -839,7 +839,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollByPages(
+Nh_JS_Result Nh_JS_Window_scrollByPages(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -847,7 +847,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_scrollTo(
+Nh_JS_Result Nh_JS_Window_scrollTo(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -855,7 +855,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_setCursor(
+Nh_JS_Result Nh_JS_Window_setCursor(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -863,7 +863,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_setImmediate(
+Nh_JS_Result Nh_JS_Window_setImmediate(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -871,7 +871,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_setResizable(
+Nh_JS_Result Nh_JS_Window_setResizable(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -879,7 +879,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_sizeToContent(
+Nh_JS_Result Nh_JS_Window_sizeToContent(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -887,7 +887,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_stop(
+Nh_JS_Result Nh_JS_Window_stop(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -895,7 +895,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WINDOW_updateCommands(
+Nh_JS_Result Nh_JS_Window_updateCommands(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()

@@ -13,19 +13,19 @@
  *  @{
  */
 
-    Nh_JS_Result NH_JS_EVENT_TARGET_EventTarget(
+    Nh_JS_Result Nh_JS_EventTarget_EventTarget(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
 
-    Nh_JS_Result NH_JS_EVENT_TARGET_addEventListener(
+    Nh_JS_Result Nh_JS_EventTarget_addEventListener(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_EVENT_TARGET_removeEventListener(
+    Nh_JS_Result Nh_JS_EventTarget_removeEventListener(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_EVENT_TARGET_dispatchEvent(
+    Nh_JS_Result Nh_JS_EventTarget_dispatchEvent(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
 

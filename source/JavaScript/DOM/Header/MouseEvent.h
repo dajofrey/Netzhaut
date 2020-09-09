@@ -33,107 +33,107 @@
 
 // API
 
-    Nh_JS_Result NH_JS_MOUSE_EVENT_MouseEvent(
+    Nh_JS_Result Nh_JS_MouseEvent_MouseEvent(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
 
-    Nh_JS_Result NH_JS_MOUSE_EVENT_altKey(
+    Nh_JS_Result Nh_JS_MouseEvent_altKey(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_button(
+    Nh_JS_Result Nh_JS_MouseEvent_button(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_buttons(
+    Nh_JS_Result Nh_JS_MouseEvent_buttons(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_clientX(
+    Nh_JS_Result Nh_JS_MouseEvent_clientX(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_clientY(
+    Nh_JS_Result Nh_JS_MouseEvent_clientY(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_ctrlKey(
+    Nh_JS_Result Nh_JS_MouseEvent_ctrlKey(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_metaKey(
+    Nh_JS_Result Nh_JS_MouseEvent_metaKey(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_movementX(
+    Nh_JS_Result Nh_JS_MouseEvent_movementX(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_movementY(
+    Nh_JS_Result Nh_JS_MouseEvent_movementY(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_offsetX(
+    Nh_JS_Result Nh_JS_MouseEvent_offsetX(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_offsetY(
+    Nh_JS_Result Nh_JS_MouseEvent_offsetY(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_pageX(
+    Nh_JS_Result Nh_JS_MouseEvent_pageX(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_pageY(
+    Nh_JS_Result Nh_JS_MouseEvent_pageY(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_region(
+    Nh_JS_Result Nh_JS_MouseEvent_region(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_relatedTarget(
+    Nh_JS_Result Nh_JS_MouseEvent_relatedTarget(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_screenX(
+    Nh_JS_Result Nh_JS_MouseEvent_screenX(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_screenY(
+    Nh_JS_Result Nh_JS_MouseEvent_screenY(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_shiftKey(
+    Nh_JS_Result Nh_JS_MouseEvent_shiftKey(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_which(
+    Nh_JS_Result Nh_JS_MouseEvent_which(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_mozInputSource(
+    Nh_JS_Result Nh_JS_MouseEvent_mozInputSource(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_webkitForce(
+    Nh_JS_Result Nh_JS_MouseEvent_webkitForce(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_x(
+    Nh_JS_Result Nh_JS_MouseEvent_x(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_y(
+    Nh_JS_Result Nh_JS_MouseEvent_y(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_getModifierState(
+    Nh_JS_Result Nh_JS_MouseEvent_getModifierState(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
     
-    Nh_JS_Result NH_JS_MOUSE_EVENT_initMouseEvent(
+    Nh_JS_Result Nh_JS_MouseEvent_initMouseEvent(
         Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p
     );
 

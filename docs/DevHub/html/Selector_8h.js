@@ -16,5 +16,6 @@ var Selector_8h =
       [ "NH_CSS_SELECTOR_PSEUDO_CLASS", "group__CSSEnums.html#gga6fb6d6200456d0602f9e51408e791418a4d31f38aef9898fdcc29d4f7cb80e613", null ],
       [ "NH_CSS_SELECTOR_PSEUDO_ELEMENT", "group__CSSEnums.html#gga6fb6d6200456d0602f9e51408e791418ae295b43b35fdc151e01a1896fbb141f8", null ]
     ] ],
-    [ "Nh_CSS_selectorHit", "group__CSSFunctions.html#gae0371cb0519666b660b2d5f0967ea078", null ]
+    [ "Nh_CSS_attributeSelectorHit", "group__CSSFunctions.html#ga15c90c6cbde2afd174dcc2a32bd07bfa", null ],
+    [ "Nh_CSS_selectorHit", "group__CSSFunctions.html#gae91494b237250cbdd81b779c5bd58c09", null ]
 ];

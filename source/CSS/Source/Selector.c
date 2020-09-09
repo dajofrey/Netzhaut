@@ -33,14 +33,6 @@ static bool Nh_CSS_isAttributeSelector(
     const char *selector_p
 );
 
-/**
- * Checks if the attribute selector matches a specific node attribute. The implementation currently 
- * also checks for matching node properties.
- */
-static bool Nh_CSS_attributeSelectorHit(
-    const char *selector_p, Nh_HTML_Node *Node_p, map_t Attributes, map_t Properties
-);
-
 static bool Nh_CSS_attributeHit(
     Nh_HTML_Node *Node_p, NH_HTML_ATTRIBUTE type, char *value_p
 );
@@ -51,8 +43,8 @@ static bool Nh_CSS_propertyHit(
 // HIT =============================================================================================
 
 bool Nh_CSS_selectorHit(
-    Nh_HTML_Node *Node_p, Nh_HashMaps *Maps_p, char *selectorString_p, NH_CSS_Pseudo *Pseudo_p,
-    NH_CSS_SELECTOR *selector_p, bool handleDependentSelectors)
+    Nh_HTML_Node *Node_p, char *selectorString_p, NH_CSS_Pseudo *Pseudo_p, NH_CSS_SELECTOR *selector_p, 
+    bool handleDependentSelectors)
 {
 NH_BEGIN()
 
@@ -103,7 +95,11 @@ NH_BEGIN()
         }
         case NH_CSS_SELECTOR_ATTRIBUTE :
         {
-            positive = Nh_CSS_attributeSelectorHit(selectorString_p, Node_p, Maps_p->HTML.Attributes, Maps_p->CSS.Properties);
+            char element_p[256] = {'\0'};
+            int count = 0;
+            for (int i = 0; i < strlen(selectorString_p); ++i) {if (selectorString_p[i] == '[') {break;}++count;}
+            memcpy((void*)element_p, (void*)selectorString_p, sizeof(char) * count);
+            positive = !strcmp(element_p, NH_HTML_TAGS_PP[Node_p->tag]);
             break;
         }
         case NH_CSS_SELECTOR_CHILD_COMBINATOR :
@@ -120,14 +116,14 @@ NH_BEGIN()
                 for (int i = 0; i < Node_p->Parent_p->Children.Unformatted.count; ++i) 
                 {
                     positive = 
-                        Nh_CSS_selectorHit(Node_p->Parent_p, Maps_p, leftSelect_p, &LeftPseudo, selector_p, handleDependentSelectors)
-                    &&  Nh_CSS_selectorHit(Node_p, Maps_p, rightSelect_p, &RightPseudo, selector_p, handleDependentSelectors);
+                        Nh_CSS_selectorHit(Node_p->Parent_p, leftSelect_p, &LeftPseudo, selector_p, handleDependentSelectors)
+                    &&  Nh_CSS_selectorHit(Node_p, rightSelect_p, &RightPseudo, selector_p, handleDependentSelectors);
 
                     if (handleDependentSelectors && !positive) {
-                        positive = (Nh_CSS_selectorHit(Node_p->Parent_p, Maps_p, leftSelect_p, &LeftPseudo, selector_p, !handleDependentSelectors) 
-                                &&  Nh_CSS_selectorHit(Node_p, Maps_p, rightSelect_p, &RightPseudo, selector_p, handleDependentSelectors)) 
-                                || (Nh_CSS_selectorHit(Node_p->Parent_p, Maps_p, leftSelect_p, &LeftPseudo, selector_p, handleDependentSelectors) 
-                                &&  Nh_CSS_selectorHit(Node_p, Maps_p, rightSelect_p, &RightPseudo, selector_p, !handleDependentSelectors));
+                        positive = (Nh_CSS_selectorHit(Node_p->Parent_p, leftSelect_p, &LeftPseudo, selector_p, !handleDependentSelectors) 
+                                &&  Nh_CSS_selectorHit(Node_p, rightSelect_p, &RightPseudo, selector_p, handleDependentSelectors)) 
+                                || (Nh_CSS_selectorHit(Node_p->Parent_p, leftSelect_p, &LeftPseudo, selector_p, handleDependentSelectors) 
+                                &&  Nh_CSS_selectorHit(Node_p, rightSelect_p, &RightPseudo, selector_p, !handleDependentSelectors));
                     }
                 }
 
@@ -144,14 +140,14 @@ NH_BEGIN()
             strcpy(pseudoClassString_p, strstr(selectorString_p, ":") + 1);
 
             Nh_HashValue *HashValue_p;
-            if (hashmap_get(Maps_p->CSS.PseudoClasses, pseudoClassString_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(false)}
+            if (hashmap_get(NH_HASHMAPS.CSS.PseudoClasses, pseudoClassString_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(false)}
             if (Pseudo_p != NULL) {Pseudo_p->_class = HashValue_p->number;}
 
             char leftSelect_p[255] = {'\0'};
             strcpy(leftSelect_p, selectorString_p);
             leftSelect_p[strlen(selectorString_p) - (strlen(pseudoClassString_p) + 1)] = '\0';
 
-            positive = Nh_CSS_selectorHit(Node_p, Maps_p, leftSelect_p, NULL, selector_p, handleDependentSelectors);
+            positive = Nh_CSS_selectorHit(Node_p, leftSelect_p, NULL, selector_p, handleDependentSelectors);
             if (positive) {break;}
         }
 
@@ -164,14 +160,14 @@ NH_BEGIN()
             if (pseudoElementString_p[0] == ':') {offset = 1;}
 
             Nh_HashValue *HashValue_p;
-            if (hashmap_get(Maps_p->CSS.PseudoElements, pseudoElementString_p + offset, (void**)(&HashValue_p)) != MAP_OK) {NH_END(false)}
+            if (hashmap_get(NH_HASHMAPS.CSS.PseudoElements, pseudoElementString_p + offset, (void**)(&HashValue_p)) != MAP_OK) {NH_END(false)}
             if (Pseudo_p != NULL) {Pseudo_p->element = HashValue_p->number;}
 
             char leftSelect_p[255] = {'\0'};
             strcpy(leftSelect_p, selectorString_p);
             leftSelect_p[strlen(selectorString_p) - (strlen(pseudoElementString_p) + 1 + offset)] = '\0';
 
-            positive = Nh_CSS_selectorHit(Node_p, Maps_p, leftSelect_p, NULL, selector_p, handleDependentSelectors);
+            positive = Nh_CSS_selectorHit(Node_p, leftSelect_p, NULL, selector_p, handleDependentSelectors);
             break;
         }
     }
@@ -197,8 +193,8 @@ NH_BEGIN()
 NH_END(c == 2)
 }
 
-static bool Nh_CSS_attributeSelectorHit(
-    const char *selector_p, Nh_HTML_Node *Node_p, map_t Attributes, map_t Properties)
+bool Nh_CSS_attributeSelectorHit(
+    const char *selector_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
 
@@ -226,8 +222,8 @@ NH_BEGIN()
         Nh_HashValue *HashValue_p;
         bool validAttribute = false, validProperty = false;
 
-        if (hashmap_get(Attributes, attr_p, (void**)(&HashValue_p)) != MAP_OK) {
-            if (hashmap_get(Properties, attr_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(false)}
+        if (hashmap_get(NH_HASHMAPS.HTML.Attributes, attr_p, (void**)(&HashValue_p)) != MAP_OK) {
+            if (hashmap_get(NH_HASHMAPS.CSS.Properties, attr_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(false)}
             else {validProperty = true;}
         } 
         else {validAttribute = true;}

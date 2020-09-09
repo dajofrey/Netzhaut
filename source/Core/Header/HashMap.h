@@ -46,6 +46,15 @@
 
 /** @} */
 
+/** @addtogroup CoreData Data
+ *  \ingroup Core
+ *  @{
+ */
+
+    extern Nh_HashMaps NH_HASHMAPS;
+
+/** @} */
+
 /** @addtogroup CoreFunctions Functions
  *  \ingroup Core
  *  @{

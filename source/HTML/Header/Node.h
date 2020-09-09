@@ -25,6 +25,7 @@
  *  \ingroup HTML
  *  @{
  */
+
     extern const char *NH_HTML_TAGS_PP[];
     extern size_t NH_HTML_TAGS_PP_COUNT;
 

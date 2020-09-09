@@ -133,6 +133,95 @@ NH_BEGIN()
 NH_SILENT_END()
 }
 
+// UPDATE ==========================================================================================
+
+NH_RESULT Nh_Vk_updateNodeProperty(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+{
+NH_BEGIN()
+
+    if (Tab_p == NULL || Node_p == NULL) {NH_END(NH_SUCCESS)}
+
+    Nh_Vk_GPU *GPU_p = Tab_p->Window_p->GPU.Pointer;
+
+    switch (Property_p->type)
+    {
+        case NH_CSS_PROPERTY_BACKGROUND_COLOR : 
+ 
+            NH_CHECK(Nh_Vk_mapDeviceMemory(
+                &GPU_p->Driver, 
+                &Nh_Vk_getUniform(Node_p, NH_VK_UNIFORM_BACKGROUND)->DeviceMemory, 
+                Node_p->Computed.Properties.Background.color_p, 
+                sizeof(float) * 4,
+                sizeof(float) * 16 
+            ))
+            break;
+ 
+        case NH_CSS_PROPERTY_COLOR : 
+ 
+            NH_CHECK(Nh_Vk_mapDeviceMemory(
+                &GPU_p->Driver, 
+                &Nh_Vk_getUniform(Node_p, NH_VK_UNIFORM_TEXT_SDF_FS)->DeviceMemory, 
+                Node_p->Computed.Properties.Text.color_p, 
+                sizeof(float) * 4,
+                0
+            ))
+            break;
+ 
+//        case NH_CSS_PROPERTY_DISPLAY : 
+//        case NH_CSS_PROPERTY_BORDER_STYLE :
+//        case NH_CSS_PROPERTY_BORDER_WIDTH :
+//        case NH_CSS_PROPERTY_BORDER_TOP   :
+//
+//            if (NH_CSS_SHOW_TOP_BORDER(Node_p))
+//            {
+//                if (Nh_Vk_getBuffer(Node_p, NH_VK_BUFFER_TOP_BORDER_VERTICES) == NULL) {
+//                    NH_CHECK(
+//                        Nh_Vk_createBorderVertices(Tab_p, &GPU_p->Driver, Node_p, NH_VK_BUFFER_TOP_BORDER_VERTICES),
+//                        Nh_Vk_createColorUniform(&GPU_p->Driver, Node_p, NH_VK_UNIFORM_TOP_BORDER),
+//                        Nh_Vk_createColorDescriptor(&GPU_p->Driver, Node_p, NH_VK_DESCRIPTOR_TOP_BORDER)
+//                    )
+//                }
+//            }
+//            if (NH_CSS_SHOW_RIGHT_BORDER(Node_p))
+//            {
+//                if (Nh_Vk_getBuffer(Node_p, NH_VK_BUFFER_RIGHT_BORDER_VERTICES) == NULL) {
+//                    NH_CHECK(
+//                        Nh_Vk_createBorderVertices(Tab_p, &GPU_p->Driver, Node_p, NH_VK_BUFFER_RIGHT_BORDER_VERTICES),
+//                        Nh_Vk_createColorUniform(&GPU_p->Driver, Node_p, NH_VK_UNIFORM_RIGHT_BORDER),
+//                        Nh_Vk_createColorDescriptor(&GPU_p->Driver, Node_p, NH_VK_DESCRIPTOR_RIGHT_BORDER)
+//                    )
+//                }
+//            }
+//            if (NH_CSS_SHOW_BOTTOM_BORDER(Node_p))
+//            {
+//                if (Nh_Vk_getBuffer(Node_p, NH_VK_BUFFER_BOTTOM_BORDER_VERTICES) == NULL) {
+//                    NH_CHECK(
+//                        Nh_Vk_createBorderVertices(Tab_p, &GPU_p->Driver, Node_p, NH_VK_BUFFER_BOTTOM_BORDER_VERTICES),
+//                        Nh_Vk_createColorUniform(&GPU_p->Driver, Node_p, NH_VK_UNIFORM_BOTTOM_BORDER),
+//                        Nh_Vk_createColorDescriptor(&GPU_p->Driver, Node_p, NH_VK_DESCRIPTOR_BOTTOM_BORDER)
+//                    )
+//                }
+//            }
+//            if (NH_CSS_SHOW_LEFT_BORDER(Node_p))
+//            {
+//                if (Nh_Vk_getBuffer(Node_p, NH_VK_BUFFER_LEFT_BORDER_VERTICES) == NULL) {
+//                    NH_CHECK(
+//                        Nh_Vk_createBorderVertices(Tab_p, &GPU_p->Driver, Node_p, NH_VK_BUFFER_LEFT_BORDER_VERTICES),
+//                        Nh_Vk_createColorUniform(&GPU_p->Driver, Node_p, NH_VK_UNIFORM_LEFT_BORDER),
+//                        Nh_Vk_createColorDescriptor(&GPU_p->Driver, Node_p, NH_VK_DESCRIPTOR_LEFT_BORDER)
+//                    )
+//                }
+//            }
+//
+//            NH_CHECK(Nh_Vk_updateNodeVertices(Tab_p, Node_p)) 
+//
+//            break;
+    }
+
+NH_END(NH_SUCCESS)
+}
+
 // CANVAS RENDERING CONTEXT 2D =====================================================================
 
 //NH_RESULT Nh_Vk_createCanvasRenderingContext2DResources(

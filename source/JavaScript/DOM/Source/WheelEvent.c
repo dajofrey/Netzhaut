@@ -18,7 +18,7 @@
 
 // API =============================================================================================
 
-Nh_JS_Result NH_JS_WHEEL_EVENT_WheelEvent(
+Nh_JS_Result Nh_JS_WheelEvent_WheelEvent(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -26,7 +26,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WHEEL_EVENT_deltaX(
+Nh_JS_Result Nh_JS_WheelEvent_deltaX(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -40,7 +40,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WHEEL_EVENT_deltaY(
+Nh_JS_Result Nh_JS_WheelEvent_deltaY(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -54,7 +54,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WHEEL_EVENT_deltaZ(
+Nh_JS_Result Nh_JS_WheelEvent_deltaZ(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()
@@ -68,7 +68,7 @@ NH_BEGIN()
 NH_END(Nh_JS_getNULLResult())
 }
 
-Nh_JS_Result NH_JS_WHEEL_EVENT_deltaMode(
+Nh_JS_Result Nh_JS_WheelEvent_deltaMode(
     Nh_JS_Script *Script_p, Nh_JS_Object *Function_p, int aCount, Nh_JS_Result *Arguments_p)
 {
 NH_BEGIN()

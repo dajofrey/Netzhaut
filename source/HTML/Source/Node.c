@@ -233,8 +233,7 @@ NH_BEGIN()
 
     if (text && Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_recreateNormalizedText(Tab_p, Node_p))}
 
-    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
+    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
 
 NH_END(NH_SUCCESS)
 }
@@ -300,8 +299,6 @@ NH_RESULT Nh_HTML_prependChild(
 {
 NH_BEGIN()
 
-    NH_CHECK(Nh_HTML_destroyFormattedTree(&Tab_p->Document.Tree, &Tab_p->Window_p->GPU))
-
     NH_CHECK(Nh_prependListItem(&Node_p->Children.Unformatted, Prepend_p))
 
     NH_CHECK(Nh_CSS_associateSheets(Tab_p, Prepend_p))
@@ -313,8 +310,7 @@ NH_BEGIN()
         NH_CHECK(Nh_JS_updateDocumentObject(Nh_getListItem(&Tab_p->Document.Scripts, 0)))
     }
 
-    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    NH_CHECK(Nh_HTML_computeFormattedTree(Tab_p))
+    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
 
 NH_END(NH_SUCCESS)
 }

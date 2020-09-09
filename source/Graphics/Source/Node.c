@@ -66,6 +66,31 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+// UPDATE ==========================================================================================
+
+NH_RESULT Nh_Gfx_updateNodes(
+    Nh_Tab *Tab_p)
+{
+NH_BEGIN()
+
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Formatted.count; ++i) 
+    {
+        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Formatted, i);
+
+        for (int j = 0; j < Node_p->Properties.count; ++j) 
+        {
+            switch (Tab_p->Window_p->GPU.API)
+            {
+                case NH_API_VULKAN :
+                    NH_CHECK(Nh_Vk_updateNodeProperty(Tab_p, Node_p, Nh_getListItem(&Node_p->Properties, j))) 
+                    break;
+            }
+        }
+    }
+
+NH_END(NH_SUCCESS)
+}
+
 // DESTROY =========================================================================================
 
 void Nh_Gfx_destroyNode(

@@ -29,7 +29,7 @@
 
 // DATA ============================================================================================
 
-const char *attributeNames_pp[] = 
+const char *NH_HTML_ATTRIBUTES_PP[] = 
 {
     "accept",                 
     "accept-charset",          
@@ -203,6 +203,8 @@ const char *attributeNames_pp[] =
     "alink",
     "vlink",
 };
+
+size_t NH_HTML_ATTRIBUTES_PP_COUNT = sizeof(NH_HTML_ATTRIBUTES_PP) / sizeof(NH_HTML_ATTRIBUTES_PP[0]);
 
 // DECLARE =========================================================================================
 
@@ -489,23 +491,6 @@ NH_BEGIN()
     }
 
 NH_SILENT_END()
-}
-
-const char** Nh_HTML_getAttributeNames(
-    size_t *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL) {*size_p = sizeof(attributeNames_pp) / sizeof(attributeNames_pp[0]);}
-
-NH_END(attributeNames_pp);
-}
-
-const char* Nh_HTML_getAttributeName(
-    int attribute)
-{
-NH_BEGIN()
-NH_END(attributeNames_pp[attribute]);
 }
 
 // ATTRIBUTE LIST ==================================================================================

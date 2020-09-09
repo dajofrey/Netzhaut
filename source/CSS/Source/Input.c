@@ -18,6 +18,8 @@
 #include "../../Core/Header/HashMap.h"
 #include "../../Core/Header/RingIterator.h"
 
+#include "../../Graphics/Header/Node.h"
+
 #include NH_DEBUG
 #include NH_DEFAULT_CHECK
 
@@ -82,8 +84,7 @@ NH_BEGIN()
         NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
     }
 
-    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
+    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
 
 NH_END(NH_SUCCESS)
 }
@@ -124,8 +125,8 @@ NH_BEGIN()
     for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
         NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
     }
-    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
+
+    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
 
 NH_END(NH_SUCCESS)
 }
@@ -162,8 +163,10 @@ NH_BEGIN()
     for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
         NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
     }
-    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
+
+    Nh_Gfx_updateNodes(Tab_p);
+
+//    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
 
 NH_END(NH_SUCCESS)
 }

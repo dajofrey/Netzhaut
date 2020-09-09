@@ -60,6 +60,10 @@ typedef struct Nh_GPU Nh_GPU;
         Nh_Tab *Tab_p
     );
 
+    NH_RESULT Nh_HTML_recomputeTrees(
+        Nh_Tab *Tab_p
+    );
+
     char *Nh_HTML_stringifyTree(
         Nh_HTML_Tree *Tree_p, NH_BOOL unformatted
     );

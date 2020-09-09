@@ -209,5 +209,7 @@ var Attribute_8h =
     [ "Nh_HTML_getAttributes", "group__HTMLFunctions.html#ga47365507e18ea7e7a51b63fad488c845", null ],
     [ "Nh_HTML_initAttribute", "group__HTMLFunctions.html#ga4c3beb030c8c5094cb7dcd3d93f72b1e", null ],
     [ "Nh_HTML_initAttributes", "group__HTMLFunctions.html#ga003fdb7329a37bafb61fdb18da4f6f1d", null ],
-    [ "Nh_HTML_removeAttribute", "group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94", null ]
+    [ "Nh_HTML_removeAttribute", "group__HTMLFunctions.html#ga0263f7e08eb450486b3363a8b4d68b94", null ],
+    [ "NH_HTML_ATTRIBUTES_PP", "group__HTMLData.html#ga0bd59f6a3212792da39bfc835232aa98", null ],
+    [ "NH_HTML_ATTRIBUTES_PP_COUNT", "group__HTMLData.html#ga519f6dfb5f5c89bfeb3f46ca19854dd2", null ]
 ];

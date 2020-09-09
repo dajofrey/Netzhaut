@@ -169,6 +169,12 @@ NH_BEGIN()
                 NH_END(Nh_JS_updateHTMLCollection(Object_p->data_p))
             }
 
+            Object_p = Nh_JS_getObject(Variable_p->data_p, NH_JS_OBJECT_EVENT);
+            if (Object_p != NULL) {
+                Nh_JS_Event *Event_p = Object_p->data_p;
+                NH_CHECK(Nh_JS_updateVariable(Script_p, &Event_p->Target))
+            }
+
             break;
         }
     }

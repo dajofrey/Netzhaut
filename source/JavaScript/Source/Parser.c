@@ -37,7 +37,7 @@
 
 // DEFINE ==========================================================================================
 
-typedef int (*NH_JS_ParserPointer)(void *, void *, void *, void *, void *);
+typedef int (*NH_JS_ParserPointer)(void *, void *, void *, void *);
 
 #define DONT_IGNORE(c) (c != ' ' && c != '\n' && c != '\t' && c != '\v' && c != '\r' && c != '\0')
 #define IS_LINE_BREAK(c) (c == '\n' || c == '\r')
@@ -50,76 +50,76 @@ typedef int (*NH_JS_ParserPointer)(void *, void *, void *, void *, void *);
 
 #define GET_TYPE_AND_PARSE(Parsable, code_p, b)                                         \
 {                                                                                       \
-    Parsable.type = Nh_JS_getParsableType(Maps_p, code_p, b);                           \
+    Parsable.type = Nh_JS_getParsableType(code_p, b);                           \
     NH_CHECK(Nh_JS_allocateParsable(Parsable.type, &Parsable.Data_p))                   \
-    NH_CHECK(Parser_pp[Parsable.type](Maps_p, code_p, &Parsable, depth_p, Container_p)) \
+    NH_CHECK(Parser_pp[Parsable.type](code_p, &Parsable, depth_p, Container_p)) \
 }
 
 #define PARSE(Parsable, code_p)                                                         \
 {                                                                                       \
     NH_CHECK(Nh_JS_allocateParsable(Parsable.type, &Parsable.Data_p))                   \
-    NH_CHECK(Parser_pp[Parsable.type](Maps_p, code_p, &Parsable, depth_p, Container_p)) \
+    NH_CHECK(Parser_pp[Parsable.type](code_p, &Parsable, depth_p, Container_p)) \
 }
 
 // DECLARE =========================================================================================
 
 static NH_RESULT Nh_JS_parseBinaryExpression(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseIfStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseForStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseFunctionDeclaration(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseBlockStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseExpressionStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseStringLiteral(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseMemberExpression(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseCallExpression(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseVariableDeclaration(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseIdentifier(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseNumericLiteral(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseBooleanLiteral(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseConstructorCall(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 
 static NH_RESULT Nh_JS_parseVariableDeclarator(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_VariableDeclarator *Declarator_p, int *depth_p, Nh_JS_BlockStatement *Container_p, NH_JS_KEYWORD kind
+    char *current_p, Nh_JS_VariableDeclarator *Declarator_p, int *depth_p, Nh_JS_BlockStatement *Container_p, NH_JS_KEYWORD kind
 );
 static NH_RESULT Nh_JS_parseArguments(
-    Nh_HashMaps *Maps_p, Nh_JS_CallExpression *CallExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    Nh_JS_CallExpression *CallExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseParameters(
-    Nh_HashMaps *Maps_p, Nh_JS_FunctionDeclaration *Function_p, char *current_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    Nh_JS_FunctionDeclaration *Function_p, char *current_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseRightMember(
-    Nh_HashMaps *Maps_p, Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 static NH_RESULT Nh_JS_parseLeftMember(
-    Nh_HashMaps *Maps_p, Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p
+    Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p
 );
 
 static NH_RESULT Nh_JS_allocateParsable(
@@ -127,7 +127,7 @@ static NH_RESULT Nh_JS_allocateParsable(
 );
 
 static NH_JS_PARSABLE Nh_JS_getParsableType(
-    Nh_HashMaps *Maps_p, char *line_p, bool ignoreCurved
+    char *line_p, bool ignoreCurved
 );
 static NH_JS_OPERATOR Nh_JS_getOperator(
     char *line_p
@@ -243,12 +243,12 @@ NH_BEGIN()
         {
             int depth = 0;
             
-            Script_p->Container.Parsables_p[index].type = Nh_JS_getParsableType(Nh_getHashMaps(), current_p, true);
+            Script_p->Container.Parsables_p[index].type = Nh_JS_getParsableType(current_p, true);
             
             NH_CHECK(Nh_JS_allocateParsable(Script_p->Container.Parsables_p[index].type, &Script_p->Container.Parsables_p[index].Data_p))
             NH_CHECK(
                 Parser_pp[Script_p->Container.Parsables_p[index].type]
-                    (Nh_getHashMaps(), current_p, &Script_p->Container.Parsables_p[index++], &depth, &Script_p->Container)
+                    (current_p, &Script_p->Container.Parsables_p[index++], &depth, &Script_p->Container)
             ) 
 
             current_p = Nh_JS_seekNext(Nh_JS_seekEndOfParsable(current_p, true), 1);
@@ -263,7 +263,7 @@ NH_END(NH_SUCCESS)
 // PARSER ==========================================================================================
 
 static NH_RESULT Nh_JS_parseBinaryExpression(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -324,7 +324,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseIfStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -378,7 +378,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseForStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -437,7 +437,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseFunctionDeclaration(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -464,7 +464,7 @@ NH_BEGIN()
 
     // parameters
     current_p = Nh_JS_seekNext(current_p, charCount + 1);
-    NH_CHECK(Nh_JS_parseParameters(Maps_p, Function_p, current_p, depth_p, Container_p))
+    NH_CHECK(Nh_JS_parseParameters(Function_p, current_p, depth_p, Container_p))
 
     for (charCount = 0; current_p[charCount] != ')'; ++charCount) {}
     current_p = Nh_JS_seekNext(current_p, charCount + 1);
@@ -476,7 +476,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseBlockStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -521,7 +521,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseExpressionStatement(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -532,7 +532,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseStringLiteral(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
  
@@ -562,7 +562,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseMemberExpression(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -582,8 +582,8 @@ NH_BEGIN()
         for (int i = 0; i < length; ++i) {part_p[i] = current_p[i];}
         part_p[length] = '\0';
 
-        NH_CHECK(Nh_JS_parseRightMember(Maps_p, MemberExpression_p, part_p, depth_p, Container_p))
-        NH_CHECK(Nh_JS_parseLeftMember(Maps_p, MemberExpression_p, part_p, depth_p, Container_p))
+        NH_CHECK(Nh_JS_parseRightMember(MemberExpression_p, part_p, depth_p, Container_p))
+        NH_CHECK(Nh_JS_parseLeftMember(MemberExpression_p, part_p, depth_p, Container_p))
 
         Nh_free(part_p);
     }
@@ -592,7 +592,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseIdentifier(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
  
@@ -615,7 +615,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseCallExpression(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -638,7 +638,7 @@ NH_BEGIN()
         for (int i = 0; i < length; ++i) {reverse_p[i] = current_p[i];}
         reverse_p[length] = '\0';
         
-        NH_CHECK(Nh_JS_parseArguments(Maps_p, CallExpression_p, reverse_p, depth_p, Container_p))
+        NH_CHECK(Nh_JS_parseArguments(CallExpression_p, reverse_p, depth_p, Container_p))
 
         for (int i = strlen(reverse_p); i >= 0; --i) {if (reverse_p[i] == '(') {reverse_p[i] = '\0';}}
 
@@ -651,7 +651,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseVariableDeclaration(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -663,17 +663,17 @@ NH_BEGIN()
     {
         int length = 0;
         GET_WORD_LENGTH(length)
-        NH_CHECK(Nh_JS_parseVariableDeclarator(Maps_p, Nh_JS_seekNext(&current_p[length], 0), &Declaration_p->Declarator, depth_p, Container_p, Declaration_p->kind))
+        NH_CHECK(Nh_JS_parseVariableDeclarator(Nh_JS_seekNext(&current_p[length], 0), &Declaration_p->Declarator, depth_p, Container_p, Declaration_p->kind))
     }
     else {
-        NH_CHECK(Nh_JS_parseVariableDeclarator(Maps_p, current_p, &Declaration_p->Declarator, depth_p, Container_p, Declaration_p->kind))
+        NH_CHECK(Nh_JS_parseVariableDeclarator(current_p, &Declaration_p->Declarator, depth_p, Container_p, Declaration_p->kind))
     }
 
 NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseVariableDeclarator(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_VariableDeclarator *Declarator_p, int *depth_p, Nh_JS_BlockStatement *Container_p, NH_JS_KEYWORD kind)
+    char *current_p, Nh_JS_VariableDeclarator *Declarator_p, int *depth_p, Nh_JS_BlockStatement *Container_p, NH_JS_KEYWORD kind)
 {
 NH_BEGIN()
 
@@ -703,7 +703,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseNumericLiteral(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -714,7 +714,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseBooleanLiteral(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -724,7 +724,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseConstructorCall(
-    Nh_HashMaps *Maps_p, char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    char *current_p, Nh_JS_Parsable *Parsable_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -743,7 +743,7 @@ NH_END(NH_SUCCESS)
 // MICRO PARSING ===================================================================================
 
 static NH_RESULT Nh_JS_parseArguments(
-    Nh_HashMaps *Maps_p, Nh_JS_CallExpression *CallExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    Nh_JS_CallExpression *CallExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -803,7 +803,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseParameters(
-    Nh_HashMaps *Maps_p, Nh_JS_FunctionDeclaration *Function_p, char *current_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    Nh_JS_FunctionDeclaration *Function_p, char *current_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -866,7 +866,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseRightMember(
-    Nh_HashMaps *Maps_p, Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -880,7 +880,7 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_JS_parseLeftMember(
-    Nh_HashMaps *Maps_p, Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
+    Nh_JS_MemberExpression *MemberExpression_p, char *part_p, int *depth_p, Nh_JS_BlockStatement *Container_p)
 {
 NH_BEGIN()
 
@@ -932,7 +932,7 @@ NH_END(NH_SUCCESS)
 // GET =============================================================================================
 
 static NH_JS_PARSABLE Nh_JS_getParsableType(
-    Nh_HashMaps *Maps_p, char *current_p, bool ignoreCurved)
+    char *current_p, bool ignoreCurved)
 {
 NH_BEGIN()
 
@@ -1103,7 +1103,7 @@ static NH_JS_KEYWORD Nh_JS_getKeyword(
 NH_BEGIN()
 
     Nh_HashValue *HashValue_p;
-    if (hashmap_get(Nh_getHashMaps()->JS.Keywords, word_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(-1)}
+    if (hashmap_get(NH_HASHMAPS.JS.Keywords, word_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(-1)}
 
 NH_END(HashValue_p->number)
 }

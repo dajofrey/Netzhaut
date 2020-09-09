@@ -129,6 +129,17 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+NH_RESULT Nh_HTML_recomputeTrees(
+    Nh_Tab *Tab_p)
+{
+NH_BEGIN()
+
+    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
+    NH_CHECK(Nh_HTML_recomputeFormattedTree(Tab_p))
+
+NH_END(NH_SUCCESS)
+}
+
 // STRINGIFY =======================================================================================
 
 static NH_RESULT Nh_HTML_stringifyElement(
@@ -150,7 +161,7 @@ NH_BEGIN()
 
     for (int i = 0; i < Node_p->Attributes.count; ++i) {
         Nh_HTML_Attribute *Attribute_p = Nh_HTML_getAttribute(&Node_p->Attributes, i);
-        INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "  %s: %s\n", Nh_HTML_getAttributeName(Attribute_p->type), Attribute_p->value_p))
+        INDENT() NH_CHECK(Nh_appendFormatToString(String_p, "  %s: %s\n", NH_HTML_ATTRIBUTES_PP[Attribute_p->type], Attribute_p->value_p))
     }
     for (int i = 0; i < (unformatted ? Node_p->Children.Unformatted.count : Node_p->Children.Formatted.count); ++i) {
         NH_CHECK(Nh_HTML_stringifyElement(

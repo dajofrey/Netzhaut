@@ -61,8 +61,16 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
  */
 
     bool Nh_CSS_selectorHit(
-        Nh_HTML_Node *Node_p, Nh_HashMaps *Maps_p, char *selectorString_p, NH_CSS_Pseudo *Pseudo_p,
-        NH_CSS_SELECTOR *selector_p, bool handleDependentSelectors
+        Nh_HTML_Node *Node_p, char *selectorString_p, NH_CSS_Pseudo *Pseudo_p, NH_CSS_SELECTOR *selector_p, 
+        bool handleDependentSelectors
+    );
+
+    /**
+     * Checks if the attribute selector matches a specific node attribute. The implementation currently 
+     * also checks for matching node properties.
+     */
+    bool Nh_CSS_attributeSelectorHit(
+        const char *selector_p, Nh_HTML_Node *Node_p
     );
 
 /** @} */

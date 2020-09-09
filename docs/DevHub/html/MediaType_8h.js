@@ -1845,5 +1845,6 @@ var MediaType_8h =
     ] ],
     [ "Nh_getMediaTypeFromPath", "group__CoreFunctions.html#ga278426e03cec5f3f8b389d1f01b251fc", null ],
     [ "Nh_getMediaTypeFromTemplate", "group__CoreFunctions.html#gaf71cd16cc7d139393ad5a62e42c2114b", null ],
-    [ "Nh_getMediaTypeTemplates", "group__CoreFunctions.html#gadf0567570cd5c35219338185e11b6c8a", null ]
+    [ "NH_MEDIA_TYPE_TEMPLATES_PP", "group__CoreData.html#gae5f810b9422bfa2d6736583de8d27961", null ],
+    [ "NH_MEDIA_TYPE_TEMPLATES_PP_COUNT", "group__CoreData.html#gac1890431029d94926a5209ce008b8123", null ]
 ];
