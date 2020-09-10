@@ -21,7 +21,7 @@
 // DECLARE =========================================================================================
 
 inline static void Nh_CSS_setListStyleType(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // IMPLEMENT =======================================================================================
@@ -52,7 +52,7 @@ NH_SILENT_END()
 }
 
 NH_RESULT Nh_CSS_computeListProperties(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 
@@ -64,7 +64,7 @@ NH_END(NH_SUCCESS)
 // STYLE ===========================================================================================
 
 inline static void Nh_CSS_setListStyleType(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -93,7 +93,7 @@ NH_BEGIN()
         else if (!strcmp(style_p, "upper-greek"))          {Node_p->Computed.Properties.List.styleType = NH_CSS_LIST_STYLE_TYPE_UPPER_GREEK;}
         else if (!strcmp(style_p, "upper-latin"))          {Node_p->Computed.Properties.List.styleType = NH_CSS_LIST_STYLE_TYPE_UPPER_LATIN;}
         else if (!strcmp(style_p, "upper-roman"))          {Node_p->Computed.Properties.List.styleType = NH_CSS_LIST_STYLE_TYPE_UPPER_ROMAN;}
-        else                                               {Node_p->Computed.Properties.List.styleType = NH_CSS_LIST_STYLE_TYPE_DISC;}
+        else if (!strcmp(style_p, "disc"))                 {Node_p->Computed.Properties.List.styleType = NH_CSS_LIST_STYLE_TYPE_DISC;}
     }
 
 NH_SILENT_END()

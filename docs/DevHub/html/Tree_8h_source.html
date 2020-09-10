@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-09 17:08:37<br>v0.0.1 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-10 13:47:32<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.png"
@@ -143,11 +143,15 @@ $(document).ready(function(){initNavTree('Tree_8h_source.html',''); initResizabl
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <a class="code" href="structNh__Tab.html">Nh_Tab</a> *Tab_p</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    );</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga1ec7797d6a41ed84cad27aaccd19deb2">   67</a></span>&#160;    <span class="keywordtype">char</span> *<a class="code" href="group__HTMLFunctions.html#ga1ec7797d6a41ed84cad27aaccd19deb2">Nh_HTML_stringifyTree</a>(</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <a class="code" href="structNh__HTML__Tree.html">Nh_HTML_Tree</a> *Tree_p, <a class="code" href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a> unformatted</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#gaa1a2ad300ca639e9306866a2f9a37360">   67</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="group__HTMLFunctions.html#gaa1a2ad300ca639e9306866a2f9a37360">Nh_HTML_destroyUnformattedTree</a>(</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <a class="code" href="structNh__HTML__Tree.html">Nh_HTML_Tree</a> *Tree_p</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    );</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="group__HTMLFunctions.html#ga1ec7797d6a41ed84cad27aaccd19deb2">   71</a></span>&#160;    <span class="keywordtype">char</span> *<a class="code" href="group__HTMLFunctions.html#ga1ec7797d6a41ed84cad27aaccd19deb2">Nh_HTML_stringifyTree</a>(</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <a class="code" href="structNh__HTML__Tree.html">Nh_HTML_Tree</a> *Tree_p, <a class="code" href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a> unformatted</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    );</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="agroup__APICoreEnums_html_gaa5bc4d468ba7fc657a127fa6ffca469c"><div class="ttname"><a href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a></div><div class="ttdeci">NH_BOOL</div><div class="ttdoc">Boolean values.</div><div class="ttdef"><b>Definition:</b> Netzhaut.h:130</div></div>
@@ -156,6 +160,7 @@ $(document).ready(function(){initNavTree('Tree_8h_source.html',''); initResizabl
 <div class="ttc" id="astructNh__HTML__Tree_1_1Nh__HTML__Flat_html_af22cd71098ab751072fdb53feb721bb9"><div class="ttname"><a href="structNh__HTML__Tree_1_1Nh__HTML__Flat.html#af22cd71098ab751072fdb53feb721bb9">Nh_HTML_Tree::Nh_HTML_Flat::Unformatted</a></div><div class="ttdeci">Nh_List Unformatted</div><div class="ttdoc">Contains nodes gathered using unformatted traversal.</div><div class="ttdef"><b>Definition:</b> Tree.h:34</div></div>
 <div class="ttc" id="agroup__HTMLFunctions_html_ga5964c8c9e05eb8c8adc72f97f607fa24"><div class="ttname"><a href="group__HTMLFunctions.html#ga5964c8c9e05eb8c8adc72f97f607fa24">Nh_HTML_recreateFlatTree</a></div><div class="ttdeci">NH_RESULT Nh_HTML_recreateFlatTree(Nh_HTML_Tree *Tree_p, Nh_HTML_Node *Node_p, NH_BOOL unformatted)</div></div>
 <div class="ttc" id="agroup__HTMLFunctions_html_ga928ef8f679bf10c1dde86b9f1c40ad93"><div class="ttname"><a href="group__HTMLFunctions.html#ga928ef8f679bf10c1dde86b9f1c40ad93">Nh_HTML_destroyFormattedTree</a></div><div class="ttdeci">NH_RESULT Nh_HTML_destroyFormattedTree(Nh_HTML_Tree *Tree_p, Nh_GPU *GPU_p)</div></div>
+<div class="ttc" id="agroup__HTMLFunctions_html_gaa1a2ad300ca639e9306866a2f9a37360"><div class="ttname"><a href="group__HTMLFunctions.html#gaa1a2ad300ca639e9306866a2f9a37360">Nh_HTML_destroyUnformattedTree</a></div><div class="ttdeci">void Nh_HTML_destroyUnformattedTree(Nh_HTML_Tree *Tree_p)</div></div>
 <div class="ttc" id="astructNh__HTML__Tree_html_a1125e348a4fec2b435efc27dfd2e058c"><div class="ttname"><a href="structNh__HTML__Tree.html#a1125e348a4fec2b435efc27dfd2e058c">Nh_HTML_Tree::Flat</a></div><div class="ttdeci">struct Nh_HTML_Tree::Nh_HTML_Flat Flat</div><div class="ttdoc">Flattened tree for quick traversal.</div></div>
 <div class="ttc" id="agroup__HTMLFunctions_html_ga1ec7797d6a41ed84cad27aaccd19deb2"><div class="ttname"><a href="group__HTMLFunctions.html#ga1ec7797d6a41ed84cad27aaccd19deb2">Nh_HTML_stringifyTree</a></div><div class="ttdeci">char * Nh_HTML_stringifyTree(Nh_HTML_Tree *Tree_p, NH_BOOL unformatted)</div></div>
 <div class="ttc" id="astructNh__List_html"><div class="ttname"><a href="structNh__List.html">Nh_List</a></div><div class="ttdoc">Generic linked-list which holds data pointers.</div><div class="ttdef"><b>Definition:</b> List.h:32</div></div>

@@ -89,19 +89,11 @@
     );
 
     Nh_URI Nh_createURI(
-        char *chars_p, char *base_p, Nh_URI *Base_p
+        char *chars_p, char *base_p, Nh_URI *Base_p, void *pointer, NH_INTERNAL_URL type
     );
 
     Nh_URI Nh_copyURI(
         Nh_URI *URI_p
-    );
-
-    Nh_URI Nh_createInternalURN(
-        char *chars_p
-    );
-
-    Nh_URI Nh_createInternalURL(
-        void *pointer, NH_INTERNAL_URL type
     );
 
     void Nh_freeURI(

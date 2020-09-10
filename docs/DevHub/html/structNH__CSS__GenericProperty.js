@@ -5,6 +5,7 @@ var structNH__CSS__GenericProperty =
     [ "selector", "structNH__CSS__GenericProperty.html#a445d6b12b8a8fb347f2c944cc76233c4", null ],
     [ "selector_p", "structNH__CSS__GenericProperty.html#aa79e1860afb3aa54d4e118f7a3dabca9", null ],
     [ "Sheet_p", "structNH__CSS__GenericProperty.html#a7467f5e3c38e632e5f5a3cd01df84bc4", null ],
+    [ "triggerRecompute", "structNH__CSS__GenericProperty.html#aff0fd151509166a1dd953f797d8ee52e", null ],
     [ "type", "structNH__CSS__GenericProperty.html#ab34e1d4d5e11b381f890aaa07e77f6a8", null ],
     [ "update", "structNH__CSS__GenericProperty.html#a8aa6a38fd2d6e0c0f1f13d8dcfb10633", null ],
     [ "valueCount", "structNH__CSS__GenericProperty.html#a5026eedd79a5f9ab4c5e5c9876374b17", null ],

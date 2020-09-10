@@ -27,26 +27,26 @@
 // DECLARE =========================================================================================
 
 inline static void Nh_CSS_setBackgroundColor(
-    Nh_Window *Window_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Window *Window_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 inline static void Nh_CSS_setBackgroundImage(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 inline static void Nh_CSS_setBackgroundSize(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index 
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index 
 );
 inline static void Nh_CSS_setBackgroundOrigin(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index
 );
 inline static void Nh_CSS_setBackgroundPosition(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, 
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, 
     int index
 );
 
 // IMPLEMENT =======================================================================================
 
 NH_RESULT Nh_CSS_computeBackgroundProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 
@@ -129,7 +129,7 @@ NH_SILENT_END()
 // SET =============================================================================================
 
 inline static void Nh_CSS_setBackgroundColor(
-    Nh_Window *Window_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Window *Window_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -149,7 +149,7 @@ NH_SILENT_END()
 }
 
 inline static void Nh_CSS_setBackgroundImage(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -169,7 +169,7 @@ NH_SILENT_END()
 }
 
 inline static void Nh_CSS_setBackgroundSize(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index)
 {
 NH_BEGIN()
 
@@ -215,7 +215,7 @@ NH_SILENT_END()
 }
 
 inline static void Nh_CSS_setBackgroundOrigin(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, int index)
 {
 NH_BEGIN()
 
@@ -231,7 +231,7 @@ NH_SILENT_END()
 }
 
 inline static void Nh_CSS_setBackgroundPosition(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, 
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_Image *Image_p, 
     int index)
 {
 NH_BEGIN()

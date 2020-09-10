@@ -76,7 +76,7 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
     );
     
     NH_RESULT Nh_CSS_computeListProperties(
-        Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp
+        Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp
     );
 
 /** @} */

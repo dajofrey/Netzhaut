@@ -11,7 +11,7 @@ var annotated_dup =
     [ "NH_CSS_Corners", "structNH__CSS__Corners.html", "structNH__CSS__Corners" ],
     [ "NH_CSS_Declaration", "structNH__CSS__Declaration.html", "structNH__CSS__Declaration" ],
     [ "NH_CSS_Generic", "structNH__CSS__Generic.html", "structNH__CSS__Generic" ],
-    [ "NH_CSS_GenericProperty", "structNH__CSS__GenericProperty.html", "structNH__CSS__GenericProperty" ],
+    [ "Nh_CSS_GenericProperty", "structNh__CSS__GenericProperty.html", "structNh__CSS__GenericProperty" ],
     [ "NH_CSS_Image", "structNH__CSS__Image.html", "structNH__CSS__Image" ],
     [ "NH_CSS_List", "structNH__CSS__List.html", "structNH__CSS__List" ],
     [ "NH_CSS_Position", "structNH__CSS__Position.html", "structNH__CSS__Position" ],

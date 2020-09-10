@@ -24,19 +24,19 @@
 // DECLARE =========================================================================================
 
 static inline void Nh_JS_setPadding(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_JS_setPaddingBottom(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_JS_setPaddingLeft(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_JS_setPaddingRight(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_JS_setPaddingTop(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // INIT ============================================================================================
@@ -81,7 +81,7 @@ NH_SILENT_END()
 // COMPUTE =========================================================================================
 
 NH_RESULT Nh_CSS_computePaddingProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 
@@ -97,13 +97,13 @@ NH_END(NH_SUCCESS)
 // PADDING =========================================================================================
 
 static inline void Nh_JS_setPadding(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Property_p != NULL) 
     {
-        NH_CSS_GenericProperty SingleValue;
+        Nh_CSS_GenericProperty SingleValue;
         SingleValue.values_pp = Nh_allocate(sizeof(void*));
         
         switch (Property_p->valueCount)
@@ -154,7 +154,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_JS_setPaddingBottom(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -169,7 +169,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_JS_setPaddingLeft(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -184,7 +184,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_JS_setPaddingRight(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -199,7 +199,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_JS_setPaddingTop(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 

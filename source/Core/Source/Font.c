@@ -165,7 +165,7 @@ NH_BEGIN()
 
     if (!Nh_isRegularFile(absolutePath_p)) {NH_END(NH_ERROR_INVALID_FILE_FORMAT)}
 
-    Nh_URI URI = Nh_createURI(absolutePath_p, NULL, NULL);
+    Nh_URI URI = Nh_createURI(absolutePath_p, NULL, NULL, NULL, -1);
     long size = 0;
     char *data_p = Nh_getData(URI, &size);
 

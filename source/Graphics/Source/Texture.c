@@ -69,7 +69,7 @@ NH_BEGIN()
 
     NH_CHECK_NULL(NULL, Tab_p)
 
-    Nh_URI URI = URI_p == NULL ? Nh_createURI(chars_p, NULL, NULL) : Nh_copyURI(URI_p);
+    Nh_URI URI = URI_p == NULL ? Nh_createURI(chars_p, NULL, NULL, NULL, -1) : Nh_copyURI(URI_p);
 
     Nh_Gfx_Texture *Texture_p = Nh_Gfx_getTexture(Tab_p, &URI);
     if (Texture_p != NULL) {

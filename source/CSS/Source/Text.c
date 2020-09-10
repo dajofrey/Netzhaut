@@ -23,26 +23,26 @@
 // DECLARE =========================================================================================
 
 static inline void setDirection(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void setTextAlign(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void setColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void setFontSize(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void setWritingMode(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 static inline void setFontFamily(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void setFontWeight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // IMPLEMENT =======================================================================================
@@ -96,7 +96,7 @@ NH_SILENT_END()
 }
 
 NH_RESULT Nh_CSS_computeTextProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 
@@ -115,7 +115,7 @@ NH_END(NH_SUCCESS)
 // IMPLEMENT PRIVATE ===============================================================================
 
 inline static void setDirection(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -130,7 +130,7 @@ NH_SILENT_END()
 }
 
 inline static void setTextAlign(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -153,7 +153,7 @@ NH_SILENT_END()
 }
 
 inline static void setColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -169,7 +169,7 @@ NH_SILENT_END()
 }
 
 inline static void setFontSize(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -239,7 +239,7 @@ NH_SILENT_END()
 }
 
 inline static void setWritingMode(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -255,7 +255,7 @@ NH_SILENT_END()
 }
 
 inline static void setFontFamily(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -296,7 +296,7 @@ NH_SILENT_END()
 }
 
 static inline void setFontWeight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 

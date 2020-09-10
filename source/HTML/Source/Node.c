@@ -216,7 +216,7 @@ NH_RESULT Nh_HTML_computeNode(
 NH_BEGIN()
 
     NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p))
-    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_TRUE))
+    NH_CHECK(Nh_CSS_computeNodeProperties(Tab_p, Node_p, NH_TRUE, NULL))
 
     if (text && Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_createNormalizedText(Tab_p, Node_p))}
 
@@ -229,11 +229,14 @@ NH_RESULT Nh_HTML_recomputeNode(
 NH_BEGIN()
 
     NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p))
-    NH_CHECK(Nh_CSS_computeProperties(Tab_p, Node_p, NH_FALSE))
+
+    NH_BOOL recompute = NH_FALSE;
+    NH_CHECK(Nh_CSS_computeNodeProperties(Tab_p, Node_p, NH_FALSE, &recompute))
 
     if (text && Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_recreateNormalizedText(Tab_p, Node_p))}
 
-    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
+    if (recompute) {NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))}
+    else {Nh_Gfx_updateNodes(Tab_p);}
 
 NH_END(NH_SUCCESS)
 }

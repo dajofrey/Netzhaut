@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-09 17:08:37<br>v0.0.1 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-10 13:47:32<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.png"
@@ -100,11 +100,11 @@ $(document).ready(function(){initNavTree('Release2Detail.html',''); initResizabl
 <div class="title">Detailed Report </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><table class="markdownTable">
+<div class="textblock"><div style="font-size:20px; width: 100px; border-style: solid; border-width: 0px 0px 5px 10px; padding-left: 10px; margin-bottom: 10px;"> <b>Progress</b> </div><table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Topic </th><th class="markdownTableHeadNone">Description  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Architecture </td><td class="markdownTableBodyNone">Replace some updates with recalculations of whole formatted tree. Temporary, for ease of development <br  />
+<td class="markdownTableBodyNone">Architecture </td><td class="markdownTableBodyNone">Redesign document updates <br  />
  Transition from explicitly getting hashmaps+data to global hashmaps+data using 'extern'  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">JS </td><td class="markdownTableBodyNone">Improve node.textContent <br  />
@@ -118,9 +118,27 @@ $(document).ready(function(){initNavTree('Release2Detail.html',''); initResizabl
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">CSS </td><td class="markdownTableBodyNone">Improve arrange algorithm  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Testsuite </td><td class="markdownTableBodyNone">Fix most issues  </td></tr>
+<td class="markdownTableBodyNone">HTML </td><td class="markdownTableBodyNone">Fix not parsing void-node attributes  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Core </td><td class="markdownTableBodyNone">Add list operations (prepend, replace)  </td></tr>
+<td class="markdownTableBodyNone">TestSuite </td><td class="markdownTableBodyNone">Move source files to source/Testsuite <br  />
+ Create sub-directories Testsuite/Media and TestSuite/HTML <br  />
+ Add TestSuite/Media/JPG.h  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Core </td><td class="markdownTableBodyNone">Add list operations (prepend, replace) <br  />
+ Streamline URI creation  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Build </td><td class="markdownTableBodyNone">Change XXD output directories for TestSuite <br  />
+ Add hex-dump TestSuite/Media/JPG.h  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Docs </td><td class="markdownTableBodyNone">Improve detailed changelogs  </td></tr>
+</table>
+<div style="font-size:20px; width: 100px; border-style: solid; border-width: 0px 0px 5px 10px; padding-left: 10px; margin: 10px 0px"> <b>TODO</b> </div><table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Topic </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">HTML </td><td class="markdownTableBodyNone">Open document using relative + base path  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">CSS </td><td class="markdownTableBodyNone">Configure generic properties with child-combinator selector  </td></tr>
 </table>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

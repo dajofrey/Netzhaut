@@ -37,10 +37,12 @@ const char *syntax_pp[] =
 {
     "test:index",
     "test:border",
-    "win:$",
-    "tab:$",
-    "win:$:tab:$",
-    "icon:$",
+    "test:image",
+    "test:input",
+    "test:canvas",
+    "test:text",
+    "test:background",
+    "test:list",
     "icon:expand",
     "icon:disc",
     "icon:circle",
@@ -52,6 +54,9 @@ const char *syntax_pp[] =
     "js:selectoption",
     "js:scroll",
     "js:selecttext"
+    "win:$",
+    "tab:$",
+    "win:$:tab:$",
 };
 
 // DECLARE =========================================================================================
@@ -73,6 +78,12 @@ typedef struct Nh_FileURL {
 
 static Nh_URI Nh_createFileURL(
     char *chars_p, char *base_p
+);
+static Nh_URI Nh_createInternalURN(
+    char *chars_p
+);
+static Nh_URI Nh_createInternalURL(
+    void *pointer, NH_INTERNAL_URL type
 );
 
 static NH_MEDIA Nh_getInternalURNMediaType(
@@ -101,10 +112,11 @@ static Nh_URI Nh_getDefaultURI()
 // CREATE ==========================================================================================
 
 Nh_URI Nh_createURI(
-    char *chars_p, char *base_p, Nh_URI *Base_p)
+    char *chars_p, char *base_p, Nh_URI *Base_p, void *pointer, NH_INTERNAL_URL type)
 {
 NH_BEGIN()
 
+    if (pointer != NULL) {NH_END(Nh_createInternalURL(pointer, type))}
     if (Base_p != NULL) {printf("URI base not implemented!!!\n");exit(0);}
     if (chars_p == NULL) {NH_END(Nh_getDefaultURI())}
 
@@ -118,10 +130,12 @@ NH_BEGIN()
     if (chars_p[0] == 'n' && chars_p[1] == 'h' && chars_p[2] == ':') {
         NH_END(Nh_createInternalURN(chars_p + 3))
     }  
+
     if (Nh_fileExistsOnLocalHost(chars_p, base_p)) {
         NH_END(Nh_createFileURL(chars_p, base_p))
     }
 
+exit(0);
     // default
     Nh_URI URI = Nh_getDefaultURI();
     URI.data_p = Nh_Net_createURL(chars_p, &URI.scheme);
@@ -129,7 +143,7 @@ NH_BEGIN()
 NH_END(URI)
 }
 
-Nh_URI Nh_createFileURL(
+static Nh_URI Nh_createFileURL(
     char *chars_p, char *base_p)
 {
 NH_BEGIN()
@@ -151,7 +165,7 @@ NH_BEGIN()
 NH_END(URI)
 }
 
-Nh_URI Nh_createInternalURN(
+static Nh_URI Nh_createInternalURN(
     char *chars_p)
 {
 NH_BEGIN()
@@ -215,7 +229,7 @@ NH_BEGIN()
 NH_END(URI)
 }
 
-Nh_URI Nh_createInternalURL(
+static Nh_URI Nh_createInternalURL(
     void *pointer, NH_INTERNAL_URL type)
 {
 NH_BEGIN()
@@ -388,26 +402,28 @@ NH_BEGIN()
 
     switch (syntaxIndex)
     {
-        case  0: 
-        case  1: NH_END(NH_MEDIA_TEXT_HTML)
-        case  2: break;
-        case  3: break;
-        case  4: break;
-        case  5: break;
+        case  0:
+        case  1:
+        case  2: 
+        case  3: 
+        case  4: 
+        case  5: 
         case  6: 
-        case  7: 
+        case  7: NH_END(NH_MEDIA_TEXT_HTML) 
         case  8: 
-        case  9: NH_END(NH_MEDIA_IMAGE_PNG) 
-        case  10:
-        case 11: 
+        case  9: 
+        case 10: 
+        case 11: NH_END(NH_MEDIA_IMAGE_PNG)
         case 12: 
-        case 13: NH_END(NH_MEDIA_TEXT_CSS)
-        case 14:
-        case 15:
-        case 16: NH_END(NH_MEDIA_TEXT_JAVASCRIPT)
-        case 17: break;
-        case 18: break;
+        case 13: 
+        case 14: 
+        case 15: NH_END(NH_MEDIA_TEXT_CSS) 
+        case 16: 
+        case 17: 
+        case 18: NH_END(NH_MEDIA_TEXT_JAVASCRIPT) 
         case 19: break;
+        case 20: break;
+        case 21: break;
     }
 
 NH_END(-1)
@@ -470,26 +486,28 @@ NH_BEGIN()
 
     switch (URN_p->syntaxIndex)
     {
-        case  0: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_INDEX)  )
-        case  1: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_BORDER) )
-        case  2: break;
-        case  3: break;
-        case  4: break;
-        case  5: break;
-        case  6: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_EXPAND, size_p) )
-        case  7: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_DISC, size_p)   )
-        case  8: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_CIRCLE, size_p) )
-        case  9: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_SQUARE, size_p) ) 
-        case 10: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_LIST)          )
-        case 11: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_SELECT_OPTION) )
-        case 12: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_MISC)          )
-        case 13: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_HEADER)        )
-        case 14: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SELECT_OPTION) )
-        case 15: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SCROLL)        )
-        case 16: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SELECT_TEXT)   )
-        case 17: break;
-        case 18: break;
+        case  0: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_INDEX)      )
+        case  1: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_BORDER)     )
+        case  2: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_IMAGE)      ) 
+        case  3: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_INPUT)      ) 
+        case  4: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_CANVAS)     ) 
+        case  5: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_TEXT)       ) 
+        case  6: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_BACKGROUND) ) 
+        case  7: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_LIST)       ) 
+        case  8: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_EXPAND, size_p)      )
+        case  9: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_DISC, size_p)        )
+        case 10: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_CIRCLE, size_p)      )
+        case 11: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_SQUARE, size_p)      ) 
+        case 12: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_LIST)               )
+        case 13: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_SELECT_OPTION)      )
+        case 14: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_MISC)               )
+        case 15: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_HEADER)             )
+        case 16: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SELECT_OPTION)      )
+        case 17: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SCROLL)             )
+        case 18: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SELECT_TEXT)        )
         case 19: break;
+        case 20: break;
+        case 21: break;
     }
 
 NH_END(NULL)

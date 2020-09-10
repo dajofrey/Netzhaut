@@ -26,7 +26,7 @@ var CSS_2Header_2List_8h =
       [ "NH_CSS_LIST_STYLE_TYPE_UPPER_LATIN", "group__CSSEnums.html#ggaba8189d5eda917a7d44d6e3012908669aa8f97fe667cd9e186aafc5f46d1934d9", null ],
       [ "NH_CSS_LIST_STYLE_TYPE_UPPER_ROMAN", "group__CSSEnums.html#ggaba8189d5eda917a7d44d6e3012908669abfe64d8834ab06f0f553d186aff111fb", null ]
     ] ],
-    [ "Nh_CSS_computeListProperties", "group__CSSFunctions.html#ga8ede327df6b7b37bd042c6fb30e4731d", null ],
+    [ "Nh_CSS_computeListProperties", "group__CSSFunctions.html#gab32563066b8bd1a6fd30db5022298eee", null ],
     [ "Nh_CSS_setDefaultListProperties", "group__CSSFunctions.html#ga2bad6da3e1896385159fa9fe195d0b48", null ],
     [ "Nh_CSS_setDefaultListProperty", "group__CSSFunctions.html#gae95a7f5371f64bf741431c9f5477f183", null ]
 ];

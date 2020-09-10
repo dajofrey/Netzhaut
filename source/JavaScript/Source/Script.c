@@ -157,10 +157,10 @@ NH_BEGIN()
     Nh_JS_initScript(&Script);
     Script.Flags.internalScript = true;
 
-    Script.URI = Nh_createInternalURN("js:selectoption");
+    Script.URI = Nh_createURI("nh:js:selectoption", NULL, NULL, NULL, -1);
     NH_CHECK(Nh_JS_addScript(&Document_p->Scripts, &Script))
 
-    Script.URI = Nh_createInternalURN("js:scroll");
+    Script.URI = Nh_createURI("nh:js:scroll", NULL, NULL, NULL, -1);
     NH_CHECK(Nh_JS_addScript(&Document_p->Scripts, &Script))
 
 NH_END(NH_SUCCESS)
@@ -181,7 +181,7 @@ NH_BEGIN()
         if (Script_p != NULL && Script_p->text_p != NULL)
         {
             Script.Flags.external = false;
-            Script.URI = Nh_createInternalURL(Script_p, NH_INTERNAL_URL_HTML_NODE_TEXT);
+            Script.URI = Nh_createURI(NULL, NULL, NULL, Script_p, NH_INTERNAL_URL_HTML_NODE_TEXT);
             add = NH_TRUE;
         }
         else {
@@ -190,7 +190,7 @@ NH_BEGIN()
                 if (Nh_HTML_getAttribute(&Node_p->Attributes, i)->type == NH_HTML_ATTRIBUTE_SRC) 
                 {
                     Script.Flags.external = true;
-                    Script.URI = Nh_createInternalURL(Nh_HTML_getAttribute(&Node_p->Attributes, i), NH_INTERNAL_URL_HTML_NODE_ATTRIBUTE_VALUE);
+                    Script.URI = Nh_createURI(NULL, NULL, NULL, Nh_HTML_getAttribute(&Node_p->Attributes, i), NH_INTERNAL_URL_HTML_NODE_ATTRIBUTE_VALUE);
                     add = NH_TRUE;
                 }
             }

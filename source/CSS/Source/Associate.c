@@ -181,7 +181,7 @@ NH_BEGIN()
         int error = hashmap_get(NH_HASHMAPS.CSS.Properties, (char*)Declaration_p->property_p, (void**)(&HashValue_p));
         if (error != MAP_OK) {NH_END(NH_ERROR_BAD_STATE)}
     
-        NH_CSS_GenericProperty Property = {0};
+        Nh_CSS_GenericProperty Property = {0};
 
         Property.Sheet_p            = Sheet_p;
         Property.type               = HashValue_p->number;

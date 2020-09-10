@@ -12,14 +12,14 @@
     <div id="all">
       <label for="select">Open Example-Site: </label>
       <select id="select" onchange="open()">
-        <option value="nh:test:selector" selected>selectors</option>
-        <option value="nh:test:border">borders</option>
-        <option value="nh:test:image">images</option>
-        <option value="nh:test:input">input</option>
-        <option value="nh:test:canvas">canvas</option>
-        <option value="nh:test:text">text</option>
-        <option value="nh:test:background">background</option>
-        <option value="nh:test:list">list</option>
+        <option value="nh:test:html:selector" selected>selectors</option>
+        <option value="nh:test:html:border">borders</option>
+        <option value="nh:test:html:image">images</option>
+        <option value="nh:test:html:input">input</option>
+        <option value="nh:test:html:canvas">canvas</option>
+        <option value="nh:test:html:text">text</option>
+        <option value="nh:test:html:background">background</option>
+        <option value="nh:test:html:list">list</option>
       </select>
       <div id="text">[This is the test-suite index for Netzhaut development.]</div>
     </div>
@@ -38,7 +38,7 @@
     nhtab.alwaysOnTop = true;
     function open() {
       var site = document.getElementById("select").value;
-      nhtab.open(site, "tab1");
+      nhtab.open(site, 1);
     }
   </script>
 

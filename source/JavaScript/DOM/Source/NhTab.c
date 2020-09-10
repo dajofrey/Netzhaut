@@ -806,21 +806,20 @@ NH_BEGIN()
             Nh_startTabThread(Script_p->Run.Tab_p->Window_p, Arguments_p[0].data_p, Script_p->Run.Tab_p->Info.pxSize_p);
             break;
         }
-//        case 2 : 
-//        {
-//            if (Arguments_p[1].type != NH_JS_TYPE_STRING) {NH_END(Nh_JS_getNULLResult())}
-//
-//            Nh_Tab *Tab_p = Nh_getTabFromString(Arguments_p[1].data_p);
-//            if (Tab_p == NULL) {Tab_p = Nh_getTabFromString(documentPath_p);} 
-//
-//            if (Tab_p == NULL) {
-//                Nh_startTabThread(Script_p->Run.Tab_p->Window_p, Arguments_p[1].data_p, documentPath_p, Script_p->Run.Tab_p->Info.pxSize_p);
-//            } else {
-//                NH_reloadTab(Tab_p, documentPath_p);
-//            }
-//
-//            break;
-//        }
+        case 2 : 
+        {
+            if (Arguments_p[1].type != NH_JS_TYPE_NUMBER) {NH_END(Nh_JS_getNULLResult())}
+
+            Nh_Tab *Tab_p = Nh_getTabFromIndex(Script_p->Run.Tab_p->Window_p, (int)*((double*)Arguments_p[1].data_p));
+
+            if (Tab_p == NULL) {
+                Nh_startTabThread(Script_p->Run.Tab_p->Window_p, Arguments_p[0].data_p, Script_p->Run.Tab_p->Info.pxSize_p);
+            } else {
+                NH_reloadTab(Tab_p, Arguments_p[0].data_p);
+            }
+
+            break;
+        }
     }
 
 NH_END(Nh_JS_getNULLResult())

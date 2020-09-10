@@ -14,6 +14,7 @@
 
 #include "../../Core/Header/Tab.h"
 #include "../../Core/Header/String.h"
+#include "../../Core/Header/Memory.h"
 #include "../../CSS/Header/Arrange.h"
 #include "../../Graphics/Header/Node.h"
 
@@ -128,6 +129,22 @@ NH_BEGIN()
 
 NH_END(NH_SUCCESS)
 }
+
+// UNFORMATTED =====================================================================================
+
+void Nh_HTML_destroyUnformattedTree(
+    Nh_HTML_Tree *Tree_p)
+{
+NH_BEGIN()
+
+    Nh_HTML_destroyNode(Tree_p->Root_p, NH_TRUE);
+    Nh_free(Tree_p->Root_p);
+    Nh_destroyList(&Tree_p->Flat.Unformatted, false);
+
+NH_SILENT_END()
+}
+
+// FORMATTED AND UNFORMATTED =======================================================================
 
 NH_RESULT Nh_HTML_recomputeTrees(
     Nh_Tab *Tab_p)

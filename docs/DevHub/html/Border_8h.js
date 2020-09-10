@@ -13,7 +13,7 @@ var Border_8h =
       [ "NH_CSS_BORDER_STYLE_INSET", "group__CSSEnums.html#ggad6817c5c5a15dbaa883e9b0607a3efdaadb7be621b77b04c0421d2bea19cd38e6", null ],
       [ "NH_CSS_BORDER_STYLE_OUTSET", "group__CSSEnums.html#ggad6817c5c5a15dbaa883e9b0607a3efdaa6fbc0c6b811418d9415eff3b3cd1bc95", null ]
     ] ],
-    [ "Nh_CSS_computeBorderProperties", "group__CSSFunctions.html#ga1b58d77e061c3829c528bd936617ed94", null ],
+    [ "Nh_CSS_computeBorderProperties", "group__CSSFunctions.html#ga2d87269d377459aca96619555953a359", null ],
     [ "Nh_CSS_setDefaultBorderProperties", "group__CSSFunctions.html#ga55bd65ddd2221692109d19f54e619ba2", null ],
     [ "Nh_CSS_setDefaultBorderProperty", "group__CSSFunctions.html#ga9e4c4ac2899e3e4ff960865e1c0dfaab", null ]
 ];

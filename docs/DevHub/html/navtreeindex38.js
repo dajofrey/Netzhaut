@@ -1,5 +1,8 @@
 var NAVTREEINDEX38 =
 {
+"structNh__HTML__Node.html#adb590cad059a8ad4a96ad172a0a4e584":[3,1,2,6,4],
+"structNh__HTML__Node.html#afd19cdca31e6a434eae2892d25e560d4":[3,1,2,6,6],
+"structNh__HTML__Node_1_1Children.html":[3,1,2,6,0],
 "structNh__HTML__Node_1_1Children.html#a8997f03448d6ba0b07773719abdf92a1":[3,1,2,6,0,0],
 "structNh__HTML__Node_1_1Children.html#ac1042bc56af54120ba903bb9dbc04dc4":[3,1,2,6,0,1],
 "structNh__HTML__Node_1_1Computed.html":[3,1,2,6,1],
@@ -246,8 +249,5 @@ var NAVTREEINDEX38 =
 "structNh__Tab.html#ab392fee23e3bab0d07844b4b8a54abb9":[3,2,2,15,20],
 "structNh__Tab.html#ac0ddcb6e12c95faae7f13b43b7700eb7":[3,2,2,15,22],
 "structNh__Tab.html#ad214a0ed6191140d6fac4610056030fd":[3,2,2,15,23],
-"structNh__Tab.html#ae0e60e84837a082309333a1687e634cb":[3,2,2,15,1],
-"structNh__Tab.html#ae721587180b1a86cab7dd9552732ab9d":[3,2,2,15,7],
-"structNh__Tab.html#aed41cb15ad4704175dfc9dabfdecd905":[3,2,2,15,13],
-"structNh__Tab.html#afb749d99048fe7ffbb3ffbfabcad4c12":[3,2,2,15,2]
+"structNh__Tab.html#ae0e60e84837a082309333a1687e634cb":[3,2,2,15,1]
 };

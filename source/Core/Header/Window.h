@@ -93,6 +93,10 @@
         Nh_Window *Window_p
     );
 
+    Nh_Tab *Nh_getTabFromIndex(
+        Nh_Window *Window_p, int index
+    );
+
 /** @} */
 
 #endif 

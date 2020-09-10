@@ -49,16 +49,10 @@ NH_SILENT_END()
 
 // SET DEFAULT =====================================================================================
 
-static void Nh_CSS_configureProperties(
+static void Nh_CSS_defaultProperties(
     Nh_Tab *Tab_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
-
-    for (int i = 0; i < Node_p->Properties.count; ++i) {
-        Nh_CSS_configureGenericProperty(
-            Node_p, Nh_CSS_getProperty(&Node_p->Properties, i)
-        );
-    }
 
     Nh_CSS_setDefaultTextProperties(Tab_p, Node_p);
     Nh_CSS_setDefaultBackgroundProperties(Tab_p->Window_p, Node_p);
@@ -71,54 +65,57 @@ NH_BEGIN()
 NH_SILENT_END()
 }
 
-static void Nh_CSS_configureProperty(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_PROPERTY type)
-{
-NH_BEGIN()
-
-    for (int i = 0; i < Node_p->Properties.count; ++i) {
-        if (Nh_CSS_getProperty(&Node_p->Properties, i)->type == type) {
-            Nh_CSS_configureGenericProperty(
-                Node_p, Nh_CSS_getProperty(&Node_p->Properties, i)
-            );
-        }
-    }
-
-    Nh_CSS_setDefaultTextProperty(Tab_p, Node_p, type);
-    Nh_CSS_setDefaultBackgroundProperty(Tab_p->Window_p, Node_p, NULL, type);
-    Nh_CSS_setDefaultBorderProperty(Tab_p, Node_p, type);
-    Nh_CSS_setDefaultPositionProperty(Tab_p, Node_p, type);
-    Nh_CSS_setDefaultMarginProperty(Tab_p, Node_p, type);
-    Nh_CSS_setDefaultPaddingProperty(Tab_p, Node_p, type);
-    Nh_CSS_setDefaultListProperty(Node_p, type);
-
-NH_SILENT_END()
-}
-
 // COMPUTE =========================================================================================
 
-NH_RESULT Nh_CSS_computeProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL init)
+NH_RESULT Nh_CSS_computeNodeProperties(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL init, NH_BOOL *recompute_p)
 {
 NH_BEGIN()
 
-    if (init) {Nh_CSS_initProperties(&Node_p->Computed.Properties);}
-
-    NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT];
+    Nh_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT];
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {Properties_pp[i] = NULL;}
 
-    Nh_CSS_configureProperties(Tab_p, Node_p);
+    Nh_CSS_configureGenericProperties(Node_p);
     Nh_CSS_getGenericProperties(Tab_p, Node_p, Properties_pp);
+
+    if (init) {Nh_CSS_initProperties(&Node_p->Computed.Properties);}
+    Nh_CSS_defaultProperties(Tab_p, Node_p);
 
     // em length has text-font dependency, so we calculate text first
     Nh_CSS_computeTextProperties(Tab_p, Node_p, Properties_pp);
-    
     Nh_CSS_computeBackgroundProperties(Tab_p, Node_p, Properties_pp);
     Nh_CSS_computeBorderProperties(Tab_p, Node_p, Properties_pp);
     Nh_CSS_computePositionProperties(Tab_p, Node_p, Properties_pp);
     Nh_CSS_computeMarginProperties(Tab_p, Node_p, Properties_pp);
     Nh_CSS_computePaddingProperties(Tab_p, Node_p, Properties_pp);
     Nh_CSS_computeListProperties(Node_p, Properties_pp);
+
+    if (recompute_p != NULL) {*recompute_p = NH_FALSE;}
+
+    for (int i = 0; i < Node_p->Properties.count; ++i)
+    {
+        Nh_CSS_GenericProperty *Property_p = Nh_getListItem(&Node_p->Properties, i);
+        if (Property_p->update && Property_p->triggerRecompute && recompute_p != NULL) {
+            *recompute_p = NH_TRUE;
+        }
+        Property_p->update = NH_FALSE;
+    }
+
+NH_END(NH_SUCCESS)
+}
+
+NH_RESULT Nh_CSS_computeProperties(
+    Nh_Tab *Tab_p, NH_BOOL init, NH_BOOL *recompute_p)
+{
+NH_BEGIN()
+
+    NH_BOOL recompute = NH_FALSE;
+    if (recompute_p != NULL) {*recompute_p = NH_FALSE;}
+
+    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+        NH_CHECK(Nh_CSS_computeNodeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE, &recompute))
+        if (recompute == NH_TRUE && recompute_p != NULL) {*recompute_p = NH_TRUE;}
+    }
 
 NH_END(NH_SUCCESS)
 }

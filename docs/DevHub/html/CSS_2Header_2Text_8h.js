@@ -30,7 +30,7 @@ var CSS_2Header_2Text_8h =
       [ "NH_CSS_WRITING_MODE_SIDEWAYS_RL", "group__CSSEnums.html#gga625920391c38c2bd05103f8649cbe81da800a842f92c83442cce63834c667cf7c", null ],
       [ "NH_CSS_WRITING_MODE_SIDEWAYS_LR", "group__CSSEnums.html#gga625920391c38c2bd05103f8649cbe81daa9c25ecb2b93eb49652b5d45b7e24976", null ]
     ] ],
-    [ "Nh_CSS_computeTextProperties", "group__CSSFunctions.html#gaa1ef79d8f47f9f386262295904d41bfe", null ],
+    [ "Nh_CSS_computeTextProperties", "group__CSSFunctions.html#ga376ca1118149760ecea060b621e9b86a", null ],
     [ "Nh_CSS_setDefaultTextProperties", "group__CSSFunctions.html#gae33f93143b5119b5506da1dc67be79ec", null ],
     [ "Nh_CSS_setDefaultTextProperty", "group__CSSFunctions.html#ga8de93cf5f295486b65640ae05d63dd84", null ]
 ];

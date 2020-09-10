@@ -14,15 +14,15 @@
 #include "../Header/Macros.h"
 #include "../Header/Log.h"
 
-#include "../Header/TestSuite/Index.h"
-#include "../Header/TestSuite/Background.h"
-#include "../Header/TestSuite/Border.h"
-#include "../Header/TestSuite/Canvas.h"
-#include "../Header/TestSuite/Image.h"
-#include "../Header/TestSuite/Input.h"
-#include "../Header/TestSuite/Selector.h"
-#include "../Header/TestSuite/Text.h"
-#include "../Header/TestSuite/List.h"
+#include "../../TestSuite/HTML/Index.h"
+#include "../../TestSuite/HTML/Background.h"
+#include "../../TestSuite/HTML/Border.h"
+#include "../../TestSuite/HTML/Canvas.h"
+#include "../../TestSuite/HTML/Image.h"
+#include "../../TestSuite/HTML/Input.h"
+#include "../../TestSuite/HTML/Selector.h"
+#include "../../TestSuite/HTML/Text.h"
+#include "../../TestSuite/HTML/List.h"
 
 #include "../../Core/Header/Memory.h"
 #include "../../Core/Header/Tab.h"
@@ -61,7 +61,7 @@ NH_RESULT Nh_HTML_initDocument(
 {
 NH_BEGIN()
 
-    Document_p->URI = Nh_createURI(location_p, NULL, NULL);
+    Document_p->URI = Nh_createURI(location_p, NULL, NULL, NULL, -1);
     Document_p->Tree.Root_p = NULL;
 
     NH_INIT_LIST(Document_p->Tree.Flat.Unformatted)
@@ -121,8 +121,7 @@ NH_BEGIN()
         ))
     }
 
-    NH_CHECK(Nh_CSS_arrange(Tab_p, NH_TRUE))
-    NH_CHECK(Nh_HTML_computeFormattedTree(Tab_p))
+    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
 
     for (int i = 0; i < Tab_p->Document.Scripts.count; ++i) {
         NH_CHECK(Nh_JS_interpretScript(Nh_JS_getScript(&Tab_p->Document.Scripts, i)))
@@ -138,19 +137,15 @@ NH_RESULT Nh_HTML_destroyDocument(
 {   
 NH_BEGIN()
 
-printf("destroy doc\n");
-exit(0);
-//    NH_CHECK(Nh_HTML_destroyFormattedTree(Document_p, GPU_p))
-//
-//    if (!resize)
-//    {
-//        Nh_JS_destroyScriptList(&Document_p->Scripts);
-//        Nh_CSS_destroySheetList(&Document_p->Sheets);
-//        Nh_HTML_destroyNode(Document_p->Tree.Root_p, NH_TRUE);
-//        Nh_HTML_freeInput(&Document_p->Input);
-//
-//        Nh_destroyList(&Document_p->Tree.Flat, false);
-//    }
+    NH_CHECK(Nh_HTML_destroyFormattedTree(&Document_p->Tree, GPU_p))
+
+    if (!resize)
+    {
+        Nh_JS_destroyScriptList(&Document_p->Scripts);
+        Nh_CSS_destroySheetList(&Document_p->Sheets);
+        Nh_HTML_destroyUnformattedTree(&Document_p->Tree);
+        Nh_HTML_freeInput(&Document_p->Input);
+    }
 
 NH_END(NH_SUCCESS)
 }
@@ -162,8 +157,19 @@ NH_RESULT Nh_HTML_updateDocument(
 {
 NH_BEGIN()
 
+// HTML
     NH_CHECK(Nh_HTML_processInput(Tab_p))
+
+// CSS
     NH_CHECK(Nh_CSS_processInput(Tab_p))
+
+    NH_BOOL recompute;
+    NH_CHECK(Nh_CSS_computeProperties(Tab_p, NH_FALSE, &recompute))
+
+    if (recompute) {NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))}
+    else {Nh_Gfx_updateNodes(Tab_p);}
+
+// JS
     NH_CHECK(Nh_JS_processInput(Tab_p))
 
 NH_END(NH_SUCCESS)

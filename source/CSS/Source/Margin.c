@@ -24,29 +24,29 @@
 // DECLARE =========================================================================================
 
 static inline bool Nh_CSS_setMarginBlock(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline bool Nh_CSS_setMarginBlockStart(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline bool Nh_CSS_setMarginBlockEnd(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 
 static inline bool Nh_CSS_setMargin(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setMarginBottom(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setMarginLeft(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setMarginRight(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setMarginTop(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 
 static inline void Nh_CSS_collapseMargin(
@@ -98,7 +98,7 @@ NH_SILENT_END()
 // COMPUTE =========================================================================================
 
 NH_RESULT Nh_CSS_computeMarginProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 
@@ -124,13 +124,13 @@ NH_END(NH_SUCCESS)
 // MARGIN ==========================================================================================
 
 static inline bool Nh_CSS_setMarginBlock(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Property_p != NULL) 
     {
-        NH_CSS_GenericProperty SingleValue;
+        Nh_CSS_GenericProperty SingleValue;
         SingleValue.values_pp[0] = Property_p->values_pp[0];
         
         if (Property_p->valueCount == 2) 
@@ -152,7 +152,7 @@ NH_END(false)
 }
 
 static inline bool Nh_CSS_setMarginBlockStart(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -169,7 +169,7 @@ NH_END(false)
 }
 
 static inline bool Nh_CSS_setMarginBlockEnd(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -186,13 +186,13 @@ NH_END(false)
 }
 
 static inline bool Nh_CSS_setMargin(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Property_p != NULL) 
     {
-        NH_CSS_GenericProperty SingleValue;
+        Nh_CSS_GenericProperty SingleValue;
         SingleValue.values_pp = Nh_allocate(sizeof(void*));
         
         switch (Property_p->valueCount)
@@ -244,7 +244,7 @@ NH_END(false)
 }
 
 static inline void Nh_CSS_setMarginBottom(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -261,7 +261,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setMarginLeft(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -278,7 +278,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setMarginRight(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -295,7 +295,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setMarginTop(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 

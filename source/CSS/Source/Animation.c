@@ -44,7 +44,7 @@ NH_SILENT_END()
 }
 
 NH_RESULT Nh_CSS_computeAnimationProperties(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 

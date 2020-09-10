@@ -64,6 +64,10 @@ typedef struct Nh_GPU Nh_GPU;
         Nh_Tab *Tab_p
     );
 
+    void Nh_HTML_destroyUnformattedTree(
+        Nh_HTML_Tree *Tree_p
+    );
+
     char *Nh_HTML_stringifyTree(
         Nh_HTML_Tree *Tree_p, NH_BOOL unformatted
     );

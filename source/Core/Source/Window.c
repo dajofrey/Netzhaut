@@ -326,3 +326,12 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
+// GET =============================================================================================
+
+Nh_Tab *Nh_getTabFromIndex(
+    Nh_Window *Window_p, int index)
+{
+NH_BEGIN()
+NH_END(Nh_getListItem(&Window_p->Tabs, index))
+}
+

@@ -76,12 +76,16 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_PROPERTY type
     );
 
-    NH_RESULT Nh_CSS_computeProperties(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL init
+    NH_RESULT Nh_CSS_computeNodeProperties(
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL init, NH_BOOL *recompute_p
     );
 
     void Nh_CSS_destroyProperties(
         NH_CSS_Properties *Properties_p
+    );
+
+    NH_RESULT Nh_CSS_computeProperties(
+        Nh_Tab *Tab_p, NH_BOOL init, NH_BOOL *recompute_p
     );
 
 /** @} */

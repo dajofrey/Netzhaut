@@ -120,10 +120,8 @@ NH_BEGIN()
 
     NH_CHECK(Nh_HTML_initNode(Node_p, Parent_p, tag))
 
-    if (!IS_VOID_TAG(tag)) {
-        NH_CHECK(Nh_HTML_parseAttributes(current_p, Node_p))
-        NH_CHECK(Nh_HTML_parseContent(current_p, Node_p, tag))
-    }
+    NH_CHECK(Nh_HTML_parseAttributes(current_p, Node_p))
+    if (!IS_VOID_TAG(tag)) {NH_CHECK(Nh_HTML_parseContent(current_p, Node_p, tag))}
 
     **end_pp = replace;
 

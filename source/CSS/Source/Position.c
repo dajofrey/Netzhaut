@@ -26,60 +26,60 @@
 // DECLARE =========================================================================================
 
 static inline void Nh_CSS_setPosition(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setDisplay(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 static inline void Nh_CSS_setLeft(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setRight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setTop(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBottom(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 static inline void Nh_CSS_setWidth(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setHeight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setMinWidth(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setMinHeight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // flex
 static inline void Nh_CSS_setFlexBasis(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setFlexDirection(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setFlexGrow(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setFlexShrink(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setFlexWrap(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 
 static inline void Nh_CSS_setOrder(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setAlignContent(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // IMPLEMENT =======================================================================================
@@ -211,7 +211,7 @@ NH_SILENT_END()
 }
 
 NH_RESULT Nh_CSS_computePositionProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 
@@ -236,7 +236,7 @@ NH_END(NH_SUCCESS)
 // IMPLEMENT PRIVATE ==============================================================================
 
 static inline void Nh_CSS_setPosition(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -255,7 +255,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setDisplay(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -295,7 +295,7 @@ NH_SILENT_END()
 // POSITION ========================================================================================
 
 static inline void Nh_CSS_setLeft(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
     
@@ -313,7 +313,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setRight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -331,7 +331,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setTop(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -349,7 +349,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBottom(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -369,7 +369,7 @@ NH_SILENT_END()
 // CONTENT =========================================================================================
 
 static inline void Nh_CSS_setWidth(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -392,7 +392,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setHeight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -415,7 +415,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setMinWidth(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -438,7 +438,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setMinHeight(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -461,7 +461,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setAlignContent(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 

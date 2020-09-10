@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-09 17:08:37<br>v0.0.1 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-10 13:47:32<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.png"
@@ -203,6 +203,8 @@ Functions</h2></td></tr>
 <tr class="separator:gaecfca4263df15f2044a930b357c34210"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga813c14aebb7fd189797e03b94a01706c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__APICoreEnums.html#ga69553903dccbc47bc4a7b65724517c61">NH_RESULT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__HTMLFunctions.html#ga813c14aebb7fd189797e03b94a01706c">Nh_HTML_recomputeTrees</a> (<a class="el" href="structNh__Tab.html">Nh_Tab</a> *Tab_p)</td></tr>
 <tr class="separator:ga813c14aebb7fd189797e03b94a01706c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa1a2ad300ca639e9306866a2f9a37360"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__HTMLFunctions.html#gaa1a2ad300ca639e9306866a2f9a37360">Nh_HTML_destroyUnformattedTree</a> (<a class="el" href="structNh__HTML__Tree.html">Nh_HTML_Tree</a> *Tree_p)</td></tr>
+<tr class="separator:gaa1a2ad300ca639e9306866a2f9a37360"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1ec7797d6a41ed84cad27aaccd19deb2"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__HTMLFunctions.html#ga1ec7797d6a41ed84cad27aaccd19deb2">Nh_HTML_stringifyTree</a> (<a class="el" href="structNh__HTML__Tree.html">Nh_HTML_Tree</a> *Tree_p, <a class="el" href="group__APICoreEnums.html#gaa5bc4d468ba7fc657a127fa6ffca469c">NH_BOOL</a> unformatted)</td></tr>
 <tr class="separator:ga1ec7797d6a41ed84cad27aaccd19deb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -369,7 +371,7 @@ Functions</h2></td></tr>
 <p>Creates a <a class="el" href="structNh__HTML__Document.html">Nh_HTML_Document</a> structure required for further computing. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">location_p</td><td>The location of the HTML document specified by a set of chars. This will be parsed by <a class="el" href="group__CoreFunctions.html#ga5d3218c8f9d42245b2947f7e5bdef38d">Nh_createURI</a>. </td></tr>
+    <tr><td class="paramname">location_p</td><td>The location of the HTML document specified by a set of chars. This will be parsed by <a class="el" href="group__CoreFunctions.html#gae8b2aa4e787a635e9dc166db271c845c">Nh_createURI</a>. </td></tr>
     <tr><td class="paramname">Tab_p</td><td>The tab that will contain the document. </td></tr>
   </table>
   </dd>
@@ -577,6 +579,24 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structNh__HTML__Node.html">Nh_HTML_Node</a> *&#160;</td>
           <td class="paramname"><em>Node_p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gaa1a2ad300ca639e9306866a2f9a37360"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa1a2ad300ca639e9306866a2f9a37360">&#9670;&nbsp;</a></span>Nh_HTML_destroyUnformattedTree()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Nh_HTML_destroyUnformattedTree </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structNh__HTML__Tree.html">Nh_HTML_Tree</a> *&#160;</td>
+          <td class="paramname"><em>Tree_p</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

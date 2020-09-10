@@ -38,16 +38,17 @@ var group__CSSStructs =
       [ "BottomRight", "structNh__CSS__Box.html#a5c2d4771886eca363ede7ce55e801ad1", null ],
       [ "TopLeft", "structNh__CSS__Box.html#af3b362ad31dd70222000028c98b55672", null ]
     ] ],
-    [ "NH_CSS_GenericProperty", "structNH__CSS__GenericProperty.html", [
-      [ "active", "structNH__CSS__GenericProperty.html#af108f1d3b82660b049ff187b7156b8cb", null ],
-      [ "Pseudo", "structNH__CSS__GenericProperty.html#ac019c5ccb530639908f9a256c315b09f", null ],
-      [ "selector", "structNH__CSS__GenericProperty.html#a445d6b12b8a8fb347f2c944cc76233c4", null ],
-      [ "selector_p", "structNH__CSS__GenericProperty.html#aa79e1860afb3aa54d4e118f7a3dabca9", null ],
-      [ "Sheet_p", "structNH__CSS__GenericProperty.html#a7467f5e3c38e632e5f5a3cd01df84bc4", null ],
-      [ "type", "structNH__CSS__GenericProperty.html#ab34e1d4d5e11b381f890aaa07e77f6a8", null ],
-      [ "update", "structNH__CSS__GenericProperty.html#a8aa6a38fd2d6e0c0f1f13d8dcfb10633", null ],
-      [ "valueCount", "structNH__CSS__GenericProperty.html#a5026eedd79a5f9ab4c5e5c9876374b17", null ],
-      [ "values_pp", "structNH__CSS__GenericProperty.html#aeccc4e59d1731f7880255e298b087431", null ]
+    [ "Nh_CSS_GenericProperty", "structNh__CSS__GenericProperty.html", [
+      [ "active", "structNh__CSS__GenericProperty.html#a03ce672208e12b9aeb3e6560d354f695", null ],
+      [ "Pseudo", "structNh__CSS__GenericProperty.html#a8a512793262fc1f01371fbe18d2e4dee", null ],
+      [ "selector", "structNh__CSS__GenericProperty.html#a8c0a5aeb3a874df3fb29b365452fff7c", null ],
+      [ "selector_p", "structNh__CSS__GenericProperty.html#ac454107873e24a217b44fbb8c54d9f0f", null ],
+      [ "Sheet_p", "structNh__CSS__GenericProperty.html#a4eaa12c6a3dfe583ace723d60d41f9c2", null ],
+      [ "triggerRecompute", "structNh__CSS__GenericProperty.html#a9f0868913595dc46be4811a5ead9bcb8", null ],
+      [ "type", "structNh__CSS__GenericProperty.html#a7cac356d3f7dfaab7832aeba89aa2313", null ],
+      [ "update", "structNh__CSS__GenericProperty.html#a574ad3c2e29f8ae7db515b21de1f1ba4", null ],
+      [ "valueCount", "structNh__CSS__GenericProperty.html#abe1748e1ef10e86433108541b96eb099", null ],
+      [ "values_pp", "structNh__CSS__GenericProperty.html#a7e46c93c3a9d2ba4b0973b6862af2d70", null ]
     ] ],
     [ "NH_CSS_Image", "structNH__CSS__Image.html", [
       [ "Background", "structNH__CSS__Image.html#a8ac3392ae5d4f34086b33d4ead66fd07", null ],

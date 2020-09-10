@@ -27,7 +27,7 @@ var Animation_8h =
       [ "NH_CSS_ANIMATION_TIMING_FUNCTION_STEPS", "group__CSSEnums.html#gga4b870e33a519dbe012d715fb24589ae5a965e9fb698f6a6efd14226a0d135263b", null ],
       [ "NH_CSS_ANIMATION_TIMING_FUNCTION_CUBIC_BEZIER", "group__CSSEnums.html#gga4b870e33a519dbe012d715fb24589ae5ab3054c229c6044b098a17175ea98146b", null ]
     ] ],
-    [ "Nh_CSS_computeAnimationProperties", "group__CSSFunctions.html#gaced24aad31f63a079d3ded9560e8b75f", null ],
+    [ "Nh_CSS_computeAnimationProperties", "group__CSSFunctions.html#gabaca197dd543def96bbe6b4012551b25", null ],
     [ "Nh_CSS_setDefaultAnimationProperties", "group__CSSFunctions.html#ga860ecd48778b0b58e14eae00c6ab5041", null ],
     [ "Nh_CSS_setDefaultAnimationProperty", "group__CSSFunctions.html#ga8bbc06a03a49334d0b5c77918765e83e", null ]
 ];

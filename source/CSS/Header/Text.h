@@ -82,7 +82,7 @@ typedef struct Nh_Tab Nh_Tab;
  */
 
     NH_RESULT Nh_CSS_computeTextProperties(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp
     );
     
     NH_RESULT Nh_CSS_setDefaultTextProperties(

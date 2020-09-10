@@ -80,11 +80,11 @@ NH_BEGIN()
     if (!clear) {NH_END(NH_SUCCESS)}
 
     Nh_CSS_deactivate(Tab_p, NH_CSS_PSEUDO_CLASS_ACTIVE);
-    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
-        NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
-    }
-
-    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
+//    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+//        NH_CHECK(Nh_CSS_computeNodeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
+//    }
+//
+//    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
 
 NH_END(NH_SUCCESS)
 }
@@ -103,7 +103,7 @@ NH_BEGIN()
 
     for (int i = 0; i < Node_p->Properties.count; ++i) 
     {
-        NH_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, i);
+        Nh_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, i);
         
         Nh_CSS_activate(Tab_p, Node_p, Property_p, NH_CSS_PSEUDO_CLASS_ACTIVE);
         Nh_CSS_activate(Tab_p, Node_p, Property_p, NH_CSS_PSEUDO_CLASS_FOCUS);
@@ -115,18 +115,24 @@ NH_BEGIN()
 
         for (int j = 0; j < Child_p->Properties.count; ++j)
         {
-            NH_CSS_GenericProperty *ChildProperty_p = Nh_CSS_getProperty(&Child_p->Properties, j);
+            Nh_CSS_GenericProperty *ChildProperty_p = Nh_CSS_getProperty(&Child_p->Properties, j);
             
             Nh_CSS_activateChild(Tab_p, Child_p, ChildProperty_p, NH_CSS_PSEUDO_CLASS_ACTIVE);
             Nh_CSS_activateChild(Tab_p, Child_p, ChildProperty_p, NH_CSS_PSEUDO_CLASS_FOCUS);
         }
     }
 
-    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
-        NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
-    }
-
-    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
+//    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
+//        NH_CHECK(Nh_CSS_computeNodeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
+//    }
+//
+//    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
+//
+//    NH_BOOL recompute;
+//    NH_CHECK(Nh_CSS_computeProperties(Tab_p, NH_FALSE, &recompute))
+//
+//    if (recompute) {NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))}
+//    else {Nh_Gfx_updateNodes(Tab_p);}
 
 NH_END(NH_SUCCESS)
 }
@@ -155,18 +161,16 @@ NH_BEGIN()
 
         for (int j = 0; j < Child_p->Properties.count; ++j)
         {
-            NH_CSS_GenericProperty *ChildProperty_p = Nh_CSS_getProperty(&Child_p->Properties, j);
+            Nh_CSS_GenericProperty *ChildProperty_p = Nh_CSS_getProperty(&Child_p->Properties, j);
             Nh_CSS_activateChild(Tab_p, Child_p, ChildProperty_p, NH_CSS_PSEUDO_CLASS_HOVER);
         }
     }
 
-    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) {
-        NH_CHECK(Nh_CSS_computeProperties(Tab_p, Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i), NH_FALSE))
-    }
-
-    Nh_Gfx_updateNodes(Tab_p);
-
-//    NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))
+//    NH_BOOL recompute;
+//    NH_CHECK(Nh_CSS_computeProperties(Tab_p, NH_FALSE, &recompute))
+//
+//    if (recompute) {NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))}
+//    else {Nh_Gfx_updateNodes(Tab_p);}
 
 NH_END(NH_SUCCESS)
 }

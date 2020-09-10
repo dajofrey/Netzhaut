@@ -25,87 +25,87 @@
 
 // border
 static inline bool Nh_CSS_setBorder(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderBottom(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderLeft(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderRight(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderTop(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // color
 static inline bool Nh_CSS_setBorderColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderTopColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderRightColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderBottomColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderLeftColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // style
 static inline bool Nh_CSS_setBorderStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderTopStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderRightStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderBottomStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderLeftStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // width
 static inline void Nh_CSS_setBorderWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderBottomWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderLeftWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderRightWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderTopWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // radii
 static inline void Nh_CSS_setBorderRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderTopLeftRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderTopRightRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderBottomLeftRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 static inline void Nh_CSS_setBorderBottomRightRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p
 );
 
 // helper
@@ -256,7 +256,7 @@ NH_SILENT_END()
 }
 
 NH_RESULT Nh_CSS_computeBorderProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp)
 {
 NH_BEGIN()
 
@@ -302,13 +302,13 @@ NH_END(NH_SUCCESS)
 // BORDER ==========================================================================================
 
 static inline bool Nh_CSS_setBorder(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
 //    if (Property_p != NULL) 
 //    {
-//        NH_CSS_GenericProperty SingleValue;
+//        Nh_CSS_GenericProperty SingleValue;
 //        SingleValue.values_pp = Nh_allocate(sizeof(void*));
 //        
 //        switch (Property_p->valueCount)
@@ -344,7 +344,7 @@ NH_END(false)
 }
 
 static inline void Nh_CSS_setBorderBottom(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -359,7 +359,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderLeft(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -374,7 +374,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderRight(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -389,7 +389,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderTop(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -406,13 +406,13 @@ NH_SILENT_END()
 // COLOR ===========================================================================================
 
 static inline bool Nh_CSS_setBorderColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Property_p != NULL) 
     {
-        NH_CSS_GenericProperty SingleValue;
+        Nh_CSS_GenericProperty SingleValue;
         SingleValue.values_pp = Nh_allocate(sizeof(void*));
 
         switch (Property_p->valueCount)
@@ -461,7 +461,7 @@ NH_END(false)
 }
 
 static inline void Nh_CSS_setBorderTopColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -477,7 +477,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderRightColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -493,7 +493,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderBottomColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -509,7 +509,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderLeftColor(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -527,13 +527,13 @@ NH_SILENT_END()
 // STYLE ===========================================================================================
 
 static inline bool Nh_CSS_setBorderStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Property_p != NULL) 
     {
-        NH_CSS_GenericProperty SingleValue;
+        Nh_CSS_GenericProperty SingleValue;
         SingleValue.values_pp = Nh_allocate(sizeof(void*));
 
         switch (Property_p->valueCount)
@@ -582,7 +582,7 @@ NH_END(false)
 }
 
 static inline void Nh_CSS_setBorderTopStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -594,7 +594,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderRightStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -606,7 +606,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderBottomStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -618,7 +618,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderLeftStyle(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -632,13 +632,13 @@ NH_SILENT_END()
 // WIDTH ===========================================================================================
 
 static inline void Nh_CSS_setBorderWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Property_p != NULL) 
     {
-        NH_CSS_GenericProperty SingleValue;
+        Nh_CSS_GenericProperty SingleValue;
         SingleValue.values_pp = Nh_allocate(sizeof(void*));
 
         switch (Property_p->valueCount)
@@ -686,7 +686,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderBottomWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -707,7 +707,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderLeftWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -728,7 +728,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderRightWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -749,7 +749,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderTopWidth(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -772,13 +772,13 @@ NH_SILENT_END()
 // RADII ===========================================================================================
 
 static inline void Nh_CSS_setBorderRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Property_p != NULL) 
     {
-        NH_CSS_GenericProperty SingleValue;
+        Nh_CSS_GenericProperty SingleValue;
         SingleValue.values_pp = Nh_allocate(sizeof(void*));
 
         switch (Property_p->valueCount)
@@ -800,7 +800,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderTopLeftRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -822,7 +822,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderTopRightRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -844,7 +844,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderBottomLeftRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
@@ -866,7 +866,7 @@ NH_SILENT_END()
 }
 
 static inline void Nh_CSS_setBorderBottomRightRadius(
-    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, NH_CSS_GenericProperty *Property_p)
+    Nh_HTML_Node *Node_p, Nh_Tab *Tab_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 

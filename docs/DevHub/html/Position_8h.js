@@ -90,7 +90,7 @@ var Position_8h =
       [ "NH_CSS_POSITION_RELATIVE", "group__CSSEnums.html#ggaddfe63d575d2239a7be907b350116dcdab242af2ab7b2f3375b4c94d29164ee10", null ],
       [ "NH_CSS_POSITION_STICKY", "group__CSSEnums.html#ggaddfe63d575d2239a7be907b350116dcda277ef4d8f6827810e51363156387c8d0", null ]
     ] ],
-    [ "Nh_CSS_computePositionProperties", "group__CSSFunctions.html#ga45281d7776ce816c42a8714e47a35ea8", null ],
+    [ "Nh_CSS_computePositionProperties", "group__CSSFunctions.html#gade0b56f6d9972cd28e1361b3016e7147", null ],
     [ "Nh_CSS_setDefaultPositionProperties", "group__CSSFunctions.html#ga18f3310468e99ef4cf3f25ac475e1993", null ],
     [ "Nh_CSS_setDefaultPositionProperty", "group__CSSFunctions.html#ga31b82dd87985fc41b5b6884f0ea77bd2", null ]
 ];

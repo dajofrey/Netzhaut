@@ -160,7 +160,7 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
     );
     
     NH_RESULT Nh_CSS_computePositionProperties(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty **Properties_pp
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty **Properties_pp
     );
 
 /** @} */

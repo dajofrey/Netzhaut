@@ -20,6 +20,7 @@ var group__HTMLFunctions =
     [ "Nh_HTML_destroyFormattedTree", "group__HTMLFunctions.html#ga928ef8f679bf10c1dde86b9f1c40ad93", null ],
     [ "Nh_HTML_destroyNode", "group__HTMLFunctions.html#gaf4363dc7c5ab65c2aeacd74b93023748", null ],
     [ "Nh_HTML_destroyText", "group__HTMLFunctions.html#gaa956901a58a75b8203de9c73e9c29e98", null ],
+    [ "Nh_HTML_destroyUnformattedTree", "group__HTMLFunctions.html#gaa1a2ad300ca639e9306866a2f9a37360", null ],
     [ "Nh_HTML_freeInput", "group__HTMLFunctions.html#ga383b705ad2bcdee4d1975baa968674fb", null ],
     [ "Nh_HTML_getAttribute", "group__HTMLFunctions.html#gaca68d83cd6a3fa1ea8ee18dd37e88a8a", null ],
     [ "Nh_HTML_getAttributeFromType", "group__HTMLFunctions.html#gaf7e42c1007cd0c3af940af07cb011441", null ],

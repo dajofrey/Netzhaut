@@ -53,7 +53,7 @@ var Background_8h =
       [ "NH_CSS_BACKGROUND_SIZE_PERCENT", "group__CSSEnums.html#ggab69cb5e11ec1f40157393abb065ace36aee3b21b098e890b7137c94460a8061f5", null ],
       [ "NH_CSS_BACKGROUND_SIZE_PIXEL", "group__CSSEnums.html#ggab69cb5e11ec1f40157393abb065ace36a955d978fef4a6aba09495b507cb90bd4", null ]
     ] ],
-    [ "Nh_CSS_computeBackgroundProperties", "group__CSSFunctions.html#ga60035ebe36b1427773600ba263d16f75", null ],
+    [ "Nh_CSS_computeBackgroundProperties", "group__CSSFunctions.html#gac0531175023bf26596700466a4534e7d", null ],
     [ "Nh_CSS_setDefaultBackgroundProperties", "group__CSSFunctions.html#gab6b1b5a8d4cee41f8c39022ec1df0ae4", null ],
     [ "Nh_CSS_setDefaultBackgroundProperty", "group__CSSFunctions.html#ga5bd080f38f7336986016bf405de10f23", null ]
 ];

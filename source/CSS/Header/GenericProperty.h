@@ -381,7 +381,7 @@ typedef struct Nh_Tab Nh_Tab;
  *  @{
  */
 
-    typedef struct NH_CSS_GenericProperty {
+    typedef struct Nh_CSS_GenericProperty {
         NH_CSS_Sheet *Sheet_p;
         NH_CSS_SELECTOR selector;
         NH_CSS_PROPERTY type;
@@ -391,7 +391,8 @@ typedef struct Nh_Tab Nh_Tab;
         int valueCount;      
         bool active;          
         bool update;
-    } NH_CSS_GenericProperty;
+        NH_BOOL triggerRecompute;
+    } Nh_CSS_GenericProperty;
     
 /** @} */
 
@@ -400,19 +401,19 @@ typedef struct Nh_Tab Nh_Tab;
  *  @{
  */
 
-    void Nh_CSS_configureGenericProperty(
-        Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p
+    void Nh_CSS_configureGenericProperties(
+        Nh_HTML_Node *Node_p
     );
-    
+
     void Nh_CSS_getGenericProperties(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT]
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT]
     );
     
     NH_RESULT Nh_CSS_addGenericProperty(
-        Nh_List *Properties_p, NH_CSS_GenericProperty *Copy_p
+        Nh_List *Properties_p, Nh_CSS_GenericProperty *Copy_p
     );
     
-    NH_CSS_GenericProperty *Nh_CSS_getProperty(
+    Nh_CSS_GenericProperty *Nh_CSS_getProperty(
         Nh_List *Properties_p, int index
     );
     
@@ -425,11 +426,11 @@ typedef struct Nh_Tab Nh_Tab;
     );
     
     NH_RESULT Nh_CSS_activate(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
     );
 
     NH_RESULT Nh_CSS_activateChild(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
+        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
     );
 
 /** @} */

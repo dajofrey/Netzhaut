@@ -170,16 +170,16 @@ NH_BEGIN()
     NH_CSS_Sheet Sheet;
     Nh_CSS_initSheet(&Sheet);
 
-    Sheet.URI = Nh_createInternalURN("css:misc");
+    Sheet.URI = Nh_createURI("nh:css:misc", NULL, NULL, NULL, -1);
     NH_CHECK(Nh_CSS_addSheet(&Document_p->Sheets, &Sheet))
 
-    Sheet.URI = Nh_createInternalURN("css:selectoption"); 
+    Sheet.URI = Nh_createURI("nh:css:selectoption", NULL, NULL, NULL, -1); 
     NH_CHECK(Nh_CSS_addSheet(&Document_p->Sheets, &Sheet))
 
-    Sheet.URI = Nh_createInternalURN("css:header");
+    Sheet.URI = Nh_createURI("nh:css:header", NULL, NULL, NULL, -1);
     NH_CHECK(Nh_CSS_addSheet(&Document_p->Sheets, &Sheet))
 
-    Sheet.URI = Nh_createInternalURN("css:list");
+    Sheet.URI = Nh_createURI("nh:css:list", NULL, NULL, NULL, -1);
     NH_CHECK(Nh_CSS_addSheet(&Document_p->Sheets, &Sheet))
 
 NH_END(NH_SUCCESS)
@@ -197,7 +197,7 @@ NH_BEGIN()
     {
         Nh_HTML_Node *Sheet_p = Nh_getListItem(&Node_p->Children.Unformatted, 0);
         if (Sheet_p->text_p != NULL) {
-            Sheet.URI = Nh_createInternalURL(Sheet_p, NH_INTERNAL_URL_HTML_NODE_TEXT);
+            Sheet.URI = Nh_createURI(NULL, NULL, NULL, Sheet_p, NH_INTERNAL_URL_HTML_NODE_TEXT);
             NH_CHECK(Nh_CSS_addSheet(&Document_p->Sheets, &Sheet))
         }
     }
@@ -233,7 +233,7 @@ NH_BEGIN()
             {
                 if (Nh_HTML_getAttribute(&Node_p->Attributes, i)->type == NH_HTML_ATTRIBUTE_HREF) 
                 {
-                    Sheet.URI = Nh_createURI(Nh_HTML_getAttribute(&Node_p->Attributes, i)->value_p, NULL, &Document_p->URI);
+                    Sheet.URI = Nh_createURI(Nh_HTML_getAttribute(&Node_p->Attributes, i)->value_p, NULL, &Document_p->URI, NULL, -1);
                     NH_CHECK(Nh_CSS_addSheet(&Document_p->Sheets, &Sheet))
                 }
             }
@@ -259,7 +259,7 @@ NH_BEGIN()
     {
         if (Nh_HTML_getAttribute(&Node_p->Attributes, i)->type == NH_HTML_ATTRIBUTE_STYLE) 
         {
-            Sheet.URI = Nh_createInternalURL(Nh_HTML_getAttribute(&Node_p->Attributes, i), NH_INTERNAL_URL_HTML_NODE_ATTRIBUTE_VALUE);
+            Sheet.URI = Nh_createURI(NULL, NULL, NULL, Nh_HTML_getAttribute(&Node_p->Attributes, i), NH_INTERNAL_URL_HTML_NODE_ATTRIBUTE_VALUE);
             Sheet.Apply_p = Node_p;
 
             NH_CHECK(Nh_CSS_addSheet(&Document_p->Sheets, &Sheet))

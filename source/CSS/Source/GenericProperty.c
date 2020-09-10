@@ -371,17 +371,43 @@ size_t NH_CSS_PROPERTIES_PP_COUNT = sizeof(NH_CSS_PROPERTIES_PP) / sizeof(NH_CSS
 
 // CONFIGURE =======================================================================================
 
-void Nh_CSS_configureGenericProperty(
-    Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p)
+static void Nh_CSS_configureGenericProperty(
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
     if (Node_p->Parent_p != NULL && Nh_getListItem(&Node_p->Parent_p->Children.Unformatted, 0) == Node_p) {
         if (Property_p->Pseudo._class == NH_CSS_PSEUDO_CLASS_FIRST_CHILD) {Property_p->active = true;}
     }
-    if (Property_p->selector == NH_CSS_SELECTOR_ATTRIBUTE) {
-        Property_p->active = Nh_CSS_attributeSelectorHit(Property_p->selector_p, Node_p);
+
+    if (Property_p->selector == NH_CSS_SELECTOR_ATTRIBUTE) 
+    {
+        NH_BOOL active = Nh_CSS_attributeSelectorHit(Property_p->selector_p, Node_p);
+        if (active && !Property_p->active) {Property_p->active = Property_p->update = true;}
+        else if (!active && Property_p->active) {
+            Property_p->active = false;
+            Property_p->update = true;
+        }
     } 
+
+    if (Property_p->selector == NH_CSS_SELECTOR_CHILD_COMBINATOR)
+    {
+        // TODO
+    }
+
+NH_SILENT_END()
+}
+
+void Nh_CSS_configureGenericProperties(
+    Nh_HTML_Node *Node_p)
+{
+NH_BEGIN()
+
+    for (int i = 0; i < Node_p->Properties.count; ++i) {
+        Nh_CSS_configureGenericProperty(
+            Node_p, Nh_CSS_getProperty(&Node_p->Properties, i)
+        );
+    }
 
 NH_SILENT_END()
 }
@@ -389,13 +415,13 @@ NH_SILENT_END()
 // GET =============================================================================================
 
 void Nh_CSS_getGenericProperties(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT])
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Properties_pp[NH_CSS_PROPERTY_COUNT])
 {
 NH_BEGIN()
 
     for (int i = 0; i < Node_p->Properties.count; ++i) 
     {
-        NH_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, i);
+        Nh_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, i);
 
         if (Property_p->active) 
         {
@@ -425,7 +451,7 @@ NH_BEGIN()
 
         for (int j = 0; j < Node_p->Properties.count; ++j) 
         {
-            NH_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, j);
+            Nh_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, j);
 
             if ((Property_p->Pseudo._class == pseudoClass || Property_p->Pseudo.parentClass == pseudoClass) && Property_p->active)
             {
@@ -439,7 +465,7 @@ NH_END(NH_SUCCESS)
 }
 
 NH_RESULT Nh_CSS_activate(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
 {
 NH_BEGIN()
 
@@ -451,7 +477,7 @@ NH_END(NH_SUCCESS)
 }
 
 NH_RESULT Nh_CSS_activateChild(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
 {
 NH_BEGIN()
 
@@ -465,13 +491,13 @@ NH_END(NH_SUCCESS)
 // PROPERTY LIST ===================================================================================
 
 NH_RESULT Nh_CSS_addGenericProperty(
-    Nh_List *Properties_p, NH_CSS_GenericProperty *Copy_p)
+    Nh_List *Properties_p, Nh_CSS_GenericProperty *Copy_p)
 {
 NH_BEGIN()
 
     NH_CHECK_NULL(Properties_p, Copy_p)
 
-    NH_CSS_GenericProperty *Property_p = Nh_allocate(sizeof(NH_CSS_GenericProperty));
+    Nh_CSS_GenericProperty *Property_p = Nh_allocate(sizeof(Nh_CSS_GenericProperty));
     NH_CHECK_MEM(Property_p)
 
     Property_p->values_pp          = NULL;
@@ -485,6 +511,304 @@ NH_BEGIN()
     Property_p->update             = Copy_p->update;
     Property_p->selector_p         = Copy_p->selector_p;
 
+    NH_CSS_PROPERTY type = Property_p->type;
+
+    Property_p->triggerRecompute   =
+
+           type == NH_CSS_PROPERTY__WEBKIT_LINE_CLAMP
+        || type == NH_CSS_PROPERTY_ALIGN_CONTENT               
+        || type == NH_CSS_PROPERTY_ALIGN_ITEMS                             	
+        || type == NH_CSS_PROPERTY_ALIGN_SELF                             
+        || type == NH_CSS_PROPERTY_ALL                            	
+        || type == NH_CSS_PROPERTY_BACKFACE_VISIBILITY          
+        || type == NH_CSS_PROPERTY_BLOCK_SIZE                  
+        || type == NH_CSS_PROPERTY_BORDER                      
+        || type == NH_CSS_PROPERTY_BORDER_BLOCK                
+        || type == NH_CSS_PROPERTY_BORDER_BLOCK_END            
+        || type == NH_CSS_PROPERTY_BORDER_BLOCK_END_WIDTH      
+        || type == NH_CSS_PROPERTY_BORDER_BLOCK_START          
+        || type == NH_CSS_PROPERTY_BORDER_BLOCK_START_WIDTH    
+        || type == NH_CSS_PROPERTY_BORDER_BLOCK_STYLE          
+        || type == NH_CSS_PROPERTY_BORDER_BLOCK_WIDTH          
+        || type == NH_CSS_PROPERTY_BORDER_BOTTOM               
+        || type == NH_CSS_PROPERTY_BORDER_BOTTOM_WIDTH         
+        || type == NH_CSS_PROPERTY_BORDER_COLLAPSE             
+        || type == NH_CSS_PROPERTY_BORDER_END_END_RADIUS       
+        || type == NH_CSS_PROPERTY_BORDER_END_START_RADIUS     
+        || type == NH_CSS_PROPERTY_BORDER_IMAGE                
+        || type == NH_CSS_PROPERTY_BORDER_IMAGE_OUTSET         
+        || type == NH_CSS_PROPERTY_BORDER_IMAGE_REPEAT         
+        || type == NH_CSS_PROPERTY_BORDER_IMAGE_SLICE          
+        || type == NH_CSS_PROPERTY_BORDER_IMAGE_SOURCE         
+        || type == NH_CSS_PROPERTY_BORDER_IMAGE_WIDTH          
+        || type == NH_CSS_PROPERTY_BORDER_INLINE               
+        || type == NH_CSS_PROPERTY_BORDER_INLINE_END           
+        || type == NH_CSS_PROPERTY_BORDER_INLINE_END_WIDTH     
+        || type == NH_CSS_PROPERTY_BORDER_INLINE_START         
+        || type == NH_CSS_PROPERTY_BORDER_INLINE_START_STYLE   
+        || type == NH_CSS_PROPERTY_BORDER_INLINE_START_WIDTH   
+        || type == NH_CSS_PROPERTY_BORDER_INLINE_STYLE        
+        || type == NH_CSS_PROPERTY_BORDER_INLINE_WIDTH        
+        || type == NH_CSS_PROPERTY_BORDER_LEFT                 
+        || type == NH_CSS_PROPERTY_BORDER_LEFT_STYLE          
+        || type == NH_CSS_PROPERTY_BORDER_LEFT_WIDTH          
+        || type == NH_CSS_PROPERTY_BORDER_RADIUS               
+        || type == NH_CSS_PROPERTY_BORDER_RIGHT                
+        || type == NH_CSS_PROPERTY_BORDER_RIGHT_STYLE          
+        || type == NH_CSS_PROPERTY_BORDER_RIGHT_WIDTH          
+        || type == NH_CSS_PROPERTY_BORDER_SPACING              
+        || type == NH_CSS_PROPERTY_BORDER_START_END_RADIUS     
+        || type == NH_CSS_PROPERTY_BORDER_START_START_RADIUS   
+        || type == NH_CSS_PROPERTY_BORDER_STYLE                
+        || type == NH_CSS_PROPERTY_BORDER_TOP                  
+        || type == NH_CSS_PROPERTY_BORDER_TOP_LEFT_RADIUS      
+        || type == NH_CSS_PROPERTY_BORDER_TOP_RIGHT_RADIUS     
+        || type == NH_CSS_PROPERTY_BORDER_TOP_STYLE            
+        || type == NH_CSS_PROPERTY_BORDER_TOP_WIDTH            
+        || type == NH_CSS_PROPERTY_BORDER_WIDTH               
+        || type == NH_CSS_PROPERTY_BOTTOM                     
+        || type == NH_CSS_PROPERTY_BOX_DECORATION_BREAK    
+        || type == NH_CSS_PROPERTY_BOX_SHADOW                  
+        || type == NH_CSS_PROPERTY_BOX_SIZING                  
+        || type == NH_CSS_PROPERTY_BREAK_AFTER                 
+        || type == NH_CSS_PROPERTY_BREAK_BEFORE                
+        || type == NH_CSS_PROPERTY_BREAK_INSIDE                
+        || type == NH_CSS_PROPERTY_CAPTION_SIDE                
+        || type == NH_CSS_PROPERTY_CLEAR                       
+        || type == NH_CSS_PROPERTY_CLIP                        
+        || type == NH_CSS_PROPERTY_CLIP_PATH                   
+        || type == NH_CSS_PROPERTY_COLUMN_COUNT                
+        || type == NH_CSS_PROPERTY_COLUMN_FILL                 
+        || type == NH_CSS_PROPERTY_COLUMN_GAP                  
+        || type == NH_CSS_PROPERTY_COLUMN_RULE                 
+        || type == NH_CSS_PROPERTY_COLUMN_RULE_STYLE           
+        || type == NH_CSS_PROPERTY_COLUMN_RULE_WIDTH           
+        || type == NH_CSS_PROPERTY_COLUMN_SPAN                 
+        || type == NH_CSS_PROPERTY_COLUMN_WIDTH                
+        || type == NH_CSS_PROPERTY_COLUMNS                     
+        || type == NH_CSS_PROPERTY_CONTENT                     
+        || type == NH_CSS_PROPERTY_COUNTER_INCREMENT           
+        || type == NH_CSS_PROPERTY_COUNTER_RESET              
+        || type == NH_CSS_PROPERTY_COUNTER_SET                 
+        || type == NH_CSS_PROPERTY_CURSOR                      
+        || type == NH_CSS_PROPERTY_DIRECTION                   
+        || type == NH_CSS_PROPERTY_DISPLAY                     
+        || type == NH_CSS_PROPERTY_EMPTY_CELLS                 
+        || type == NH_CSS_PROPERTY_FILTER                      
+        || type == NH_CSS_PROPERTY_FLEX                        
+        || type == NH_CSS_PROPERTY_FLEX_BASIS                  
+        || type == NH_CSS_PROPERTY_FLEX_DIRECTION              
+        || type == NH_CSS_PROPERTY_FLEX_FLOW                   
+        || type == NH_CSS_PROPERTY_FLEX_GROW                   
+        || type == NH_CSS_PROPERTY_FLEX_SHRINK                 
+        || type == NH_CSS_PROPERTY_FLEX_WRAP                   
+        || type == NH_CSS_PROPERTY_FLOAT                       
+        || type == NH_CSS_PROPERTY_FONT                        
+        || type == NH_CSS_PROPERTY_FONT_FAMILY                 
+        || type == NH_CSS_PROPERTY_FONT_FEATURE_SETTINGS       
+        || type == NH_CSS_PROPERTY_FONT_KERNING                
+        || type == NH_CSS_PROPERTY_FONT_LANGUAGE_OVERRIDE      
+        || type == NH_CSS_PROPERTY_FONT_OPTICAL_SIZING         
+        || type == NH_CSS_PROPERTY_FONT_SIZE                   
+        || type == NH_CSS_PROPERTY_FONT_SIZE_ADJUST            
+        || type == NH_CSS_PROPERTY_FONT_STRETCH                
+        || type == NH_CSS_PROPERTY_FONT_STYLE                  
+        || type == NH_CSS_PROPERTY_FONT_SYNTHESIS              
+        || type == NH_CSS_PROPERTY_FONT_VARIANT                
+        || type == NH_CSS_PROPERTY_FONT_VARIANT_ALTERNATES     
+        || type == NH_CSS_PROPERTY_FONT_VARIANT_CAPS           
+        || type == NH_CSS_PROPERTY_FONT_VARIANT_EAST_ASIAN     
+        || type == NH_CSS_PROPERTY_FONT_VARIANT_LIGATURES      
+        || type == NH_CSS_PROPERTY_FONT_VARIANT_NUMERIC        
+        || type == NH_CSS_PROPERTY_FONT_VARIANT_POSITION       
+        || type == NH_CSS_PROPERTY_FONT_WEIGHT                 
+        || type == NH_CSS_PROPERTY_GAP                          
+        || type == NH_CSS_PROPERTY_GRID                        
+        || type == NH_CSS_PROPERTY_GRID_AREA                   
+        || type == NH_CSS_PROPERTY_GRID_AUTO_COLUMNS           
+        || type == NH_CSS_PROPERTY_GRID_AUTO_FLOW              
+        || type == NH_CSS_PROPERTY_GRID_AUTO_ROWS              
+        || type == NH_CSS_PROPERTY_GRID_COLUMN                 
+        || type == NH_CSS_PROPERTY_GRID_COLUMN_END             
+        || type == NH_CSS_PROPERTY_GRID_COLUMN_GAP             
+        || type == NH_CSS_PROPERTY_GRID_COLUMN_START           
+        || type == NH_CSS_PROPERTY_GRID_GAP                    
+        || type == NH_CSS_PROPERTY_GRID_ROW                    
+        || type == NH_CSS_PROPERTY_GRID_ROW_END                
+        || type == NH_CSS_PROPERTY_GRID_ROW_GAP                
+        || type == NH_CSS_PROPERTY_GRID_ROW_START              
+        || type == NH_CSS_PROPERTY_GRID_TEMPLATE               
+        || type == NH_CSS_PROPERTY_GRID_TEMPLATE_AREAS         
+        || type == NH_CSS_PROPERTY_GRID_TEMPLATE_COLUMNS       
+        || type == NH_CSS_PROPERTY_GRID_TEMPLATE_ROWS          
+        || type == NH_CSS_PROPERTY_HANGING_PUNCTUATION         
+        || type == NH_CSS_PROPERTY_HEIGHT                      
+        || type == NH_CSS_PROPERTY_HYPHENS                     
+        || type == NH_CSS_PROPERTY_IMAGE_RENDERING             
+        || type == NH_CSS_PROPERTY_INLINE_SIZE                 
+        || type == NH_CSS_PROPERTY_INSET                       
+        || type == NH_CSS_PROPERTY_INSET_BLOCK                 
+        || type == NH_CSS_PROPERTY_INSET_BLOCK_END             
+        || type == NH_CSS_PROPERTY_INSET_BLOCK_START           
+        || type == NH_CSS_PROPERTY_INSET_INLINE                
+        || type == NH_CSS_PROPERTY_INSET_INLINE_END            
+        || type == NH_CSS_PROPERTY_INSET_INLINE_START          
+        || type == NH_CSS_PROPERTY_ISOLATION                   
+        || type == NH_CSS_PROPERTY_JUSTIFY_CONTENT             
+        || type == NH_CSS_PROPERTY_JUSTIFY_ITEMS               
+        || type == NH_CSS_PROPERTY_JUSTIFY_SELF                
+        || type == NH_CSS_PROPERTY_LEFT                        
+        || type == NH_CSS_PROPERTY_LETTER_SPACING              
+        || type == NH_CSS_PROPERTY_LINE_BREAK                  
+        || type == NH_CSS_PROPERTY_LINE_HEIGHT                 
+        || type == NH_CSS_PROPERTY_LIST_STYLE                  
+        || type == NH_CSS_PROPERTY_LIST_STYLE_IMAGE            
+        || type == NH_CSS_PROPERTY_LIST_STYLE_POSITION         
+        || type == NH_CSS_PROPERTY_LIST_STYLE_TYPE             
+        || type == NH_CSS_PROPERTY_MARGIN                      
+        || type == NH_CSS_PROPERTY_MARGIN_BLOCK                
+        || type == NH_CSS_PROPERTY_MARGIN_BLOCK_END            
+        || type == NH_CSS_PROPERTY_MARGIN_BLOCK_START          
+        || type == NH_CSS_PROPERTY_MARGIN_BOTTOM               
+        || type == NH_CSS_PROPERTY_MARGIN_INLINE               
+        || type == NH_CSS_PROPERTY_MARGIN_INLINE_END           
+        || type == NH_CSS_PROPERTY_MARGIN_INLINE_START         
+        || type == NH_CSS_PROPERTY_MARGIN_LEFT                 
+        || type == NH_CSS_PROPERTY_MARGIN_RIGHT                
+        || type == NH_CSS_PROPERTY_MARGIN_TOP                  
+        || type == NH_CSS_PROPERTY_MASK                        
+        || type == NH_CSS_PROPERTY_MASK_CLIP                   
+        || type == NH_CSS_PROPERTY_MASK_COMPOSITE              
+        || type == NH_CSS_PROPERTY_MASK_IMAGE                  
+        || type == NH_CSS_PROPERTY_MASK_MODE                   
+        || type == NH_CSS_PROPERTY_MASK_ORIGIN                 
+        || type == NH_CSS_PROPERTY_MASK_POSITION               
+        || type == NH_CSS_PROPERTY_MASK_REPEAT                 
+        || type == NH_CSS_PROPERTY_MASK_SIZE                   
+        || type == NH_CSS_PROPERTY_MASK_TYPE                   
+        || type == NH_CSS_PROPERTY_MAX_HEIGHT                  
+        || type == NH_CSS_PROPERTY_MAX_WIDTH                   
+        || type == NH_CSS_PROPERTY_MIN_BLOCK_SIZE              
+        || type == NH_CSS_PROPERTY_MIN_HEIGHT                 
+        || type == NH_CSS_PROPERTY_MIN_INLINE_SIZE             
+        || type == NH_CSS_PROPERTY_MIN_WIDTH                   
+        || type == NH_CSS_PROPERTY_MIX_BLEND_MODE              
+        || type == NH_CSS_PROPERTY_OBJECT_FIT                  
+        || type == NH_CSS_PROPERTY_OBJECT_POSITION             
+        || type == NH_CSS_PROPERTY_OPACITY                     
+        || type == NH_CSS_PROPERTY_ORDER                       
+        || type == NH_CSS_PROPERTY_ORPHANS                     
+        || type == NH_CSS_PROPERTY_OUTLINE                     
+        || type == NH_CSS_PROPERTY_OUTLINE_OFFSET              
+        || type == NH_CSS_PROPERTY_OUTLINE_STYLE               
+        || type == NH_CSS_PROPERTY_OUTLINE_WIDTH               
+        || type == NH_CSS_PROPERTY_OVERFLOW                    
+        || type == NH_CSS_PROPERTY_OVERFLOW_WRAP               
+        || type == NH_CSS_PROPERTY_OVERFLOW_X                  
+        || type == NH_CSS_PROPERTY_OVERFLOW_Y                  
+        || type == NH_CSS_PROPERTY_PADDING                     
+        || type == NH_CSS_PROPERTY_PADDING_BLOCK               
+        || type == NH_CSS_PROPERTY_PADDING_BLOCK_END           
+        || type == NH_CSS_PROPERTY_PADDING_BLOCK_START         
+        || type == NH_CSS_PROPERTY_PADDING_BOTTOM              
+        || type == NH_CSS_PROPERTY_PADDING_INLINE              
+        || type == NH_CSS_PROPERTY_PADDING_INLINE_END          
+        || type == NH_CSS_PROPERTY_PADDING_INLINE_START        
+        || type == NH_CSS_PROPERTY_PADDING_LEFT                
+        || type == NH_CSS_PROPERTY_PADDING_RIGHT               
+        || type == NH_CSS_PROPERTY_PADDING_TOP                 
+        || type == NH_CSS_PROPERTY_PAGE_BREAK_AFTER            
+        || type == NH_CSS_PROPERTY_PAGE_BREAK_BEFORE           
+        || type == NH_CSS_PROPERTY_PAGE_BREAK_INSIDE           
+        || type == NH_CSS_PROPERTY_PERSPECTIVE                 
+        || type == NH_CSS_PROPERTY_PERSPECTIVE_ORIGIN          
+        || type == NH_CSS_PROPERTY_PLACE_CONTENT               
+        || type == NH_CSS_PROPERTY_PLACE_ITEMS                 
+        || type == NH_CSS_PROPERTY_PLACE_SELF                  
+        || type == NH_CSS_PROPERTY_POINTER_EVENTS              
+        || type == NH_CSS_PROPERTY_POSITION                    
+        || type == NH_CSS_PROPERTY_QUOTES                      
+        || type == NH_CSS_PROPERTY_RESIZE                      
+        || type == NH_CSS_PROPERTY_RIGHT                       
+        || type == NH_CSS_PROPERTY_ROTATE                      
+        || type == NH_CSS_PROPERTY_ROW_GAP                     
+        || type == NH_CSS_PROPERTY_SCALE                       
+        || type == NH_CSS_PROPERTY_SCROLL_BEHAVIOR             
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN               
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_BLOCK         
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_BLOCK_END     
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_BLOCK_START   
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_BOTTOM        
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_INLINE        
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_INLINE_END    
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_INLINE_START  
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_LEFT          
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_RIGHT         
+        || type == NH_CSS_PROPERTY_SCROLL_MARGIN_TOP           
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING             
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_BLOCK        
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_BLOCK_END    
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_BLOCK_START  
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_BOTTOM       
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_INLINE       
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_INLINE_END   
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_INLINE_START 
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_LEFT         
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_RIGHT        
+        || type == NH_CSS_PROPERTY_SCROLL_PADDING_TOP          
+        || type == NH_CSS_PROPERTY_SCROLL_SNAP_ALIGN           
+        || type == NH_CSS_PROPERTY_SCROLL_SNAP_STOP            
+        || type == NH_CSS_PROPERTY_SCROLL_SNAP_TYPE            
+        || type == NH_CSS_PROPERTY_SCROLLBAR_WIDTH             
+        || type == NH_CSS_PROPERTY_SHAPE_IMAGE_THRESHOLD       
+        || type == NH_CSS_PROPERTY_SHAPE_MARGIN                
+        || type == NH_CSS_PROPERTY_SHAPE_OUTSIDE               
+        || type == NH_CSS_PROPERTY_TAB_SIZE                    
+        || type == NH_CSS_PROPERTY_TABLE_LAYOUT                
+        || type == NH_CSS_PROPERTY_TEXT_ALIGN                  
+        || type == NH_CSS_PROPERTY_TEXT_ALIGN_LAST             
+        || type == NH_CSS_PROPERTY_TEXT_COMBINE_UPRIGHT        
+        || type == NH_CSS_PROPERTY_TEXT_DECORATION             
+        || type == NH_CSS_PROPERTY_TEXT_DECORATION_LINE        
+        || type == NH_CSS_PROPERTY_TEXT_DECORATION_STYLE       
+        || type == NH_CSS_PROPERTY_TEXT_DECORATION_THICKNESS   
+        || type == NH_CSS_PROPERTY_TEXT_EMPHASIS               
+        || type == NH_CSS_PROPERTY_TEXT_EMPHASIS_POSITION      
+        || type == NH_CSS_PROPERTY_TEXT_EMPHASIS_STYLE         
+        || type == NH_CSS_PROPERTY_TEXT_INDENT                 
+        || type == NH_CSS_PROPERTY_TEXT_JUSTIFY                
+        || type == NH_CSS_PROPERTY_TEXT_ORIENTATION            
+        || type == NH_CSS_PROPERTY_TEXT_OVERFLOW               
+        || type == NH_CSS_PROPERTY_TEXT_RENDERING              
+        || type == NH_CSS_PROPERTY_TEXT_SHADOW                 
+        || type == NH_CSS_PROPERTY_TEXT_TRANSFORM              
+        || type == NH_CSS_PROPERTY_TEXT_UNDERLINE_OFFSET       
+        || type == NH_CSS_PROPERTY_TEXT_UNDERLINE_POSITION     
+        || type == NH_CSS_PROPERTY_TOP                         
+        || type == NH_CSS_PROPERTY_TOUCH_ACTION                
+        || type == NH_CSS_PROPERTY_TRANSFORM                   
+        || type == NH_CSS_PROPERTY_TRANSFORM_BOX               
+        || type == NH_CSS_PROPERTY_TRANSFORM_ORIGIN            
+        || type == NH_CSS_PROPERTY_TRANSFORM_STYLE             
+        || type == NH_CSS_PROPERTY_TRANSITION                  
+        || type == NH_CSS_PROPERTY_TRANSITION_DELAY            
+        || type == NH_CSS_PROPERTY_TRANSITION_DURATION         
+        || type == NH_CSS_PROPERTY_TRANSITION_PROPERTY         
+        || type == NH_CSS_PROPERTY_TRANSITION_TIMING_FUNCTION  
+        || type == NH_CSS_PROPERTY_TRANSLATE                   
+        || type == NH_CSS_PROPERTY_UNICODE_BIDI                
+        || type == NH_CSS_PROPERTY_USER_SELECT                 
+        || type == NH_CSS_PROPERTY_VISIBILITY                  
+        || type == NH_CSS_PROPERTY_WHITE_SPACE                 
+        || type == NH_CSS_PROPERTY_WIDOWS                      
+        || type == NH_CSS_PROPERTY_WIDTH                       
+        || type == NH_CSS_PROPERTY_WILL_CHANGE                 
+        || type == NH_CSS_PROPERTY_WORD_BREAK                  
+        || type == NH_CSS_PROPERTY_WORD_SPACING                
+        || type == NH_CSS_PROPERTY_WORD_WRAP                   
+        || type == NH_CSS_PROPERTY_WRITING_MODE                
+        || type == NH_CSS_PROPERTY_VERTICAL_ALIGN              
+        || type == NH_CSS_PROPERTY_Z_INDEX;                 
 
     if (Copy_p->valueCount > 0) {
         Property_p->values_pp  = Copy_p->values_pp;
@@ -496,7 +820,7 @@ NH_BEGIN()
 NH_END(NH_SUCCESS)
 }
 
-NH_CSS_GenericProperty *Nh_CSS_getProperty(
+Nh_CSS_GenericProperty *Nh_CSS_getProperty(
     Nh_List *Properties_p, int index)
 {
 NH_BEGIN()
