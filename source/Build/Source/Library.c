@@ -467,35 +467,35 @@ NH_BEGIN()
     );
 
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/index.html", "source/TestSuite/HTML/Index.h", "IndexHTML")
+        topDir_p, "data/test/html/index.html", "source/Test/HTML/Index.h", "IndexHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/background.html", "source/TestSuite/HTML/Background.h", "BackgroundHTML")
+        topDir_p, "data/test/html/background.html", "source/Test/HTML/Background.h", "BackgroundHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/border.html", "source/TestSuite/HTML/Border.h", "BorderHTML")
+        topDir_p, "data/test/html/border.html", "source/Test/HTML/Border.h", "BorderHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/canvas.html", "source/TestSuite/HTML/Canvas.h", "CanvasHTML")
+        topDir_p, "data/test/html/canvas.html", "source/Test/HTML/Canvas.h", "CanvasHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/image.html", "source/TestSuite/HTML/Image.h", "ImageHTML")
+        topDir_p, "data/test/html/image.html", "source/Test/HTML/Image.h", "ImageHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/input.html", "source/TestSuite/HTML/Input.h", "InputHTML")
+        topDir_p, "data/test/html/input.html", "source/Test/HTML/Input.h", "InputHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/list.html", "source/TestSuite/HTML/List.h", "ListHTML")
+        topDir_p, "data/test/html/list.html", "source/Test/HTML/List.h", "ListHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/selector.html", "source/TestSuite/HTML/Selector.h", "SelectorHTML")
+        topDir_p, "data/test/html/selector.html", "source/Test/HTML/Selector.h", "SelectorHTML")
     );
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/html/text.html", "source/TestSuite/HTML/Text.h", "TextHTML")
+        topDir_p, "data/test/html/text.html", "source/Test/HTML/Text.h", "TextHTML")
     );
 
     NH_CHECK(NH_BUILD_ERROR_CANT_CREATE_INCLUDE_FILE, Nh_Bld_createIncludeFileUsingXXD(
-        topDir_p, "data/testsuite/media/ara-3601194_1920.jpg", "source/TestSuite/Media/JPG.h", "JPG")
+        topDir_p, "data/test/media/ara-3601194_1920.jpg", "source/Test/Media/JPG.h", "JPG")
     );
 
     chdir(wrkDir_p);

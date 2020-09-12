@@ -78,10 +78,6 @@
         Nh_HTML_Document *Document_p, NH_BOOL unformatted
     );
 
-    char *Nh_HTML_getDefaultTestDocument(
-        NH_INTERNAL_FILE file
-    );
-
 /** @} */
 
 #endif

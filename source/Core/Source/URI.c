@@ -24,6 +24,31 @@
 #include "../../HTML/Header/Document.h"
 #include "../../JavaScript/Header/Script.h"
 
+#include "../../Test/HTML/Index.h"
+#include "../../Test/HTML/Background.h"
+#include "../../Test/HTML/Border.h"
+#include "../../Test/HTML/Canvas.h"
+#include "../../Test/HTML/Image.h"
+#include "../../Test/HTML/Input.h"
+#include "../../Test/HTML/Selector.h"
+#include "../../Test/HTML/Text.h"
+#include "../../Test/HTML/List.h"
+
+#include "../../Test/Media/JPG.h"
+
+#include "../../CSS/Header/Icons/Expand.h"
+#include "../../CSS/Header/Icons/Disc.h"
+#include "../../CSS/Header/Icons/Circle.h"
+#include "../../CSS/Header/Icons/Square.h"
+
+#include "../../CSS/Header/Sheets/Misc.h"
+#include "../../CSS/Header/Sheets/SelectOption.h"
+#include "../../CSS/Header/Sheets/Header.h"
+#include "../../CSS/Header/Sheets/List.h"
+
+#include "../../JavaScript/Header/Scripts/SelectOption.h"
+#include "../../JavaScript/Header/Scripts/Scroll.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -35,14 +60,15 @@
 
 const char *syntax_pp[] =
 {
-    "test:index",
-    "test:border",
-    "test:image",
-    "test:input",
-    "test:canvas",
-    "test:text",
-    "test:background",
-    "test:list",
+    "test:html:index",
+    "test:html:border",
+    "test:html:image",
+    "test:html:input",
+    "test:html:canvas",
+    "test:html:text",
+    "test:html:background",
+    "test:html:list",
+    "test:media:jpg",
     "icon:expand",
     "icon:disc",
     "icon:circle",
@@ -410,20 +436,21 @@ NH_BEGIN()
         case  5: 
         case  6: 
         case  7: NH_END(NH_MEDIA_TEXT_HTML) 
-        case  8: 
+        case  8: NH_END(NH_MEDIA_IMAGE_JPEG)
         case  9: 
         case 10: 
-        case 11: NH_END(NH_MEDIA_IMAGE_PNG)
-        case 12: 
+        case 11: 
+        case 12: NH_END(NH_MEDIA_IMAGE_PNG)
         case 13: 
         case 14: 
-        case 15: NH_END(NH_MEDIA_TEXT_CSS) 
-        case 16: 
+        case 15: 
+        case 16: NH_END(NH_MEDIA_TEXT_CSS) 
         case 17: 
-        case 18: NH_END(NH_MEDIA_TEXT_JAVASCRIPT) 
-        case 19: break;
+        case 18: 
+        case 19: NH_END(NH_MEDIA_TEXT_JAVASCRIPT) 
         case 20: break;
         case 21: break;
+        case 22: break;
     }
 
 NH_END(-1)
@@ -486,28 +513,29 @@ NH_BEGIN()
 
     switch (URN_p->syntaxIndex)
     {
-        case  0: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_INDEX)      )
-        case  1: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_BORDER)     )
-        case  2: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_IMAGE)      ) 
-        case  3: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_INPUT)      ) 
-        case  4: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_CANVAS)     ) 
-        case  5: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_TEXT)       ) 
-        case  6: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_BACKGROUND) ) 
-        case  7: NH_END( Nh_HTML_getDefaultTestDocument(NH_INTERNAL_FILE_LIST)       ) 
-        case  8: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_EXPAND, size_p)      )
-        case  9: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_DISC, size_p)        )
-        case 10: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_CIRCLE, size_p)      )
-        case 11: NH_END( Nh_CSS_getDefaultIcon(NH_INTERNAL_FILE_SQUARE, size_p)      ) 
-        case 12: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_LIST)               )
-        case 13: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_SELECT_OPTION)      )
-        case 14: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_MISC)               )
-        case 15: NH_END( Nh_CSS_getDefaultSheet(NH_INTERNAL_FILE_HEADER)             )
-        case 16: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SELECT_OPTION)      )
-        case 17: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SCROLL)             )
-        case 18: NH_END( Nh_JS_getDefaultScript(NH_INTERNAL_FILE_SELECT_TEXT)        )
-        case 19: break;
-        case 20: break;
-        case 21: break;
+        case  0: NH_END(IndexHTML)
+        case  1: NH_END(BorderHTML)
+        case  2: NH_END(ImageHTML) 
+        case  3: NH_END(InputHTML) 
+        case  4: NH_END(CanvasHTML) 
+        case  5: NH_END(TextHTML) 
+        case  6: NH_END(BackgroundHTML) 
+        case  7: NH_END(ListHTML) 
+        case  8: *size_p = JPG_len; NH_END(JPG) 
+        case  9: *size_p = ExpandPNG_len; NH_END(ExpandPNG)
+        case 10: *size_p = DiscPNG_len; NH_END(DiscPNG)
+        case 11: *size_p = CirclePNG_len; NH_END(CirclePNG)
+        case 12: *size_p = SquarePNG_len; NH_END(SquarePNG) 
+        case 13: NH_END(ListCSS)
+        case 14: NH_END(SelectOptionCSS)
+        case 15: NH_END(MiscCSS)
+        case 16: NH_END(HeaderCSS)
+        case 17: NH_END(SelectOptionJS)
+        case 18: NH_END(ScrollJS)
+        case 19: NH_END(NULL)
+        case 20: NH_END(NULL) 
+        case 21: NH_END(NULL) 
+        case 22: NH_END(NULL) 
     }
 
 NH_END(NULL)

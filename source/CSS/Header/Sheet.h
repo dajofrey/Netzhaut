@@ -84,14 +84,6 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
         Nh_List *Sheets_p, int index
     );
 
-    char *Nh_CSS_getDefaultSheet(
-       NH_INTERNAL_FILE file
-    );
-
-    char *Nh_CSS_getDefaultIcon(
-       NH_INTERNAL_FILE file, long *size_p
-    );
-  
     void Nh_CSS_destroySheetList(
         Nh_List *Sheets_p
     );

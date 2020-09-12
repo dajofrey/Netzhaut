@@ -84,10 +84,6 @@ typedef struct Nh_Tab Nh_Tab;
  *  @{
  */
 
-    char *Nh_JS_getDefaultScript(
-        NH_INTERNAL_FILE file
-    );
-
     void Nh_JS_initScript(
         Nh_JS_Script *Script_p
     );

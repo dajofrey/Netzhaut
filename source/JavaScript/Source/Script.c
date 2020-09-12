@@ -14,9 +14,6 @@
 #include "../Header/Loader.h"
 #include "../Header/Variable.h"
 
-#include "../Header/Scripts/SelectOption.h"
-#include "../Header/Scripts/Scroll.h"
-
 #include "../../Core/Header/Tab.h"
 #include "../../Core/Header/HashMap.h"
 #include "../../Core/Header/String.h"
@@ -96,20 +93,6 @@ NH_BEGIN()
     if (!Script_p->Flags.loaded) {NH_END(NULL)}
 
 NH_END(Script_p->DOM.Objects.Document_p->data_p)
-}
-
-char *Nh_JS_getDefaultScript(
-    NH_INTERNAL_FILE file)
-{
-NH_BEGIN()
-
-    switch (file)
-    {
-        case NH_INTERNAL_FILE_SELECT_OPTION : NH_END(SelectOptionJS) break;
-        case NH_INTERNAL_FILE_SCROLL : NH_END(ScrollJS) break;
-    }
-
-NH_END(NULL)
 }
 
 // ADD ==============================================================================================

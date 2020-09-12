@@ -12,16 +12,6 @@
 #include "../Header/Properties.h"
 #include "../Header/Macros.h"
 
-#include "../Header/Sheets/Misc.h"
-#include "../Header/Sheets/SelectOption.h"
-#include "../Header/Sheets/Header.h"
-#include "../Header/Sheets/List.h"
-
-#include "../Header/Icons/Expand.h"
-#include "../Header/Icons/Disc.h"
-#include "../Header/Icons/Circle.h"
-#include "../Header/Icons/Square.h"
-
 #include "../../Core/Header/List.h"
 #include "../../Core/Header/String.h"
 #include "../../Core/Header/Tab.h"
@@ -77,49 +67,6 @@ NH_CSS_Sheet *Nh_CSS_getSheet(
 {
 NH_BEGIN()
 NH_END(Nh_getListItem(Sheets_p, index))
-}
-
-char *Nh_CSS_getDefaultSheet(
-    NH_INTERNAL_FILE file)
-{
-NH_BEGIN()
-
-    switch (file)
-    {
-        case NH_INTERNAL_FILE_MISC          : NH_END(MiscCSS) break; 
-        case NH_INTERNAL_FILE_SELECT_OPTION : NH_END(SelectOptionCSS) break;
-        case NH_INTERNAL_FILE_HEADER        : NH_END(HeaderCSS) break;
-        case NH_INTERNAL_FILE_LIST          : NH_END(ListCSS) break;
-    }
-
-NH_END(NULL)
-}
-
-char *Nh_CSS_getDefaultIcon(
-    NH_INTERNAL_FILE file, long *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL)
-    {
-        switch (file)
-        {
-            case NH_INTERNAL_FILE_EXPAND : *size_p =  ExpandPNG_len; break;
-            case NH_INTERNAL_FILE_DISC   : *size_p =  DiscPNG_len; break;
-            case NH_INTERNAL_FILE_CIRCLE : *size_p =  CirclePNG_len; break;
-            case NH_INTERNAL_FILE_SQUARE : *size_p =  SquarePNG_len; break;
-        }
-    }
-
-    switch (file)
-    {
-        case NH_INTERNAL_FILE_EXPAND : NH_END(ExpandPNG) break;
-        case NH_INTERNAL_FILE_DISC   : NH_END(DiscPNG) break;
-        case NH_INTERNAL_FILE_CIRCLE : NH_END(CirclePNG) break;
-        case NH_INTERNAL_FILE_SQUARE : NH_END(SquarePNG) break;
-    }
-
-NH_END(NULL)
 }
 
 // ADD =============================================================================================

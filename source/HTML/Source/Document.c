@@ -14,16 +14,6 @@
 #include "../Header/Macros.h"
 #include "../Header/Log.h"
 
-#include "../../TestSuite/HTML/Index.h"
-#include "../../TestSuite/HTML/Background.h"
-#include "../../TestSuite/HTML/Border.h"
-#include "../../TestSuite/HTML/Canvas.h"
-#include "../../TestSuite/HTML/Image.h"
-#include "../../TestSuite/HTML/Input.h"
-#include "../../TestSuite/HTML/Selector.h"
-#include "../../TestSuite/HTML/Text.h"
-#include "../../TestSuite/HTML/List.h"
-
 #include "../../Core/Header/Memory.h"
 #include "../../Core/Header/Tab.h"
 #include "../../Core/Header/List.h"
@@ -173,28 +163,5 @@ NH_BEGIN()
     NH_CHECK(Nh_JS_processInput(Tab_p))
 
 NH_END(NH_SUCCESS)
-}
-
-// GET =============================================================================================
-
-char *Nh_HTML_getDefaultTestDocument(
-    NH_INTERNAL_FILE file)
-{
-NH_BEGIN()
-
-    switch (file)
-    {
-        case NH_INTERNAL_FILE_BACKGROUND : NH_END(BackgroundHTML) break; 
-        case NH_INTERNAL_FILE_BORDER     : NH_END(BorderHTML) break;
-        case NH_INTERNAL_FILE_CANVAS     : NH_END(CanvasHTML) break;
-        case NH_INTERNAL_FILE_IMAGE      : NH_END(ImageHTML) break;
-        case NH_INTERNAL_FILE_INDEX      : NH_END(IndexHTML) break; 
-        case NH_INTERNAL_FILE_INPUT      : NH_END(InputHTML) break;
-        case NH_INTERNAL_FILE_SELECTOR   : NH_END(SelectorHTML) break;
-        case NH_INTERNAL_FILE_TEXT       : NH_END(TextHTML) break;
-        case NH_INTERNAL_FILE_LIST       : NH_END(ListHTML) break;
-    }
-
-NH_END(NULL)
 }
 
