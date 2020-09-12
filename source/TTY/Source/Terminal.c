@@ -113,7 +113,7 @@ char *Nh_TTY_handleStartUpCommands(
         else if (LOG_COMMAND())  {log = true; tty = false;}
         else if (TEST_COMMAND()) {
             Nh_free(startpage_p); 
-            startpage_p = Nh_allocateChars("nh:test:index"); 
+            startpage_p = Nh_allocateChars("nh:test:html:index"); 
         }
         else {
             Nh_free(startpage_p); 
@@ -144,6 +144,7 @@ int Nh_TTY_run()
 #ifdef __unix__
     if (!Terminal.Flags.simple) {
         Nh_TTY_Linux_initTerminal(&Terminal);
+        Nh_TTY_initTab(Nh_getListItem(&Terminal.Tabs, 0));
     }
 #endif
 
@@ -229,7 +230,6 @@ void Nh_TTY_initTerminal()
 
     Nh_TTY_Tab *Tab_p = Nh_allocate(sizeof(Nh_TTY_Tab));
     if (Tab_p == NULL) {return;}
-    Nh_TTY_initTab(Tab_p);
     Nh_addListItem(&Terminal.Tabs, Tab_p);
 }
 

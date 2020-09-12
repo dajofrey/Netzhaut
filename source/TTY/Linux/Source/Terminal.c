@@ -46,7 +46,7 @@ static void Nh_TTY_Linux_disableRawMode(
 
 // TERMINAL ========================================================================================
 
-int Nh_TTY_Linux_getWindowSize(
+static int Nh_TTY_Linux_getWindowSize(
     int *rows, int *cols) 
 {
 #ifdef __unix__

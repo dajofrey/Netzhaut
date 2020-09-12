@@ -22,10 +22,6 @@
  *  @{
  */
 
-    int Nh_TTY_Linux_getWindowSize(
-        int *rows, int *cols
-    ); 
-    
     void Nh_TTY_Linux_init(
     ); 
 

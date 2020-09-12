@@ -161,7 +161,6 @@ NH_BEGIN()
         NH_END(Nh_createFileURL(chars_p, base_p))
     }
 
-exit(0);
     // default
     Nh_URI URI = Nh_getDefaultURI();
     URI.data_p = Nh_Net_createURL(chars_p, &URI.scheme);

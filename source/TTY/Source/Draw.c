@@ -111,7 +111,8 @@ static void Nh_TTY_drawRows(
             if (Tab_p->Rows.count == 0 && y == Terminal_p->screenRows / 3) {
                 char welcome[80];
                 int welcomelen = snprintf(welcome, sizeof(welcome),
-                  "%s %s%s TTY Terminal", NH_NAME, NH_VERSION, NH_PRE_RELEASE_VERSION);
+                    !strcmp(NH_PRE_RELEASE_VERSION, "none") ? "%s %s TTY Terminal" : "%s %s%s TTY Terminal", 
+                    NH_NAME, NH_VERSION, NH_PRE_RELEASE_VERSION);
                 if (welcomelen > Terminal_p->screenCols) welcomelen = Terminal_p->screenCols;
                 int padding = (Terminal_p->screenCols - welcomelen) / 2;
                 if (padding) {
