@@ -51,7 +51,7 @@ var group__CSSStructs =
       [ "values_pp", "structNh__CSS__GenericProperty.html#a7e46c93c3a9d2ba4b0973b6862af2d70", null ]
     ] ],
     [ "NH_CSS_Image", "structNH__CSS__Image.html", [
-      [ "Background", "structNH__CSS__Image.html#a8ac3392ae5d4f34086b33d4ead66fd07", null ],
+      [ "Background", "structNH__CSS__Image.html#a8ccc5c71a90327fedf845a363685ebe8", null ],
       [ "buffer", "structNH__CSS__Image.html#aebc5188b4a0408341954bc263999185a", null ],
       [ "descriptor", "structNH__CSS__Image.html#a0cf0f50aaef8ea1d4a879e1cbfd9a656", null ],
       [ "origin", "structNH__CSS__Image.html#a8c6ee536df469009cc504271cd5f6002", null ],

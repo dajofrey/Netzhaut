@@ -140,6 +140,9 @@
     void Nh_TTY_freeTerminal(
     );
 
+    void Nh_TTY_startTerminalThread(
+    ); 
+
 /** @} */
 
 #endif 

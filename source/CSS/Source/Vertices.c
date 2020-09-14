@@ -32,16 +32,10 @@ NH_BEGIN()
 
     int triangleCount = 0;
 
-    Nh_CSS_Box PaddingBox = Nh_CSS_getPaddingBox(Node_p); 
+    Nh_CSS_Box BorderBox = Nh_CSS_getBorderBox(Node_p); 
     Nh_CSS_Box ContentBox = Nh_CSS_getContentBox(Node_p); 
-    Nh_CSS_resize(Tab_p, Node_p, &PaddingBox);
+    Nh_CSS_resize(Tab_p, Node_p, &BorderBox);
     Nh_CSS_resize(Tab_p, Node_p, &ContentBox);
-
-    ContentBox.TopLeft.y += (NH_CSS_NORMALIZED_LENGTH(ContentBox.BottomRight.y) - NH_CSS_NORMALIZED_LENGTH(ContentBox.TopLeft.y)) / 2.0f;
-    ContentBox.BottomRight.y = ContentBox.TopLeft.y;
-
-    ContentBox.TopLeft.x += (NH_CSS_NORMALIZED_LENGTH(ContentBox.BottomRight.x) - NH_CSS_NORMALIZED_LENGTH(ContentBox.TopLeft.x)) / 2.0f;
-    ContentBox.BottomRight.x = ContentBox.TopLeft.x;
 
     Nh_Triangle Triangles_p[111] = {0.0f};
 
@@ -51,10 +45,10 @@ NH_BEGIN()
     radii_p[2] = Node_p->Computed.Properties.Border.Radii.Values_p[0].bottomLeft;
     radii_p[3] = Node_p->Computed.Properties.Border.Radii.Values_p[0].bottomRight;
 
-    triangleCount = Nh_CSS_getBoxTriangles(PaddingBox, ContentBox, radii_p, cornerTriangleCount, 0, Triangles_p, true, triangleCount, PaddingBox.TopLeft.z);
-    triangleCount = Nh_CSS_getBoxTriangles(PaddingBox, ContentBox, radii_p, cornerTriangleCount, 1, Triangles_p, true, triangleCount, PaddingBox.TopLeft.z);
-    triangleCount = Nh_CSS_getBoxTriangles(PaddingBox, ContentBox, radii_p, cornerTriangleCount, 2, Triangles_p, true, triangleCount, PaddingBox.TopLeft.z);
-    triangleCount = Nh_CSS_getBoxTriangles(PaddingBox, ContentBox, radii_p, cornerTriangleCount, 3, Triangles_p, true, triangleCount, PaddingBox.TopLeft.z);
+    triangleCount = Nh_CSS_getBoxTriangles(BorderBox, ContentBox, radii_p, cornerTriangleCount, 0, Triangles_p, true, triangleCount, BorderBox.TopLeft.z);
+    triangleCount = Nh_CSS_getBoxTriangles(BorderBox, ContentBox, radii_p, cornerTriangleCount, 1, Triangles_p, true, triangleCount, BorderBox.TopLeft.z);
+    triangleCount = Nh_CSS_getBoxTriangles(BorderBox, ContentBox, radii_p, cornerTriangleCount, 2, Triangles_p, true, triangleCount, BorderBox.TopLeft.z);
+    triangleCount = Nh_CSS_getBoxTriangles(BorderBox, ContentBox, radii_p, cornerTriangleCount, 3, Triangles_p, true, triangleCount, BorderBox.TopLeft.z);
 
     Nh_trianglesToArray(Triangles_p, vertices_p, triangleCount);
 
@@ -134,20 +128,21 @@ NH_BEGIN()
     radii_p[3] = Node_p->Computed.Properties.Border.Radii.Values_p[0].bottomRight;
 
     int triangleCount = 0;
+    float offsetZ = 0.001f;
 
     switch (type)
     {
         case NH_CSS_BORDER_TOP :
-            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 0, Triangles_p, false, 0, BorderBox.TopLeft.z);
+            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 0, Triangles_p, false, 0, BorderBox.TopLeft.z - offsetZ);
             break;
         case NH_CSS_BORDER_BOTTOM :
-            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 1, Triangles_p, false, 0, BorderBox.TopLeft.z);
+            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 1, Triangles_p, false, 0, BorderBox.TopLeft.z - offsetZ);
             break;
         case NH_CSS_BORDER_LEFT :
-            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 2, Triangles_p, false, 0, BorderBox.TopLeft.z);
+            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 2, Triangles_p, false, 0, BorderBox.TopLeft.z - offsetZ);
             break;
         case NH_CSS_BORDER_RIGHT :
-            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 3, Triangles_p, false, 0, BorderBox.TopLeft.z);
+            triangleCount = Nh_CSS_getBoxTriangles(BorderBox, PaddingBox, radii_p, cornerTriangleCount, 3, Triangles_p, false, 0, BorderBox.TopLeft.z - offsetZ);
             break;
         default : NH_END(NH_ERROR_PARAMETERS)
     }

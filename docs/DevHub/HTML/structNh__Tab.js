@@ -8,8 +8,8 @@ var structNh__Tab =
     [ "CommandBuffers_p", "structNh__Tab.html#a5f57b012860a7b04e0a5090048c5dde7", null ],
     [ "crop", "structNh__Tab.html#a2fb2f354db22a4afd28b9d5be7c303b2", null ],
     [ "Document", "structNh__Tab.html#ae721587180b1a86cab7dd9552732ab9d", null ],
-    [ "Flags", "structNh__Tab.html#a1cb1b55f5d37ebe7104d7552ba073667", null ],
-    [ "Info", "structNh__Tab.html#a96d05c758469cd5a6657693b8aca9300", null ],
+    [ "Flags", "structNh__Tab.html#aa5d3248a50a34549ab3b6e4c9ab03ebd", null ],
+    [ "Info", "structNh__Tab.html#a641e5d43c498efc82f39e9cc3d314171", null ],
     [ "isClone", "structNh__Tab.html#a19e75634eeddeeeaee62ee7bba18f1b4", null ],
     [ "newestBuffers_p", "structNh__Tab.html#a4b63859a4d94431574a94256adf02819", null ],
     [ "Original_p", "structNh__Tab.html#a1ccc0a27de4a489ff1584c17c8afdeb4", null ],
@@ -20,10 +20,10 @@ var structNh__Tab =
     [ "relativeOffset_p", "structNh__Tab.html#a29e4d6b14d0e3d0abdbcfd9945b9d8b4", null ],
     [ "render", "structNh__Tab.html#a37afa3dc357b2b96bb823ae8976ad152", null ],
     [ "submittedBuffers_p", "structNh__Tab.html#a200fd0a1e7fdd47cd99fa66bb1fbea00", null ],
-    [ "Sync", "structNh__Tab.html#ab392fee23e3bab0d07844b4b8a54abb9", null ],
+    [ "Sync", "structNh__Tab.html#a7234889b02884416cf3c0cf0a41e7b57", null ],
     [ "Textures", "structNh__Tab.html#ab38909d7d536c090742094ec4236a4fc", null ],
     [ "update", "structNh__Tab.html#ac0ddcb6e12c95faae7f13b43b7700eb7", null ],
     [ "updateGraphics", "structNh__Tab.html#ad214a0ed6191140d6fac4610056030fd", null ],
-    [ "Vulkan", "structNh__Tab.html#a56b73e3307d1183f05e0cbb8b45cd71d", null ],
+    [ "Vulkan", "structNh__Tab.html#ad871f2bdfe05f4cce670567a87c6aa15", null ],
     [ "Window_p", "structNh__Tab.html#a55a27ce52c79aa5560d9caebe497ab04", null ]
 ];

@@ -4,7 +4,7 @@ var structNh__TTY__Terminal =
     [ "CurrentCommand_p", "structNh__TTY__Terminal.html#ac90b968ed0b7cd6324576adc71afe636", null ],
     [ "currentTab", "structNh__TTY__Terminal.html#a7f5fd1207caab2dae0bb22e788933918", null ],
     [ "fatal", "structNh__TTY__Terminal.html#abf0280413fce4790f6cd0e6c87217220", null ],
-    [ "Flags", "structNh__TTY__Terminal.html#aeef272f1dfc9153f1f684eb79a180ad2", null ],
+    [ "Flags", "structNh__TTY__Terminal.html#a902973996f0139cb184bd5f7153d0e08", null ],
     [ "focus", "structNh__TTY__Terminal.html#aaf3f452b7d1720f8708ffe3406fa0345", null ],
     [ "historyIndex", "structNh__TTY__Terminal.html#a9128ad6ea8890305cde3562a8fda0822", null ],
     [ "manualExit", "structNh__TTY__Terminal.html#a8c66fe819dd77cd2eacfe83a5131d71d", null ],

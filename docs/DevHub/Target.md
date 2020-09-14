@@ -40,7 +40,12 @@ So similiar to a browser tab, Netzhaut will render stuff into it, e.g. a HTML do
 \section Rendering Rendering
 
 **Flexible**  
-The engine is flexible in the way it handles its backend rendering dependencies and has a adaptive nature. To allow this, Netzhaut is able to use more than one possible backend for rendering.  
+The engine is flexible in the way it handles its backend rendering dependencies and has a adaptive nature. To allow this, Netzhaut is able to use more than one possible backend for rendering. 
+Right now only rendering using Vulkan is supported, but OpenGL is planned as well.  
+<br>
+**Software Rendering**  
+Rendering (most) web pages is not very resource intensive, so software rendering could be an option. Maybe this will be implemented somewhere along the road. 
+The rational behind this feature is to improve (third-party) API and platform independence.  
 <br>
 **VR Support**  
 Netzhaut shall support VR in some way. This hasn't been thought out yet. 

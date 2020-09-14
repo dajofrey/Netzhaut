@@ -18,6 +18,7 @@ var group__TTYFunctions =
     [ "Nh_TTY_refreshScreen", "group__TTYFunctions.html#gae1ce25372bf78157d0933ec12d51af63", null ],
     [ "Nh_TTY_rowCxToRx", "group__TTYFunctions.html#ga1705cd1ea755c2b4332b251e14db1ab9", null ],
     [ "Nh_TTY_run", "group__TTYFunctions.html#ga553d17c3e1e6da8fc5066ee9e6cd8626", null ],
+    [ "Nh_TTY_startTerminalThread", "group__TTYFunctions.html#gaf9bb4021364c294f649194140b7fb25e", null ],
     [ "Nh_TTY_syncedWrite", "group__TTYFunctions.html#ga461bb66bbf0b06c0bcffb83743932f66", null ],
     [ "Nh_TTY_tty", "group__TTYFunctions.html#ga92ebc360ea549e5f2909a4f903627a7f", null ],
     [ "Nh_TTY_write", "group__TTYFunctions.html#gaf98d31680dc91a1040231e93569cd043", null ],

@@ -141,12 +141,10 @@ int Nh_TTY_run()
     timeout.tv_sec = 0;
     timeout.tv_usec = 1;
 
-#ifdef __unix__
     if (!Terminal.Flags.simple) {
         Nh_TTY_Linux_initTerminal(&Terminal);
         Nh_TTY_initTab(Nh_getListItem(&Terminal.Tabs, 0));
     }
-#endif
 
     while (Terminal.Flags.run) 
     {
@@ -193,6 +191,52 @@ int Nh_TTY_run()
     }
 
     Nh_TTY_closeTerminal();
+
+#endif
+}
+
+void Nh_TTY_startTerminalThread() 
+{
+#ifdef __unix__
+
+    if (Nh_TTY_getTerminal()->Flags.simple) {
+        printf("Netzhaut: ");
+        fflush(stdout);
+    }
+
+    Nh_TTY_Terminal *Terminal_p = Nh_TTY_getTerminal();
+
+    pipe(Terminal_p->IPC.readFD_p);
+    pipe(Terminal_p->IPC.writeFD_p);
+
+    for (int i = 0; i < Nh_getThreadPool()->totalThreads; ++i) {
+        pipe(Nh_getThreadPool()->Threads_p[i].IPC.TTY.readFD_p);
+        pipe(Nh_getThreadPool()->Threads_p[i].IPC.TTY.writeFD_p);
+    }
+
+    Terminal_p->IPC.pid = fork(); 
+
+    if (Terminal_p->IPC.pid == 0) { // child handles TTY
+        close(Terminal_p->IPC.readFD_p[0]);
+        close(Terminal_p->IPC.writeFD_p[1]);
+        for (int i = 0; i < Nh_getThreadPool()->totalThreads; ++i) {
+            close(Nh_getThreadPool()->Threads_p[i].IPC.TTY.readFD_p[0]);
+            close(Nh_getThreadPool()->Threads_p[i].IPC.TTY.writeFD_p[1]);
+        }
+        Nh_TTY_run();
+    }
+    else {
+        close(Terminal_p->IPC.readFD_p[1]);
+        close(Terminal_p->IPC.writeFD_p[0]);
+        for (int i = 0; i < Nh_getThreadPool()->totalThreads; ++i) {
+            close(Nh_getThreadPool()->Threads_p[i].IPC.TTY.readFD_p[1]);
+            close(Nh_getThreadPool()->Threads_p[i].IPC.TTY.writeFD_p[0]);
+        }
+        struct sigaction action;
+        memset(&action, 0, sizeof(action));
+        action.sa_handler = Nh_TTY_handleTermination;
+        sigaction(SIGCHLD, &action, NULL);
+    }
 
 #endif
 }

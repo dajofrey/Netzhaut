@@ -21,6 +21,7 @@
 #include "../Linux/Header/Input.h"
 
 #include <unistd.h>
+#include <stdio.h>
 
 // INPUT ===========================================================================================
 
@@ -175,6 +176,10 @@ void Nh_TTY_processKeypress(
                 Nh_addListItem(&Terminal_p->CommandHistory, Terminal_p->CurrentCommand_p);
                 Terminal_p->CurrentCommand_p = NULL;
                 Tab_p->commandCursorX = 2; 
+                if (Terminal_p->Flags.simple) {
+                    printf("Netzhaut: ");
+                    fflush(stdout);
+                }
                 break;
     
             default :

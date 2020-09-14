@@ -13,6 +13,7 @@
 
 #include "../../Core/Header/Math.h"
 
+#include NH_CSS_UTILS
 #include NH_DEBUG
 #include NH_DEFAULT_CHECK
 
@@ -35,7 +36,7 @@
 
 // DEFINE ==========================================================================================
 
-typedef struct NH_CSS_CornersData {
+typedef struct Nh_CSS_CornersData {
     float radii_p[4];
     struct {
         int leftCount;
@@ -51,45 +52,45 @@ typedef struct NH_CSS_CornersData {
     Nh_CSS_Box TopRight;
     Nh_CSS_Box BottomLeft;
     Nh_CSS_Box BottomRight;
-} NH_CSS_CornersData;
+} Nh_CSS_CornersData;
 
 // DECLARE =========================================================================================
 
 static int Nh_CSS_getTopTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z
 );
 static int Nh_CSS_getBottomTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z
 );
 static int Nh_CSS_getLeftTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z
 );
 static int Nh_CSS_getRightTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z
 );
 
 static int Nh_CSS_getTopLeftCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData,
-    int cornerTriangleCount, int triangleCount, int side, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    Nh_CSS_CornersData, int cornerTriangleCount, int triangleCount, int side, float z
 );
 static int Nh_CSS_getTopRightCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData Corners,
-    int cornerTriangleCount, int triangleCount, int side, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    Nh_CSS_CornersData Corners, int cornerTriangleCount, int triangleCount, int side, float z
 );
 static int Nh_CSS_getBottomLeftCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData Corners,
-    int cornerTriangleCount, int triangleCount, int side, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    Nh_CSS_CornersData Corners, int cornerTriangleCount, int triangleCount, int side, float z
 );
 static int Nh_CSS_getBottomRightCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData Corners,
-    int cornerTriangleCount, int triangleCount, int side, float z
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    Nh_CSS_CornersData Corners, int cornerTriangleCount, int triangleCount, int side, float z
 );
 
-static NH_CSS_CornersData Nh_CSS_getCorners(
+static Nh_CSS_CornersData Nh_CSS_getCorners(
     Nh_CSS_Box EnclosingBox, float Radii_p[4]
 );
 
@@ -101,29 +102,37 @@ int Nh_CSS_getBoxTriangles(
 {
 NH_BEGIN()
 
+    Nh_CSS_Box EnclosedPoint;
+
+    EnclosedPoint.TopLeft.y = EnclosedBox.TopLeft.y + (NH_CSS_NORMALIZED_LENGTH(EnclosedBox.BottomRight.y) - NH_CSS_NORMALIZED_LENGTH(EnclosedBox.TopLeft.y)) / 2.0f;
+    EnclosedPoint.BottomRight.y = EnclosedBox.TopLeft.y;
+
+    EnclosedPoint.TopLeft.x = EnclosedBox.TopLeft.x + (NH_CSS_NORMALIZED_LENGTH(EnclosedBox.BottomRight.x) - NH_CSS_NORMALIZED_LENGTH(EnclosedBox.TopLeft.x)) / 2.0f;
+    EnclosedPoint.BottomRight.x = EnclosedBox.TopLeft.x;
+
     int triangleCount = offset;
-    NH_CSS_CornersData Corners = Nh_CSS_getCorners(EnclosingBox, radii_p);
+    Nh_CSS_CornersData Corners = Nh_CSS_getCorners(EnclosingBox, radii_p);
 
     switch (side)
     {
         case TOP :
             triangleCount = Nh_CSS_getTopTriangles(
-                EnclosingBox, EnclosedBox, Triangles_p, cornerTriangleCount, Corners, enclosedPoint, triangleCount, z
+                EnclosingBox, EnclosedBox, enclosedPoint ? &EnclosedPoint : NULL, Triangles_p, cornerTriangleCount, Corners, triangleCount, z
             );
             break;
         case BOTTOM :
             triangleCount = Nh_CSS_getBottomTriangles(
-                EnclosingBox, EnclosedBox, Triangles_p, cornerTriangleCount, Corners, enclosedPoint, triangleCount, z
+                EnclosingBox, EnclosedBox, enclosedPoint ? &EnclosedPoint : NULL, Triangles_p, cornerTriangleCount, Corners, triangleCount, z
             );
             break;
         case LEFT :
             triangleCount = Nh_CSS_getLeftTriangles(
-                EnclosingBox, EnclosedBox, Triangles_p, cornerTriangleCount, Corners, enclosedPoint, triangleCount, z
+                EnclosingBox, EnclosedBox, enclosedPoint ? &EnclosedPoint : NULL, Triangles_p, cornerTriangleCount, Corners, triangleCount, z
             );
             break;
         case RIGHT :
             triangleCount = Nh_CSS_getRightTriangles(
-                EnclosingBox, EnclosedBox, Triangles_p, cornerTriangleCount, Corners, enclosedPoint, triangleCount, z
+                EnclosingBox, EnclosedBox, enclosedPoint ? &EnclosedPoint : NULL, Triangles_p, cornerTriangleCount, Corners, triangleCount, z
             );
             break;
     }
@@ -132,12 +141,10 @@ NH_END(triangleCount)
 }
 
 static int Nh_CSS_getTopTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z)
 {
 NH_BEGIN()
-
-    float subtractZ = 0.001f;
 
     Triangles_p[triangleCount].P1.x = Corners.TopLeft.BottomRight.x;
     Triangles_p[triangleCount].P1.y = Corners.TopLeft.TopLeft.y;
@@ -147,13 +154,13 @@ NH_BEGIN()
     Triangles_p[triangleCount].P2.y = Corners.TopRight.TopLeft.y;
     Triangles_p[triangleCount].P2.z = z;
 
-    Triangles_p[triangleCount].P3.x = EnclosedBox.BottomRight.x;
-    Triangles_p[triangleCount].P3.y = EnclosedBox.TopLeft.y;
+    Triangles_p[triangleCount].P3.x = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.x : EnclosedPoint_p->BottomRight.x;
+    Triangles_p[triangleCount].P3.y = EnclosedPoint_p == NULL ? EnclosedBox.TopLeft.y : EnclosedPoint_p->TopLeft.y;
     Triangles_p[triangleCount].P3.z = z;
 
     triangleCount++;
 
-    if (!enclosedPoint) 
+    if (EnclosedPoint_p == NULL) 
     {
         Triangles_p[triangleCount].P1.x = Corners.TopLeft.BottomRight.x;
         Triangles_p[triangleCount].P1.y = Corners.TopLeft.TopLeft.y;
@@ -173,14 +180,14 @@ NH_BEGIN()
     if (Corners.Rounded.topLeft)
     {
         triangleCount = Nh_CSS_getTopLeftCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, TOP, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, TOP, z
         );
     }
 
     if (Corners.Rounded.topRight)
     {
         triangleCount = Nh_CSS_getTopRightCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, TOP, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, TOP, z
         );
     }
 
@@ -188,12 +195,10 @@ NH_END(triangleCount)
 }
 
 static int Nh_CSS_getBottomTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z)
 {
 NH_BEGIN()
-
-    float subtractZ = 0.001f;
 
     Triangles_p[triangleCount].P1.x = Corners.BottomLeft.BottomRight.x;
     Triangles_p[triangleCount].P1.y = Corners.BottomLeft.BottomRight.y;
@@ -203,13 +208,13 @@ NH_BEGIN()
     Triangles_p[triangleCount].P2.y = Corners.BottomRight.BottomRight.y;
     Triangles_p[triangleCount].P2.z = z;
 
-    Triangles_p[triangleCount].P3.x = EnclosedBox.BottomRight.x;
-    Triangles_p[triangleCount].P3.y = EnclosedBox.BottomRight.y;
+    Triangles_p[triangleCount].P3.x = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.x : EnclosedPoint_p->BottomRight.x;
+    Triangles_p[triangleCount].P3.y = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.y : EnclosedPoint_p->BottomRight.y;
     Triangles_p[triangleCount].P3.z = z; 
 
     triangleCount++;
 
-    if (!enclosedPoint)
+    if (EnclosedPoint_p == NULL)
     {
         Triangles_p[triangleCount].P1.x = Corners.BottomLeft.BottomRight.x;
         Triangles_p[triangleCount].P1.y = Corners.BottomLeft.BottomRight.y;
@@ -229,14 +234,14 @@ NH_BEGIN()
     if (Corners.Rounded.bottomLeft)
     {
         triangleCount = Nh_CSS_getBottomLeftCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, BOTTOM, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, BOTTOM, z
         );
     }
 
     if (Corners.Rounded.bottomRight)
     {
         triangleCount = Nh_CSS_getBottomRightCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, BOTTOM, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, BOTTOM, z
         );
     }
 
@@ -244,12 +249,10 @@ NH_END(triangleCount)
 }
 
 static int Nh_CSS_getLeftTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z)
 {
 NH_BEGIN()
-
-    float subtractZ = 0.001f;
 
     Triangles_p[triangleCount].P1.x = Corners.TopLeft.TopLeft.x;
     Triangles_p[triangleCount].P1.y = Corners.TopLeft.BottomRight.y;
@@ -259,13 +262,13 @@ NH_BEGIN()
     Triangles_p[triangleCount].P2.y = Corners.BottomLeft.TopLeft.y;
     Triangles_p[triangleCount].P2.z = z;
 
-    Triangles_p[triangleCount].P3.x = EnclosedBox.TopLeft.x;
-    Triangles_p[triangleCount].P3.y = EnclosedBox.BottomRight.y;
+    Triangles_p[triangleCount].P3.x = EnclosedPoint_p == NULL ? EnclosedBox.TopLeft.x : EnclosedPoint_p->TopLeft.x;
+    Triangles_p[triangleCount].P3.y = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.y : EnclosedPoint_p->BottomRight.y;
     Triangles_p[triangleCount].P3.z = z;
 
     triangleCount++;
 
-    if (!enclosedPoint)
+    if (EnclosedPoint_p == NULL)
     {                         
         Triangles_p[triangleCount].P1.x = Corners.TopLeft.TopLeft.x;
         Triangles_p[triangleCount].P1.y = Corners.TopLeft.BottomRight.y;
@@ -285,14 +288,14 @@ NH_BEGIN()
     if (Corners.Rounded.topLeft)
     {
         triangleCount = Nh_CSS_getTopLeftCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, LEFT, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, LEFT, z
         );
     }
 
     if (Corners.Rounded.bottomLeft)
     {
         triangleCount = Nh_CSS_getBottomLeftCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, LEFT, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, LEFT, z
         );
     }
 
@@ -300,19 +303,17 @@ NH_END(triangleCount)
 }
 
 static int Nh_CSS_getRightTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, int cornerTriangleCount, 
-    NH_CSS_CornersData Corners, bool enclosedPoint, int triangleCount, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    int cornerTriangleCount, Nh_CSS_CornersData Corners, int triangleCount, float z)
 {
 NH_BEGIN()
-
-    float subtractZ = 0.001f;
 
     Triangles_p[triangleCount].P1.x = Corners.TopRight.BottomRight.x;
     Triangles_p[triangleCount].P1.y = Corners.TopRight.BottomRight.y;
     Triangles_p[triangleCount].P1.z = z;
 
-    Triangles_p[triangleCount].P2.x = EnclosedBox.BottomRight.x;
-    Triangles_p[triangleCount].P2.y = EnclosedBox.BottomRight.y;
+    Triangles_p[triangleCount].P2.x = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.x : EnclosedPoint_p->BottomRight.x;
+    Triangles_p[triangleCount].P2.y = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.y : EnclosedPoint_p->BottomRight.y;
     Triangles_p[triangleCount].P2.z = z;
 
     Triangles_p[triangleCount].P3.x = Corners.BottomRight.BottomRight.x;
@@ -321,7 +322,7 @@ NH_BEGIN()
 
     triangleCount++;
 
-    if (!enclosedPoint)
+    if (EnclosedPoint_p == NULL)
     {                       
         Triangles_p[triangleCount].P1.x = Corners.TopRight.BottomRight.x;
         Triangles_p[triangleCount].P1.y = Corners.TopRight.BottomRight.y;
@@ -341,14 +342,14 @@ NH_BEGIN()
     if (Corners.Rounded.topRight)
     {
         triangleCount = Nh_CSS_getTopRightCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, RIGHT, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, RIGHT, z
         );
     }
 
     if (Corners.Rounded.bottomRight)
     {
         triangleCount = Nh_CSS_getBottomRightCornerTriangles(
-            EnclosingBox, EnclosedBox, Triangles_p, Corners, cornerTriangleCount, triangleCount, RIGHT, z
+            EnclosingBox, EnclosedBox, EnclosedPoint_p, Triangles_p, Corners, cornerTriangleCount, triangleCount, RIGHT, z
         );
     }
 
@@ -356,69 +357,65 @@ NH_END(triangleCount)
 }
 
 static int Nh_CSS_getTopLeftCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData Corners,
-    int cornerTriangleCount, int triangleCount, int side, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p,
+    Nh_CSS_CornersData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
 NH_BEGIN()
 
-        float subtractZ = 0.001f;
+    Nh_Vector2D EnclosingBoxTopLeft = {EnclosingBox.TopLeft.x, EnclosingBox.TopLeft.y};
+    Nh_Vector2D EnclosedBoxTopLeft  = {EnclosedBox.TopLeft.x, EnclosedBox.TopLeft.y};
+    Nh_Vector2D EnclosedBoxTopRight = {EnclosedBox.BottomRight.x, EnclosedBox.TopLeft.y};
+       
+    float totalRadians, divRadians, radians;
 
-        Nh_Vector2D EnclosingBoxTopLeft = {EnclosingBox.TopLeft.x, EnclosingBox.TopLeft.y};
-        Nh_Vector2D EnclosedBoxTopLeft  = {EnclosedBox.TopLeft.x, EnclosedBox.TopLeft.y};
-        Nh_Vector2D EnclosedBoxTopRight = {EnclosedBox.BottomRight.x, EnclosedBox.TopLeft.y};
-           
-        float totalRadians, divRadians, radians;
+    if (side == TOP)
+    {
+        totalRadians = Nh_innerAngle2D(EnclosingBoxTopLeft, EnclosedBoxTopLeft, EnclosedBoxTopRight);
+        divRadians = totalRadians / ((float)cornerTriangleCount);
+        radians = Nh_degreesToRadians(360) - totalRadians;
+    }
+    else if (side == LEFT) 
+    {
+        totalRadians = Nh_degreesToRadians(90) - Nh_innerAngle2D(EnclosingBoxTopLeft, EnclosedBoxTopLeft, EnclosedBoxTopRight);
+        divRadians = totalRadians / ((float)cornerTriangleCount);
+        radians = Nh_degreesToRadians(270);
+    }
 
-        if (side == TOP)
-        {
-            totalRadians = Nh_innerAngle2D(EnclosingBoxTopLeft, EnclosedBoxTopLeft, EnclosedBoxTopRight);
-            divRadians = totalRadians / ((float)cornerTriangleCount);
-            radians = Nh_degreesToRadians(360) - totalRadians;
-        }
-        else if (side == LEFT) 
-        {
-            totalRadians = Nh_degreesToRadians(90) - Nh_innerAngle2D(EnclosingBoxTopLeft, EnclosedBoxTopLeft, EnclosedBoxTopRight);
-            divRadians = totalRadians / ((float)cornerTriangleCount);
-            radians = Nh_degreesToRadians(270);
-        }
+    Nh_Vector2D Point, OldPoint;
+    Nh_Vector2D Center = {Corners.TopLeft.BottomRight.x, Corners.TopLeft.BottomRight.y};
+    OldPoint = Nh_getInversedPointOnCircle(Center, Corners.radii_p[TOP_LEFT], radians); 
 
-        Nh_Vector2D Point, OldPoint;
-        Nh_Vector2D Center = {Corners.TopLeft.BottomRight.x, Corners.TopLeft.BottomRight.y};
-        OldPoint = Nh_getInversedPointOnCircle(Center, Corners.radii_p[TOP_LEFT], radians); 
+    for (int i = 0; i < cornerTriangleCount; ++i) 
+    {
+        int index = triangleCount;
+        radians += divRadians;
 
-        for (int i = 0; i < cornerTriangleCount; ++i) 
-        {
-            int index = triangleCount;
-            radians += divRadians;
+        Point = Nh_getInversedPointOnCircle(Center, Corners.radii_p[TOP_LEFT], radians); 
 
-            Point = Nh_getInversedPointOnCircle(Center, Corners.radii_p[TOP_LEFT], radians); 
+        Triangles_p[index].P1.x = EnclosedPoint_p == NULL ? EnclosedBox.TopLeft.x : EnclosedPoint_p->TopLeft.x;
+        Triangles_p[index].P1.y = EnclosedPoint_p == NULL ? EnclosedBox.TopLeft.y : EnclosedPoint_p->TopLeft.y;
+        Triangles_p[index].P1.z = z;
 
-            Triangles_p[index].P1.x = EnclosedBox.TopLeft.x;
-            Triangles_p[index].P1.y = EnclosedBox.TopLeft.y;
-            Triangles_p[index].P1.z = z;
+        Triangles_p[index].P2.x = OldPoint.x;
+        Triangles_p[index].P2.y = OldPoint.y;
+        Triangles_p[index].P2.z = z;
 
-            Triangles_p[index].P2.x = OldPoint.x;
-            Triangles_p[index].P2.y = OldPoint.y;
-            Triangles_p[index].P2.z = z;
+        Triangles_p[index].P3.x = Point.x;
+        Triangles_p[index].P3.y = Point.y;
+        Triangles_p[index].P3.z = z;
 
-            Triangles_p[index].P3.x = Point.x;
-            Triangles_p[index].P3.y = Point.y;
-            Triangles_p[index].P3.z = z;
-
-            triangleCount++;
-            OldPoint = Point;
-        }
+        triangleCount++;
+        OldPoint = Point;
+    }
  
 NH_END(triangleCount)
 }
 
 static int Nh_CSS_getTopRightCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData Corners,
-    int cornerTriangleCount, int triangleCount, int side, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p,
+    Nh_CSS_CornersData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
 NH_BEGIN()
-
-    float subtractZ = 0.001f;
 
     Nh_Vector2D EnclosingBoxTopRight = {EnclosingBox.BottomRight.x, EnclosingBox.TopLeft.y};
     Nh_Vector2D EnclosedBoxTopRight  = {EnclosedBox.BottomRight.x, EnclosedBox.TopLeft.y};
@@ -450,8 +447,8 @@ NH_BEGIN()
 
         Point = Nh_getInversedPointOnCircle(Center, Corners.radii_p[TOP_RIGHT], radians); 
 
-        Triangles_p[index].P1.x = EnclosedBox.BottomRight.x;
-        Triangles_p[index].P1.y = EnclosedBox.TopLeft.y;
+        Triangles_p[index].P1.x = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.x : EnclosedPoint_p->BottomRight.x;
+        Triangles_p[index].P1.y = EnclosedPoint_p == NULL ? EnclosedBox.TopLeft.y : EnclosedPoint_p->TopLeft.y;
         Triangles_p[index].P1.z = z;
 
         Triangles_p[index].P2.x = OldPoint.x;
@@ -470,12 +467,10 @@ NH_END(triangleCount)
 }
 
 static int Nh_CSS_getBottomLeftCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData Corners,
-    int cornerTriangleCount, int triangleCount, int side, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    Nh_CSS_CornersData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
 NH_BEGIN()
-
-    float subtractZ = 0.001f;
 
     Nh_Vector2D EnclosingBoxBottomLeft = {EnclosingBox.TopLeft.x, EnclosingBox.BottomRight.y};
     Nh_Vector2D EnclosedBoxBottomLeft  = {EnclosedBox.TopLeft.x, EnclosedBox.BottomRight.y};
@@ -507,8 +502,8 @@ NH_BEGIN()
 
         Point = Nh_getInversedPointOnCircle(Center, Corners.radii_p[BOTTOM_LEFT], radians); 
 
-        Triangles_p[index].P1.x = EnclosedBox.TopLeft.x;
-        Triangles_p[index].P1.y = EnclosedBox.BottomRight.y;
+        Triangles_p[index].P1.x = EnclosedPoint_p == NULL ? EnclosedBox.TopLeft.x : EnclosedPoint_p->TopLeft.x;
+        Triangles_p[index].P1.y = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.y : EnclosedPoint_p->BottomRight.y;
         Triangles_p[index].P1.z = z;
 
         Triangles_p[index].P2.x = OldPoint.x;
@@ -527,12 +522,10 @@ NH_END(triangleCount)
 }
 
 static int Nh_CSS_getBottomRightCornerTriangles(
-    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_Triangle *Triangles_p, NH_CSS_CornersData Corners,
-    int cornerTriangleCount, int triangleCount, int side, float z)
+    Nh_CSS_Box EnclosingBox, Nh_CSS_Box EnclosedBox, Nh_CSS_Box *EnclosedPoint_p, Nh_Triangle *Triangles_p, 
+    Nh_CSS_CornersData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
 NH_BEGIN()
-
-    float subtractZ = 0.001f;
 
     Nh_Vector2D EnclosingBoxBottomRight = {EnclosingBox.BottomRight.x, EnclosingBox.BottomRight.y};
     Nh_Vector2D EnclosedBoxBottomRight = {EnclosedBox.BottomRight.x, EnclosedBox.BottomRight.y};
@@ -564,8 +557,8 @@ NH_BEGIN()
 
         Point = Nh_getInversedPointOnCircle(Center, Corners.radii_p[BOTTOM_RIGHT], radians); 
 
-        Triangles_p[index].P1.x = EnclosedBox.BottomRight.x;
-        Triangles_p[index].P1.y = EnclosedBox.BottomRight.y;
+        Triangles_p[index].P1.x = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.x : EnclosedPoint_p->BottomRight.x;
+        Triangles_p[index].P1.y = EnclosedPoint_p == NULL ? EnclosedBox.BottomRight.y : EnclosedPoint_p->BottomRight.y;
         Triangles_p[index].P1.z = z;
 
         Triangles_p[index].P2.x = OldPoint.x;
@@ -583,12 +576,12 @@ NH_BEGIN()
 NH_END(triangleCount)
 }
 
-static NH_CSS_CornersData Nh_CSS_getCorners(
+static Nh_CSS_CornersData Nh_CSS_getCorners(
     Nh_CSS_Box EnclosingBox, float radii_p[4])
 {
 NH_BEGIN()
 
-    NH_CSS_CornersData Corners = {0};
+    Nh_CSS_CornersData Corners = {0};
 
     memcpy(Corners.radii_p, radii_p, sizeof(float) * 4);
 

@@ -35,7 +35,7 @@ const char *README_p =
 \n\
 Netzhaut runs web-technologies on the client-machine. You can use the library to write your own web-browser (example given) or anything else which makes use of web-technologies like HTML, CSS or JS. The library was designed with a focus on customization and integration among others.\n\
 \n\
-The project is currently in an early stage, which means that there are a lot of features missing in order for Netzhaut to be sufficiently usable and some things are still experimental, so its **definitely not ready for users**.\n\
+The project is currently in initial development, which means that there are a lot of features missing in order for Netzhaut to be sufficiently usable and most things are still experimental, so its **definitely not ready for users**.\n\
 \n\
 This README shall only provide an intro and building instructions, for more information please visit the documentation.\n\
 \n\

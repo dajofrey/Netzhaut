@@ -14,6 +14,7 @@ var Terminal_8h =
     [ "Nh_TTY_initPublicFlags", "group__TTYFunctions.html#ga58602301ccfdd8e0529a14fbe5045cef", null ],
     [ "Nh_TTY_initTerminal", "group__TTYFunctions.html#gab0f8143e2133fdb7f422b6ec42e6cc7a", null ],
     [ "Nh_TTY_run", "group__TTYFunctions.html#ga553d17c3e1e6da8fc5066ee9e6cd8626", null ],
+    [ "Nh_TTY_startTerminalThread", "group__TTYFunctions.html#gaf9bb4021364c294f649194140b7fb25e", null ],
     [ "Nh_TTY_syncedWrite", "group__TTYFunctions.html#ga461bb66bbf0b06c0bcffb83743932f66", null ],
     [ "Nh_TTY_write", "group__TTYFunctions.html#gaf98d31680dc91a1040231e93569cd043", null ],
     [ "Nh_TTY_writeLog", "group__TTYFunctions.html#ga40eb56b02fc284d34872599fc6f1471b", null ]

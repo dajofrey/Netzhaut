@@ -2,7 +2,7 @@ var structNh__Vk__Surface =
 [
     [ "CommandBuffers_p", "structNh__Vk__Surface.html#ae5c66a97a43ed77813eee543f1273d0b", null ],
     [ "currentImage", "structNh__Vk__Surface.html#a3f81b93a96cf2603d19ad08dab358902", null ],
-    [ "DepthStencil", "structNh__Vk__Surface.html#a512d25cdde27057ea835d0b0a1506dc8", null ],
+    [ "DepthStencil", "structNh__Vk__Surface.html#a6279c2bbb1de313f15baa1325229267c", null ],
     [ "Extent2D", "structNh__Vk__Surface.html#ad647751d454ff5b7ff054313198d44c9", null ],
     [ "Fence", "structNh__Vk__Surface.html#a1af4c109ed5b7cda190b8968943be21c", null ],
     [ "Framebuffer_p", "structNh__Vk__Surface.html#a43a5bbc699cc16384424dc7fa27dda74", null ],
@@ -14,7 +14,7 @@ var structNh__Vk__Surface =
     [ "numberOfImages", "structNh__Vk__Surface.html#a754d1cb6aed84dc3ab1eedce2833927f", null ],
     [ "Semaphore_p", "structNh__Vk__Surface.html#a012ab840790aabeeae0a4148972daecf", null ],
     [ "SurfaceKHR", "structNh__Vk__Surface.html#a8fd9b7181e426a4b6e3347872834ad33", null ],
-    [ "Swapchain", "structNh__Vk__Surface.html#ae517098b24db58ee31b028bce1da5501", null ],
+    [ "Swapchain", "structNh__Vk__Surface.html#a91d5f5eee94bc3acd7593a6c45b7ca80", null ],
     [ "SwapchainKHR", "structNh__Vk__Surface.html#aff7161889c4ce3ebbf9b11b6f0ae8ad5", null ],
-    [ "Sync", "structNh__Vk__Surface.html#a398febf78573ffd07230d746447a4d88", null ]
+    [ "Sync", "structNh__Vk__Surface.html#a8ec9dbbe623065e1a25fced5492ff476", null ]
 ];
