@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a666cdc5e8959172816df523df3e76343":[5,0,1,0,0,1,6,42],
+"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a684d2b6e9cde5cc1ef4a9ec0c4131bb0":[5,0,1,0,0,1,6,158],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a684d2b6e9cde5cc1ef4a9ec0c4131bb0":[3,0,0,3,1,158],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a68658f428e0db19e68f0fbccc7bf9e7d":[5,0,1,0,0,1,6,64],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a68658f428e0db19e68f0fbccc7bf9e7d":[3,0,0,3,1,64],
@@ -59,8 +61,8 @@ var NAVTREEINDEX2 =
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a8e9ec584e1dfdb2c3e3ffb873538f97e":[3,0,0,3,1,79],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a8f26b42b408f2b21d7f52f369ea665b7":[3,0,0,3,1,103],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a8f26b42b408f2b21d7f52f369ea665b7":[5,0,1,0,0,1,6,103],
-"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a9344bc29b488b61596bd446b70ec2a7a":[5,0,1,0,0,1,6,114],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a9344bc29b488b61596bd446b70ec2a7a":[3,0,0,3,1,114],
+"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a9344bc29b488b61596bd446b70ec2a7a":[5,0,1,0,0,1,6,114],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a9395efd61667a506442c296df85b1632":[3,0,0,3,1,29],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a9395efd61667a506442c296df85b1632":[5,0,1,0,0,1,6,29],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a93b02ee2ce84301945b6cdc6f160592b":[5,0,1,0,0,1,6,142],
@@ -127,8 +129,8 @@ var NAVTREEINDEX2 =
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61ab9727fae3d71f568557711b59441c32e":[5,0,1,0,0,1,6,25],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61aba67d2c75b26bba13580f0e6fc24ac82":[3,0,0,3,1,93],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61aba67d2c75b26bba13580f0e6fc24ac82":[5,0,1,0,0,1,6,93],
-"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61abbc6d2b5aae8557d8bade241b524422a":[5,0,1,0,0,1,6,127],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61abbc6d2b5aae8557d8bade241b524422a":[3,0,0,3,1,127],
+"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61abbc6d2b5aae8557d8bade241b524422a":[5,0,1,0,0,1,6,127],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61abc0f649e0f092aca730ca4f8bbef90bd":[5,0,1,0,0,1,6,60],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61abc0f649e0f092aca730ca4f8bbef90bd":[3,0,0,3,1,60],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61abcff26fadf688043b51fab88d151d800":[5,0,1,0,0,1,6,77],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "group__APICoreFunctions.html#ga8dc5706515ccb0a07752bab4b3d6989a":[5,0,1,0,0,1,10],
 "group__APICoreFunctions.html#ga8dc5706515ccb0a07752bab4b3d6989a":[3,0,0,4,3],
 "group__APICoreFunctions.html#gaba5a819662402b8979912f18e5ee121f":[5,0,1,0,0,1,14],
-"group__APICoreFunctions.html#gaba5a819662402b8979912f18e5ee121f":[3,0,0,4,7],
-"group__APICoreMacros.html":[3,0,0,0],
-"group__APICoreMacros.html#ga488ea74e7c2e9a01ce00568e7adccb46":[5,0,1,0,0,1,2]
+"group__APICoreFunctions.html#gaba5a819662402b8979912f18e5ee121f":[3,0,0,4,7]
 };

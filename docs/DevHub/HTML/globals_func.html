@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-15 00:52:05<br>v0.0.1 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-15 20:55:09<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.svg"
@@ -237,11 +237,8 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 <li>Nh_createURI()
 : <a class="el" href="group__CoreFunctions.html#gae8b2aa4e787a635e9dc166db271c845c">URI.h</a>
 </li>
-<li>Nh_CSS_activate()
-: <a class="el" href="group__CSSFunctions.html#gad782b11034a86108de7540ffb7c115f0">GenericProperty.h</a>
-</li>
-<li>Nh_CSS_activateChild()
-: <a class="el" href="group__CSSFunctions.html#ga74d54ab99a3723a7646451dd12211e81">GenericProperty.h</a>
+<li>Nh_CSS_activatePseudoClass()
+: <a class="el" href="group__CSSFunctions.html#ga6a95849b90b9fd5a562286106767fb39">Pseudo.h</a>
 </li>
 <li>Nh_CSS_addGenericProperty()
 : <a class="el" href="group__CSSFunctions.html#gabd68ad7eab660be65847f34e4d83b1d6">GenericProperty.h</a>
@@ -254,9 +251,6 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 </li>
 <li>Nh_CSS_addSheets()
 : <a class="el" href="group__CSSFunctions.html#ga6207e062b61b65e4c13f2813ae7ddc5b">Sheet.h</a>
-</li>
-<li>Nh_CSS_attributeSelectorHit()
-: <a class="el" href="group__CSSFunctions.html#ga15c90c6cbde2afd174dcc2a32bd07bfa">Selector.h</a>
 </li>
 <li>Nh_CSS_computeAnimationProperties()
 : <a class="el" href="group__CSSFunctions.html#gabaca197dd543def96bbe6b4012551b25">Animation.h</a>
@@ -291,8 +285,11 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 <li>Nh_CSS_configureGenericProperties()
 : <a class="el" href="group__CSSFunctions.html#ga32b08b4a415fc783029c0c399703e12a">GenericProperty.h</a>
 </li>
-<li>Nh_CSS_deactivate()
-: <a class="el" href="group__CSSFunctions.html#gae58439576e0f709450e78437d4ba914c">GenericProperty.h</a>
+<li>Nh_CSS_createGenericProperty()
+: <a class="el" href="group__CSSFunctions.html#ga0b5ab63b84565babe71e7e4792bcb406">Selector.h</a>
+</li>
+<li>Nh_CSS_deactivatePseudoClass()
+: <a class="el" href="group__CSSFunctions.html#gaed3b09083e82e693c2534dc88bf8711e">Pseudo.h</a>
 </li>
 <li>Nh_CSS_destroyGenericProperties()
 : <a class="el" href="group__CSSFunctions.html#gac30cfd5f9d15b799855b401584f4db42">GenericProperty.h</a>
@@ -337,13 +334,7 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 : <a class="el" href="group__CSSFunctions.html#gaa7e193986c599f88f9670b8dde3ec99e">BoxTriangles.h</a>
 </li>
 <li>Nh_CSS_getColor()
-: <a class="el" href="group__CSSFunctions.html#ga25b47f9f11d5f0713c2dcf82ab97c2e7">Helper.h</a>
-</li>
-<li>Nh_CSS_getColorFromName()
-: <a class="el" href="group__CSSFunctions.html#ga372d241fa5d5f44e6a8f319672608012">Data.h</a>
-</li>
-<li>Nh_CSS_getColorNames()
-: <a class="el" href="group__CSSFunctions.html#ga953672ffecfed3fdb2d9cf470428dd2d">Data.h</a>
+: <a class="el" href="group__CSSFunctions.html#ga25b47f9f11d5f0713c2dcf82ab97c2e7">Color.h</a>
 </li>
 <li>Nh_CSS_getContentBox()
 : <a class="el" href="group__CSSFunctions.html#ga071dbb2a46af08684e92d128894c74bf">Box.h</a>
@@ -372,20 +363,11 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 <li>Nh_CSS_getProperty()
 : <a class="el" href="group__CSSFunctions.html#gaad31f2f7f435409e75662c4f15316cec">GenericProperty.h</a>
 </li>
-<li>Nh_CSS_getPseudoClassNames()
-: <a class="el" href="group__CSSFunctions.html#gaa393ab8a2470a6e1843c125bbcb08d2b">Data.h</a>
-</li>
-<li>Nh_CSS_getPseudoElementNames()
-: <a class="el" href="group__CSSFunctions.html#gaa947cc8c400655e4e8192a5ce0e9c14c">Data.h</a>
-</li>
 <li>Nh_CSS_getSheet()
 : <a class="el" href="group__CSSFunctions.html#ga1ef235d66ca0217874a116bc1497cef1">Sheet.h</a>
 </li>
 <li>Nh_CSS_getTextVertices()
 : <a class="el" href="group__CSSFunctions.html#ga85e817df96ece6a300851c01ec07886c">Vertices.h</a>
-</li>
-<li>Nh_CSS_hsla()
-: <a class="el" href="group__CSSFunctions.html#ga80b9993e6b7bb89705b04c337b9b53f7">Functions.h</a>
 </li>
 <li>Nh_CSS_initBox()
 : <a class="el" href="group__CSSFunctions.html#ga9938e0df8b6e6bdee489481c445593c8">Box.h</a>
@@ -402,11 +384,8 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 <li>Nh_CSS_logSheet()
 : <a class="el" href="group__CSSFunctions.html#ga3612e7ce28a4fde6f820741f198afad7">Log.h</a>
 </li>
-<li>Nh_CSS_naiveSelectorHit()
-: <a class="el" href="group__CSSFunctions.html#ga5c212a95fd3ec84d22c8546511f565d2">Selector.h</a>
-</li>
 <li>Nh_CSS_parseHexColor()
-: <a class="el" href="group__CSSFunctions.html#ga081f75ba3fb65a2d03ba0361ebd6c7fb">Helper.h</a>
+: <a class="el" href="group__CSSFunctions.html#ga081f75ba3fb65a2d03ba0361ebd6c7fb">Color.h</a>
 </li>
 <li>Nh_CSS_parseSheet()
 : <a class="el" href="group__CSSFunctions.html#ga4e91317a759eb03c5565d2de560a89df">Parser.h</a>
@@ -420,8 +399,8 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 <li>Nh_CSS_respectFlow()
 : <a class="el" href="group__CSSFunctions.html#gab969b2a1bbcfbad6b814b487296a11ff">Helper.h</a>
 </li>
-<li>Nh_CSS_rgba()
-: <a class="el" href="group__CSSFunctions.html#gad2a418644c43064123f5d9e3bd6526a9">Functions.h</a>
+<li>Nh_CSS_selectorHit()
+: <a class="el" href="group__CSSFunctions.html#ga0466eee172e3f721c25ea7009b04f662">Selector.h</a>
 </li>
 <li>Nh_CSS_setDefaultAnimationProperties()
 : <a class="el" href="group__CSSFunctions.html#ga860ecd48778b0b58e14eae00c6ab5041">Animation.h</a>
@@ -482,6 +461,9 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 </li>
 <li>Nh_CSS_strip()
 : <a class="el" href="group__CSSFunctions.html#ga8674fe05f71f835002c170d44784852a">Helper.h</a>
+</li>
+<li>Nh_CSS_updateInputUnrelatedPseudos()
+: <a class="el" href="group__CSSFunctions.html#ga8c1102848430736b73f570e94d118a24">Pseudo.h</a>
 </li>
 <li>Nh_deactivateThread()
 : <a class="el" href="group__CoreFunctions.html#ga68dc8ae2820929f9f88127714cc63e8b">Thread.h</a>
@@ -774,11 +756,8 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 <li>Nh_HTML_getText()
 : <a class="el" href="group__HTMLFunctions.html#gaf02e9cc76de4a055e686dfa87cebf55f">Text.h</a>
 </li>
-<li>Nh_HTML_initAttribute()
-: <a class="el" href="group__HTMLFunctions.html#ga4c3beb030c8c5094cb7dcd3d93f72b1e">Attribute.h</a>
-</li>
-<li>Nh_HTML_initAttributes()
-: <a class="el" href="group__HTMLFunctions.html#ga003fdb7329a37bafb61fdb18da4f6f1d">Attribute.h</a>
+<li>Nh_HTML_handleAttributeChange()
+: <a class="el" href="group__HTMLFunctions.html#ga1c5a7c9feafc03d9eb12a82c9fc3bff8">Attribute.h</a>
 </li>
 <li>Nh_HTML_initDocument()
 : <a class="el" href="group__HTMLFunctions.html#ga7c67127ac5dba81a17aa972ae72b5772">Document.h</a>
@@ -812,9 +791,6 @@ $(document).ready(function(){initNavTree('globals_func.html',''); initResizable(
 </li>
 <li>Nh_HTML_recomputeFormattedTree()
 : <a class="el" href="group__HTMLFunctions.html#gaecfca4263df15f2044a930b357c34210">Tree.h</a>
-</li>
-<li>Nh_HTML_recomputeNode()
-: <a class="el" href="group__HTMLFunctions.html#ga71f0ccb7122e67afb47d77df04695e93">Node.h</a>
 </li>
 <li>Nh_HTML_recomputeTrees()
 : <a class="el" href="group__HTMLFunctions.html#ga813c14aebb7fd189797e03b94a01706c">Tree.h</a>

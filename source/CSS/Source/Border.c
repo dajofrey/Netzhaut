@@ -9,6 +9,7 @@
 // INCLUDE =========================================================================================
 
 #include "../Header/Border.h"
+#include "../Header/Color.h"
 #include "../Header/Helper.h"
 #include "../Header/Macros.h"
 

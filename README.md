@@ -1,4 +1,4 @@
-```2020-09-15 00:52:05 | Netzhaut v0.0.1```
+```2020-09-15 20:55:09 | Netzhaut v0.0.1```
 
 <div align="center"> 
 <img src="data/logo/Netzhaut_Banner.png"/> 

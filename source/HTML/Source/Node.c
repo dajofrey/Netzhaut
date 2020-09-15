@@ -205,6 +205,9 @@ NH_BEGIN()
     Node_p->Computed.Margin = Nh_CSS_initBox();
     Nh_HTML_initText(&Node_p->Computed.Text);
 
+    memset(Node_p->Pseudo.classes_p, NH_FALSE, sizeof(NH_BOOL) * _NH_CSS_PSEUDO_CLASS_COUNT); 
+    memset(Node_p->Pseudo.elements_p, NH_FALSE, sizeof(NH_BOOL) * _NH_CSS_PSEUDO_ELEMENT_COUNT); 
+
 NH_END(NH_SUCCESS)
 }
 
@@ -216,27 +219,10 @@ NH_RESULT Nh_HTML_computeNode(
 NH_BEGIN()
 
     NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p))
+    Nh_CSS_updateInputUnrelatedPseudos(&Tab_p->Document.Tree);
     NH_CHECK(Nh_CSS_computeNodeProperties(Tab_p, Node_p, NH_TRUE, NULL))
 
     if (text && Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_createNormalizedText(Tab_p, Node_p))}
-
-NH_END(NH_SUCCESS)
-}
-
-NH_RESULT Nh_HTML_recomputeNode(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text) 
-{
-NH_BEGIN()
-
-    NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p))
-
-    NH_BOOL recompute = NH_FALSE;
-    NH_CHECK(Nh_CSS_computeNodeProperties(Tab_p, Node_p, NH_FALSE, &recompute))
-
-    if (text && Node_p->tag == NH_HTML_TAG_TEXT) {NH_CHECK(Nh_HTML_recreateNormalizedText(Tab_p, Node_p))}
-
-    if (recompute) {NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))}
-    else {Nh_Gfx_updateNodes(Tab_p);}
 
 NH_END(NH_SUCCESS)
 }

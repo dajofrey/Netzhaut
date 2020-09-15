@@ -251,23 +251,7 @@ static NH_RESULT Nh_HTML_addEventListener(
 
 // INIT ============================================================================================
 
-void Nh_HTML_initAttributes(
-    Nh_HTML_Node *Node_p)
-{
-NH_BEGIN()
-
-    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_ID);
-    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_ON_CLICK);
-    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_TYPE);
-    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_SRC);
-    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_VALUE);
-    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_CLASS);
-    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_SELECTED);
-
-NH_SILENT_END()
-}
-
-void Nh_HTML_initAttribute(
+static void Nh_HTML_initAttribute(
     Nh_HTML_Node *Node_p, NH_HTML_ATTRIBUTE type)
 {
 NH_BEGIN()
@@ -282,6 +266,22 @@ NH_BEGIN()
         case NH_HTML_ATTRIBUTE_CLASS    : Node_p->Computed.Attributes.class_p    = NULL; break;
         case NH_HTML_ATTRIBUTE_SELECTED : Node_p->Computed.Attributes.selected   = false; break;
     }
+
+NH_SILENT_END()
+}
+
+static void Nh_HTML_initAttributes(
+    Nh_HTML_Node *Node_p)
+{
+NH_BEGIN()
+
+    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_ID);
+    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_ON_CLICK);
+    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_TYPE);
+    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_SRC);
+    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_VALUE);
+    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_CLASS);
+    Nh_HTML_initAttribute(Node_p, NH_HTML_ATTRIBUTE_SELECTED);
 
 NH_SILENT_END()
 }
@@ -311,6 +311,23 @@ NH_BEGIN()
     Nh_HTML_setOnMouseMove(Tab_p, Node_p, Attributes_pp[NH_HTML_ATTRIBUTE_ON_MOUSE_MOVE]);
     Nh_HTML_setOnMouseOut(Tab_p, Node_p, Attributes_pp[NH_HTML_ATTRIBUTE_ON_MOUSE_OUT]);
     Nh_HTML_setOnChange(Tab_p, Node_p, Attributes_pp[NH_HTML_ATTRIBUTE_ON_CHANGE]);
+
+NH_END(NH_SUCCESS)
+}
+
+NH_RESULT Nh_HTML_handleAttributeChange(
+    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_HTML_ATTRIBUTE type)
+{
+NH_BEGIN()
+
+    switch (type)
+    {
+        case NH_HTML_ATTRIBUTE_ID    :
+        case NH_HTML_ATTRIBUTE_CLASS :
+            break; // TODO
+
+        default : NH_CHECK(Nh_HTML_computeAttributes(Tab_p, Node_p))
+    }
 
 NH_END(NH_SUCCESS)
 }

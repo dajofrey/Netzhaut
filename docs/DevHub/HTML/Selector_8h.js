@@ -1,5 +1,6 @@
 var Selector_8h =
 [
+    [ "Nh_CSS_Pseudo", "structNh__CSS__Selector_1_1Nh__CSS__Pseudo.html", "structNh__CSS__Selector_1_1Nh__CSS__Pseudo" ],
     [ "NH_CSS_SELECTOR", "group__CSSEnums.html#ga6fb6d6200456d0602f9e51408e791418", [
       [ "NH_CSS_SELECTOR_UNDEFINED", "group__CSSEnums.html#gga6fb6d6200456d0602f9e51408e791418a04836803350bc9297249ffcbc3cc6073", null ],
       [ "NH_CSS_SELECTOR_UNIVERSAL", "group__CSSEnums.html#gga6fb6d6200456d0602f9e51408e791418aa6c5a98ce516f4b8eaf9bdf2d6e17237", null ],
@@ -16,6 +17,6 @@ var Selector_8h =
       [ "NH_CSS_SELECTOR_PSEUDO_CLASS", "group__CSSEnums.html#gga6fb6d6200456d0602f9e51408e791418a4d31f38aef9898fdcc29d4f7cb80e613", null ],
       [ "NH_CSS_SELECTOR_PSEUDO_ELEMENT", "group__CSSEnums.html#gga6fb6d6200456d0602f9e51408e791418ae295b43b35fdc151e01a1896fbb141f8", null ]
     ] ],
-    [ "Nh_CSS_attributeSelectorHit", "group__CSSFunctions.html#ga15c90c6cbde2afd174dcc2a32bd07bfa", null ],
-    [ "Nh_CSS_naiveSelectorHit", "group__CSSFunctions.html#ga5c212a95fd3ec84d22c8546511f565d2", null ]
+    [ "Nh_CSS_createGenericProperty", "group__CSSFunctions.html#ga0b5ab63b84565babe71e7e4792bcb406", null ],
+    [ "Nh_CSS_selectorHit", "group__CSSFunctions.html#ga0466eee172e3f721c25ea7009b04f662", null ]
 ];

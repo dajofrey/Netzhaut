@@ -16,7 +16,6 @@ var annotated_dup =
     [ "NH_CSS_List", "structNH__CSS__List.html", "structNH__CSS__List" ],
     [ "NH_CSS_Position", "structNH__CSS__Position.html", "structNH__CSS__Position" ],
     [ "NH_CSS_Properties", "structNH__CSS__Properties.html", "structNH__CSS__Properties" ],
-    [ "Nh_CSS_Pseudo", "structNh__CSS__Pseudo.html", "structNh__CSS__Pseudo" ],
     [ "NH_CSS_RuleSet", "structNH__CSS__RuleSet.html", "structNH__CSS__RuleSet" ],
     [ "Nh_CSS_Selector", "structNh__CSS__Selector.html", "structNh__CSS__Selector" ],
     [ "Nh_CSS_Sheet", "structNh__CSS__Sheet.html", "structNh__CSS__Sheet" ],

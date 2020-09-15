@@ -9,8 +9,6 @@
 // INCLUDE ========================================================================================
 
 #include "../Header/Helper.h"
-#include "../Header/Data.h"
-#include "../Header/Functions.h"
 #include "../Header/Macros.h"
 
 #include "../../Core/Header/Tab.h"
@@ -22,19 +20,7 @@
 #include <ctype.h>
 #include <math.h>
 
-// DECLARE =========================================================================================
-
-/**
- * Converts RGB values to sRGB color space.
- * More info: 
- *     https://en.wikipedia.org/wiki/SRGB#Specification_of_the_transformation
- *     https://learnopengl.com/Advanced-Lighting/Gamma-Correction
- */ 
-static void toSRGB(
-    double gamma, float *rgba_p
-);
-
-// IMPLEMENT ======================================================================================
+// LENGTH ==========================================================================================
 
 // https://developer.mozilla.org/en-US/docs/W../CSS/length
 int Nh_CSS_getLengthInPixel(
@@ -127,25 +113,7 @@ NH_BEGIN()
 NH_END(-1)
 }
 
-void Nh_CSS_getColor(
-    char *color_p, float values_p[4])
-{
-NH_BEGIN()
-
-         if (strstr(color_p, "#"))   {Nh_CSS_parseHexColor(color_p, values_p);} 
-    else if (strstr(color_p, "rgb")) {Nh_CSS_rgba(color_p, values_p);} 
-    else if (strstr(color_p, "hsl")) {Nh_CSS_hsla(color_p, values_p);}
-    else 
-    {
-        char hex_p[16];
-        if (Nh_CSS_getColorFromName(color_p, hex_p) == NH_SUCCESS) {
-            Nh_CSS_parseHexColor(hex_p, values_p);
-        } 
-    }
-    toSRGB(Nh_getConfig()->Settings.gamma, values_p);
-
-NH_SILENT_END()
-}
+// FLOW ============================================================================================
 
 bool Nh_CSS_respectFlow(
     Nh_HTML_Node *Node_p, NH_BOOL plain)
@@ -168,6 +136,8 @@ NH_BEGIN()
 NH_END(true)
 }
 
+// PRECEDENCE ======================================================================================
+
 int Nh_CSS_getPrecedence(
     NH_CSS_SELECTOR selector)
 {
@@ -189,39 +159,6 @@ NH_BEGIN()
     }
     
 NH_END(30)
-}
-
-void Nh_CSS_parseHexColor(
-    char *str_p, float rgba_p[4])
-{
-NH_BEGIN()
-
-    int hex_p[4];
-    memmove(&str_p[0], &str_p[1], strlen(str_p) - 1);
-
-    if (strlen(str_p) <= 7) {
-        sscanf(str_p, "%02x%02x%02x", &hex_p[0], &hex_p[1], &hex_p[2]);
-        for (int i = 0; i < 3; ++i) {rgba_p[i] = ((float)hex_p[i] / 255.0f);}
-        rgba_p[3] = 1.0f;
-    }
-    else {
-        sscanf(str_p, "%02x%02x%02x%02x", &hex_p[0], &hex_p[1], &hex_p[2], &hex_p[3]);
-        for (int i = 0; i < 4; ++i) {rgba_p[i] = ((float)hex_p[i] / 255.0f);}
-    }
-    
-NH_SILENT_END()
-}
-
-// HELPER ==========================================================================================
-
-static void toSRGB(
-    double gamma, float *rgba_p)
-{
-NH_BEGIN()
-
-    for (int i = 0; i < 3; ++i) {rgba_p[i] = pow((double)rgba_p[i], gamma);}
-
-NH_SILENT_END()
 }
 
 // STRIP ===========================================================================================

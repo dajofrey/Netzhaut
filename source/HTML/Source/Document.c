@@ -153,7 +153,9 @@ NH_BEGIN()
 // CSS
     NH_CHECK(Nh_CSS_processInput(Tab_p))
 
-    NH_BOOL recompute;
+    Nh_CSS_updateInputUnrelatedPseudos(&Tab_p->Document.Tree);
+
+    NH_BOOL recompute = NH_FALSE;
     NH_CHECK(Nh_CSS_computeProperties(Tab_p, NH_FALSE, &recompute))
 
     if (recompute) {NH_CHECK(Nh_HTML_recomputeTrees(Tab_p))}

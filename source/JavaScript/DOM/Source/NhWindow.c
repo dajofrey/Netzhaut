@@ -12,7 +12,7 @@
 #include "../Header/Macros.h"
 
 #include "../../../Core/Header/Tab.h"
-#include "../../../CSS/Header/Helper.h"
+#include "../../../CSS/Header/Color.h"
 #include "../../../CSS/Header/Parser.h"
 
 #include <string.h>

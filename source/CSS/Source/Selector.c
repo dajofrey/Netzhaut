@@ -15,6 +15,7 @@
 #include "../../Core/Header/List.h"
 #include "../../Core/Header/HashMap.h"
 #include "../../Core/Header/Memory.h"
+#include "../../Core/Header/String.h"
 
 #include "../../HTML/Header/Attribute.h"
 #include "../../HTML/Header/Document.h"
@@ -31,19 +32,19 @@
 
 // DECLARE ========================================================================================
 
-static bool Nh_CSS_isAttributeSelector(
+static void Nh_CSS_getSelectorParts(
+    char *selectorString_p, NH_CSS_SELECTOR type, char **parts_pp
+);
+static NH_BOOL Nh_CSS_isAttributeSelector(
     const char *selector_p
 );
 
-static bool Nh_CSS_attributeHit(
-    Nh_HTML_Node *Node_p, NH_HTML_ATTRIBUTE type, char *value_p
-);
-static bool Nh_CSS_propertyHit(
-    Nh_HTML_Node *Node_p, NH_CSS_PROPERTY type, char *value_p
-);
-
-static void Nh_CSS_getSelectorParts(
-    char *selectorString_p, NH_CSS_SELECTOR type, char **parts_pp
+/**
+ * Checks if the attribute selector matches a specific node attribute. The implementation currently 
+ * also checks for matching node properties.
+ */
+static NH_BOOL Nh_CSS_attributeSelectorHit(
+    const char *selector_p, Nh_HTML_Node *Node_p
 );
 
 // INIT ============================================================================================
@@ -55,28 +56,33 @@ NH_BEGIN()
 
     Selector_p->type = NH_CSS_SELECTOR_UNDEFINED;
     Selector_p->string_p = selectorString_p;
-    NH_INIT_LIST(Selector_p->Children)
-    memset(&Selector_p->Pseudo, -1, sizeof(Nh_CSS_Pseudo));
+    Selector_p->Pseudo._class = -1;
+    Selector_p->Pseudo.element = -1;
+    NH_INIT_LIST(Selector_p->Parts)
 
 NH_SILENT_END()
 }
 
-static NH_RESULT Nh_CSS_addSelectorChild(
-    Nh_CSS_Selector *Selector_p, Nh_CSS_Selector *Child_p)
+// PART ============================================================================================
+
+static NH_RESULT Nh_CSS_addSelectorPart(
+    Nh_CSS_Selector *Selector_p, Nh_CSS_Selector *Part_p)
 {
 NH_BEGIN()
 
     Nh_CSS_Selector *Alloc_p = Nh_allocate(sizeof(Nh_CSS_Selector));
     NH_CHECK_MEM(Alloc_p)
-    memcpy(Alloc_p, Child_p, sizeof(Nh_CSS_Selector));
-    NH_CHECK(Nh_addListItem(&Selector_p->Children, Alloc_p))
+    memcpy(Alloc_p, Part_p, sizeof(Nh_CSS_Selector));
+    Alloc_p->string_p = Nh_allocateChars(Part_p->string_p);
+    NH_CHECK_MEM(Alloc_p->string_p)
+    NH_CHECK(Nh_addListItem(&Selector_p->Parts, Alloc_p))
 
 NH_END(NH_SUCCESS)
 }
 
 // HIT =============================================================================================
 
-NH_BOOL Nh_CSS_naiveSelectorHit(
+NH_BOOL Nh_CSS_createGenericProperty(
     Nh_HTML_Node *Node_p, char *selectorString_p, Nh_CSS_Selector *Selector_p)
 {
 NH_BEGIN()
@@ -92,6 +98,7 @@ NH_BEGIN()
     else if (selectorString_p[0] == '#')                              {Selector_p->type = NH_CSS_SELECTOR_ID;}
     else if (selectorString_p[0] == '.')                              {Selector_p->type = NH_CSS_SELECTOR_CLASS;}
     else if (!strcmp(selectorString_p, NH_HTML_TAGS_PP[Node_p->tag])) {Selector_p->type = NH_CSS_SELECTOR_TYPE;}
+    else if (Nh_CSS_isAttributeSelector(selectorString_p))            {Selector_p->type = NH_CSS_SELECTOR_ATTRIBUTE;}
 
     switch (Selector_p->type)
     {
@@ -130,6 +137,7 @@ NH_BEGIN()
             for (int i = 0; i < strlen(selectorString_p); ++i) {if (selectorString_p[i] == '[') {break;}++count;}
             memcpy((void*)tag_p, (void*)selectorString_p, sizeof(char) * count);
             if (!strcmp(tag_p, NH_HTML_TAGS_PP[Node_p->tag])) {NH_END(NH_TRUE)}
+            break;
         }
         case NH_CSS_SELECTOR_CHILD_COMBINATOR :
         {
@@ -141,10 +149,10 @@ NH_BEGIN()
 
                 Nh_CSS_Selector Left, Right;
 
-                if (Nh_CSS_naiveSelectorHit(Node_p->Parent_p, parts_pp[0], &Left) 
-                &&  Nh_CSS_naiveSelectorHit(Node_p, parts_pp[1], &Right)) {
-                    NH_CHECK(NH_FALSE, Nh_CSS_addSelectorChild(Selector_p, &Left))
-                    NH_CHECK(NH_FALSE, Nh_CSS_addSelectorChild(Selector_p, &Right))
+                if (Nh_CSS_createGenericProperty(Node_p->Parent_p, parts_pp[0], &Left) 
+                &&  Nh_CSS_createGenericProperty(Node_p, parts_pp[1], &Right)) {
+                    NH_CHECK(NH_FALSE, Nh_CSS_addSelectorPart(Selector_p, &Left))
+                    NH_CHECK(NH_FALSE, Nh_CSS_addSelectorPart(Selector_p, &Right))
                     NH_END(NH_TRUE)
                 }
             }
@@ -165,8 +173,8 @@ NH_BEGIN()
 
             Nh_CSS_Selector Selector;
 
-            if (Nh_CSS_naiveSelectorHit(Node_p, leftSelect_p, &Selector)) {
-                NH_CHECK(NH_FALSE, Nh_CSS_addSelectorChild(Selector_p, &Selector))
+            if (Nh_CSS_createGenericProperty(Node_p, leftSelect_p, &Selector)) {
+                NH_CHECK(NH_FALSE, Nh_CSS_addSelectorPart(Selector_p, &Selector))
                 NH_END(NH_TRUE)
             }
         }
@@ -188,8 +196,65 @@ NH_BEGIN()
 
             Nh_CSS_Selector Selector;
 
-            if (Nh_CSS_naiveSelectorHit(Node_p, leftSelect_p, &Selector)) {
-                NH_CHECK(NH_FALSE, Nh_CSS_addSelectorChild(Selector_p, &Selector))
+            if (Nh_CSS_createGenericProperty(Node_p, leftSelect_p, &Selector)) {
+                NH_CHECK(NH_FALSE, Nh_CSS_addSelectorPart(Selector_p, &Selector))
+                NH_END(NH_TRUE)
+            }
+            break;
+        }
+    }
+
+#include NH_DEFAULT_CHECK
+
+NH_END(NH_FALSE)
+}
+
+NH_BOOL Nh_CSS_selectorHit(
+    Nh_HTML_Node *Node_p, Nh_CSS_Selector *Selector_p)
+{
+NH_BEGIN()
+
+#include NH_CUSTOM_CHECK
+
+    switch (Selector_p->type)
+    {
+        case NH_CSS_SELECTOR_UNIVERSAL :
+        case NH_CSS_SELECTOR_TYPE      : 
+        case NH_CSS_SELECTOR_ID        :
+        case NH_CSS_SELECTOR_CLASS     :
+        {
+            NH_END(NH_TRUE)
+        }
+        case NH_CSS_SELECTOR_ATTRIBUTE :
+        {
+            if (Nh_CSS_attributeSelectorHit(Selector_p->string_p, Node_p)) {
+                NH_END(NH_TRUE)
+            }
+            break;
+        }
+        case NH_CSS_SELECTOR_CHILD_COMBINATOR :
+        {
+            if (Node_p->Parent_p != NULL) 
+            {
+                if (Nh_CSS_selectorHit(Node_p->Parent_p, Nh_getListItem(&Selector_p->Parts, 0)) 
+                &&  Nh_CSS_selectorHit(Node_p, Nh_getListItem(&Selector_p->Parts, 1))) {
+                    NH_END(NH_TRUE)
+                }
+            }
+            break;
+        }
+        case NH_CSS_SELECTOR_PSEUDO_CLASS :
+        {
+            if (Node_p->Pseudo.classes_p[Selector_p->Pseudo._class] 
+            &&  Nh_CSS_selectorHit(Node_p, Nh_getListItem(&Selector_p->Parts, 0))) {
+                NH_END(NH_TRUE)
+            }
+            break;
+        }
+        case NH_CSS_SELECTOR_PSEUDO_ELEMENT :
+        {
+            if (Node_p->Pseudo.elements_p[Selector_p->Pseudo.element] 
+            &&  Nh_CSS_selectorHit(Node_p, Nh_getListItem(&Selector_p->Parts, 0))) {
                 NH_END(NH_TRUE)
             }
             break;
@@ -203,7 +268,7 @@ NH_END(NH_FALSE)
 
 // HELPER ==========================================================================================
 
-static bool Nh_CSS_isAttributeSelector(
+static NH_BOOL Nh_CSS_isAttributeSelector(
     const char *selector_p)
 {
 NH_BEGIN()
@@ -217,7 +282,39 @@ NH_BEGIN()
 NH_END(c == 2)
 }
 
-bool Nh_CSS_attributeSelectorHit(
+static NH_BOOL Nh_CSS_attributeHit(
+    Nh_HTML_Node *Node_p, NH_HTML_ATTRIBUTE type, char *value_p)
+{
+NH_BEGIN()
+
+    for (int i = 0; i < Node_p->Attributes.count; ++i) {
+        if (Nh_HTML_getAttribute(&Node_p->Attributes, i)->type == type) {
+            if (value_p != NULL) {NH_END(!strcmp(value_p, Nh_HTML_getAttribute(&Node_p->Attributes, i)->value_p))}
+            else {NH_END(NH_TRUE)}
+        }
+    }
+
+NH_END(NH_FALSE)
+}
+
+static NH_BOOL Nh_CSS_propertyHit(
+    Nh_HTML_Node *Node_p, NH_CSS_PROPERTY type, char *value_p)
+{
+NH_BEGIN()
+
+    for (int i = 0; i < Node_p->Properties.count; ++i) {
+        if (Nh_CSS_getProperty(&Node_p->Properties, i)->type == type) {
+            if (value_p == NULL) {NH_END(NH_TRUE)}
+            for (int j = 0; j < Nh_CSS_getProperty(&Node_p->Properties, i)->valueCount; ++j) {
+                if (!strcmp(value_p, Nh_CSS_getProperty(&Node_p->Properties, i)->values_pp[j])) {NH_END(NH_TRUE)}
+            }
+        }
+    }
+
+NH_END(NH_FALSE)
+}
+
+static NH_BOOL Nh_CSS_attributeSelectorHit(
     const char *selector_p, Nh_HTML_Node *Node_p)
 {
 NH_BEGIN()
@@ -231,64 +328,32 @@ NH_BEGIN()
     if (!strcmp(element_p, NH_HTML_TAGS_PP[Node_p->tag]))
     {
         char attr_p[256] = {'\0'}, val_p[256] = {'\0'};
-        bool attr = false, val = false;
+        NH_BOOL attr = NH_FALSE, val = NH_FALSE;
         
         count = 0;
         for (int i = 0; i < strlen(selector_p); ++i) 
         {
             if (selector_p[i] == ']')        {break;}
             if (val && selector_p[i] != '"') {val_p[count++] = selector_p[i];}
-            if (selector_p[i] == '=')        {attr = false; val = true; count = 0;}
+            if (selector_p[i] == '=')        {attr = NH_FALSE; val = NH_TRUE; count = 0;}
             if (attr)                        {attr_p[count++] = selector_p[i];}
-            if (selector_p[i] == '[')        {attr = true;}
+            if (selector_p[i] == '[')        {attr = NH_TRUE;}
         }
 
         Nh_HashValue *HashValue_p;
-        bool validAttribute = false, validProperty = false;
+        NH_BOOL validAttribute = NH_FALSE, validProperty = NH_FALSE;
 
         if (hashmap_get(NH_HASHMAPS.HTML.Attributes, attr_p, (void**)(&HashValue_p)) != MAP_OK) {
-            if (hashmap_get(NH_HASHMAPS.CSS.Properties, attr_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(false)}
-            else {validProperty = true;}
+            if (hashmap_get(NH_HASHMAPS.CSS.Properties, attr_p, (void**)(&HashValue_p)) != MAP_OK) {NH_END(NH_FALSE)}
+            else {validProperty = NH_TRUE;}
         } 
-        else {validAttribute = true;}
+        else {validAttribute = NH_TRUE;}
 
         if (validAttribute) {NH_END(Nh_CSS_attributeHit(Node_p, HashValue_p->number, val_p[0] != '\0' ? val_p : NULL))}
         if (validProperty)  {NH_END(Nh_CSS_propertyHit(Node_p, HashValue_p->number, val_p[0] != '\0' ? val_p : NULL))}
     }
 
-NH_END(false)
-}
-
-static bool Nh_CSS_attributeHit(
-    Nh_HTML_Node *Node_p, NH_HTML_ATTRIBUTE type, char *value_p)
-{
-NH_BEGIN()
-
-    for (int i = 0; i < Node_p->Attributes.count; ++i) {
-        if (Nh_HTML_getAttribute(&Node_p->Attributes, i)->type == type) {
-            if (value_p != NULL) {NH_END(!strcmp(value_p, Nh_HTML_getAttribute(&Node_p->Attributes, i)->value_p))}
-            else {NH_END(true)}
-        }
-    }
-
-NH_END(false)
-}
-
-static bool Nh_CSS_propertyHit(
-    Nh_HTML_Node *Node_p, NH_CSS_PROPERTY type, char *value_p)
-{
-NH_BEGIN()
-
-    for (int i = 0; i < Node_p->Properties.count; ++i) {
-        if (Nh_CSS_getProperty(&Node_p->Properties, i)->type == type) {
-            if (value_p == NULL) {NH_END(true)}
-            for (int j = 0; j < Nh_CSS_getProperty(&Node_p->Properties, i)->valueCount; ++j) {
-                if (!strcmp(value_p, Nh_CSS_getProperty(&Node_p->Properties, i)->values_pp[j])) {NH_END(true)}
-            }
-        }
-    }
-
-NH_END(false)
+NH_END(NH_FALSE)
 }
 
 static void Nh_CSS_getSelectorParts(

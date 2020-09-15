@@ -341,11 +341,8 @@ var GenericProperty_8h =
       [ "NH_CSS_PROPERTY_Z_INDEX", "group__CSSEnums.html#ggab34dab72261097d5941740976503da6ca85d472bd33ee0fa425094c36f7ed53ba", null ],
       [ "NH_CSS_PROPERTY_COUNT", "group__CSSEnums.html#ggab34dab72261097d5941740976503da6cacfc6e6c35a77ee3a0ff9c03e7cd7e0b1", null ]
     ] ],
-    [ "Nh_CSS_activate", "group__CSSFunctions.html#gad782b11034a86108de7540ffb7c115f0", null ],
-    [ "Nh_CSS_activateChild", "group__CSSFunctions.html#ga74d54ab99a3723a7646451dd12211e81", null ],
     [ "Nh_CSS_addGenericProperty", "group__CSSFunctions.html#gabd68ad7eab660be65847f34e4d83b1d6", null ],
     [ "Nh_CSS_configureGenericProperties", "group__CSSFunctions.html#ga32b08b4a415fc783029c0c399703e12a", null ],
-    [ "Nh_CSS_deactivate", "group__CSSFunctions.html#gae58439576e0f709450e78437d4ba914c", null ],
     [ "Nh_CSS_destroyGenericProperties", "group__CSSFunctions.html#gac30cfd5f9d15b799855b401584f4db42", null ],
     [ "Nh_CSS_getGenericProperties", "group__CSSFunctions.html#ga2c668600aad43573f5465c75e85fd6e6", null ],
     [ "Nh_CSS_getProperty", "group__CSSFunctions.html#gaad31f2f7f435409e75662c4f15316cec", null ],

@@ -1,8 +1,9 @@
 var HTML_2Header_2Node_8h =
 [
-    [ "Computed", "structNh__HTML__Node_1_1Computed.html", "structNh__HTML__Node_1_1Computed" ],
-    [ "Vulkan", "structNh__HTML__Node_1_1Vulkan.html", "structNh__HTML__Node_1_1Vulkan" ],
-    [ "Children", "structNh__HTML__Node_1_1Children.html", "structNh__HTML__Node_1_1Children" ],
+    [ "Nh_HTML_Computed", "structNh__HTML__Node_1_1Nh__HTML__Computed.html", "structNh__HTML__Node_1_1Nh__HTML__Computed" ],
+    [ "Nh_HTML_Pseudo", "structNh__HTML__Node_1_1Nh__HTML__Pseudo.html", "structNh__HTML__Node_1_1Nh__HTML__Pseudo" ],
+    [ "Nh_HTML_Vulkan", "structNh__HTML__Node_1_1Nh__HTML__Vulkan.html", "structNh__HTML__Node_1_1Nh__HTML__Vulkan" ],
+    [ "Nh_HTML_Children", "structNh__HTML__Node_1_1Nh__HTML__Children.html", "structNh__HTML__Node_1_1Nh__HTML__Children" ],
     [ "NH_HTML_TAG", "group__HTMLEnums.html#ga943494f6405ac44a581774cdc5eb91ad", [
       [ "NH_HTML_TAG_A", "group__HTMLEnums.html#gga943494f6405ac44a581774cdc5eb91ada4bac0aacc3b630089aeed4f71565d3db", null ],
       [ "NH_HTML_TAG_ABBR", "group__HTMLEnums.html#gga943494f6405ac44a581774cdc5eb91ada0e1e4c31b4e5ef3f4606a1e02fac627d", null ],
@@ -138,7 +139,6 @@ var HTML_2Header_2Node_8h =
     [ "Nh_HTML_initNode", "group__HTMLFunctions.html#ga908b17f72c09be03e378c036dabe01f1", null ],
     [ "Nh_HTML_isMetaNode", "group__HTMLFunctions.html#ga9a8554e1c3fd2237e85a5c738eb82d75", null ],
     [ "Nh_HTML_prependChild", "group__HTMLFunctions.html#ga513577eafb9b55303738b7e94ef35a80", null ],
-    [ "Nh_HTML_recomputeNode", "group__HTMLFunctions.html#ga71f0ccb7122e67afb47d77df04695e93", null ],
     [ "Nh_HTML_replaceChild", "group__HTMLFunctions.html#gaba8ffc8efa1170c5e416d8bf829e9647", null ],
     [ "Nh_HTML_replaceChildren", "group__HTMLFunctions.html#ga4813dcc74fe2ac91dbea213663ea0651", null ],
     [ "NH_HTML_TAGS_PP", "group__HTMLData.html#ga530f2c7edacb1beb26536bbec8fb358f", null ],

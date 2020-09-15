@@ -47,16 +47,18 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
  *  @{
  */
 
-    typedef struct Nh_CSS_Pseudo {
-        NH_CSS_PSEUDO_CLASS _class;
-        NH_CSS_PSEUDO_ELEMENT element;
-    } Nh_CSS_Pseudo;
-
     typedef struct Nh_CSS_Selector {
+
         NH_CSS_SELECTOR type;
-        Nh_CSS_Pseudo Pseudo;
+
+        struct Nh_CSS_Pseudo {
+            NH_CSS_PSEUDO_CLASS _class;
+            NH_CSS_PSEUDO_ELEMENT element;
+        } Pseudo;
+
         char *string_p;
-        Nh_List Children;
+        Nh_List Parts;
+
     } Nh_CSS_Selector;
 
 /** @} */
@@ -66,16 +68,12 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
  *  @{
  */
 
-    NH_BOOL Nh_CSS_naiveSelectorHit(
+    NH_BOOL Nh_CSS_createGenericProperty(
         Nh_HTML_Node *Node_p, char *selectorString_p, Nh_CSS_Selector *Selector_p
     );
 
-    /**
-     * Checks if the attribute selector matches a specific node attribute. The implementation currently 
-     * also checks for matching node properties.
-     */
-    bool Nh_CSS_attributeSelectorHit(
-        const char *selector_p, Nh_HTML_Node *Node_p
+    NH_BOOL Nh_CSS_selectorHit(
+        Nh_HTML_Node *Node_p, Nh_CSS_Selector *Selector_p
     );
 
 /** @} */

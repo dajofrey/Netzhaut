@@ -9,7 +9,6 @@
  * Published under LGPLv3
  */
 
-#include "Data.h"
 #include "Background.h"
 #include "Selector.h"
 #include "Text.h"

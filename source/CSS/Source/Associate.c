@@ -140,7 +140,7 @@ NH_BEGIN()
         for (size_t i = 0; i < RuleSet_p->selectorCount; ++i) 
         {
             Nh_CSS_Selector Selector;
-            if (Nh_CSS_naiveSelectorHit(Node_p, RuleSet_p->selectors_pp[i], &Selector)) {
+            if (Nh_CSS_createGenericProperty(Node_p, RuleSet_p->selectors_pp[i], &Selector)) {
                 Nh_CSS_addStyleProperties(Sheet_p, RuleSet_p, Node_p, &Selector);
             }
         }

@@ -17,7 +17,8 @@
 #include "../../JavaScript/Header/Data.h"
 
 #include "../../HTML/Header/Attribute.h"
-#include "../../CSS/Header/Data.h"
+#include "../../CSS/Header/Pseudo.h"
+#include "../../CSS/Header/Color.h"
 
 #include NH_DEBUG
 #include NH_DEFAULT_CHECK
@@ -270,9 +271,24 @@ NH_BEGIN()
             *size_p = NH_CSS_PROPERTIES_PP_COUNT;
             break;
         }
-        case NH_HASHMAP_CSS_COLORS          : *array_ppp = (char**) Nh_CSS_getColorNames(size_p); break;
-        case NH_HASHMAP_CSS_PSEUDO_CLASSES  : *array_ppp = (char**) Nh_CSS_getPseudoClassNames(size_p); break;
-        case NH_HASHMAP_CSS_PSEUDO_ELEMENTS : *array_ppp = (char**) Nh_CSS_getPseudoElementNames(size_p); break;
+        case NH_HASHMAP_CSS_COLORS          : 
+        {
+            *array_ppp = (char**) NH_CSS_COLORS_PP; 
+            *size_p = NH_CSS_COLORS_PP_COUNT; 
+            break;
+        }
+        case NH_HASHMAP_CSS_PSEUDO_CLASSES  :
+        {
+            *array_ppp = (char**) NH_CSS_PSEUDO_CLASSES_PP; 
+            *size_p = NH_CSS_PSEUDO_CLASSES_PP_COUNT; 
+            break;
+        }
+        case NH_HASHMAP_CSS_PSEUDO_ELEMENTS :
+        {
+            *array_ppp = (char**) NH_CSS_PSEUDO_ELEMENTS_PP; 
+            *size_p = NH_CSS_PSEUDO_ELEMENTS_PP_COUNT; 
+            break;
+        }
         case NH_HASHMAP_JS_EVENT_TYPES      : *array_ppp = (char**) Nh_JS_getEventTypes(size_p); break;
         case NH_HASHMAP_JS_KEYWORDS         : *array_ppp = (char**) Nh_JS_getKeywords(size_p); break;
         default                             : NH_END(NH_ERROR_BAD_STATE)

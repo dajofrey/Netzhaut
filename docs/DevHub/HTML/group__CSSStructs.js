@@ -94,13 +94,13 @@ var group__CSSStructs =
       [ "Position", "structNH__CSS__Properties.html#a703b07d1e8eabae927e2dee9207ee041", null ],
       [ "Text", "structNH__CSS__Properties.html#a668e9b2ef1e9c0d134876acfb6b7e52f", null ]
     ] ],
-    [ "Nh_CSS_Pseudo", "structNh__CSS__Pseudo.html", [
-      [ "_class", "structNh__CSS__Pseudo.html#a99537dec6678819f6222f6e2cc1cbd4f", null ],
-      [ "element", "structNh__CSS__Pseudo.html#a0fc577b65cebe6228e833223e863e60a", null ]
-    ] ],
     [ "Nh_CSS_Selector", "structNh__CSS__Selector.html", [
-      [ "Children", "structNh__CSS__Selector.html#acf102b3250c447bf8a1e63c57daa5e84", null ],
-      [ "Pseudo", "structNh__CSS__Selector.html#af0d3cb716489e17139a6ada20f29b9ba", null ],
+      [ "Nh_CSS_Pseudo", "structNh__CSS__Selector_1_1Nh__CSS__Pseudo.html", [
+        [ "_class", "structNh__CSS__Selector_1_1Nh__CSS__Pseudo.html#aff34cb4ad29cda57bf3786b815ce3ce2", null ],
+        [ "element", "structNh__CSS__Selector_1_1Nh__CSS__Pseudo.html#a3dc1962b198a080b1d2db479974cf224", null ]
+      ] ],
+      [ "Parts", "structNh__CSS__Selector.html#a0f412ba6001b7d25f2f373ce70a344a4", null ],
+      [ "Pseudo", "structNh__CSS__Selector.html#aa5a21db012034060c07ca5d78d348b9d", null ],
       [ "string_p", "structNh__CSS__Selector.html#aa6c1582048c7a4f7855d27cebd6aed05", null ],
       [ "type", "structNh__CSS__Selector.html#a7d0e6b209d7d254518baa68314528212", null ]
     ] ],

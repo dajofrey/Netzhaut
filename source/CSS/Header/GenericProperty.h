@@ -9,7 +9,7 @@
  * Published under LGPLv3
  */
 
-#include "Data.h"
+#include "Pseudo.h"
 #include "Selector.h"
 #include "Sheet.h"
 
@@ -419,18 +419,6 @@ typedef struct Nh_Tab Nh_Tab;
         Nh_List *Properties_p
     );
   
-    NH_RESULT Nh_CSS_deactivate(
-        Nh_Tab *Tab_p, NH_CSS_PSEUDO_CLASS pseudoClass
-    );
-    
-    NH_RESULT Nh_CSS_activate(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
-    );
-
-    NH_RESULT Nh_CSS_activateChild(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass
-    );
-
 /** @} */
 
 #endif 

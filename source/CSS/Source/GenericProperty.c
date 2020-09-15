@@ -16,6 +16,7 @@
 #include "../../Core/Header/Tab.h"
 #include "../../HTML/Header/Document.h"
 
+#include NH_UTILS
 #include NH_DEBUG
 #include NH_DEFAULT_CHECK
 #include NH_HTML_UTILS
@@ -371,44 +372,21 @@ size_t NH_CSS_PROPERTIES_PP_COUNT = sizeof(NH_CSS_PROPERTIES_PP) / sizeof(NH_CSS
 
 // CONFIGURE =======================================================================================
 
-static void Nh_CSS_configureAttributeSelector(
-    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
-{
-NH_BEGIN()
-
-//    NH_BOOL active = Nh_CSS_attributeSelectorHit(Property_p->selector_p, Node_p);
-//    if (active && !Property_p->active) {Property_p->active = Property_p->update = true;}
-//    else if (!active && Property_p->active) {
-//        Property_p->active = false;
-//        Property_p->update = true;
-//    }
-
-NH_SILENT_END()
-}
-
 static void Nh_CSS_configureGenericProperty(
     Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
-//    if (Node_p->Parent_p != NULL && Nh_getListItem(&Node_p->Parent_p->Children.Unformatted, 0) == Node_p) {
-//        if (Property_p->Pseudo._class == NH_CSS_PSEUDO_CLASS_FIRST_CHILD) {Property_p->active = true;}
-//    }
-//
-//    if (selector == NH_CSS_SELECTOR_ATTRIBUTE) {
-//        Nh_CSS_configureAttributeSelector(Node_p, Property_p);
-//    }
-//
-//    if (Property_p->selector == NH_CSS_SELECTOR_CHILD_COMBINATOR)
-//    {
-//        char *parts_pp[2], part1_p[256] = {'\0'}, part2_p[256] = {'\0'};
-//        parts_pp[0] = part1_p, parts_pp[1] = part2_p;
-//        Nh_CSS_getSelectorParts(Property_p->selector_p, NH_CSS_SELECTOR_CHILD_COMBINATOR, (char**)parts_pp);
-//        if (Nh_CSS_naiveSelectorHit(Node_p, parts_pp[0], false))
-//        Nh_CSS_GenericProperty Left, Right;
-//        Left.selector_p = part1_p;
-//        
-//    }
+    if (Nh_CSS_selectorHit(Node_p, &Property_p->Selector))
+    {
+        if (Property_p->active == NH_FALSE) {
+            Property_p->active = Property_p->update = NH_TRUE;
+        }
+    }
+    else if (Property_p->active == NH_TRUE) {
+        Property_p->active = NH_FALSE;
+        Property_p->update = NH_TRUE;
+    }
 
 NH_SILENT_END()
 }
@@ -451,56 +429,6 @@ NH_BEGIN()
     }
 
 NH_SILENT_END()
-}
-
-// ACTIVATE/DEACTIVATE =============================================================================
-
-NH_RESULT Nh_CSS_deactivate(
-    Nh_Tab *Tab_p, NH_CSS_PSEUDO_CLASS pseudoClass)
-{
-NH_BEGIN()
-
-//    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) 
-//    {
-//        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i);
-//
-//        for (int j = 0; j < Node_p->Properties.count; ++j) 
-//        {
-//            Nh_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, j);
-//
-//            if ((Property_p->Pseudo._class == pseudoClass || Property_p->Pseudo.parentClass == pseudoClass) && Property_p->active)
-//            {
-//                Property_p->active = false;
-//                Property_p->update = true;
-//            }
-//        }
-//    }
-
-NH_END(NH_SUCCESS)
-}
-
-NH_RESULT Nh_CSS_activate(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
-{
-NH_BEGIN()
-
-//    if (Property_p->Pseudo._class == pseudoClass && !Property_p->active) {
-//        Property_p->update = Property_p->active = true;
-//    }
-
-NH_END(NH_SUCCESS)
-}
-
-NH_RESULT Nh_CSS_activateChild(
-    Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p, NH_CSS_PSEUDO_CLASS pseudoClass)
-{
-NH_BEGIN()
-
-//    if (Property_p->Pseudo.parentClass == pseudoClass && !Property_p->active) {
-//        Property_p->update = Property_p->active = true;
-//    }
-
-NH_END(NH_SUCCESS)
 }
 
 // PROPERTY LIST ===================================================================================
@@ -844,9 +772,22 @@ void Nh_CSS_destroyGenericProperties(
 {
 NH_BEGIN()
 
-    for (int i = 0; i < Properties_p->count; ++i) {
+    void *destroyed_p = NULL;
+
+    for (int i = 0; i < Properties_p->count; ++i) 
+    {
         Nh_CSS_GenericProperty *Property_p = Nh_getListItem(Properties_p, i);
-        Nh_destroyList(&Property_p->Selector.Children, true);
+
+        if (Property_p->Selector.Parts.count > 0) {
+            if (destroyed_p != Property_p->Selector.Parts.Head_p) {
+                destroyed_p = Property_p->Selector.Parts.Head_p;
+                for (int j = 0; j < Property_p->Selector.Parts.count; ++j) {
+                    Nh_CSS_Selector *Part_p = Nh_getListItem(&Property_p->Selector.Parts, j);
+                    Nh_free(Part_p->string_p);
+                }
+                Nh_destroyList(&Property_p->Selector.Parts, true);
+            }
+        }
     }
 
     Nh_destroyList(Properties_p, true);

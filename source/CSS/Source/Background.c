@@ -10,7 +10,7 @@
 
 #include "../Header/Background.h"
 #include "../Header/Helper.h"
-#include "../Header/Functions.h"
+#include "../Header/Color.h"
 #include "../Header/Macros.h"
 #include "../Header/Image.h"
 

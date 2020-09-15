@@ -185,14 +185,19 @@
 
         char *text_p;                      /**<Text of this node.*/
 
-        struct Computed {
+        struct Nh_HTML_Computed {
             Nh_HTML_Text Text;
             Nh_CSS_Box Margin;               
             Nh_HTML_Attributes Attributes;    
-            NH_CSS_Properties Properties;     
+            NH_CSS_Properties Properties;
         } Computed;                        /**<Holds computed node data.*/
 
-        struct Vulkan {
+        struct Nh_HTML_Pseudo {
+            NH_BOOL classes_p[_NH_CSS_PSEUDO_CLASS_COUNT];
+            NH_BOOL elements_p[_NH_CSS_PSEUDO_ELEMENT_COUNT];
+        } Pseudo;
+
+        struct Nh_HTML_Vulkan {
             Nh_List Buffers;           
             Nh_List Uniforms;          
             Nh_List Descriptors;
@@ -200,7 +205,7 @@
 
         struct Nh_HTML_Node *Parent_p;     /**<Pointer to the node parent.*/
 
-        struct Children {
+        struct Nh_HTML_Children {
             Nh_List Unformatted;           /**<List of unformatted node children.*/
             Nh_List Formatted;             /**<List of formatted node children.*/
         } Children;                        /**<Contains children of the node.*/
@@ -221,10 +226,6 @@
     NH_RESULT Nh_HTML_computeNode(
         Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text
     ); 
-
-    NH_RESULT Nh_HTML_recomputeNode(
-        Nh_Tab *Tab_p, Nh_HTML_Node *Node_p, NH_BOOL text
-    );
 
     void Nh_HTML_destroyNode(
         Nh_HTML_Node *Node_p, NH_BOOL destroyTextData

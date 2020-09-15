@@ -1,6 +1,6 @@
 var dir_492abfb50ecaaea2d80a44861b11e1a1 =
 [
-    [ "Data.h", "JavaScript_2Header_2Data_8h.html", "JavaScript_2Header_2Data_8h" ],
+    [ "Data.h", "Data_8h.html", "Data_8h" ],
     [ "Debug.h", "Debug_8h.html", "Debug_8h" ],
     [ "Input.h", "JavaScript_2Header_2Input_8h.html", "JavaScript_2Header_2Input_8h" ],
     [ "Interpreter.h", "Interpreter_8h.html", "Interpreter_8h" ],

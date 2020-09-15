@@ -8,101 +8,23 @@
 
 // INCLUDE =========================================================================================
 
-#include "../Header/Data.h"
+#include "../Header/Color.h"
 #include "../Header/Macros.h"
 
+#include "../../Core/Header/Config.h"
 #include "../../Core/Header/HashMap.h"
 
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include NH_DEBUG
 
 // DATA ============================================================================================
 
-const char *pseudoClass_pp[] = 
-{
-   "active",
-   "any-link", 
-   "blank", 
-   "checked",
-   "current", 
-   "default",
-   "defined",
-   "dir()", 
-   "disabled",
-   "drop", 
-   "empty",
-   "enabled",
-   "first",
-   "first-child",
-   "first-of-type",
-   "fullscreen", 
-   "future", 
-   "focus",
-   "focus-visible",
-   "focus-within",
-   "has()", 
-   "host",
-   "host()",
-   "host-context()",
-   "hover",
-   "indeterminate",
-   "in-range",
-   "invalid",
-   "is()",
-   "lang()",
-   "last-child",
-   "last-of-type",
-   "left",
-   "link",
-   "local-link",
-   "not()",
-   "nth-child()",
-   "nth-col()",
-   "nth-last-child()",
-   "nth-last-col()",
-   "nth-last-of-type()",
-   "nth-of-type()",
-   "only-child",
-   "only-of-type",
-   "optional",
-   "out-of-range",
-   "past",
-   "placeholder-shown",
-   "read-only",
-   "read-write",
-   "required",
-   "right",
-   "root",
-   "scope",
-   "target",
-   "target-within",
-   "user-invalid",
-   "valid",
-   "visited",
-   "where()",
-};
-
-const char *pseudoElement_pp[] =
-{
-    "after",
-    "backdrop",
-    "before",
-    "cue",
-    "cue-region",
-    "first-letter",
-    "first-line",
-    "grammar-error",
-    "marker", 
-    "part",
-    "placeholder",
-    "selection",
-    "slotted",
-    "spelling-error",
-};
-
-const char *colors_pp[] = 
+const char *NH_CSS_COLORS_PP[] = 
 {
     "aliceblue",  	
     "antiquewhite",  	
@@ -254,39 +176,11 @@ const char *colors_pp[] =
     "yellowgreen",  	
 };
 
+size_t NH_CSS_COLORS_PP_COUNT = sizeof(NH_CSS_COLORS_PP) / sizeof(NH_CSS_COLORS_PP[0]);
+
 // GET =============================================================================================
 
-const char** Nh_CSS_getPseudoClassNames(
-    size_t *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL) {*size_p = sizeof(pseudoClass_pp) / sizeof(pseudoClass_pp[0]);}
-
-NH_END(pseudoClass_pp);
-}
-
-const char** Nh_CSS_getPseudoElementNames(
-    size_t *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL) {*size_p = sizeof(pseudoElement_pp) / sizeof(pseudoElement_pp[0]);}
-
-NH_END(pseudoElement_pp);
-}
-
-const char** Nh_CSS_getColorNames(
-    size_t *size_p)
-{
-NH_BEGIN()
-
-    if (size_p != NULL) {*size_p = sizeof(colors_pp) / sizeof(colors_pp[0]);}
-
-NH_END(colors_pp);
-}
-
-NH_RESULT Nh_CSS_getColorFromName(
+static NH_RESULT Nh_CSS_getColorFromName(
     char *name_p, char *hex_p)
 {
 NH_BEGIN()
@@ -456,5 +350,124 @@ NH_BEGIN()
     }
 
 NH_END(NH_SUCCESS)
+}
+
+/**
+ * Converts RGB values to sRGB color space.
+ * More info: 
+ *     https://en.wikipedia.org/wiki/SRGB#Specification_of_the_transformation
+ *     https://learnopengl.com/Advanced-Lighting/Gamma-Correction
+ */ 
+static void Nh_CSS_toSRGB(
+    double gamma, float *rgba_p)
+{
+NH_BEGIN()
+
+    for (int i = 0; i < 3; ++i) {rgba_p[i] = pow((double)rgba_p[i], gamma);}
+
+NH_SILENT_END()
+}
+
+static void Nh_CSS_rgba(
+    char *str_p, float rgba_p[4])
+{
+NH_BEGIN()
+
+    int rgb_p[3] = {0};
+    int alpha_p[3] = {0};
+    NH_BOOL percentage_p[3] = {NH_FALSE, NH_FALSE, NH_FALSE};
+
+    int count = 0;
+    char *c_p = str_p;
+    for (int i = 0; i < strlen(c_p);) 
+    {
+        char c = c_p[i];
+        if (c == '%' && count <= 3) {percentage_p[count-1] = NH_TRUE;}
+        if (isdigit(c_p[i])) 
+        {
+            char *val_p = c_p+i;
+            long val;
+            if (count >= 3) { // alpha
+                if (count >= 6) {break;}
+                val = strtol(val_p, &val_p, 10);
+                alpha_p[count - 3] = (int)val;
+                count++;
+            } else { // rgb
+                val = strtol(val_p, &val_p, 10);
+                rgb_p[count++] = (int)val;
+            }
+            int digits = (int)val == 0 ? 1 : floor(log10(abs((int)val))) + 1;
+            i += digits;
+        } else {
+            ++i;
+        }
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        rgba_p[i] = 
+            percentage_p[i] ? ((float)rgb_p[i]) / 100.0 : ((float)rgb_p[i]) / 255.0;
+    }
+
+    if (count == 3) {rgba_p[3] = 1.0f;} 
+    else {
+        if (count == 5) {alpha_p[2] = 0;}
+        int digits1 = alpha_p[1] == 0 ? 1 : floor(log10(abs(alpha_p[1]))) + 1;
+        int digits2 = alpha_p[2] == 0 ? 0 : floor(log10(abs(alpha_p[2]))) + 1;
+        float alpha = alpha_p[0] + (alpha_p[1] / pow(10.0, (long)digits1 + digits2));
+        rgba_p[3] = alpha;
+    }
+
+NH_SILENT_END()
+}
+
+static void Nh_CSS_hsla(
+    char *str_p, float rgba_p[4])
+{
+NH_BEGIN()
+
+     for (int i = 0; i < 4; ++i) {rgba_p[i] = 1.0f;}
+
+NH_SILENT_END()
+}
+
+void Nh_CSS_getColor(
+    char *color_p, float values_p[4])
+{
+NH_BEGIN()
+
+         if (strstr(color_p, "#"))   {Nh_CSS_parseHexColor(color_p, values_p);} 
+    else if (strstr(color_p, "rgb")) {Nh_CSS_rgba(color_p, values_p);} 
+    else if (strstr(color_p, "hsl")) {Nh_CSS_hsla(color_p, values_p);}
+    else 
+    {
+        char hex_p[16];
+        if (Nh_CSS_getColorFromName(color_p, hex_p) == NH_SUCCESS) {
+            Nh_CSS_parseHexColor(hex_p, values_p);
+        } 
+    }
+    Nh_CSS_toSRGB(Nh_getConfig()->Settings.gamma, values_p);
+
+NH_SILENT_END()
+}
+
+void Nh_CSS_parseHexColor(
+    char *str_p, float rgba_p[4])
+{
+NH_BEGIN()
+
+    int hex_p[4];
+    memmove(&str_p[0], &str_p[1], strlen(str_p) - 1);
+
+    if (strlen(str_p) <= 7) {
+        sscanf(str_p, "%02x%02x%02x", &hex_p[0], &hex_p[1], &hex_p[2]);
+        for (int i = 0; i < 3; ++i) {rgba_p[i] = ((float)hex_p[i] / 255.0f);}
+        rgba_p[3] = 1.0f;
+    }
+    else {
+        sscanf(str_p, "%02x%02x%02x%02x", &hex_p[0], &hex_p[1], &hex_p[2], &hex_p[3]);
+        for (int i = 0; i < 4; ++i) {rgba_p[i] = ((float)hex_p[i] / 255.0f);}
+    }
+    
+NH_SILENT_END()
 }
 

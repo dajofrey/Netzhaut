@@ -102,14 +102,16 @@ var NAVTREEINDEX1 =
 "globals.html":[5,1,0],
 "globals.html":[5,1,0,0],
 "globals_defs.html":[5,1,6],
+"globals_e.html":[5,1,0,1],
 "globals_enum.html":[5,1,4],
 "globals_eval.html":[5,1,5],
 "globals_eval.html":[5,1,5,0],
+"globals_eval_n.html":[5,1,5,1],
 "globals_func.html":[5,1,1],
 "globals_func.html":[5,1,1,0],
-"globals_n.html":[5,1,0,1],
+"globals_n.html":[5,1,0,2],
 "globals_type.html":[5,1,3],
-"globals_v.html":[5,1,0,2],
+"globals_v.html":[5,1,0,3],
 "globals_vars.html":[5,1,2],
 "group__API.html":[3,0],
 "group__APICore.html":[3,0,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a6328ae48bda62222ac0b14e52cb0898c":[5,0,1,0,0,1,6,43],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a63c4eb7406e8c238d54ce0bfcbd68882":[5,0,1,0,0,1,6,175],
 "group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a63c4eb7406e8c238d54ce0bfcbd68882":[3,0,0,3,1,175],
-"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a666cdc5e8959172816df523df3e76343":[3,0,0,3,1,42],
-"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a666cdc5e8959172816df523df3e76343":[5,0,1,0,0,1,6,42],
-"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a684d2b6e9cde5cc1ef4a9ec0c4131bb0":[5,0,1,0,0,1,6,158]
+"group__APICoreEnums.html#gga69553903dccbc47bc4a7b65724517c61a666cdc5e8959172816df523df3e76343":[3,0,0,3,1,42]
 };

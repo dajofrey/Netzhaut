@@ -11,6 +11,7 @@
 #include "../Header/Text.h"
 #include "../Header/Helper.h"
 #include "../Header/Macros.h"
+#include "../Header/Color.h"
 
 #include "../../Core/Header/Tab.h"
 #include "../../Core/Header/Memory.h"

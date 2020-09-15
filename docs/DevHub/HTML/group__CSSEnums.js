@@ -773,7 +773,8 @@ var group__CSSEnums =
       [ "NH_CSS_PSEUDO_CLASS_USER_INVALID", "group__CSSEnums.html#gga38a0f60213ff2474e2fd6b2f5e3712eda551f93b8e56e78a7c61deb7a481b7bf0", null ],
       [ "NH_CSS_PSEUDO_CLASS_VALID", "group__CSSEnums.html#gga38a0f60213ff2474e2fd6b2f5e3712eda86eee79f44e26449784b1e1b60f7f1bd", null ],
       [ "NH_CSS_PSEUDO_CLASS_VISITED", "group__CSSEnums.html#gga38a0f60213ff2474e2fd6b2f5e3712edab4def055e6be777f6f0a8e2fe72b8b85", null ],
-      [ "NH_CSS_PSEUDO_CLASS_WHERE", "group__CSSEnums.html#gga38a0f60213ff2474e2fd6b2f5e3712eda8a817b8a7c68fc7b55502f0a9cc7cbc7", null ]
+      [ "NH_CSS_PSEUDO_CLASS_WHERE", "group__CSSEnums.html#gga38a0f60213ff2474e2fd6b2f5e3712eda8a817b8a7c68fc7b55502f0a9cc7cbc7", null ],
+      [ "_NH_CSS_PSEUDO_CLASS_COUNT", "group__CSSEnums.html#gga38a0f60213ff2474e2fd6b2f5e3712edac4e559bf9308b24293522db703593cc7", null ]
     ] ],
     [ "NH_CSS_PSEUDO_ELEMENT", "group__CSSEnums.html#ga8aa27c214c44deec47af60a712dce7a4", [
       [ "NH_CSS_PSEUDO_ELEMENT_AFTER", "group__CSSEnums.html#gga8aa27c214c44deec47af60a712dce7a4a583d194e97f7ea30440c75318652f9e9", null ],
@@ -789,7 +790,8 @@ var group__CSSEnums =
       [ "NH_CSS_PSEUDO_ELEMENT_PLACEHOLDER", "group__CSSEnums.html#gga8aa27c214c44deec47af60a712dce7a4a4ce7aed8177f6f7f864ca50a41cfaf6a", null ],
       [ "NH_CSS_PSEUDO_ELEMENT_SELECTION", "group__CSSEnums.html#gga8aa27c214c44deec47af60a712dce7a4a97220a557e998f6caba3456f0e045f71", null ],
       [ "NH_CSS_PSEUDO_ELEMENT_SLOTTED", "group__CSSEnums.html#gga8aa27c214c44deec47af60a712dce7a4a986c666b6c56fc854be0d9e4524131ec", null ],
-      [ "NH_CSS_PSEUDO_ELEMENT_SPELLING_ERROR", "group__CSSEnums.html#gga8aa27c214c44deec47af60a712dce7a4a03859b1cbe120b91da03ad2b3df367a5", null ]
+      [ "NH_CSS_PSEUDO_ELEMENT_SPELLING_ERROR", "group__CSSEnums.html#gga8aa27c214c44deec47af60a712dce7a4a03859b1cbe120b91da03ad2b3df367a5", null ],
+      [ "_NH_CSS_PSEUDO_ELEMENT_COUNT", "group__CSSEnums.html#gga8aa27c214c44deec47af60a712dce7a4afb4b313c817b9530f7ad2e55d061076d", null ]
     ] ],
     [ "NH_CSS_RULE_SET", "group__CSSEnums.html#ga0df8b0e024ef3e5f47518e96c125cafc", [
       [ "NH_CSS_RULE_SET_STYLE", "group__CSSEnums.html#gga0df8b0e024ef3e5f47518e96c125cafcaecbe513aae10b00fc6ea1d212eb81f67", null ],

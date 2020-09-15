@@ -43,7 +43,7 @@ option:hover {
 option[selected] {
   background-color: rgb(200, 200, 200);
 }
-option:first-child {
+option:first-of-type {
   margin-top: 5px;
   border-style: solid;
   border-width: 0px;

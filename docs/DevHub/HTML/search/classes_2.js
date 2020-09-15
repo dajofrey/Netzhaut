@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flags_5031',['Flags',['../structNh__Config_1_1Flags.html',1,'Nh_Config']]]
+  ['internal_5038',['Internal',['../structNh__Config_1_1Flags_1_1Internal.html',1,'Nh_Config::Flags']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['events_5030',['Events',['../structNh__HTML__Input_1_1Events.html',1,'Nh_HTML_Input']]]
+  ['flags_5037',['Flags',['../structNh__Config_1_1Flags.html',1,'Nh_Config']]]
 ];
