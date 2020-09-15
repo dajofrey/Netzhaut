@@ -214,7 +214,7 @@ NH_BEGIN()
 //        NH_FileData Data;
 //        NH_CHECK(NH_NULL, Nh_getFileData(absPath_p, &Data))
 //
-//        NH_CSS_Sheet *Sheet_p = Nh_allocate(sizeof(NH_CSS_Sheet));
+//        Nh_CSS_Sheet *Sheet_p = Nh_allocate(sizeof(Nh_CSS_Sheet));
 //        Nh_Output *Output_p = Nh_allocate(sizeof(Nh_Output));
 //        NH_CHECK_NULL(NH_NULL, Sheet_p, Output_p)
 //

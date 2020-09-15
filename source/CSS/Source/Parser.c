@@ -31,7 +31,7 @@
 // DECLARE ========================================================================================
 
 static inline NH_RESULT parseStyleRuleSet(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *Rule_p, int i
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *Rule_p, int i
 );
 static inline NH_RESULT parseDeclaration(
     char *declBegin_p, NH_CSS_Declaration *Declaration_p
@@ -57,7 +57,7 @@ static inline char *jumpOverSelectorList(
 );
 
 static inline char *getStyleRuleSetBegin(
-    NH_CSS_Sheet *Sheet_p, int number, int *count_p
+    Nh_CSS_Sheet *Sheet_p, int number, int *count_p
 );
 static inline char *getDeclarationBegin(
     char *begin_p, int number, int *count_p
@@ -69,7 +69,7 @@ static inline char *getPropertyValueBegin(
 // PARSE ===========================================================================================
 
 NH_RESULT Nh_CSS_parseSheet(
-    NH_CSS_Sheet *Sheet_p)
+    Nh_CSS_Sheet *Sheet_p)
 {
 NH_BEGIN()
 
@@ -102,7 +102,7 @@ NH_END(NH_SUCCESS)
 }
 
 static inline NH_RESULT parseStyleRuleSet(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, int i)
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, int i)
 {
 NH_BEGIN()
 
@@ -248,7 +248,7 @@ NH_END(NH_SUCCESS)
 }
 
 static inline char *getStyleRuleSetBegin(
-    NH_CSS_Sheet *Sheet_p, int number, int *count_p)
+    Nh_CSS_Sheet *Sheet_p, int number, int *count_p)
 {
 NH_BEGIN()
 

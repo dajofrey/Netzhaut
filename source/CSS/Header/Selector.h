@@ -47,11 +47,17 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
  *  @{
  */
 
-    typedef struct NH_CSS_Pseudo {
+    typedef struct Nh_CSS_Pseudo {
         NH_CSS_PSEUDO_CLASS _class;
-        NH_CSS_PSEUDO_CLASS parentClass;
         NH_CSS_PSEUDO_ELEMENT element;
-    } NH_CSS_Pseudo;
+    } Nh_CSS_Pseudo;
+
+    typedef struct Nh_CSS_Selector {
+        NH_CSS_SELECTOR type;
+        Nh_CSS_Pseudo Pseudo;
+        char *string_p;
+        Nh_List Children;
+    } Nh_CSS_Selector;
 
 /** @} */
 
@@ -60,9 +66,8 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
  *  @{
  */
 
-    bool Nh_CSS_selectorHit(
-        Nh_HTML_Node *Node_p, char *selectorString_p, NH_CSS_Pseudo *Pseudo_p, NH_CSS_SELECTOR *selector_p, 
-        bool handleDependentSelectors
+    NH_BOOL Nh_CSS_naiveSelectorHit(
+        Nh_HTML_Node *Node_p, char *selectorString_p, Nh_CSS_Selector *Selector_p
     );
 
     /**

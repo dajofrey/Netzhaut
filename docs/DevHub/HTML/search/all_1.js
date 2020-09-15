@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_5fclass_1',['_class',['../structNH__CSS__Pseudo.html#aa16dd8862c37a389967a233cf24b2abd',1,'NH_CSS_Pseudo']]]
+  ['_5fclass_1',['_class',['../structNh__CSS__Pseudo.html#a99537dec6678819f6222f6e2cc1cbd4f',1,'Nh_CSS_Pseudo']]]
 ];

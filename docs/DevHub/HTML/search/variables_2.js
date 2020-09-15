@@ -11,6 +11,6 @@ var searchData=
   ['bottom_5fp_5868',['bottom_p',['../structNH__CSS__SidesColor.html#ab63a7460a72af3b4ce13d86cfb11b607',1,'NH_CSS_SidesColor']]],
   ['bottomleft_5869',['bottomLeft',['../structNH__CSS__Corners.html#a1ab13479d179d000c98b89bd39afe51f',1,'NH_CSS_Corners']]],
   ['bottomright_5870',['bottomRight',['../structNH__CSS__Corners.html#a8a27e5b1d4f9547bd2270f75eed2d419',1,'NH_CSS_Corners::bottomRight()'],['../structNh__CSS__Box.html#a5c2d4771886eca363ede7ce55e801ad1',1,'Nh_CSS_Box::BottomRight()']]],
-  ['buffer_5871',['buffer',['../structNH__CSS__Image.html#aebc5188b4a0408341954bc263999185a',1,'NH_CSS_Image::buffer()'],['../structNH__Vk__Buffer.html#ae6745439b356f97dc74341d6c9e8fc15',1,'NH_Vk_Buffer::Buffer()']]],
+  ['buffer_5871',['Buffer',['../structNH__Vk__Buffer.html#ae6745439b356f97dc74341d6c9e8fc15',1,'NH_Vk_Buffer::Buffer()'],['../structNH__CSS__Image.html#aebc5188b4a0408341954bc263999185a',1,'NH_CSS_Image::buffer()']]],
   ['buffers_5872',['Buffers',['../structNh__HTML__Node_1_1Vulkan.html#a53c2ab80a2270e383df18681e5e80ac3',1,'Nh_HTML_Node::Vulkan']]]
 ];

@@ -16,7 +16,7 @@ var searchData=
   ['box_2eh_40',['Box.h',['../Box_8h.html',1,'']]],
   ['boxtriangles_2eh_41',['BoxTriangles.h',['../BoxTriangles_8h.html',1,'']]],
   ['browser_2eh_42',['Browser.h',['../Browser_8h.html',1,'']]],
-  ['buffer_43',['buffer',['../structNH__CSS__Image.html#aebc5188b4a0408341954bc263999185a',1,'NH_CSS_Image::buffer()'],['../structNH__Vk__Buffer.html#ae6745439b356f97dc74341d6c9e8fc15',1,'NH_Vk_Buffer::Buffer()']]],
+  ['buffer_43',['Buffer',['../structNH__Vk__Buffer.html#ae6745439b356f97dc74341d6c9e8fc15',1,'NH_Vk_Buffer::Buffer()'],['../structNH__CSS__Image.html#aebc5188b4a0408341954bc263999185a',1,'NH_CSS_Image::buffer()']]],
   ['buffers_44',['Buffers',['../structNh__HTML__Node_1_1Vulkan.html#a53c2ab80a2270e383df18681e5e80ac3',1,'Nh_HTML_Node::Vulkan']]],
   ['buffers_2eh_45',['Buffers.h',['../Buffers_8h.html',1,'']]],
   ['build_46',['Build',['../group__Build.html',1,'']]]

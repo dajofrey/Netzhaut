@@ -1,5 +1,7 @@
 var NAVTREEINDEX38 =
 {
+"structNh__HTML__Node_1_1Computed.html#aaedbfd38f51abb11b771c83fd6106b36":[3,1,2,6,1,2],
+"structNh__HTML__Node_1_1Computed.html#ad85a136d042004f402462817b28b0fd5":[3,1,2,6,1,3],
 "structNh__HTML__Node_1_1Vulkan.html":[3,1,2,6,2],
 "structNh__HTML__Node_1_1Vulkan.html#a53c2ab80a2270e383df18681e5e80ac3":[3,1,2,6,2,0],
 "structNh__HTML__Node_1_1Vulkan.html#ad9f453d959ebee523912178d9cfffbfd":[3,1,2,6,2,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX38 =
 "structNh__Thread.html#a075d81f8bb894abbedd13df7729afcdd":[3,2,2,16,10],
 "structNh__Thread.html#a089b8479098ad80c97364128c1c09e1c":[3,2,2,16,12],
 "structNh__Thread.html#a1cb97871e63a284d6d7e670acbbcd328":[3,2,2,16,9],
-"structNh__Thread.html#a1cd6da5dc6d153955ea445fb6bfb72dd":[3,2,2,16,6],
-"structNh__Thread.html#a21b880861a09468d46e717e36caa0198":[3,2,2,16,8],
-"structNh__Thread.html#a2a1be33fe96a50fb818c63637d57148f":[3,2,2,16,7]
+"structNh__Thread.html#a1cd6da5dc6d153955ea445fb6bfb72dd":[3,2,2,16,6]
 };

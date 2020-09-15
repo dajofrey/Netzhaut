@@ -382,15 +382,13 @@ typedef struct Nh_Tab Nh_Tab;
  */
 
     typedef struct Nh_CSS_GenericProperty {
-        NH_CSS_Sheet *Sheet_p;
-        NH_CSS_SELECTOR selector;
+        Nh_CSS_Sheet *Sheet_p;
+        Nh_CSS_Selector Selector;
         NH_CSS_PROPERTY type;
-        NH_CSS_Pseudo Pseudo;
-        void *selector_p;
         char **values_pp;     
         int valueCount;      
-        bool active;          
-        bool update;
+        NH_BOOL active;          
+        NH_BOOL update;
         NH_BOOL triggerRecompute;
     } Nh_CSS_GenericProperty;
     

@@ -45,12 +45,12 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
         void *Data_p;
     } NH_CSS_RuleSet;
 
-    typedef struct NH_CSS_Sheet {
+    typedef struct Nh_CSS_Sheet {
         Nh_URI URI;
         int ruleSetCount;
         NH_CSS_RuleSet *RuleSets_p;
         Nh_HTML_Node *Apply_p;
-    } NH_CSS_Sheet;
+    } Nh_CSS_Sheet;
     
     typedef struct NH_CSS_Declaration {
         char *property_p;
@@ -77,10 +77,10 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
     );
 
     NH_RESULT Nh_CSS_addSheet(
-        Nh_List *Sheets_p, NH_CSS_Sheet *Sheet_p
+        Nh_List *Sheets_p, Nh_CSS_Sheet *Sheet_p
     );
     
-    NH_CSS_Sheet *Nh_CSS_getSheet(
+    Nh_CSS_Sheet *Nh_CSS_getSheet(
         Nh_List *Sheets_p, int index
     );
 
@@ -89,15 +89,15 @@ typedef struct Nh_HTML_Node Nh_HTML_Node;
     );
 
     void Nh_CSS_destroySheet(
-        NH_CSS_Sheet *Sheet_p
+        Nh_CSS_Sheet *Sheet_p
     );
 
     void Nh_CSS_initSheet(
-        NH_CSS_Sheet *Sheet_p
+        Nh_CSS_Sheet *Sheet_p
     );
 
     char *Nh_CSS_stringifySheet(
-        NH_CSS_Sheet *Sheet_p
+        Nh_CSS_Sheet *Sheet_p
     );
 
 /** @} */

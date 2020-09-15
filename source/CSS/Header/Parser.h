@@ -21,7 +21,7 @@
  */
 
     NH_RESULT Nh_CSS_parseSheet(
-        NH_CSS_Sheet *Sheet_p
+        Nh_CSS_Sheet *Sheet_p
     );
 
 /** @} */

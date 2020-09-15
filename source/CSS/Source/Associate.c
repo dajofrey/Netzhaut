@@ -30,23 +30,22 @@
 // DECLARE =========================================================================================
 
 static NH_RESULT Nh_CSS_dispatchRuleSet(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_RuleSet *RuleSet_p, Nh_HTML_Node *Node_p, bool recursive, 
-    bool hitRequired, bool handleDependentSelectors
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_RuleSet *RuleSet_p, Nh_HTML_Node *Node_p, bool recursive, 
+    bool hitRequired
 );
 static NH_RESULT Nh_CSS_handleStyleRuleSet(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node *Node_p, bool recursive, 
-    bool hitRequired, bool handleDependentSelectors
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node *Node_p, bool recursive, 
+    bool hitRequired
 );
 static NH_RESULT Nh_CSS_addStyleProperties(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node* Node_p, NH_CSS_Pseudo *Pseudo_p, 
-    NH_CSS_SELECTOR selector, char *selector_p
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node* Node_p,
+    Nh_CSS_Selector *Selector_p
 );
 
 // APPLY ===========================================================================================
 
 static NH_RESULT Nh_CSS_associateSheet(
-    Nh_Tab *Tab_p, NH_CSS_Sheet *Sheet_p, Nh_HTML_Node *Node_p, 
-    bool handleDependentSelectors)
+    Nh_Tab *Tab_p, Nh_CSS_Sheet *Sheet_p, Nh_HTML_Node *Node_p)
 {   
 NH_BEGIN()
 
@@ -54,18 +53,18 @@ NH_BEGIN()
     {
         if (Node_p != NULL && (Sheet_p->Apply_p == NULL || Sheet_p->Apply_p == Node_p)) {
             NH_CHECK(Nh_CSS_dispatchRuleSet(
-                Sheet_p, &Sheet_p->RuleSets_p[i], Node_p, false, true, handleDependentSelectors
+                Sheet_p, &Sheet_p->RuleSets_p[i], Node_p, false, true
             ))
         }
         else if (Node_p == NULL && Sheet_p->Apply_p == NULL) {
             NH_CHECK(Nh_CSS_dispatchRuleSet(
                 Sheet_p, &Sheet_p->RuleSets_p[i], Nh_HTML_getNode(Tab_p, NH_HTML_TAG_BODY, NH_TRUE), 
-                true, true, handleDependentSelectors
+                true, true
             ))
         }
         else if (Node_p == NULL && Sheet_p->Apply_p != NULL) {
             NH_CHECK(Nh_CSS_dispatchRuleSet(
-                Sheet_p, &Sheet_p->RuleSets_p[i], Sheet_p->Apply_p, false, false, handleDependentSelectors
+                Sheet_p, &Sheet_p->RuleSets_p[i], Sheet_p->Apply_p, false, false
             ))
         }
     }
@@ -80,12 +79,7 @@ NH_BEGIN()
 
     for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
         NH_CHECK(Nh_CSS_associateSheet(
-            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Node_p, false
-        ))
-    }
-    for (int i = 0; i < Tab_p->Document.Sheets.count; ++i) {
-        NH_CHECK(Nh_CSS_associateSheet(
-            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Node_p, true
+            Tab_p, Nh_CSS_getSheet(&Tab_p->Document.Sheets, i), Node_p
         ))
     }
 
@@ -106,8 +100,8 @@ NH_END(NH_SUCCESS)
 // DISPATCH ========================================================================================
 
 static NH_RESULT Nh_CSS_dispatchRuleSet(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_RuleSet* RuleSet_p, Nh_HTML_Node* Node_p, bool recursive, 
-    bool hitRequired, bool handleDependentSelectors)
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_RuleSet* RuleSet_p, Nh_HTML_Node* Node_p, bool recursive, 
+    bool hitRequired)
 {
 NH_BEGIN()
 
@@ -116,8 +110,7 @@ NH_BEGIN()
         case NH_CSS_RULE_SET_STYLE      : 
         {
             Nh_CSS_handleStyleRuleSet(
-                Sheet_p, RuleSet_p->Data_p, Node_p, recursive, hitRequired, 
-                handleDependentSelectors
+                Sheet_p, RuleSet_p->Data_p, Node_p, recursive, hitRequired
             ); 
             break;
         }
@@ -135,12 +128,10 @@ NH_END(NH_SUCCESS)
 // STYLE RULE-SET ==================================================================================
 
 static NH_RESULT Nh_CSS_handleStyleRuleSet(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node* Node_p, bool recursive, 
-    bool hitRequired, bool handleDependentSelectors)
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node* Node_p, bool recursive, 
+    bool hitRequired)
 {
 NH_BEGIN()
-
-    NH_CSS_SELECTOR selector = NH_CSS_SELECTOR_UNDEFINED;
 
     if (!hitRequired) {
         // TODO
@@ -148,9 +139,9 @@ NH_BEGIN()
     else {
         for (size_t i = 0; i < RuleSet_p->selectorCount; ++i) 
         {
-            NH_CSS_Pseudo Pseudo = {-1};
-            if (Nh_CSS_selectorHit(Node_p, RuleSet_p->selectors_pp[i], &Pseudo, &selector, handleDependentSelectors)) {
-                Nh_CSS_addStyleProperties(Sheet_p, RuleSet_p, Node_p, &Pseudo, selector, RuleSet_p->selectors_pp[i]);
+            Nh_CSS_Selector Selector;
+            if (Nh_CSS_naiveSelectorHit(Node_p, RuleSet_p->selectors_pp[i], &Selector)) {
+                Nh_CSS_addStyleProperties(Sheet_p, RuleSet_p, Node_p, &Selector);
             }
         }
     }
@@ -158,8 +149,7 @@ NH_BEGIN()
     if (recursive) {
         for (int i = 0; i < Node_p->Children.Unformatted.count; ++i) {
             Nh_CSS_handleStyleRuleSet(
-                Sheet_p, RuleSet_p, Nh_getListItem(&Node_p->Children.Unformatted, i), true, hitRequired, 
-                handleDependentSelectors
+                Sheet_p, RuleSet_p, Nh_getListItem(&Node_p->Children.Unformatted, i), true, hitRequired
             );
         }
     }
@@ -168,8 +158,8 @@ NH_END(NH_SUCCESS)
 }
 
 static NH_RESULT Nh_CSS_addStyleProperties(
-    NH_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node* Node_p, NH_CSS_Pseudo *Pseudo_p, 
-    NH_CSS_SELECTOR selector, char *selector_p)
+    Nh_CSS_Sheet *Sheet_p, NH_CSS_StyleRuleSet *RuleSet_p, Nh_HTML_Node* Node_p,
+    Nh_CSS_Selector *Selector_p)
 {
 NH_BEGIN()
 
@@ -183,19 +173,15 @@ NH_BEGIN()
     
         Nh_CSS_GenericProperty Property = {0};
 
-        Property.Sheet_p            = Sheet_p;
-        Property.type               = HashValue_p->number;
-        Property.Pseudo._class      = Pseudo_p->_class;
-        Property.Pseudo.parentClass = Pseudo_p->parentClass;
-        Property.Pseudo.element     = Pseudo_p->element;
-        Property.selector           = selector;
-        Property.active             = Pseudo_p->_class == -1 && Pseudo_p->parentClass == -1;
-        Property.update             = false;
-        Property.valueCount         = Declaration_p->valueCount;
-        Property.values_pp          = Declaration_p->values_pp;
-        Property.selector_p         = selector_p;
+        Property.Sheet_p    = Sheet_p;
+        Property.type       = HashValue_p->number;
+        Property.Selector   = *Selector_p;
+        Property.active     = NH_FALSE;
+        Property.update     = NH_FALSE;
+        Property.valueCount = Declaration_p->valueCount;
+        Property.values_pp  = Declaration_p->values_pp;
 
-        Nh_CSS_addGenericProperty(&Node_p->Properties, &Property);
+        NH_CHECK(Nh_CSS_addGenericProperty(&Node_p->Properties, &Property))
     }
 
 NH_END(NH_SUCCESS)

@@ -36,7 +36,7 @@
         Nh_HTML_Tree Tree;   /**<The HTML document tree.*/ 
 
         Nh_List Scripts;     /**<Holds all associated JS scripts in the form of @ref Nh_JS_Script.*/ 
-        Nh_List Sheets;      /**<Holds all associated CSS data in the form of @ref NH_CSS_Sheet.*/
+        Nh_List Sheets;      /**<Holds all associated CSS data in the form of @ref Nh_CSS_Sheet.*/
 
     } Nh_HTML_Document;
 

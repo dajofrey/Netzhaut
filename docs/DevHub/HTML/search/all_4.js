@@ -8,7 +8,7 @@ var searchData=
   ['changelog_52',['Changelog',['../Changelog.html',1,'']]],
   ['changelog_2emd_53',['Changelog.md',['../Changelog_8md.html',1,'']]],
   ['chars_5fp_54',['chars_p',['../structNh__TTY__Row.html#a93cab8a4f9c747e9cac46c68a701094b',1,'Nh_TTY_Row']]],
-  ['children_55',['Children',['../structNh__HTML__Node_1_1Children.html',1,'Nh_HTML_Node::Children'],['../structNh__HTML__Node.html#adb590cad059a8ad4a96ad172a0a4e584',1,'Nh_HTML_Node::Children()']]],
+  ['children_55',['Children',['../structNh__HTML__Node_1_1Children.html',1,'Nh_HTML_Node::Children'],['../structNh__HTML__Node.html#adb590cad059a8ad4a96ad172a0a4e584',1,'Nh_HTML_Node::Children()'],['../structNh__CSS__Selector.html#acf102b3250c447bf8a1e63c57daa5e84',1,'Nh_CSS_Selector::Children()']]],
   ['class_5fp_56',['class_p',['../structNh__HTML__Attributes.html#a3839519ae5dfbb61249016382770ed7c',1,'Nh_HTML_Attributes']]],
   ['clip_57',['clip',['../structNH__CSS__Background.html#a038ae80c165e1067a84c1fa5582b1140',1,'NH_CSS_Background']]],
   ['close_58',['close',['../structNh__Tab.html#a0003bb852b13547d526b7982e8d167d0',1,'Nh_Tab::close()'],['../structNh__Window.html#a13bede6f8965177994b03203cce41ede',1,'Nh_Window::close()']]],

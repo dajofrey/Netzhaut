@@ -371,29 +371,44 @@ size_t NH_CSS_PROPERTIES_PP_COUNT = sizeof(NH_CSS_PROPERTIES_PP) / sizeof(NH_CSS
 
 // CONFIGURE =======================================================================================
 
+static void Nh_CSS_configureAttributeSelector(
+    Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
+{
+NH_BEGIN()
+
+//    NH_BOOL active = Nh_CSS_attributeSelectorHit(Property_p->selector_p, Node_p);
+//    if (active && !Property_p->active) {Property_p->active = Property_p->update = true;}
+//    else if (!active && Property_p->active) {
+//        Property_p->active = false;
+//        Property_p->update = true;
+//    }
+
+NH_SILENT_END()
+}
+
 static void Nh_CSS_configureGenericProperty(
     Nh_HTML_Node *Node_p, Nh_CSS_GenericProperty *Property_p)
 {
 NH_BEGIN()
 
-    if (Node_p->Parent_p != NULL && Nh_getListItem(&Node_p->Parent_p->Children.Unformatted, 0) == Node_p) {
-        if (Property_p->Pseudo._class == NH_CSS_PSEUDO_CLASS_FIRST_CHILD) {Property_p->active = true;}
-    }
-
-    if (Property_p->selector == NH_CSS_SELECTOR_ATTRIBUTE) 
-    {
-        NH_BOOL active = Nh_CSS_attributeSelectorHit(Property_p->selector_p, Node_p);
-        if (active && !Property_p->active) {Property_p->active = Property_p->update = true;}
-        else if (!active && Property_p->active) {
-            Property_p->active = false;
-            Property_p->update = true;
-        }
-    } 
-
-    if (Property_p->selector == NH_CSS_SELECTOR_CHILD_COMBINATOR)
-    {
-        // TODO
-    }
+//    if (Node_p->Parent_p != NULL && Nh_getListItem(&Node_p->Parent_p->Children.Unformatted, 0) == Node_p) {
+//        if (Property_p->Pseudo._class == NH_CSS_PSEUDO_CLASS_FIRST_CHILD) {Property_p->active = true;}
+//    }
+//
+//    if (selector == NH_CSS_SELECTOR_ATTRIBUTE) {
+//        Nh_CSS_configureAttributeSelector(Node_p, Property_p);
+//    }
+//
+//    if (Property_p->selector == NH_CSS_SELECTOR_CHILD_COMBINATOR)
+//    {
+//        char *parts_pp[2], part1_p[256] = {'\0'}, part2_p[256] = {'\0'};
+//        parts_pp[0] = part1_p, parts_pp[1] = part2_p;
+//        Nh_CSS_getSelectorParts(Property_p->selector_p, NH_CSS_SELECTOR_CHILD_COMBINATOR, (char**)parts_pp);
+//        if (Nh_CSS_naiveSelectorHit(Node_p, parts_pp[0], false))
+//        Nh_CSS_GenericProperty Left, Right;
+//        Left.selector_p = part1_p;
+//        
+//    }
 
 NH_SILENT_END()
 }
@@ -427,7 +442,7 @@ NH_BEGIN()
         {
             if (Properties_pp[Property_p->type] != NULL) 
             {
-                if (Nh_CSS_getPrecedence(Property_p->selector) <= Nh_CSS_getPrecedence(Properties_pp[Property_p->type]->selector)) {
+                if (Nh_CSS_getPrecedence(Property_p->Selector.type) <= Nh_CSS_getPrecedence(Properties_pp[Property_p->type]->Selector.type)) {
                     Properties_pp[Property_p->type] = Property_p;
                 }
             } 
@@ -445,21 +460,21 @@ NH_RESULT Nh_CSS_deactivate(
 {
 NH_BEGIN()
 
-    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) 
-    {
-        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i);
-
-        for (int j = 0; j < Node_p->Properties.count; ++j) 
-        {
-            Nh_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, j);
-
-            if ((Property_p->Pseudo._class == pseudoClass || Property_p->Pseudo.parentClass == pseudoClass) && Property_p->active)
-            {
-                Property_p->active = false;
-                Property_p->update = true;
-            }
-        }
-    }
+//    for (int i = 0; i < Tab_p->Document.Tree.Flat.Unformatted.count; ++i) 
+//    {
+//        Nh_HTML_Node *Node_p = Nh_getListItem(&Tab_p->Document.Tree.Flat.Unformatted, i);
+//
+//        for (int j = 0; j < Node_p->Properties.count; ++j) 
+//        {
+//            Nh_CSS_GenericProperty *Property_p = Nh_CSS_getProperty(&Node_p->Properties, j);
+//
+//            if ((Property_p->Pseudo._class == pseudoClass || Property_p->Pseudo.parentClass == pseudoClass) && Property_p->active)
+//            {
+//                Property_p->active = false;
+//                Property_p->update = true;
+//            }
+//        }
+//    }
 
 NH_END(NH_SUCCESS)
 }
@@ -469,9 +484,9 @@ NH_RESULT Nh_CSS_activate(
 {
 NH_BEGIN()
 
-    if (Property_p->Pseudo._class == pseudoClass && !Property_p->active) {
-        Property_p->update = Property_p->active = true;
-    }
+//    if (Property_p->Pseudo._class == pseudoClass && !Property_p->active) {
+//        Property_p->update = Property_p->active = true;
+//    }
 
 NH_END(NH_SUCCESS)
 }
@@ -481,9 +496,9 @@ NH_RESULT Nh_CSS_activateChild(
 {
 NH_BEGIN()
 
-    if (Property_p->Pseudo.parentClass == pseudoClass && !Property_p->active) {
-        Property_p->update = Property_p->active = true;
-    }
+//    if (Property_p->Pseudo.parentClass == pseudoClass && !Property_p->active) {
+//        Property_p->update = Property_p->active = true;
+//    }
 
 NH_END(NH_SUCCESS)
 }
@@ -500,16 +515,13 @@ NH_BEGIN()
     Nh_CSS_GenericProperty *Property_p = Nh_allocate(sizeof(Nh_CSS_GenericProperty));
     NH_CHECK_MEM(Property_p)
 
-    Property_p->values_pp          = NULL;
-    Property_p->valueCount         = 0; 
-    Property_p->Sheet_p            = Copy_p->Sheet_p;
-    Property_p->selector           = Copy_p->selector;
-    Property_p->type               = Copy_p->type;
-    Property_p->Pseudo._class      = Copy_p->Pseudo._class;
-    Property_p->Pseudo.parentClass = Copy_p->Pseudo.parentClass;
-    Property_p->active             = Copy_p->active;
-    Property_p->update             = Copy_p->update;
-    Property_p->selector_p         = Copy_p->selector_p;
+    Property_p->values_pp  = NULL;
+    Property_p->valueCount = 0; 
+    Property_p->Sheet_p    = Copy_p->Sheet_p;
+    Property_p->Selector   = Copy_p->Selector;
+    Property_p->type       = Copy_p->type;
+    Property_p->active     = Copy_p->active;
+    Property_p->update     = Copy_p->update;
 
     NH_CSS_PROPERTY type = Property_p->type;
 
@@ -831,6 +843,11 @@ void Nh_CSS_destroyGenericProperties(
     Nh_List *Properties_p)
 {
 NH_BEGIN()
+
+    for (int i = 0; i < Properties_p->count; ++i) {
+        Nh_CSS_GenericProperty *Property_p = Nh_getListItem(Properties_p, i);
+        Nh_destroyList(&Property_p->Selector.Children, true);
+    }
 
     Nh_destroyList(Properties_p, true);
 

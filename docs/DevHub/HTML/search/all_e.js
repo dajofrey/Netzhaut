@@ -8,7 +8,7 @@ var searchData=
   ['major_290',['major',['../structNh__Vk__DriverInfo.html#aa4ef01a91190636b5b2ce3408a4e6b2f',1,'Nh_Vk_DriverInfo']]],
   ['manualexit_291',['manualExit',['../structNh__TTY__Terminal.html#a8c66fe819dd77cd2eacfe83a5131d71d',1,'Nh_TTY_Terminal']]],
   ['mapmemory_292',['mapMemory',['../structNH__Vk__BufferInfo.html#a6b89cccdd703966ac48bf131494bb23f',1,'NH_Vk_BufferInfo']]],
-  ['margin_293',['margin',['../structNh__Config_1_1Flags_1_1Log.html#af30dfb9460afd0de9555d852bb3016bb',1,'Nh_Config::Flags::Log::margin()'],['../structNh__HTML__Node_1_1Computed.html#a153a43b3552edd38c090c70140485ec0',1,'Nh_HTML_Node::Computed::Margin()'],['../structNH__CSS__Properties.html#a0c418de8ac9c959b67e0b5160a27432a',1,'NH_CSS_Properties::Margin()']]],
+  ['margin_293',['Margin',['../structNh__HTML__Node_1_1Computed.html#a153a43b3552edd38c090c70140485ec0',1,'Nh_HTML_Node::Computed::Margin()'],['../structNH__CSS__Properties.html#a0c418de8ac9c959b67e0b5160a27432a',1,'NH_CSS_Properties::Margin()'],['../structNh__Config_1_1Flags_1_1Log.html#af30dfb9460afd0de9555d852bb3016bb',1,'Nh_Config::Flags::Log::margin()']]],
   ['margin_2eh_294',['Margin.h',['../Margin_8h.html',1,'']]],
   ['marks_295',['Marks',['../structNh__HTML__Input_1_1Marks.html',1,'Nh_HTML_Input::Marks'],['../structNh__HTML__Input.html#a742460aa64a783c386dc2aac51f347ed',1,'Nh_HTML_Input::Marks()']]],
   ['math_2eh_296',['Math.h',['../Core_2Header_2Math_8h.html',1,'(Global Namespace)'],['../JavaScript_2Core_2Header_2Math_8h.html',1,'(Global Namespace)']]],
@@ -23,6 +23,6 @@ var searchData=
   ['minheight_305',['MinHeight',['../structNH__CSS__Position.html#ab340a71fe9020a9a91fabef6071941dd',1,'NH_CSS_Position']]],
   ['minor_306',['minor',['../structNh__Vk__DriverInfo.html#a569376da887652af2dfefc6539e2179a',1,'Nh_Vk_DriverInfo']]],
   ['minwidth_307',['MinWidth',['../structNH__CSS__Position.html#acee4ae9b293714e36cde015b6ca9db86',1,'NH_CSS_Position']]],
-  ['mouse_308',['mouse',['../structNh__Config_1_1Flags_1_1Log.html#af8ecd628f687bc7b405f11f885a9dad4',1,'Nh_Config::Flags::Log::mouse()'],['../structNh__HTML__Input_1_1Events.html#ae02fd622b5f91519057b49b869c85b8d',1,'Nh_HTML_Input::Events::Mouse()'],['../structNH__IO__InputMark.html#ac7556a8d243b936d20955454a4c5722e',1,'NH_IO_InputMark::Mouse()'],['../structNH__IO__Input.html#aa152e0508ba72ef57d71284f5c0e1e9c',1,'NH_IO_Input::Mouse()']]],
+  ['mouse_308',['Mouse',['../structNh__HTML__Input_1_1Events.html#ae02fd622b5f91519057b49b869c85b8d',1,'Nh_HTML_Input::Events::Mouse()'],['../structNH__IO__InputMark.html#ac7556a8d243b936d20955454a4c5722e',1,'NH_IO_InputMark::Mouse()'],['../structNH__IO__Input.html#aa152e0508ba72ef57d71284f5c0e1e9c',1,'NH_IO_Input::Mouse()'],['../structNh__Config_1_1Flags_1_1Log.html#af8ecd628f687bc7b405f11f885a9dad4',1,'Nh_Config::Flags::Log::mouse()']]],
   ['mouse_2eh_309',['Mouse.h',['../Mouse_8h.html',1,'']]]
 ];

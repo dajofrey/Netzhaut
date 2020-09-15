@@ -19,7 +19,7 @@
  */
 
     void Nh_CSS_logSheet(
-        NH_CSS_Sheet *Sheet_p
+        Nh_CSS_Sheet *Sheet_p
     );
 
     NH_RESULT Nh_CSS_logMargins( // TODO multithreading

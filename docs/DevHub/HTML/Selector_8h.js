@@ -17,5 +17,5 @@ var Selector_8h =
       [ "NH_CSS_SELECTOR_PSEUDO_ELEMENT", "group__CSSEnums.html#gga6fb6d6200456d0602f9e51408e791418ae295b43b35fdc151e01a1896fbb141f8", null ]
     ] ],
     [ "Nh_CSS_attributeSelectorHit", "group__CSSFunctions.html#ga15c90c6cbde2afd174dcc2a32bd07bfa", null ],
-    [ "Nh_CSS_selectorHit", "group__CSSFunctions.html#gae91494b237250cbdd81b779c5bd58c09", null ]
+    [ "Nh_CSS_naiveSelectorHit", "group__CSSFunctions.html#ga5c212a95fd3ec84d22c8546511f565d2", null ]
 ];

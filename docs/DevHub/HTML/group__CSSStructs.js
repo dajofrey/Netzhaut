@@ -39,14 +39,12 @@ var group__CSSStructs =
       [ "TopLeft", "structNh__CSS__Box.html#af3b362ad31dd70222000028c98b55672", null ]
     ] ],
     [ "Nh_CSS_GenericProperty", "structNh__CSS__GenericProperty.html", [
-      [ "active", "structNh__CSS__GenericProperty.html#a03ce672208e12b9aeb3e6560d354f695", null ],
-      [ "Pseudo", "structNh__CSS__GenericProperty.html#a8a512793262fc1f01371fbe18d2e4dee", null ],
-      [ "selector", "structNh__CSS__GenericProperty.html#a8c0a5aeb3a874df3fb29b365452fff7c", null ],
-      [ "selector_p", "structNh__CSS__GenericProperty.html#ac454107873e24a217b44fbb8c54d9f0f", null ],
-      [ "Sheet_p", "structNh__CSS__GenericProperty.html#a4eaa12c6a3dfe583ace723d60d41f9c2", null ],
+      [ "active", "structNh__CSS__GenericProperty.html#a88fc1b6a88a2a37083cc28e9896c768c", null ],
+      [ "Selector", "structNh__CSS__GenericProperty.html#ab2dac17fc3c26adbd13405c19c078c38", null ],
+      [ "Sheet_p", "structNh__CSS__GenericProperty.html#ab73aa85be9b103537961ccae65b0a691", null ],
       [ "triggerRecompute", "structNh__CSS__GenericProperty.html#a9f0868913595dc46be4811a5ead9bcb8", null ],
       [ "type", "structNh__CSS__GenericProperty.html#a7cac356d3f7dfaab7832aeba89aa2313", null ],
-      [ "update", "structNh__CSS__GenericProperty.html#a574ad3c2e29f8ae7db515b21de1f1ba4", null ],
+      [ "update", "structNh__CSS__GenericProperty.html#a627ba503a595742840902762ccf219ae", null ],
       [ "valueCount", "structNh__CSS__GenericProperty.html#abe1748e1ef10e86433108541b96eb099", null ],
       [ "values_pp", "structNh__CSS__GenericProperty.html#a7e46c93c3a9d2ba4b0973b6862af2d70", null ]
     ] ],
@@ -96,20 +94,25 @@ var group__CSSStructs =
       [ "Position", "structNH__CSS__Properties.html#a703b07d1e8eabae927e2dee9207ee041", null ],
       [ "Text", "structNH__CSS__Properties.html#a668e9b2ef1e9c0d134876acfb6b7e52f", null ]
     ] ],
-    [ "NH_CSS_Pseudo", "structNH__CSS__Pseudo.html", [
-      [ "_class", "structNH__CSS__Pseudo.html#aa16dd8862c37a389967a233cf24b2abd", null ],
-      [ "element", "structNH__CSS__Pseudo.html#ae5485b4f0ec542c19e2762f19f71a7e7", null ],
-      [ "parentClass", "structNH__CSS__Pseudo.html#a33508c6d5590c384cf92270d2da86b4a", null ]
+    [ "Nh_CSS_Pseudo", "structNh__CSS__Pseudo.html", [
+      [ "_class", "structNh__CSS__Pseudo.html#a99537dec6678819f6222f6e2cc1cbd4f", null ],
+      [ "element", "structNh__CSS__Pseudo.html#a0fc577b65cebe6228e833223e863e60a", null ]
+    ] ],
+    [ "Nh_CSS_Selector", "structNh__CSS__Selector.html", [
+      [ "Children", "structNh__CSS__Selector.html#acf102b3250c447bf8a1e63c57daa5e84", null ],
+      [ "Pseudo", "structNh__CSS__Selector.html#af0d3cb716489e17139a6ada20f29b9ba", null ],
+      [ "string_p", "structNh__CSS__Selector.html#aa6c1582048c7a4f7855d27cebd6aed05", null ],
+      [ "type", "structNh__CSS__Selector.html#a7d0e6b209d7d254518baa68314528212", null ]
     ] ],
     [ "NH_CSS_RuleSet", "structNH__CSS__RuleSet.html", [
       [ "Data_p", "structNH__CSS__RuleSet.html#a47b151b1af8e8d902d6e017d8353a2e2", null ],
       [ "type", "structNH__CSS__RuleSet.html#ad64f993c68b86e01232f3daf10d30b90", null ]
     ] ],
-    [ "NH_CSS_Sheet", "structNH__CSS__Sheet.html", [
-      [ "Apply_p", "structNH__CSS__Sheet.html#abb775a3d0164f6aef5df94c0b888b96b", null ],
-      [ "ruleSetCount", "structNH__CSS__Sheet.html#a5ca70b9c5b9f4096ae2a37024d256e34", null ],
-      [ "RuleSets_p", "structNH__CSS__Sheet.html#a4ea25241c45b53e1bdbdd91b58dc6ecb", null ],
-      [ "URI", "structNH__CSS__Sheet.html#ada05d72a5c539d63742355bae8a19fe1", null ]
+    [ "Nh_CSS_Sheet", "structNh__CSS__Sheet.html", [
+      [ "Apply_p", "structNh__CSS__Sheet.html#a46df8f8f143aa500b5fdc898ce79cd90", null ],
+      [ "ruleSetCount", "structNh__CSS__Sheet.html#a53ea7b3fb5892f27ff5f249701453957", null ],
+      [ "RuleSets_p", "structNh__CSS__Sheet.html#ae4a86fcd05852b2e43748036d11a0139", null ],
+      [ "URI", "structNh__CSS__Sheet.html#ab1ac3460ddd30e250bea8c8420b4b075", null ]
     ] ],
     [ "NH_CSS_Declaration", "structNH__CSS__Declaration.html", [
       [ "property_p", "structNH__CSS__Declaration.html#a0f0ba84112844b93b67679d9c7f7f5c7", null ],

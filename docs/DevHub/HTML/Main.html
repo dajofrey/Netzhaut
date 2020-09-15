@@ -37,7 +37,7 @@
    </div>
   </td>
 <td style="padding-left: 10px;"/>
-<td style="background-color: inherit; color: inherit;">2020-09-14 03:50:05<br>v0.0.1 </td>
+<td style="background-color: inherit; color: inherit;">2020-09-15 00:52:05<br>v0.0.1 </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
           <img id="MSearchSelect" src="search/mag_sel.svg"
@@ -100,45 +100,40 @@ $(document).ready(function(){initNavTree('Main.html',''); initResizable(); });
 <div class="title">Main </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="Resources"></a>
+<div class="textblock"><div style="width:700px;"></div><div style="width:700px;"></div><h1><a class="anchor" id="Resources"></a>
 Resources</h1>
-<p>A list of all resources regarding Netzhaut: <br  />
-</p><ul>
+<div style="width:700px;"><ul>
 <li>The <a href="Target.html">Target</a> gives the project a <b>guideline</b> and a <b>clear vision</b>. <br  />
 </li>
 <li>The <a href="Changelog.html">Changelog</a> documents non-trivial changes for all revisions. <br  />
 </li>
-<li>The <a href="https://docs.google.com/document/d/e/2PACX-1vQz61VU6MCuYPH89Aygo6a45UfSqIRGR_mkZMOD7HbghzJxobEOpKuPpgFC_kHIjWVyHnwhxZvMwHCG/pub">Work Log</a> shows who is currently doing what, thus greatly improving <b>team collaboration</b> and <b>transparency</b>. <br  />
+<li>The <a href="https://docs.google.com/document/d/e/2PACX-1vQz61VU6MCuYPH89Aygo6a45UfSqIRGR_mkZMOD7HbghzJxobEOpKuPpgFC_kHIjWVyHnwhxZvMwHCG/pub">Work Log</a> shows who is currently doing what, thus greatly improving <b>team collaboration</b> and <b>transparency</b>. It also keeps track of all updates that are currently being worked on with up-to-date information. <br  />
 </li>
-<li>The <a href="https://discord.gg/tXyuZpm">Discord Server</a> keeps development <b>organized</b> by providing communication channels. <br  />
- Everyone is welcome, but you are encouraged to join especially if you want to participate. <br  />
- For everyone else please consider submitting an <a href="https://github.com/DajoFrey/Netzhaut/issues/new">issue</a>, since these are publicly accessible and may help others. <br  />
-</li>
+<li>The <a href="https://discord.gg/tXyuZpm">Discord Server</a> keeps development <b>organized</b> by providing communication channels. Everyone is welcome, but you are encouraged to join especially if you want to participate. For everyone else please consider submitting an <a href="https://github.com/DajoFrey/Netzhaut/issues/new">issue</a>, since these are publicly accessible and may help others.</li>
 <li>The <a href="https://github.com/DajoFrey/Netzhaut">Github Repository</a> contains everything including code, docs, data, <a href="https://github.com/DajoFrey/Netzhaut/blob/master/LICENSE.txt">license</a> and the <a href="https://github.com/DajoFrey/Netzhaut/blob/master/README.md">README</a>. <br  />
 </li>
 </ul>
-<h1><a class="anchor" id="Source"></a>
-Source</h1>
-<p><a href="group__API.html">API</a>, <a href="group__Core.html">Core</a>, <a href="group__CSS.html">CSS</a>, <a href="group__Graphics.html">Graphics</a>, <a href="group__HTML.html">HTML</a>, <a href="group__IO.html">IO</a>, <a href="group__JS.html">JavaScript</a>, <a href="group__TTY.html">TTY</a>, <a href="group__Network.html">Network</a>, <a href="group__Build.html">Build</a></p>
-<h1><a class="anchor" id="Development"></a>
+</div><div style="width:700px;"></div><h1><a class="anchor" id="Development"></a>
 Development</h1>
-<p>A few points to note: <br  />
-</p><ul>
+<div style="width:700px;"><ul>
 <li>Development happens on development branches, not on the master branch. <br  />
 </li>
-<li>Trusted developers merge finalized development branches into the master branch. <br  />
+<li>Development branches should only be named after the Netzhaut revision they represent, e.g. 'v0.1.4' 'v1.3.7-beta.2' etc.. The branch-name should be updated whenever the corresponding revision changes. <br  />
 </li>
-<li>Prior to merging a development branch with the master branch, all commits on the development branch must have been flattened into one commit. <br  />
+<li>Trusted developers merge finalized development branches into the master branch. For merging with the master branch, only <a href="https://stackoverflow.com/questions/5308816/how-to-use-git-merge-squash">squash merging</a> is allowed. <br  />
 </li>
-<li>Development branches should only be named after the Netzhaut revision they represent, e.g. 'v0.1.4' 'v1.3.7-beta.2' ... <br  />
+<li>Developers need to check the 'PRA' entry in the <a href="https://docs.google.com/document/d/e/2PACX-1vQz61VU6MCuYPH89Aygo6a45UfSqIRGR_mkZMOD7HbghzJxobEOpKuPpgFC_kHIjWVyHnwhxZvMwHCG/pub">Work Log</a> before issuing a pull request for a specific development branch. <br  />
 </li>
-<li>Whenever something non-trivial was changed or added, make sure it's documented properly in the <a href="Changelog.html">Changelog</a>.</li>
-<li>Netzhaut follows the <a href="https://semver.org/">Semantic Versioning</a> conventions.</li>
+<li>Whenever something non-trivial was changed or added, make sure it's documented properly in the correct <a href="Changelog.html">Changelog</a> entry. In general, make sure that the changelog entry quality is 'on par' with previous entries before merging into the master branch.</li>
+<li>Netzhaut follows the <a href="https://semver.org/">Semantic Versioning</a> conventions. <br  />
+</li>
 </ul>
-<h1><a class="anchor" id="About"></a>
+</div><div style="width:700px;"></div><h1><a class="anchor" id="Source"></a>
+Source</h1>
+<div style="width:700px;"> <a href="group__API.html">API</a>, <a href="group__Core.html">Core</a>, <a href="group__CSS.html">CSS</a>, <a href="group__Graphics.html">Graphics</a>, <a href="group__HTML.html">HTML</a>, <a href="group__IO.html">IO</a>, <a href="group__JS.html">JavaScript</a>, <a href="group__TTY.html">TTY</a>, <a href="group__Network.html">Network</a>, <a href="group__Build.html">Build</a></div><div style="width:700px;"></div><h1><a class="anchor" id="About"></a>
 About</h1>
-<p>This documentation was generated by <a href="http://www.doxygen.nl/">doxygen</a> using a <a href="https://github.com/MaJerle/doxygen-dark-theme">theme</a>. </p>
-</div></div><!-- contents -->
+<div style="width:700px;"> The documentation was generated by <a href="http://www.doxygen.nl/">doxygen</a> using a <a href="https://github.com/MaJerle/doxygen-dark-theme">theme</a>. <br  />
+</div><div style="width:700px;"></div> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
     <!-- HTML footer for doxygen 1.8.15-->

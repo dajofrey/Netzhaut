@@ -26,7 +26,7 @@
 // DEBUG ===========================================================================================
 
 void Nh_CSS_logSheet( // TODO multithreading
-    NH_CSS_Sheet *Sheet_p)
+    Nh_CSS_Sheet *Sheet_p)
 {
 NH_BEGIN()
 

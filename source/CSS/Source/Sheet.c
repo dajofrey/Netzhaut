@@ -49,7 +49,7 @@ static inline NH_RESULT Nh_CSS_addSheetsFromAttributes(
 // INIT ============================================================================================
 
 void Nh_CSS_initSheet(
-    NH_CSS_Sheet *Sheet_p)
+    Nh_CSS_Sheet *Sheet_p)
 {
 NH_BEGIN()
 
@@ -62,7 +62,7 @@ NH_SILENT_END()
 
 // GET =============================================================================================
 
-NH_CSS_Sheet *Nh_CSS_getSheet(
+Nh_CSS_Sheet *Nh_CSS_getSheet(
     Nh_List *Sheets_p, int index)
 {
 NH_BEGIN()
@@ -86,13 +86,13 @@ NH_END(NH_SUCCESS)
 }
 
 NH_RESULT Nh_CSS_addSheet(
-    Nh_List *Sheets_p, NH_CSS_Sheet *Prototype_p)
+    Nh_List *Sheets_p, Nh_CSS_Sheet *Prototype_p)
 {
 NH_BEGIN()
 
     NH_CHECK_NULL(Sheets_p, Prototype_p)
 
-    NH_CSS_Sheet *Sheet_p = Nh_allocate(sizeof(NH_CSS_Sheet));
+    Nh_CSS_Sheet *Sheet_p = Nh_allocate(sizeof(Nh_CSS_Sheet));
     NH_CHECK_MEM(Sheet_p)
     
     Sheet_p->RuleSets_p   = NULL;
@@ -114,7 +114,7 @@ static inline NH_RESULT Nh_CSS_addDefaultSheets(
 {
 NH_BEGIN()
 
-    NH_CSS_Sheet Sheet;
+    Nh_CSS_Sheet Sheet;
     Nh_CSS_initSheet(&Sheet);
 
     Sheet.URI = Nh_createURI("nh:css:misc", NULL, NULL, NULL, -1);
@@ -137,7 +137,7 @@ static inline NH_RESULT Nh_CSS_addSheetsFromStyleElements(
 {
 NH_BEGIN()
 
-    NH_CSS_Sheet Sheet;
+    Nh_CSS_Sheet Sheet;
     Nh_CSS_initSheet(&Sheet);
 
     if (Node_p->tag == NH_HTML_TAG_STYLE && Node_p->Children.Unformatted.count > 0) 
@@ -161,7 +161,7 @@ static inline NH_RESULT Nh_CSS_addSheetsFromLinks(
 {
 NH_BEGIN()
 
-    NH_CSS_Sheet Sheet;
+    Nh_CSS_Sheet Sheet;
     Nh_CSS_initSheet(&Sheet);
 
     if (Node_p->tag == NH_HTML_TAG_LINK) 
@@ -199,7 +199,7 @@ static inline NH_RESULT Nh_CSS_addSheetsFromAttributes(
 {
 NH_BEGIN()
 
-    NH_CSS_Sheet Sheet;
+    Nh_CSS_Sheet Sheet;
     Nh_CSS_initSheet(&Sheet);
 
     for (int i = 0; i < Node_p->Attributes.count; ++i) 
@@ -231,7 +231,7 @@ NH_BEGIN()
 
     for (int i = 0; i < Sheets_p->count; ++i) 
     {
-        NH_CSS_Sheet *Sheet_p = Nh_CSS_getSheet(Sheets_p, i);
+        Nh_CSS_Sheet *Sheet_p = Nh_CSS_getSheet(Sheets_p, i);
         if (Sheet_p != NULL) {Nh_CSS_destroySheet(Sheet_p);}
     }
     
@@ -241,7 +241,7 @@ NH_SILENT_END()
 }
 
 void Nh_CSS_destroySheet(
-    NH_CSS_Sheet *Sheet_p)
+    Nh_CSS_Sheet *Sheet_p)
 {
 NH_BEGIN()
 
@@ -276,7 +276,7 @@ NH_SILENT_END()
 // STRINGIFY =======================================================================================
 
 char *Nh_CSS_stringifySheet(
-    NH_CSS_Sheet *Sheet_p)
+    Nh_CSS_Sheet *Sheet_p)
 {
 NH_BEGIN()
 
