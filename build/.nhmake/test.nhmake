@@ -1,0 +1,23 @@
+// TEST ============================================================================================
+
+set(TEST_INITIALIZER_SOURCE, "${PROJ_DIR}/lib/libnetzhaut.so")
+set(TEST_INITIALIZER, "nh_initializeUsingDefaultArguments")
+set(TEST_LOADER_SOURCE, "${PROJ_DIR}/lib/libnhcore.so")
+set(TEST_LOADER, "nh_loadSymbolUsingModuleName")
+
+test(nhurl, "nh_url_testHostParser", "[ABCD:EF01:2345:6789:ABCD:EF01:2345:6789]", "isSpecial")
+test(nhurl, "nh_url_testHostParser", "[2001:DB8:0:0:8:800:200C:417A]", "isSpecial")
+test(nhurl, "nh_url_testHostParser", "[2001:DB8::8:800:200C:417A]", "isSpecial")
+test(nhurl, "nh_url_testHostParser", "[FF01::101]", "isSpecial")
+test(nhurl, "nh_url_testHostParser", "[::1]", "isSpecial")
+
+test(nhurl, "nh_url_testHostParser", "127.0.0.1", "isSpecial")
+test(nhurl, "nh_url_testHostParser", "192.168.2.113", "isSpecial")
+
+test(nhurl, "nh_url_testURLParser", "file:///home/test", "isSpecial")
+test(nhurl, "nh_url_testURLParser", "192.168.2.113", "isSpecial")
+test(nhurl, "nh_url_testURLParser", "https://zeit.de/index.html", "isSpecial")
+test(nhurl, "nh_url_testURLParser", "https://url.spec.whatwg.org/#url-parsing", "isSpecial")
+//test(nhurl, "nh_url_testURLParser", "https://192.168.2.113", "isSpecial")
+//test(nhurl, "nh_url_testURLParser", "about:config", "isSpecial")
+

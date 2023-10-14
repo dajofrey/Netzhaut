@@ -1,0 +1,5 @@
+[Exposed=Window]
+interface CSSNamespaceRule : CSSRule {
+  readonly attribute CSSOMString namespaceURI;
+  readonly attribute CSSOMString prefix;
+};

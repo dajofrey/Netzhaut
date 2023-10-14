@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=NhTerminal
+Comment=Terminal Emulator of Netzhaut
+GenericName=Terminal Emulator
+Exec=/usr/bin/nhterminal
+Terminal=false
+Type=Application
+Keywords=terminal;shell;prompt;command;commandline;
+Categories=Utility;TerminalEmulator;System;

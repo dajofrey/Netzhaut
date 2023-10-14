@@ -1,0 +1,3 @@
+partial interface Document {
+  [SameObject] readonly attribute StyleSheetList styleSheets;
+};

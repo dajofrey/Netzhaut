@@ -1,0 +1,3 @@
+interface HTMLUnknownElement : HTMLElement {
+  // Note: intentionally no [HTMLConstructor]
+};

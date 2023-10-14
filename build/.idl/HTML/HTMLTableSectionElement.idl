@@ -1,0 +1,10 @@
+[Exposed=Window]
+interface HTMLTableSectionElement : HTMLElement {
+  [HTMLConstructor] constructor();
+
+  [SameObject] readonly attribute HTMLCollection rows;
+  HTMLTableRowElement insertRow(optional long index = -1);
+  [CEReactions] undefined deleteRow(long index);
+
+  // also has obsolete members
+};

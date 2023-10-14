@@ -1,0 +1,39 @@
+xxd - a hexdump utility by Juergen Weigert, v1.11 by Vadim Vygonets
+
+This version is based on V1.10 27oct98 by Juergen Weigert.
+Between 2000 and 2011 it accumulated patches by the Vim team and
+others.  In 2013 it was pulled out of the Vim tree, had a couple
+of features added and was pronounced version 1.11.
+
+Original copyright statement:
+
+	(c) 1990-1998 by Juergen Weigert (jnweiger@informatik.uni-erlangen.de)
+
+	Distribute freely and credit me,
+	make money and share with me,
+	lose money and don't ask me.
+
+Changes since V1.10:
+
+	Vim era: bugfixes, stability, portability
+	v1.11: little-endian hexdump, file position display offset
+
+Authors and contributors:
+
+	Antonio Colombo (?)
+	Axel Kielhorn
+	Bram Moolenaar
+	Tony Nugent
+	Dominique Pelle
+	Florian Zumbiehl
+	George V. Reilly
+	James Vega
+	jcook@namerica.kla.com
+	Juergen Weigert
+	Lawrence Woodman
+	Phil Hanna
+	Stephen P. Wall
+	Vadim Vygonets
+	Zoltan Arpadffy
+
+and probably others.

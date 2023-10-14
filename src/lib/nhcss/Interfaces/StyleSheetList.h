@@ -1,0 +1,30 @@
+#ifndef NH_CSS_STYLE_SHEET_LIST_H
+#define NH_CSS_STYLE_SHEET_LIST_H
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+/**
+ * Netzhaut - Web Browser Engine
+ * Copyright (C) 2022  Dajo Frey
+ * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
+ */
+
+#include "../Common/Includes.h"
+
+#endif
+
+/** @addtogroup lib_nhcss_functions
+ *  @{
+ */
+
+    NH_CSS_RESULT nh_css_appendToStyleSheetList(
+        nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_StyleSheetObject *StyleSheet_p
+    );
+
+    nh_List *nh_css_getStyleSheetListData(
+        nh_css_StyleSheetListObject *StyleSheetList_p
+    );
+
+/** @} */
+
+#endif

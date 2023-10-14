@@ -1,0 +1,567 @@
+// LICENSE NOTICE ==================================================================================
+
+/**
+ * Netzhaut - Web Browser Engine
+ * Copyright (C) 2022  Dajo Frey
+ * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
+ */
+
+// INCLUDES ========================================================================================
+
+#include "Thread.h"
+#include "Process.h"
+
+#include "../Util/Time.h"
+#include "../System/Memory.h"
+
+#include "../Common/Log.h"
+#include "../Common/Macros.h"
+
+#include <string.h>
+#include <stdio.h>
+
+#ifdef __unix__
+    #include <sys/sysinfo.h>
+    #include <sys/types.h>
+    #include <sys/wait.h>
+    #include <sys/time.h>
+#elif defined(_WIN32) || defined (WIN32)
+    #include <windows.h>
+#endif
+
+// INIT ============================================================================================
+
+static inline void nh_core_initThread(
+    nh_Thread *Thread_p)
+{
+NH_CORE_BEGIN()
+
+    Thread_p->CurrentWorkload_p = NULL;
+    Thread_p->depth = 0;
+    Thread_p->id = 0;
+
+NH_CORE_SILENT_END()
+}
+
+static inline void nh_core_initWorkload(
+    nh_core_Workload *Workload_p, NH_BOOL firstTime)
+{
+NH_CORE_BEGIN()
+
+    Workload_p->signal  = NH_SIGNAL_INACTIVE;
+    Workload_p->crucial = NH_FALSE;
+
+    Workload_p->SignalCounter.idle = 0;
+    Workload_p->SignalCounter.ok   = 0;
+
+    Workload_p->module   = 0;
+    Workload_p->name_p   = NULL;
+    Workload_p->path_p   = NULL;
+    Workload_p->args_p   = NULL;
+    Workload_p->Thread_p = NULL;
+
+    Workload_p->init_f = NULL;
+    Workload_p->run_f  = NULL;
+    Workload_p->free_f = NULL;
+    Workload_p->runCommand_f = NULL;
+
+    Workload_p->Timing.idleDelay  = 0;
+    Workload_p->Timing.runDelay   = 0;
+    Workload_p->Timing.haltDelay  = 0;
+    Workload_p->Timing.waitDelay  = 0;
+    Workload_p->Timing.turnAround = 0.0;
+
+    if (!firstTime) {nh_core_freeRingBuffer(&Workload_p->Commands);}
+
+    nh_core_initRingBuffer(&Workload_p->Commands, 64, sizeof(nh_core_WorkloadCommand), NULL);
+    nh_core_initRingBufferMarker(&Workload_p->Marker);
+
+NH_CORE_SILENT_END()
+}
+
+nh_ThreadPool nh_core_initThreadPool()
+{
+NH_CORE_BEGIN()
+
+    nh_ThreadPool ThreadPool;
+    ThreadPool.threadCount = 0;
+
+    nh_core_initThread(&ThreadPool.Main);
+
+    for (int i = 0; i < NH_MAX_THREADS; ++i) {
+        nh_core_initThread(&ThreadPool.Threads_p[i]);
+    }
+    for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+        nh_core_initWorkload(&ThreadPool.Workloads_p[i], NH_TRUE);
+    }
+
+NH_CORE_END(ThreadPool)
+}
+
+NH_CORE_RESULT nh_core_freeThreadPool(
+    nh_ThreadPool *ThreadPool_p)
+{
+NH_CORE_BEGIN()
+
+    for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+        nh_core_deactivateWorkload(&ThreadPool_p->Workloads_p[i]);
+        nh_core_freeRingBuffer(&ThreadPool_p->Workloads_p[i].Commands);
+    }
+
+NH_CORE_END(NH_CORE_SUCCESS)
+}
+
+// RUN =============================================================================================
+
+static NH_CORE_RESULT nh_core_runWorkloadLoop(
+    nh_core_Workload *Workload_p, NH_BOOL *idle_p)
+{
+NH_CORE_BEGIN()
+
+    nh_SystemTime TAT = nh_core_getSystemTime();
+
+    // Run command if any.
+    nh_core_WorkloadCommand *Command_p = NULL;
+    while (Command_p = nh_core_incrementRingBufferMarker(&Workload_p->Commands, &Workload_p->Marker)) {
+        if (Command_p->dummy) {break;}
+        if (Workload_p->runCommand_f) {
+            Workload_p->runCommand_f(Workload_p->args_p, Command_p);
+        }
+        Command_p->done = NH_TRUE;
+        NH_CORE_END(NH_CORE_SUCCESS)
+    }
+
+    // Very important line. This runs the encapsulated program loop.
+    Workload_p->signal = Workload_p->run_f(Workload_p->args_p);
+
+    if (Command_p) {
+        // This should only get triggered in case of a dummy command, used to wait for a workload loop.
+        Command_p->done = NH_TRUE;
+    }
+
+    if (Workload_p->signal != NH_SIGNAL_IDLE && idle_p) {*idle_p = NH_FALSE;}
+
+    switch (Workload_p->signal)
+    {
+        case NH_SIGNAL_OK    : 
+            Workload_p->SignalCounter.ok++;
+            break;
+        case NH_SIGNAL_IDLE  : 
+            Workload_p->SignalCounter.idle++;
+            break;
+        case NH_SIGNAL_FINISH : 
+        case NH_SIGNAL_ERROR  : 
+        {
+            NH_CORE_DIAGNOSTIC_END(nh_core_deactivateWorkload(Workload_p))
+        }
+    }
+
+    Workload_p->Timing.turnAround = nh_core_getSystemTimeDiffInSeconds(TAT, nh_core_getSystemTime());
+    
+NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+}
+
+static NH_CORE_RESULT nh_core_runWorkload(
+    nh_core_Workload *Workload_p, NH_BOOL *idle_p)
+{
+NH_CORE_BEGIN()
+
+    nh_Thread *Thread_p = nh_core_getThread();
+    NH_CORE_CHECK_NULL(Thread_p)
+
+    Thread_p->CurrentWorkload_p = Workload_p;
+
+    if (Workload_p->signal == NH_SIGNAL_INIT) 
+    {
+        if (Workload_p->init_f != NULL) {
+            Workload_p->args_p = Workload_p->init_f(Workload_p);
+        }
+        Workload_p->signal = NH_SIGNAL_DONE;
+    }
+    else if (Workload_p->signal == NH_SIGNAL_FREE) 
+    {
+        if (Workload_p->free_f != NULL) {
+            Workload_p->free_f(Workload_p->args_p);
+        }
+        nh_core_initWorkload(Workload_p, NH_FALSE);
+        Workload_p->signal = NH_SIGNAL_INACTIVE;
+    }
+    else {NH_CORE_CHECK(nh_core_runWorkloadLoop(Workload_p, idle_p))}
+
+    Thread_p->CurrentWorkload_p = NULL;
+
+NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+}
+
+unsigned int nh_core_runThreadWorkloads()
+{
+NH_CORE_BEGIN()
+
+    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+
+    NH_BOOL idle = NH_TRUE;
+    unsigned int count = 0;
+    nh_Thread *Thread_p = nh_core_getThread();
+
+    for (int i = 0; i < NH_MAX_WORKLOADS; ++i) 
+    {
+        nh_core_Workload *Workload_p = &ThreadPool_p->Workloads_p[i];
+
+        if (Workload_p->Thread_p == Thread_p) 
+        {
+            NH_CORE_CHECK(nh_core_runWorkload(Workload_p, &idle))
+            count++;
+        }
+    }
+
+    nh_core_logThread(ThreadPool_p, Thread_p);
+
+    if (idle) {nh_sleepMs(10);}
+
+NH_CORE_END(count)
+}
+
+//static void nh_core_runThread(
+//    void *index_p)
+//{
+//    nh_Thread *Thread_p = &ThreadPool.Threads_p[*((int*)index_p)];
+//
+//#ifdef __unix__
+//    Thread_p->id = pthread_self();
+//#elif defined(_WIN32) || defined (WIN32)
+//    Thread_p->id = GetCurrentThreadId();
+//#endif
+//
+//NH_CORE_BEGIN()
+//
+//    nh_core_initializeThreadMemory();
+//
+//    NH_BOOL run = NH_TRUE;
+//    while (run) {run = nh_core_runWorkloads();}
+//
+//#ifdef __unix__
+//
+//    pthread_exit(NULL);
+//
+//#endif
+//
+//NH_CORE_SILENT_END()
+//}
+
+static void nh_core_startThread(
+    int index)
+{
+NH_CORE_BEGIN()
+
+#ifdef __unix__
+    // TODO
+#elif defined(_WIN32) || defined (WIN32)
+//        _beginthread(nh_core_runPhysicalThread, 0, (void*)Data_p);
+#endif
+
+NH_CORE_SILENT_END()
+}
+
+// KEEP RUNNING? ===================================================================================
+
+NH_BOOL nh_core_keepRunning()
+{
+NH_CORE_BEGIN()
+
+    nh_checkForks();
+
+NH_CORE_END(nh_core_activeWorkloads(NH_TRUE) > 0 || nh_core_activeForks() > 0 ? NH_TRUE : NH_FALSE)
+}
+
+// GET =============================================================================================
+
+nh_core_Workload *nh_core_getWorkloads()
+{
+return NH_PROCESS_POOL.Main.ThreadPool.Workloads_p;
+}
+
+nh_Thread *nh_core_getThread()
+{
+    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+
+    for (int i = 0; i < NH_MAX_THREADS; ++i) 
+    {
+#ifdef __unix__
+        if (ThreadPool_p->Threads_p[i].id == pthread_self())
+#elif defined(_WIN32) || defined (WIN32)
+        if (ThreadPool_p->Threads_p[i].id == GetCurrentThreadId())
+#endif
+        {
+            return &ThreadPool_p->Threads_p[i];
+        }
+    }
+
+    return &(ThreadPool_p->Main);
+}
+
+nh_core_Workload *nh_core_getWorkload(
+    void *args_p)
+{
+NH_CORE_BEGIN()
+
+    if (args_p == NULL) {NH_CORE_END(NULL)}
+
+    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+
+    for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+        if (args_p == ThreadPool_p->Workloads_p[i].args_p) {
+            NH_CORE_END(&ThreadPool_p->Workloads_p[i])
+        }
+    }
+
+NH_CORE_END(NULL)
+}
+
+nh_Thread *nh_core_getThreadFromArgs(
+    void *args_p)
+{
+NH_CORE_BEGIN()
+
+    if (args_p == NULL) {NH_CORE_END(NULL)}
+
+    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+
+    for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+        if (args_p == ThreadPool_p->Workloads_p[i].args_p) {
+            NH_CORE_END(ThreadPool_p->Workloads_p[i].Thread_p)
+        }
+    }
+
+NH_CORE_END(NULL)
+}
+
+int nh_core_getThreadIndex()
+{
+NH_CORE_BEGIN()
+
+    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+
+    nh_Thread *Thread_p = nh_core_getThread();
+    for (int i = 0; i < NH_MAX_THREADS; ++i) {
+        if (Thread_p == &ThreadPool_p->Threads_p[i]) {NH_CORE_END(i)}
+    }
+
+NH_CORE_END(0)
+}
+
+// DE/ACTIVATE =====================================================================================
+
+static void nh_core_assignToThread(
+    nh_core_Workload *Workload_p)
+{
+NH_CORE_BEGIN()
+
+    if (NH_PROCESS_POOL.Main.ThreadPool.threadCount == 0) {
+        Workload_p->Thread_p = &(NH_PROCESS_POOL.Main.ThreadPool.Main);
+    } else {
+        puts("TODO nh_core_assignToThread");
+        exit(0);
+    }
+
+NH_CORE_SILENT_END()
+}
+
+static void nh_core_waitForCompletion(
+    nh_core_Workload *Workload_p, NH_SIGNAL signal)
+{
+NH_CORE_BEGIN()
+
+    // If the thread that handles the workload is executing this code, 
+    // we can just execute the function directly.
+    if (Workload_p->Thread_p == nh_core_getThread()) {
+        nh_core_runWorkload(Workload_p, NULL);
+    }
+
+    // Otherwise we need to wait for the executing thread to do its work.
+    else {while (Workload_p->signal != signal) {}}
+
+NH_CORE_SILENT_END()
+}
+
+void *nh_core_activateWorkload(
+    void *(*init_f)(nh_core_Workload*), NH_SIGNAL (*run_f)(void*), void (*free_f)(void*), 
+    NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, NH_BOOL crucial)
+{
+NH_CORE_BEGIN()
+
+    nh_core_Workload *Workload_p = NULL;
+
+    for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+        if (NH_PROCESS_POOL.Main.ThreadPool.Workloads_p[i].signal == NH_SIGNAL_INACTIVE) {
+            Workload_p = &NH_PROCESS_POOL.Main.ThreadPool.Workloads_p[i]; 
+            break;
+        }
+    }
+
+    if (Workload_p == NULL) {NH_CORE_END(NULL)}
+
+    Workload_p->signal       = NH_SIGNAL_INIT;
+    Workload_p->args_p       = args_p;
+    Workload_p->init_f       = init_f;
+    Workload_p->run_f        = run_f;
+    Workload_p->free_f       = free_f;
+    Workload_p->runCommand_f = runCommand_f;
+    Workload_p->crucial      = crucial;
+
+    nh_core_assignToThread(Workload_p);
+
+    // Wait for completion of init function, if any.
+    nh_core_waitForCompletion(Workload_p, NH_SIGNAL_DONE);
+
+NH_CORE_END(Workload_p->args_p)
+}
+
+NH_CORE_RESULT nh_core_deactivateWorkload(
+    nh_core_Workload *Workload_p)
+{
+NH_CORE_BEGIN()
+
+    // Check if already deactivated.
+    if (Workload_p->signal == NH_SIGNAL_INACTIVE) {NH_CORE_END(NH_CORE_SUCCESS)}
+
+    Workload_p->signal = NH_SIGNAL_FREE;
+    nh_core_waitForCompletion(Workload_p, NH_SIGNAL_INACTIVE);
+
+NH_CORE_END(NH_CORE_SUCCESS)
+}
+
+void *nh_core_getWorkloadArg()
+{
+NH_CORE_BEGIN()
+NH_CORE_END(nh_core_getThread()->CurrentWorkload_p->args_p)
+}
+
+// EXECUTE =========================================================================================
+
+NH_CORE_RESULT nh_core_executeWorkloadCommand(
+    void *handle_p, int type, void *p, int byteSize)
+{
+NH_CORE_BEGIN()
+
+    nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
+    NH_CORE_CHECK_NULL(Workload_p)
+
+    nh_core_WorkloadCommand *Command_p = nh_core_advanceRingBuffer(&Workload_p->Commands);
+    NH_CORE_CHECK_NULL(Command_p)
+
+    Command_p->done = NH_FALSE;
+    Command_p->dummy = NH_FALSE;
+    Command_p->type = type;
+    Command_p->p = p;
+
+    if (byteSize > 0) {
+        Command_p->p = nh_core_allocate(byteSize+1);
+        memset(Command_p->p, 0, byteSize+1);
+        memcpy(Command_p->p, p, byteSize);
+    }
+
+    // If the thread that handles the workload is executing this code,
+    // we can just execute the function directly. But we need to remember
+    // the previous workload and reset the pointer.
+    if (Workload_p->Thread_p == nh_core_getThread()) {
+        while (Command_p->done == NH_FALSE) {
+            nh_core_Workload *PreviousWorkload_p = nh_core_getThread()->CurrentWorkload_p;
+            nh_core_runWorkload(Workload_p, NULL);
+            nh_core_getThread()->CurrentWorkload_p = PreviousWorkload_p;
+        }
+    }
+
+    // Otherwise we need to wait for the executing thread to do its work.
+    // TODO Sleep.
+    else {while (Command_p->done == NH_FALSE) {}}
+
+    if (byteSize > 0) {nh_core_free(Command_p->p);}
+
+NH_CORE_END(NH_CORE_SUCCESS)
+}
+
+NH_CORE_RESULT nh_core_executeWorkload(
+    void *handle_p)
+{
+NH_CORE_BEGIN()
+
+    nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
+    NH_CORE_CHECK_NULL(Workload_p)
+
+    nh_core_WorkloadCommand *Command_p = nh_core_advanceRingBuffer(&Workload_p->Commands);
+    NH_CORE_CHECK_NULL(Command_p)
+
+    Command_p->done = NH_FALSE;
+    Command_p->dummy = NH_TRUE;
+
+    // If the thread that handles the workload is executing this code,
+    // we can just execute the function directly. But we need to remember
+    // the previous workload and reset the pointer.
+    if (Workload_p->Thread_p == nh_core_getThread()) {
+        nh_core_Workload *PreviousWorkload_p = nh_core_getThread()->CurrentWorkload_p;
+        nh_core_runWorkload(Workload_p, NULL);
+        nh_core_getThread()->CurrentWorkload_p = PreviousWorkload_p;
+    }
+
+    // Otherwise we need to wait for the executing thread to do its work.
+    // TODO Sleep.
+    else {while (Command_p->done == NH_FALSE) {}}
+
+NH_CORE_END(NH_CORE_SUCCESS)
+}
+
+// COUNT ==========================================================================================
+
+int nh_core_activeThreads()
+{
+NH_CORE_BEGIN()
+
+    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+
+    int count = 0;
+    for (int i = 0; i < NH_MAX_THREADS; ++i) {
+        if (ThreadPool_p->Threads_p[i].id != 0) {count++;}
+    }
+
+NH_CORE_END(count)
+}
+
+int nh_core_activeWorkloads(
+    NH_BOOL onlyCrucial)
+{
+NH_CORE_BEGIN()
+
+    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+
+    int count = 0;
+    for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+        if (ThreadPool_p->Workloads_p[i].signal != NH_SIGNAL_INACTIVE) {
+            if (onlyCrucial && !ThreadPool_p->Workloads_p[i].crucial) {continue;}
+            count++;
+        }
+    }
+
+NH_CORE_END(count)
+}
+
+// SLEEP ===========================================================================================
+
+NH_CORE_RESULT nh_sleepMs(
+    int milliseconds)
+{
+NH_CORE_BEGIN()
+
+#ifdef WIN32
+    Sleep(milliseconds);
+#elif _POSIX_C_SOURCE >= 199309L
+    struct timespec ts;
+    ts.tv_sec = milliseconds / 1000;
+    ts.tv_nsec = (milliseconds % 1000) * 1000000;
+    nanosleep(&ts, NULL);
+#else
+    usleep(milliseconds * 1000);
+#endif
+
+NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+}
+

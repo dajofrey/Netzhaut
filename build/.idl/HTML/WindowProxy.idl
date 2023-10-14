@@ -1,0 +1,3 @@
+[LegacyNoInterfaceObject]
+interface WindowProxy {
+};

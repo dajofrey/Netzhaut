@@ -1,0 +1,7 @@
+netzhaut.dev*/
+glslang*/
+volk*/
+Vulkan-Headers*/
+*.so
+*.o
+*.a
