@@ -38,26 +38,17 @@ nh_tty_TopBar nh_tty_initTopBar()
 NH_TTY_BEGIN()
 
     nh_tty_TopBar TopBar;
+    memset(&TopBar, 0, sizeof(nh_tty_TopBar));
 
     TopBar.Suggestions.Time = nh_core_getSystemTime();
-    TopBar.Suggestions.ProgramSuggestion_p = NULL;
-    TopBar.Suggestions.CommandSuggestion_p = NULL;
     TopBar.Suggestions.interval = 0.5;
-    TopBar.Suggestions.update = NH_FALSE;
     TopBar.Suggestions.programIndex = -1;
     TopBar.Suggestions.commandIndex = -1;
 
-    TopBar.Message.block      = NH_FALSE;
-    TopBar.Message.Text       = nh_encoding_initUTF32(32);
-    TopBar.Message.args_p     = NULL;
-    TopBar.Message.callback_f = NULL;
-
-    TopBar.state    = -1;
-    TopBar.hasFocus = NH_FALSE;
-    TopBar.refresh  = NH_FALSE;
+    TopBar.Message.Text = nh_encoding_initUTF32(32);
+    TopBar.state = -1;
     TopBar.Command  = nh_encoding_initUTF32(32);
     TopBar.History  = nh_core_initArray(sizeof(nh_encoding_UTF32String), 255);
-    TopBar.cursorX  = 0;
 
 NH_TTY_END(TopBar)
 }
@@ -293,7 +284,30 @@ NH_TTY_DIAGNOSTIC_END(NH_TTY_SUCCESS)
 
 // INPUT ===========================================================================================
 
-NH_TTY_RESULT nh_tty_handleTopBarInput(
+NH_TTY_RESULT nh_tty_handleTopBarMouseInput(
+    nh_tty_Tile *Tile_p, nh_wsi_MouseEvent Event)
+{
+NH_TTY_BEGIN()
+
+    nh_tty_Config Config = nh_tty_getConfig();
+
+    if (Event.trigger == NH_WSI_TRIGGER_PRESS && Event.Position.x-1 < Config.tabs && Event.Position.x > 0) {
+        ((nh_tty_MacroTile*)Tile_p->p)->current = Event.Position.x-1;
+    }
+    if (Event.trigger == NH_WSI_TRIGGER_PRESS && Event.Position.x == NH_TTY_MACRO_TAB(Tile_p)->TopBar.quitPosition) {
+        NH_TTY_MICRO_TAB(NH_TTY_MACRO_TAB(Tile_p))->Tile_p->close = NH_TRUE;
+    }
+    if (Event.trigger == NH_WSI_TRIGGER_MOVE && Event.Position.x == NH_TTY_MACRO_TAB(Tile_p)->TopBar.quitPosition) {
+        NH_TTY_MACRO_TAB(Tile_p)->TopBar.quitHover = NH_TRUE;
+    }
+    if (Event.trigger == NH_WSI_TRIGGER_MOVE && Event.Position.x != NH_TTY_MACRO_TAB(Tile_p)->TopBar.quitPosition) {
+        NH_TTY_MACRO_TAB(Tile_p)->TopBar.quitHover = NH_FALSE;
+    }
+
+NH_TTY_DIAGNOSTIC_END(NH_TTY_SUCCESS)
+}
+
+NH_TTY_RESULT nh_tty_handleTopBarKeyboardInput(
     nh_tty_TopBar *TopBar_p, nh_tty_MicroWindow *Window_p, nh_wsi_KeyboardEvent Event)
 {
 NH_TTY_BEGIN()
@@ -326,6 +340,26 @@ NH_TTY_BEGIN()
     }
     
     NH_TTY_CHECK(nh_tty_appendToCommand(TopBar_p, &c, 1))
+
+NH_TTY_DIAGNOSTIC_END(NH_TTY_SUCCESS)
+}
+
+NH_TTY_RESULT nh_tty_handleTopBarInput(
+    nh_tty_Tile *Tile_p, nh_wsi_Event Event)
+{
+NH_TTY_BEGIN()
+
+    nh_tty_MacroTile *MacroTile_p = Tile_p->p;
+    nh_tty_MacroTab *MacroTab_p = MacroTile_p->MacroTabs.pp[MacroTile_p->current];
+
+    switch (Event.type) {
+        case NH_WSI_EVENT_KEYBOARD :
+            nh_tty_handleTopBarKeyboardInput(&MacroTab_p->TopBar, &MacroTab_p->MicroWindow, Event.Keyboard);
+            break;
+        case NH_WSI_EVENT_MOUSE :
+            nh_tty_handleTopBarMouseInput(Tile_p, Event.Mouse);
+            break;
+    }
 
 NH_TTY_DIAGNOSTIC_END(NH_TTY_SUCCESS)
 }
@@ -615,9 +649,13 @@ NH_TTY_END(NH_TTY_SUCCESS)
 }
 
 static NH_TTY_RESULT nh_tty_drawTopBarText(
-     nh_tty_TopBar *TopBar_p, nh_tty_MicroWindow *MicroWindow_p, nh_tty_Glyph *Glyphs_p, int cols)
+     nh_tty_Tile *Tile_p, nh_tty_Glyph *Glyphs_p, int cols)
 {
 NH_TTY_BEGIN()
+
+    nh_tty_Config Config = nh_tty_getConfig();
+    nh_tty_TopBar *TopBar_p = &NH_TTY_MACRO_TAB(Tile_p)->TopBar;
+    nh_tty_MicroWindow *MicroWindow_p = &NH_TTY_MACRO_TAB(Tile_p)->MicroWindow;
 
     if (!TopBar_p->hasFocus) 
     {
@@ -635,8 +673,7 @@ NH_TTY_BEGIN()
 
         nh_tty_TopBar *TopBarCompare_p = &NH_TTY_MACRO_TAB(MacroWindow_p->Tile_p)->TopBar;
 
-        if (MacroWindow_p->Tiling.stage != NH_TTY_TILING_STAGE_DONE) {
-            if (TopBarCompare_p != TopBar_p) {NH_TTY_END(NH_TTY_SUCCESS)}
+        if (MacroWindow_p->Tiling.stage != NH_TTY_TILING_STAGE_DONE && TopBarCompare_p == TopBar_p) {
             if (MacroWindow_p->Tiling.mode == NH_TTY_TILING_MODE_MICRO) {
                 for (int i = cols-15, j = 0; j < 15; ++i, ++j) {
                     Glyphs_p[i].codepoint = t1_p[j];
@@ -646,7 +683,15 @@ NH_TTY_BEGIN()
                     Glyphs_p[i].codepoint = t2_p[j];
                 }
             }
+        } else {
+            for (int i = 0; i < Config.tabs; ++i) {
+                Glyphs_p[i+1].codepoint = 0x25cb;
+            }
+            TopBar_p->quitPosition = cols-2;
+            Glyphs_p[NH_TTY_MACRO_TILE(Tile_p)->current+1].codepoint = 0x25cf;
+            Glyphs_p[TopBar_p->quitPosition].codepoint = TopBar_p->quitHover ? 0x25cf : 0x25cb;
         }
+
         NH_TTY_END(NH_TTY_SUCCESS)
     }
 
@@ -674,8 +719,7 @@ NH_TTY_END(NH_TTY_SUCCESS)
 }
 
 NH_TTY_RESULT nh_tty_drawTopBarRow(
-    nh_tty_TopBar *TopBar_p, nh_tty_MicroWindow *MicroWindow_p, nh_tty_Glyph *Glyphs_p, int cols, int row,
-    NH_BOOL standardIO)
+    nh_tty_Tile *Tile_p, nh_tty_Glyph *Glyphs_p, int cols, int row, NH_BOOL standardIO)
 {
 NH_TTY_BEGIN()
 
@@ -683,7 +727,7 @@ NH_TTY_BEGIN()
 
     for (int i = 0; i < cols; ++i) {
         Glyphs_p[i] = nh_tty_getGlyphHelper(' ');
-        if (!TopBar_p && !MicroWindow_p && !standardIO) {
+        if (!Tile_p && !standardIO) {
             Glyphs_p[i].codepoint = 'q';
             Glyphs_p[i].Attributes.reverse = NH_FALSE;
             Glyphs_p[i].mark |= NH_TTY_MARK_LINE_GRAPHICS;
@@ -691,8 +735,8 @@ NH_TTY_BEGIN()
         Glyphs_p[i].mark |= NH_TTY_MARK_LINE_HORIZONTAL;
     }
 
-    if (TopBar_p && MicroWindow_p) {
-        NH_TTY_CHECK(nh_tty_drawTopBarText(TopBar_p, MicroWindow_p, Glyphs_p, cols))
+    if (Tile_p) {
+        NH_TTY_CHECK(nh_tty_drawTopBarText(Tile_p, Glyphs_p, cols))
     }
 
 NH_TTY_DIAGNOSTIC_END(NH_TTY_SUCCESS)

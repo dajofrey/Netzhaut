@@ -315,7 +315,7 @@ NH_TERMINAL_BEGIN()
         if (update_p) {*update_p = NH_TRUE;}
     }
 
-    // Update or reset gap tile if necessary.
+    // Update or reset right gap tile if necessary.
     if (Update_p->col == Grid_p->cols-2) {
         if (Update_p->Glyph.mark & NH_TTY_MARK_LINE_HORIZONTAL) {
             Update_p->col++;
@@ -323,14 +323,22 @@ NH_TERMINAL_BEGIN()
                 Update_p->Glyph.codepoint = ' ';
             }
             NH_TERMINAL_CHECK(nh_terminal_updateTile(Grid_p, state_p, Update_p, update_p))
+        } else if (Update_p->Glyph.Attributes.reverse == NH_TRUE) {
+            Update_p->Glyph.codepoint = 0;
+            Update_p->col++;
+            NH_TERMINAL_CHECK(nh_terminal_updateTile(Grid_p, state_p, Update_p, update_p))
         } else {
             Update_p->col++;
             memset(&Update_p->Glyph, 0, sizeof(nh_tty_Glyph));
             NH_TERMINAL_CHECK(nh_terminal_updateTile(Grid_p, state_p, Update_p, update_p))
         } 
     }
+    // Update or reset bottom gap tile if necessary.
     if (Update_p->row == Grid_p->rows-2) {
         if (Update_p->Glyph.mark & NH_TTY_MARK_LINE_VERTICAL) {
+            Update_p->row++;
+            NH_TERMINAL_CHECK(nh_terminal_updateTile(Grid_p, state_p, Update_p, update_p))
+        } else if (Update_p->col == 0 && (Update_p->Glyph.codepoint == 0 || Update_p->Glyph.codepoint == ' ')) {
             Update_p->row++;
             NH_TERMINAL_CHECK(nh_terminal_updateTile(Grid_p, state_p, Update_p, update_p))
         } else {

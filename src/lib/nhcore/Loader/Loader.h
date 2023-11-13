@@ -36,7 +36,6 @@
         NH_MODULE_RENDERER,
         NH_MODULE_URL,
         NH_MODULE_MAKE,
-        NH_MODULE_DOCS,
         NH_MODULE_E_COUNT,
     } NH_MODULE_E;
 

@@ -132,7 +132,7 @@ NH_TTY_BEGIN()
     int cols = Tile_p->colSize;
     NH_BOOL topbar = NH_FALSE;
 
-    // Get total rows and subtract row by vertical width of topbar.
+    // Check if topbar should be drawn. 
     if (Tile_p->type == NH_TTY_TILE_TYPE_MACRO) {
         topbar = row == 0;
     } else {
@@ -148,12 +148,11 @@ NH_TTY_BEGIN()
     if (topbar) {
         if (Tile_p->type == NH_TTY_TILE_TYPE_MACRO) { 
             NH_TTY_END(nh_tty_drawTopBarRow(
-                &NH_TTY_MACRO_TAB(Tile_p)->TopBar, &NH_TTY_MACRO_TAB(Tile_p)->MicroWindow, 
-                View_p->Row.Glyphs_p, cols, row, View_p->standardIO
+                Tile_p, View_p->Row.Glyphs_p, cols, row, View_p->standardIO
             ))
         } else {
             NH_TTY_END(nh_tty_drawTopBarRow(
-                NULL, NULL, View_p->Row.Glyphs_p, cols, row, View_p->standardIO
+                NULL, View_p->Row.Glyphs_p, cols, row, View_p->standardIO
             ))
         }
     }
@@ -299,3 +298,27 @@ NH_TTY_BEGIN()
 
 NH_TTY_DIAGNOSTIC_END(NH_TTY_SUCCESS)
 }
+
+NH_TTY_RESULT nh_tty_refreshGrid2(
+    nh_tty_TTY *TTY_p)
+{
+NH_TTY_BEGIN()
+
+    nh_tty_View *View_p = TTY_p->Views.pp[0];
+
+    for (int row = 0; row < View_p->rows; ++row) {
+        memset(View_p->Grid2_p[row].Glyphs_p, 0, sizeof(nh_tty_Glyph)*View_p->cols);
+    }
+ 
+    NH_TTY_CHECK(nh_tty_drawContextMenuRecursively(TTY_p->Window_p->MouseMenu_p, View_p->Grid2_p))
+
+    nh_tty_Config Config = nh_tty_getConfig();
+    if (Config.Sidebar.state && View_p->cols > 0) {
+        View_p->Grid2_p[nh_core_getListIndex(&TTY_p->Windows, TTY_p->Window_p)].Glyphs_p[0].Attributes.reverse = 1;
+    }
+
+    NH_TTY_CHECK(nh_tty_forwardGrid2(View_p))
+
+NH_TTY_END(NH_TTY_SUCCESS)
+}
+

@@ -302,13 +302,13 @@ NH_TTY_BEGIN()
         }
     }
 
-    // Forward boxes.
+    // Forward boxes: Context Menu.
     nh_tty_TTY *TTY_p = nh_core_getWorkloadArg();
     if (TTY_p->Window_p->MouseMenu_p) {
         nh_tty_setContextMenus(TTY_p->Window_p->MouseMenu_p, Boxes_p);
     }
 
-    // Forward tile outlines.
+    // Forward boxes: Tile outlines.
     nh_List MacroTiles = nh_tty_getTiles(TTY_p->Window_p->RootTile_p);
     for (int i = 0; i < MacroTiles.size; ++i) {
 
@@ -341,6 +341,18 @@ NH_TTY_BEGIN()
     }
     nh_core_freeList(&MacroTiles, NH_FALSE);
 
+    // Forward boxes: Sidebar.
+    nh_tty_Config Config = nh_tty_getConfig();
+    for (int i = 0; Config.Sidebar.state && i < Config.windows; ++i) {
+        nh_terminal_Box *Box_p = nh_core_incrementArray(Boxes_p);
+        memset(Box_p, 0, sizeof(nh_terminal_Box));
+        Box_p->accent = NH_TRUE;
+        Box_p->UpperLeft.x = -1;
+        Box_p->UpperLeft.y = i;
+        Box_p->LowerRight.x = -1;
+        Box_p->LowerRight.y = i;
+    }
+ 
 NH_TTY_END(NH_TTY_SUCCESS)
 }
 

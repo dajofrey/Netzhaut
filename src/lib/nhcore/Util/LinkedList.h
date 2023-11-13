@@ -80,7 +80,7 @@
         nh_LinkedList *List_p, int index
     );
 
-    NH_CORE_RESULT nh_setInLinkedList(
+    NH_CORE_RESULT nh_core_setInLinkedList(
         nh_LinkedList *List_p, int index, void *data_p
     );
 

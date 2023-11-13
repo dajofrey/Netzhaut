@@ -113,7 +113,7 @@ NH_TTY_BEGIN()
         if (Tile_p->Parent_p->Parent_p) {
             for (int i = 0; i < Tile_p->Parent_p->Parent_p->Children.count; ++i) {
                 if (nh_core_getFromLinkedList(&Tile_p->Parent_p->Parent_p->Children, i) == Tile_p->Parent_p) {
-                    nh_setInLinkedList(&Tile_p->Parent_p->Parent_p->Children, i, Other_p);
+                    nh_core_setInLinkedList(&Tile_p->Parent_p->Parent_p->Children, i, Other_p);
                     Other_p->Parent_p = Tile_p->Parent_p->Parent_p;
                     Other_p->Prev_p = NULL;
                     break;
@@ -428,32 +428,32 @@ NH_TTY_BEGIN()
         case NH_TTY_INSERT_TILE_TOP_KEY :
             Tile_p->Parent_p->orientation = NH_TTY_TILE_ORIENTATION_HORIZONTAL;
             if (index > 0) {
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index - 1));
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index - 1, Tile_p);
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index - 1));
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index - 1, Tile_p);
             }
             break;
 
         case NH_TTY_INSERT_TILE_BOTTOM_KEY :
             Tile_p->Parent_p->orientation = NH_TTY_TILE_ORIENTATION_HORIZONTAL;
             if (index < Tile_p->Parent_p->Children.count - 1) {
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index + 1));
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index + 1, Tile_p);
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index + 1));
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index + 1, Tile_p);
             }
             break;
 
         case NH_TTY_INSERT_TILE_LEFT_KEY :
             Tile_p->Parent_p->orientation = NH_TTY_TILE_ORIENTATION_VERTICAL;
             if (index > 0) {
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index - 1));
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index - 1, Tile_p);
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index - 1));
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index - 1, Tile_p);
             }
             break;
 
         case NH_TTY_INSERT_TILE_RIGHT_KEY :
             Tile_p->Parent_p->orientation = NH_TTY_TILE_ORIENTATION_VERTICAL;
             if (index < Tile_p->Parent_p->Children.count - 1) {
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index + 1));
-                nh_setInLinkedList(&Tile_p->Parent_p->Children, index + 1, Tile_p);
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index, nh_core_getFromLinkedList(&Tile_p->Parent_p->Children, index + 1));
+                nh_core_setInLinkedList(&Tile_p->Parent_p->Children, index + 1, Tile_p);
             }
             break;
     }
@@ -468,18 +468,27 @@ NH_TTY_BEGIN()
 
     nh_tty_TTY *TTY_p = nh_core_getWorkloadArg();
 
-    // Configure orientation.
+    int orientation = 0;
+
     switch (c) 
     {
         case NH_TTY_INSERT_TILE_TOP_KEY    :
         case NH_TTY_INSERT_TILE_BOTTOM_KEY :
-            Parent_p->orientation = NH_TTY_TILE_ORIENTATION_HORIZONTAL;
+            orientation = NH_TTY_TILE_ORIENTATION_HORIZONTAL;
             break;
         case NH_TTY_INSERT_TILE_LEFT_KEY  :
         case NH_TTY_INSERT_TILE_RIGHT_KEY :
-            Parent_p->orientation = NH_TTY_TILE_ORIENTATION_VERTICAL;
+            orientation = NH_TTY_TILE_ORIENTATION_VERTICAL;
             break;
     }
+
+    if (Parent_p->Children.count > 0 && Parent_p->orientation != orientation) {
+        // Changing orientation is not allowed because it's confusing.
+        NH_TTY_END(NH_TTY_ERROR_BAD_STATE)
+    }
+
+    // Configure orientation.
+    Parent_p->orientation = orientation;
 
     // Insert tile. The inserted tile is created without data.
     switch (c)
@@ -706,7 +715,7 @@ NH_TTY_BEGIN()
     {
         case NH_TTY_TILING_STAGE_OVERVIEW :
 
-            if (c == NH_TTY_SPLIT_KEY && Window_p->Tile_p->Parent_p != NULL) {
+            if (c == NH_TTY_SPLIT_KEY) {
                 // Split tile.
                 NH_TTY_CHECK(nh_tty_splitTile(Window_p->Tile_p, NH_TTY_INSERT_TILE_RIGHT_KEY))
                 Window_p->Tiling.stage = NH_TTY_TILING_STAGE_INSERT;
@@ -761,7 +770,7 @@ NH_TTY_BEGIN()
                 Window_p->Tiling.mode = NH_TTY_TILING_MODE_MACRO;
                 NH_TTY_CHECK(nh_tty_updateTilingMessages(Window_p))
             } 
-            else if (c == NH_TTY_SPLIT_KEY && NH_TTY_MICRO_TAB(NH_TTY_MACRO_TAB(Window_p->Tile_p))->Tile_p->Parent_p != NULL) {
+            else if (c == NH_TTY_SPLIT_KEY) {
                 // Split tile.
                 NH_TTY_CHECK(nh_tty_splitTile(NH_TTY_MICRO_TAB(NH_TTY_MACRO_TAB(Window_p->Tile_p))->Tile_p, NH_TTY_INSERT_TILE_RIGHT_KEY))
                 Window_p->Tiling.stage = NH_TTY_TILING_STAGE_INSERT;

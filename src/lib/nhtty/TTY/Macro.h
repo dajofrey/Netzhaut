@@ -53,7 +53,7 @@
  *  @{
  */
 
-    NH_TTY_RESULT nh_tty_insertAndFocusWindow(
+    nh_tty_MacroWindow *nh_tty_insertAndFocusWindow(
         void *TTY_p, int index
     );
     

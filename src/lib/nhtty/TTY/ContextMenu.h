@@ -26,6 +26,7 @@
         NH_BOOL active;
         NH_BOOL hit;
         nh_PixelPosition Position;
+        int cCol, cRow;
         nh_List Items;
     } nh_tty_ContextMenu;
 
@@ -47,16 +48,20 @@
         nh_tty_ContextMenu *Menu_p, nh_tty_ContextMenu *Parent_p, NH_BOOL recursive, int x, int y
     );
 
-    nh_tty_ContextMenu *nh_tty_createMouseMenu(
+    nh_tty_ContextMenu *nh_tty_createMouseMenu1(
+        int x, int y 
+    );
+
+    nh_tty_ContextMenu *nh_tty_createMouseMenu2(
         int x, int y 
     );
 
     NH_TTY_RESULT nh_tty_handleMouseMenuPress(
-        nh_tty_ContextMenu *Menu_p
+        nh_tty_ContextMenu *Root_p, nh_tty_ContextMenu *Menu_p
     );
 
-    NH_TTY_RESULT nh_tty_refreshGrid2(
-        nh_tty_TTY *TTY_p
+    NH_TTY_RESULT nh_tty_drawContextMenuRecursively(
+        nh_tty_ContextMenu *Menu_p, nh_tty_Row *Grid_p
     );
 
 /** @} */

@@ -112,8 +112,37 @@ int main(int argc, char const *argv[]) {
         }
     }
 
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+
+    GLuint vertexArray = 0;
+    glGenVertexArrays(1, &vertexArray);
+    glBindVertexArray(vertexArray);
+
+    GLfloat positionData[] = {
+        -0.5, -0.5,
+        0.5, -0.5,
+        0.0, 0.5
+    };
+
+    GLuint positions = 0;
+    glGenBuffers(1, &positions);
+    glBindBuffer(GL_ARRAY_BUFFER, positions);
+    glBufferData(GL_ARRAY_BUFFER, 3 * 2 * sizeof(GLfloat), positionData, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(0);
+
+    GLubyte colorData[] = {
+        255, 0, 0,
+        0, 255, 0,
+        0, 0, 255
+    };
+
+    GLuint colors = 0;
+    glGenBuffers(1, &colors);
+    glBindBuffer(GL_ARRAY_BUFFER, colors);
+    glBufferData(GL_ARRAY_BUFFER, 3 * 3 * sizeof(GLubyte), colorData, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, NULL);
+    glEnableVertexAttribArray(1);
 
     const char* vsSource =
     "#version 450\n"
@@ -153,43 +182,6 @@ int main(int argc, char const *argv[]) {
         fprintf(stderr, "Program did not link!\n");
     }
 
-
-
-
-
-
-
-
-    GLuint vertexArray = 0;
-    glGenVertexArrays(1, &vertexArray);
-    glBindVertexArray(vertexArray);
-
-    GLfloat positionData[] = {
-        -0.5, -0.5,
-        0.5, -0.5,
-        0.0, 0.5
-    };
-
-    GLuint positions = 0;
-    glGenBuffers(1, &positions);
-    glBindBuffer(GL_ARRAY_BUFFER, positions);
-    glBufferData(GL_ARRAY_BUFFER, 3 * 2 * sizeof(GLfloat), positionData, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(0);
-
-    GLubyte colorData[] = {
-        255, 0, 0,
-        0, 255, 0,
-        0, 0, 255
-    };
-
-    GLuint colors = 0;
-    glGenBuffers(1, &colors);
-    glBindBuffer(GL_ARRAY_BUFFER, colors);
-    glBufferData(GL_ARRAY_BUFFER, 3 * 3 * sizeof(GLubyte), colorData, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, NULL);
-    glEnableVertexAttribArray(1);
-
     glUseProgram(program);
 
     Atom wmDeleteMessage = XInternAtom(display, "WM_DELETE_WINDOW", False);
@@ -208,6 +200,7 @@ int main(int argc, char const *argv[]) {
             }
         }
 
+        glClear(GL_COLOR_BUFFER_BIT);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glXSwapBuffers(display, window);

@@ -28,6 +28,15 @@
     typedef enum NH_TTY_SETTING_E {
         NH_TTY_SETTING_SIDEBAR_TYPE,
         NH_TTY_SETTING_SHELL_MAX_SCROLL,
+        NH_TTY_SETTING_WINDOWS,
+        NH_TTY_SETTING_TABS,
+        NH_TTY_SETTING_MENU_PROGRAM,
+        NH_TTY_SETTING_MENU_SPLIT,
+        NH_TTY_SETTING_MENU_APPEND,
+        NH_TTY_SETTING_MENU_WINDOW,
+        NH_TTY_SETTING_MENU_TAB,
+        NH_TTY_SETTING_MENU_CLOSE,
+        NH_TTY_SETTING_MENU_DEBUG,
     } NH_TTY_SETTING_E;
 
 /** @} */
@@ -35,6 +44,16 @@
 /** @addtogroup lib_nhtty_structs
  *  @{
  */
+
+    typedef struct nh_tty_MenuConfig {
+        NH_BOOL program;
+        NH_BOOL split;
+        NH_BOOL append;
+        NH_BOOL window;
+        NH_BOOL tab;
+        NH_BOOL close;
+        NH_BOOL debug;
+    } nh_tty_MenuConfig;
 
     typedef struct nh_tty_SidebarConfig {
         NH_TTY_SIDEBAR_STATE_E state;
@@ -48,6 +67,9 @@
         NH_BYTE *name_p;
         nh_tty_SidebarConfig Sidebar;
         nh_tty_ShellConfig Shell;
+        nh_tty_MenuConfig Menu;
+        int windows;
+        int tabs;
     } nh_tty_Config;
 
 /** @} */

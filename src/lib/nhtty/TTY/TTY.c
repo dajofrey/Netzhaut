@@ -118,7 +118,7 @@ NH_TTY_BEGIN()
         &TTY_p->Events, 128, sizeof(nh_wsi_Event), NULL 
     ))
 
-    NH_TTY_CHECK_2(NULL, nh_tty_insertAndFocusWindow(TTY_p, 0))
+    NH_TTY_CHECK_NULL_2(NULL, nh_tty_insertAndFocusWindow(TTY_p, 0))
 
 NH_TTY_END(TTY_p)
 }

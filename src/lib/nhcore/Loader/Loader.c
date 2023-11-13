@@ -53,7 +53,6 @@ const NH_BYTE *NH_MODULE_NAMES_PP[] = {
     "nhrenderer",
     "nhurl",
     "nhmake",
-    "nhdocs",
 };
 
 int nh_core_getModuleIndex(
@@ -121,46 +120,51 @@ NH_CORE_BEGIN()
     switch (_module) 
     {
         case NH_MODULE_HTML : 
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_DOM, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_URL, 0))
             break;
 
         case NH_MODULE_TTY :
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             break;
 
         case NH_MODULE_WEBIDL : 
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             break;
 
         case NH_MODULE_ECMASCRIPT : 
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             break;
 
         case NH_MODULE_CSS :
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_DOM, 0))
             break;
 
         case NH_MODULE_DOM :
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_WEBIDL, 0))
             break;
 
         case NH_MODULE_TERMINAL :
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_GFX, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_TTY, 0))
             break;
 
         case NH_MODULE_RENDERER : 
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_GFX, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CSS, 0))
             break;
 
         case NH_MODULE_URL :
-            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
-            break;
-
-        case NH_MODULE_DOCS :
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             break;
 
@@ -182,7 +186,7 @@ NH_CORE_BEGIN()
 
     nh_Module *Module_p = &NH_LOADER.Modules_p[_module];
 
-    Module_p->lib_p = nh_core_loadLibrary(_module, major);
+    Module_p->lib_p = nh_core_loadLibrary(_module, -1);
     NH_CORE_CHECK_NULL(Module_p->lib_p)
 
     Module_p->lastModified_p = nh_core_lastModified(Module_p->lib_p);
@@ -239,8 +243,7 @@ NH_CORE_BEGIN()
             ||  NH_LOADER.Modules_p[NH_MODULE_WEBIDL].loaded == NH_TRUE
             ||  NH_LOADER.Modules_p[NH_MODULE_ECMASCRIPT].loaded == NH_TRUE
             ||  NH_LOADER.Modules_p[NH_MODULE_CSS].loaded == NH_TRUE
-            ||  NH_LOADER.Modules_p[NH_MODULE_URL].loaded == NH_TRUE 
-            ||  NH_LOADER.Modules_p[NH_MODULE_DOCS].loaded == NH_TRUE) {
+            ||  NH_LOADER.Modules_p[NH_MODULE_URL].loaded == NH_TRUE) {
                 NH_CORE_END(NH_FALSE)    
             }
             NH_CORE_END(NH_TRUE)
@@ -277,9 +280,6 @@ NH_CORE_BEGIN()
             if (NH_LOADER.Modules_p[NH_MODULE_HTML].loaded == NH_TRUE) {
                 NH_CORE_END(NH_FALSE)    
             }
-            NH_CORE_END(NH_TRUE)
-
-        case NH_MODULE_DOCS :
             NH_CORE_END(NH_TRUE)
 
         case NH_MODULE_MAKE :

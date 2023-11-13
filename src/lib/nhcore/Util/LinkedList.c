@@ -149,7 +149,7 @@ NH_CORE_BEGIN()
 NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
 }
 
-NH_CORE_RESULT nh_setInLinkedList(
+NH_CORE_RESULT nh_core_setInLinkedList(
     nh_LinkedList *List_p, int index, void *data_p)
 {
 NH_CORE_BEGIN()

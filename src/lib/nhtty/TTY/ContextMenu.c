@@ -19,10 +19,10 @@
 #include "../../nhencoding/Encodings/UTF8.h"
 
 #include <stdlib.h>
-#include <sys/ioctl.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #define COMMAND_NAME 'C', 'o', 'm', 'm', 'a', 'n', 'd',
 #define PROGRAM_NAME 'P', 'r', 'o', 'g', 'r', 'a', 'm',
@@ -60,37 +60,20 @@ static int nh_tty_isContextMenuTiling(
 {
 NH_TTY_BEGIN()
 
-    static const NH_ENCODING_UTF32 tiling_p[] = {'T', 'i', 'l', 'i', 'n', 'g', 0};
-    static const NH_ENCODING_UTF32 macro_p[] = {'M', 'a', 'c', 'r', 'o', 0};
-    static const NH_ENCODING_UTF32 micro_p[] = {'M', 'i', 'c', 'r', 'o', 0};
     static const NH_ENCODING_UTF32 append_p[] = {'A', 'p', 'p', 'e', 'n', 'd', 0};
     static const NH_ENCODING_UTF32 split_p[] = {'S', 'p', 'l', 'i', 't', 0};
-    static const NH_ENCODING_UTF32 arrowUp_p[] = {ARROW_UP, 0};
-    static const NH_ENCODING_UTF32 arrowLeft_p[] = {ARROW_LEFT, 0};
-    static const NH_ENCODING_UTF32 arrowRight_p[] = {ARROW_RIGHT, 0};
-    static const NH_ENCODING_UTF32 arrowDown_p[] = {ARROW_DOWN, 0};
+    static const NH_ENCODING_UTF32 window_p[] = {'W', 'i', 'n', 'd', 'o', 'w', 0};
+    static const NH_ENCODING_UTF32 tab_p[] = {'T', 'a', 'b', 0};
 
-    static const NH_ENCODING_UTF32 *paths_ppp[][16] = {
-        {tiling_p, micro_p, arrowUp_p, append_p},
-        {tiling_p, micro_p, arrowRight_p, append_p},
-        {tiling_p, micro_p, arrowDown_p, append_p},
-        {tiling_p, micro_p, arrowLeft_p, append_p},
-        {tiling_p, micro_p, arrowUp_p, split_p},
-        {tiling_p, micro_p, arrowRight_p, split_p},
-        {tiling_p, micro_p, arrowDown_p, split_p},
-        {tiling_p, micro_p, arrowLeft_p, split_p},
-        {tiling_p, macro_p, arrowUp_p, append_p},
-        {tiling_p, macro_p, arrowRight_p, append_p},
-        {tiling_p, macro_p, arrowDown_p, append_p},
-        {tiling_p, macro_p, arrowLeft_p, append_p},
-        {tiling_p, macro_p, arrowUp_p, split_p},
-        {tiling_p, macro_p, arrowRight_p, split_p},
-        {tiling_p, macro_p, arrowDown_p, split_p},
-        {tiling_p, macro_p, arrowLeft_p, split_p},
+    static const NH_ENCODING_UTF32 *paths_ppp[][4] = {
+        {append_p, tab_p},
+        {append_p, window_p},
+        {split_p, tab_p},
+        {split_p, window_p},
     };
 
-    for (int i = 0; i < 16; ++i) {
-        if (nh_tty_pathMatchesContextMenu(Menu_p, paths_ppp[i], 4)) {
+    for (int i = 0; i < 4; ++i) {
+        if (nh_tty_pathMatchesContextMenu(Menu_p, paths_ppp[i], 2)) {
             NH_TTY_END(i)
         }
     }
@@ -98,14 +81,13 @@ NH_TTY_BEGIN()
 NH_TTY_END(-1)
 }
 
-static int nh_tty_isContextMenuTabing(
+static int nh_tty_isContextMenuWindowOrTabSelect(
     nh_tty_ContextMenu *Menu_p)
 {
 NH_TTY_BEGIN()
 
-    static const NH_ENCODING_UTF32 tabing_p[] = {'T', 'a', 'b', 'i', 'n', 'g', 0};
-    static const NH_ENCODING_UTF32 macro_p[] = {'M', 'a', 'c', 'r', 'o', 0};
-    static const NH_ENCODING_UTF32 micro_p[] = {'M', 'i', 'c', 'r', 'o', 0};
+    static const NH_ENCODING_UTF32 window_p[] = {'W', 'i', 'n', 'd', 'o', 'w', 0};
+    static const NH_ENCODING_UTF32 tab_p[] = {'T', 'a', 'b', 0};
     static const NH_ENCODING_UTF32 p1[] = {'1', 1, ' ', 0};
     static const NH_ENCODING_UTF32 p2[] = {'2', 1, ' ', 0};
     static const NH_ENCODING_UTF32 p3[] = {'3', 1, ' ', 0};
@@ -117,28 +99,28 @@ NH_TTY_BEGIN()
     static const NH_ENCODING_UTF32 p9[] = {'9', 1, ' ', 0};
  
     static const NH_ENCODING_UTF32 *paths_ppp[][18] = {
-        {tabing_p, macro_p, p1},
-        {tabing_p, macro_p, p2},
-        {tabing_p, macro_p, p3},
-        {tabing_p, macro_p, p4},
-        {tabing_p, macro_p, p5},
-        {tabing_p, macro_p, p6},
-        {tabing_p, macro_p, p7},
-        {tabing_p, macro_p, p8},
-        {tabing_p, macro_p, p9},
-        {tabing_p, micro_p, p1},
-        {tabing_p, micro_p, p2},
-        {tabing_p, micro_p, p3},
-        {tabing_p, micro_p, p4},
-        {tabing_p, micro_p, p5},
-        {tabing_p, micro_p, p6},
-        {tabing_p, micro_p, p7},
-        {tabing_p, micro_p, p8},
-        {tabing_p, micro_p, p9},
+        {window_p, p1},
+        {window_p, p2},
+        {window_p, p3},
+        {window_p, p4},
+        {window_p, p5},
+        {window_p, p6},
+        {window_p, p7},
+        {window_p, p8},
+        {window_p, p9},
+        {tab_p, p1},
+        {tab_p, p2},
+        {tab_p, p3},
+        {tab_p, p4},
+        {tab_p, p5},
+        {tab_p, p6},
+        {tab_p, p7},
+        {tab_p, p8},
+        {tab_p, p9},
     };
 
     for (int i = 0; i < 18; ++i) {
-        if (nh_tty_pathMatchesContextMenu(Menu_p, paths_ppp[i], 3)) {
+        if (nh_tty_pathMatchesContextMenu(Menu_p, paths_ppp[i], 2)) {
             NH_TTY_END(i)
         }
     }
@@ -147,113 +129,117 @@ NH_TTY_END(-1)
 }
 
 static int nh_tty_handleContextMenuTiling(
-    int action)
+    int action, nh_tty_Tile *Tile_p, int cCol, int cRow)
 {
 NH_TTY_BEGIN()
 
     nh_wsi_KeyboardEvent Event;
     nh_tty_MacroWindow *Window_p = ((nh_tty_TTY*)nh_core_getWorkloadArg())->Window_p;
- 
+
+    int direction = 0;
+    
+    float col = (((float)cCol)/((float)Tile_p->colSize))-0.5f;
+    NH_BOOL right = col > 0.0f;
+    col = fabs(col);
+
+    float row = (((float)cRow)/((float)Tile_p->rowSize))-0.5f;
+    NH_BOOL bottom = row > 0.0f;
+    row = fabs(row);
+   
+    if (col > row) {
+        direction = right ? 1 : 3;
+    } else {
+        direction = bottom ? 2 : 0;
+    }
+
     switch (action)
     {
-        // Handle micro tiling (append).
+        // Handle tab append.
         case 0 :
-        case 1 :
+            Event.trigger = NH_WSI_TRIGGER_PRESS;
+            Event.codepoint = NH_TTY_TILING_KEY;
+            Event.state |= NH_WSI_MODIFIER_CONTROL;
+            nh_tty_handleTilingInput(Window_p, Event); 
+
+            if (direction == 0) {
+                Event.codepoint = NH_TTY_INSERT_TILE_TOP_KEY;
+            } else if (direction == 1) {
+                Event.codepoint = NH_TTY_INSERT_TILE_RIGHT_KEY;
+            } else if (direction == 2) {
+                Event.codepoint = NH_TTY_INSERT_TILE_BOTTOM_KEY;
+            } else if (direction == 3) {
+                Event.codepoint = NH_TTY_INSERT_TILE_LEFT_KEY;
+            }
+ 
+            Event.state = 0;
+            nh_tty_handleTilingInput(Window_p, Event);
+            break;
+
+        // Handle tab split.
         case 2 :
+            Event.trigger = NH_WSI_TRIGGER_PRESS;
+            Event.codepoint = NH_TTY_TILING_KEY;
+            Event.state |= NH_WSI_MODIFIER_CONTROL;
+            nh_tty_handleTilingInput(Window_p, Event); 
+
+            Event.state = 0;
+            Event.codepoint = NH_TTY_SPLIT_KEY;
+            nh_tty_handleTilingInput(Window_p, Event); 
+
+            if (direction == 0) {
+                Event.codepoint = NH_TTY_INSERT_TILE_TOP_KEY;
+            } else if (direction == 1) {
+                Event.codepoint = NH_TTY_INSERT_TILE_RIGHT_KEY;
+            } else if (direction == 2) {
+                Event.codepoint = NH_TTY_INSERT_TILE_BOTTOM_KEY;
+            } else if (direction == 3) {
+                Event.codepoint = NH_TTY_INSERT_TILE_LEFT_KEY;
+            }
+ 
+            nh_tty_handleTilingInput(Window_p, Event);
+            break;
+ 
+        // Handle window append.
+        case 1 :
+            Event.trigger = NH_WSI_TRIGGER_PRESS;
+            Event.codepoint = NH_TTY_TILING_KEY;
+            Event.state |= NH_WSI_MODIFIER_CONTROL;
+            nh_tty_handleTilingInput(Window_p, Event); 
+            nh_tty_handleTilingInput(Window_p, Event); 
+
+            if (direction == 0) {
+                Event.codepoint = NH_TTY_INSERT_TILE_TOP_KEY;
+            } else if (direction == 1) {
+                Event.codepoint = NH_TTY_INSERT_TILE_RIGHT_KEY;
+            } else if (direction == 2) {
+                Event.codepoint = NH_TTY_INSERT_TILE_BOTTOM_KEY;
+            } else if (direction == 3) {
+                Event.codepoint = NH_TTY_INSERT_TILE_LEFT_KEY;
+            }
+
+            Event.state = 0;
+            nh_tty_handleTilingInput(Window_p, Event);
+            break;
+
+        // Handle window split.
         case 3 :
             Event.trigger = NH_WSI_TRIGGER_PRESS;
             Event.codepoint = NH_TTY_TILING_KEY;
             Event.state |= NH_WSI_MODIFIER_CONTROL;
             nh_tty_handleTilingInput(Window_p, Event); 
-
-            if (action == 0) {
-                Event.codepoint = NH_TTY_INSERT_TILE_TOP_KEY;
-            } else if (action == 1) {
-                Event.codepoint = NH_TTY_INSERT_TILE_RIGHT_KEY;
-            } else if (action == 2) {
-                Event.codepoint = NH_TTY_INSERT_TILE_BOTTOM_KEY;
-            } else if (action == 3) {
-                Event.codepoint = NH_TTY_INSERT_TILE_LEFT_KEY;
-            }
- 
-            Event.state = 0;
-            nh_tty_handleTilingInput(Window_p, Event);
-            break;
-
-        // Handle micro tiling (split).
-        case 4 :
-        case 5 :
-        case 6 :
-        case 7 :
-            Event.trigger = NH_WSI_TRIGGER_PRESS;
-            Event.codepoint = NH_TTY_TILING_KEY;
-            Event.state |= NH_WSI_MODIFIER_CONTROL;
-            nh_tty_handleTilingInput(Window_p, Event); 
-
-            Event.state = 0;
-            Event.codepoint = NH_TTY_SPLIT_KEY;
-            nh_tty_handleTilingInput(Window_p, Event); 
-
-            if (action == 4) {
-                Event.codepoint = NH_TTY_INSERT_TILE_TOP_KEY;
-            } else if (action == 5) {
-                Event.codepoint = NH_TTY_INSERT_TILE_RIGHT_KEY;
-            } else if (action == 6) {
-                Event.codepoint = NH_TTY_INSERT_TILE_BOTTOM_KEY;
-            } else if (action == 7) {
-                Event.codepoint = NH_TTY_INSERT_TILE_LEFT_KEY;
-            }
- 
-            nh_tty_handleTilingInput(Window_p, Event);
-            break;
- 
-        // Handle macro tiling (append).
-        case 8 :
-        case 9 :
-        case 10 :
-        case 11 :
-            Event.trigger = NH_WSI_TRIGGER_PRESS;
-            Event.codepoint = NH_TTY_TILING_KEY;
-            Event.state |= NH_WSI_MODIFIER_CONTROL;
-            nh_tty_handleTilingInput(Window_p, Event); 
-            nh_tty_handleTilingInput(Window_p, Event); 
-
-            if (action == 10) {
-                Event.codepoint = NH_TTY_INSERT_TILE_TOP_KEY;
-            } else if (action == 9) {
-                Event.codepoint = NH_TTY_INSERT_TILE_RIGHT_KEY;
-            } else if (action == 8) {
-                Event.codepoint = NH_TTY_INSERT_TILE_BOTTOM_KEY;
-            } else if (action == 11) {
-                Event.codepoint = NH_TTY_INSERT_TILE_LEFT_KEY;
-            }
-
-            Event.state = 0;
-            nh_tty_handleTilingInput(Window_p, Event);
-            break;
-
-        // Handle macro tiling (split).
-        case 12 :
-        case 13 :
-        case 14 :
-        case 15 :
-            Event.trigger = NH_WSI_TRIGGER_PRESS;
-            Event.codepoint = NH_TTY_TILING_KEY;
-            Event.state |= NH_WSI_MODIFIER_CONTROL;
-            nh_tty_handleTilingInput(Window_p, Event); 
             nh_tty_handleTilingInput(Window_p, Event); 
 
             Event.codepoint = NH_TTY_SPLIT_KEY;
             Event.state = 0;
             nh_tty_handleTilingInput(Window_p, Event); 
 
-            if (action == 14) {
+            if (direction == 0) {
                 Event.codepoint = NH_TTY_INSERT_TILE_TOP_KEY;
-            } else if (action == 13) {
+            } else if (direction == 1) {
                 Event.codepoint = NH_TTY_INSERT_TILE_RIGHT_KEY;
-            } else if (action == 12) {
+            } else if (direction == 2) {
                 Event.codepoint = NH_TTY_INSERT_TILE_BOTTOM_KEY;
-            } else if (action == 15) {
+            } else if (direction == 3) {
                 Event.codepoint = NH_TTY_INSERT_TILE_LEFT_KEY;
             }
  
@@ -449,7 +435,7 @@ NH_TTY_SILENT_END()
 // MOUSE MENU ======================================================================================
 // Mouse menu functions.
 
-nh_tty_ContextMenu *nh_tty_createMouseMenu(
+nh_tty_ContextMenu *nh_tty_createMouseMenu1(
     int x, int y)
 {
 NH_TTY_BEGIN()
@@ -468,16 +454,34 @@ NH_TTY_BEGIN()
             nh_encoding_appendUTF32(&Menu, Name_p->p, Name_p->length); 
             if (i < Program_p->Prototype_p->commands-1) {nh_encoding_appendUTF32Codepoint(&Menu, ',');}
         }
-        nh_encoding_appendUTF32Codepoint(&Menu, ',');
-
-        // Generate separator.
-        nh_encoding_appendUTF32Codepoint(&Menu, '{'); 
-        nh_encoding_appendUTF32Codepoint(&Menu, '}'); 
-        nh_encoding_appendUTF32Codepoint(&Menu, ','); 
     }
+ 
+    nh_encoding_appendUTF32Codepoint(&Menu, '}');
 
-    // Generate program menu.
-    if (TTY_p->Prototypes.size > 0) {
+    NH_ENCODING_UTF32 *p = Menu.p;
+    nh_tty_ContextMenu *Menu_p = nh_tty_parseContextMenu(&p, NULL);
+    NH_TTY_CHECK_NULL_2(NULL, Menu_p)
+
+    nh_tty_computeContextMenuPosition(Menu_p, x, y, ((nh_tty_View*)TTY_p->Views.pp[0])->cols, ((nh_tty_View*)TTY_p->Views.pp[0])->rows);
+
+    nh_encoding_freeUTF32(&Menu);
+
+NH_TTY_END(Menu_p)
+}
+
+nh_tty_ContextMenu *nh_tty_createMouseMenu2(
+    int x, int y)
+{
+NH_TTY_BEGIN()
+
+    nh_encoding_UTF32String Menu = nh_encoding_initUTF32(128);
+    nh_encoding_appendUTF32Codepoint(&Menu, '{');
+
+    nh_tty_TTY *TTY_p = nh_core_getWorkloadArg();
+    nh_tty_Config Config = nh_tty_getConfig();
+
+    if (Config.Menu.program && TTY_p->Prototypes.size > 0) {
+        nh_tty_Program *Program_p = nh_tty_getCurrentProgram(&NH_TTY_MACRO_TAB(TTY_p->Window_p->Tile_p)->MicroWindow);
         NH_ENCODING_UTF32 apps_p[] = {PROGRAM_NAME '{'};
         nh_encoding_appendUTF32(&Menu, apps_p, sizeof(apps_p)/sizeof(apps_p[0]));
         int width = 0;
@@ -493,88 +497,120 @@ NH_TTY_BEGIN()
                 nh_encoding_appendUTF32Codepoint(&Menu, ' '); 
             }
             nh_encoding_appendUTF32Codepoint(&Menu, 1); 
-            nh_encoding_appendUTF32Codepoint(&Menu, Program_p->Prototype_p == Prototype_p ? 0x2022 : ' '); 
+            nh_encoding_appendUTF32Codepoint(&Menu, Program_p->Prototype_p == Prototype_p ? 0x25cf : ' '); 
             if (i < TTY_p->Prototypes.size-1) {nh_encoding_appendUTF32Codepoint(&Menu, ',');}
         }
         nh_encoding_appendUTF32Codepoint(&Menu, '}');
         nh_encoding_appendUTF32Codepoint(&Menu, ',');
     }
 
-    // Generate tiling menu.
-    NH_ENCODING_UTF32 tiling_p[] = {
-        'T', 'i', 'l', 'i', 'n', 'g', '{',
-            'M', 'a', 'c', 'r', 'o', '{',
-                ARROW_RIGHT, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}', ',',
-                ARROW_LEFT, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}', ',',
-                ARROW_DOWN, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}', ',',
-                ARROW_UP, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}',
+    if (Config.Menu.split) {
+        NH_ENCODING_UTF32 tiling_p[] = {
+            ',', 'S', 'p', 'l', 'i', 't', '{',
+                 'W', 'i', 'n', 'd', 'o', 'w', ',',
+                 'T', 'a', 'b',
             '}', ',',
-            'M', 'i', 'c', 'r', 'o', '{',
-                ARROW_RIGHT, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}', ',',
-                ARROW_LEFT, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}', ',',
-                ARROW_DOWN, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}', ',',
-                ARROW_UP, '{', 'S', 'p', 'l', 'i', 't', ',', 'A', 'p', 'p', 'e', 'n', 'd', '}',
-            '}',
-        '}',
-    };
-    nh_encoding_appendUTF32(&Menu, tiling_p, sizeof(tiling_p)/sizeof(tiling_p[0]));
-    nh_encoding_appendUTF32Codepoint(&Menu, ',');
+        };
+        nh_encoding_appendUTF32(&Menu, tiling_p, sizeof(tiling_p)/sizeof(tiling_p[0]));
+    }
 
-    // Generate tabing menu.
-    NH_ENCODING_UTF32 tabing_p[] = {
-        'T', 'a', 'b', 'i', 'n', 'g', '{',
-            'M', 'a', 'c', 'r', 'o', '{',
-                '1', 1, ' ', ',', '2', 1, ' ', ',', '3', 1, ' ', ',', '4', 1, ' ', ',', '5', 1, ' ', ',', '6', 1, ' ', ',', '7', 1, ' ', ',', '8', 1, ' ', ',', '9', 1, ' ',
+    if (Config.Menu.append) {
+        NH_ENCODING_UTF32 tiling_p[] = {
+            ',', 'A', 'p', 'p', 'e', 'n', 'd', '{',
+                 'W', 'i', 'n', 'd', 'o', 'w', ',',
+                 'T', 'a', 'b',
             '}', ',',
-            'M', 'i', 'c', 'r', 'o', '{',
-                '1', 1, ' ', ',', '2', 1, ' ', ',', '3', 1, ' ', ',', '4', 1, ' ', ',', '5', 1, ' ', ',', '6', 1, ' ', ',', '7', 1, ' ', ',', '8', 1, ' ', ',', '9', 1, ' ',
-            '}',
-        '}', ',', 
-        'D', 'e', 'b', 'u', 'g',
-    };
-
-    tabing_p[15 + nh_core_getListIndex(&TTY_p->Windows, TTY_p->Window_p) * 4] = 0x2022;
-    tabing_p[58 + ((nh_tty_MacroTile*)TTY_p->Window_p->Tile_p->p)->current * 4] = 0x2022;
-
-    nh_encoding_appendUTF32(&Menu, tabing_p, sizeof(tabing_p)/sizeof(tabing_p[0]));
-    nh_encoding_appendUTF32Codepoint(&Menu, '{');
-
-    NH_ENCODING_UTF32 x_p[16];
-    NH_ENCODING_UTF32 y_p[16];
-
-    int xLength = nh_encoding_integerToUTF32(x, x_p, 64);
-    int yLength = nh_encoding_integerToUTF32(y, y_p, 64);
- 
-    nh_encoding_appendUTF32Codepoint(&Menu, 'x');
-    nh_encoding_appendUTF32Codepoint(&Menu, ':');
-    for (int i = 0; i < xLength; ++i) {
-        nh_encoding_appendUTF32Codepoint(&Menu, x_p[i]);
+        };
+        nh_encoding_appendUTF32(&Menu, Config.Menu.split ? tiling_p+1 : tiling_p, Config.Menu.split ? sizeof(tiling_p)/sizeof(tiling_p[0])-1 : sizeof(tiling_p)/sizeof(tiling_p[0]));
     }
-    nh_encoding_appendUTF32Codepoint(&Menu, ',');
 
-    nh_encoding_appendUTF32Codepoint(&Menu, 'y');
-    nh_encoding_appendUTF32Codepoint(&Menu, ':');
-    for (int i = 0; i < yLength; ++i) {
-        nh_encoding_appendUTF32Codepoint(&Menu, y_p[i]);
+    if (Config.Menu.window) {
+        NH_ENCODING_UTF32 tmp1_p[] = {',', 'W', 'i', 'n', 'd', 'o', 'w', '{'};
+        nh_encoding_appendUTF32(&Menu, tmp1_p, 7);
+        for (int i = 0; i < Config.windows; ++i) {
+            NH_ENCODING_UTF32 tmp2_p[] = {i + '1', 1, ' '};
+            if (nh_core_getListIndex(&TTY_p->Windows, TTY_p->Window_p) == i) {
+                tmp2_p[2] = 0x2022;
+            }
+            nh_encoding_appendUTF32(&Menu, tmp2_p, 3);
+            if (i < (Config.windows-1)) {
+                nh_encoding_appendUTF32Codepoint(&Menu, ',');
+            } else {
+                nh_encoding_appendUTF32Codepoint(&Menu, '}');
+                nh_encoding_appendUTF32Codepoint(&Menu, ',');
+            }
+        }
     }
-    nh_encoding_appendUTF32Codepoint(&Menu, ',');
 
-    nh_tty_Glyph Glyph = ((nh_tty_View*)TTY_p->Views.pp[0])->Grid1_p[y].Glyphs_p[x];
+    if (Config.Menu.tab) {
+        NH_ENCODING_UTF32 tmp3_p[] = {',', 'T', 'a', 'b', '{'};
+        nh_encoding_appendUTF32(&Menu, Config.Menu.window ? tmp3_p+1 : tmp3_p , Config.Menu.window ? 3 : 4);
+        for (int i = 0; i < Config.tabs; ++i) {
+            NH_ENCODING_UTF32 tmp2_p[] = {i + '1', 1, ' '};
+            if (((nh_tty_MacroTile*)TTY_p->Window_p->Tile_p->p)->current == i) {
+                tmp2_p[2] = 0x2022;
+            }
+            nh_encoding_appendUTF32(&Menu, tmp2_p, 3);
+            if (i < (Config.tabs-1)) {
+                nh_encoding_appendUTF32Codepoint(&Menu, ',');
+            } else {
+                nh_encoding_appendUTF32Codepoint(&Menu, '}');
+                nh_encoding_appendUTF32Codepoint(&Menu, ',');
+            }
+        }
+    }
 
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.bold ? "Attr.bold:1," : "Attr.bold:0,", 12);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.faint ? "Attr.faint:1," : "Attr.faint:0,", 13);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.italic ? "Attr.italic:1," : "Attr.italic:0,", 14);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.underline ? "Attr.underline:1," : "Attr.underline:0,", 17);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.blink ? "Attr.blink:1," : "Attr.blink:0,", 13);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.reverse ? "Attr.reverse:1," : "Attr.reverse:0,", 15);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.invisible ? "Attr.invisible:1," : "Attr.invisible:0,", 17);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.struck ? "Attr.struck:1," : "Attr.struck:0,", 14);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.wrap ? "Attr.wrap:1," : "Attr.wrap:0,", 12);
-    nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.wide ? "Attr.wide:1}" : "Attr.wide:0}", 12);
- 
-    nh_encoding_appendUTF32Codepoint(&Menu, '}');
+    if (Config.Menu.close) {
+        NH_ENCODING_UTF32 close_p[] = {',', 'C', 'l', 'o', 's', 'e', ',', 0};
+        nh_encoding_appendUTF32(&Menu, close_p, 7);
+    }
+
+    if (Config.Menu.debug) {
+        NH_ENCODING_UTF32 debug_p[] = {',', 'D', 'e', 'b', 'u', 'g', '{', 0};
+        nh_encoding_appendUTF32(&Menu, debug_p, 7);
+     
+        NH_ENCODING_UTF32 x_p[16];
+        NH_ENCODING_UTF32 y_p[16];
+    
+        int xLength = nh_encoding_integerToUTF32(x, x_p, 64);
+        int yLength = nh_encoding_integerToUTF32(y, y_p, 64);
+     
+        nh_encoding_appendUTF32Codepoint(&Menu, 'x');
+        nh_encoding_appendUTF32Codepoint(&Menu, ':');
+        for (int i = 0; i < xLength; ++i) {
+            nh_encoding_appendUTF32Codepoint(&Menu, x_p[i]);
+        }
+        nh_encoding_appendUTF32Codepoint(&Menu, ',');
+    
+        nh_encoding_appendUTF32Codepoint(&Menu, 'y');
+        nh_encoding_appendUTF32Codepoint(&Menu, ':');
+        for (int i = 0; i < yLength; ++i) {
+            nh_encoding_appendUTF32Codepoint(&Menu, y_p[i]);
+        }
+        nh_encoding_appendUTF32Codepoint(&Menu, ',');
+    
+        nh_tty_Glyph Glyph = ((nh_tty_View*)TTY_p->Views.pp[0])->Grid1_p[y].Glyphs_p[x];
+    
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.bold ? "Attr.bold:1," : "Attr.bold:0,", 12);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.faint ? "Attr.faint:1," : "Attr.faint:0,", 13);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.italic ? "Attr.italic:1," : "Attr.italic:0,", 14);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.underline ? "Attr.underline:1," : "Attr.underline:0,", 17);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.blink ? "Attr.blink:1," : "Attr.blink:0,", 13);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.reverse ? "Attr.reverse:1," : "Attr.reverse:0,", 15);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.invisible ? "Attr.invisible:1," : "Attr.invisible:0,", 17);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.struck ? "Attr.struck:1," : "Attr.struck:0,", 14);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.wrap ? "Attr.wrap:1," : "Attr.wrap:0,", 12);
+        nh_encoding_appendUTF8ToUTF32(&Menu, Glyph.Attributes.wide ? "Attr.wide:1}" : "Attr.wide:0}", 12);
+     
+        nh_encoding_appendUTF32Codepoint(&Menu, '}');
+        nh_encoding_appendUTF32Codepoint(&Menu, ',');
+    }
 
     NH_ENCODING_UTF32 *p = Menu.p;
+    if (Menu.length) {
+        p[Menu.length-1] = 0; // Remove the last ','
+    }
+
     nh_tty_ContextMenu *Menu_p = nh_tty_parseContextMenu(&p, NULL);
     NH_TTY_CHECK_NULL_2(NULL, Menu_p)
 
@@ -586,7 +622,7 @@ NH_TTY_END(Menu_p)
 }
 
 NH_TTY_RESULT nh_tty_handleMouseMenuPress(
-    nh_tty_ContextMenu *Menu_p)
+    nh_tty_ContextMenu *Root_p, nh_tty_ContextMenu *Menu_p)
 {
 NH_TTY_BEGIN()
 
@@ -597,25 +633,30 @@ NH_TTY_BEGIN()
     // Handle tiling or tabing if necessary.
     int tiling = nh_tty_isContextMenuTiling(Menu_p);
     if (tiling >= 0) {
-        nh_tty_handleContextMenuTiling(tiling);
+        if (tiling == 1 || tiling == 3) { 
+            nh_tty_handleContextMenuTiling(tiling, TTY_p->Window_p->Tile_p, Root_p->cCol, Root_p->cRow);
+        } else {
+            nh_tty_handleContextMenuTiling(tiling, NH_TTY_MICRO_TAB(NH_TTY_MACRO_TAB(TTY_p->Window_p->Tile_p))->Tile_p, Root_p->cCol, Root_p->cRow);
+        }
         nh_wsi_KeyboardEvent Event;
         Event.trigger = NH_WSI_TRIGGER_PRESS;
         Event.codepoint = 13;
         NH_TTY_END(nh_tty_handleTilingInput(TTY_p->Window_p, Event))
     }
 
-    int tabing = nh_tty_isContextMenuTabing(Menu_p);
-    if (tabing >= 0) {
-        if (tabing < 9) {
-            NH_TTY_CHECK(nh_tty_insertAndFocusWindow(TTY_p, tabing))
+    int select = nh_tty_isContextMenuWindowOrTabSelect(Menu_p);
+    if (select >= 0) {
+        if (select < 9) {
+            NH_TTY_CHECK_NULL(nh_tty_insertAndFocusWindow(TTY_p, select))
         } else {
-            ((nh_tty_MacroTile*)TTY_p->Window_p->Tile_p->p)->current = tabing - 9; 
+            ((nh_tty_MacroTile*)TTY_p->Window_p->Tile_p->p)->current = select - 9; 
         }
         NH_TTY_END(NH_TTY_SUCCESS)
     }
 
     // Handle program switch if necessary.
     NH_ENCODING_UTF32 program_p[] = {PROGRAM_NAME 0};
+    NH_ENCODING_UTF32 close_p[] = {'C', 'l', 'o', 's', 'e', 0};
     if (nh_encoding_compareUTF32(Menu_p->Parent_p->Name.p, program_p)) {
         for (int i = 0; i < Menu_p->Parent_p->Items.size; ++i) {
             nh_tty_ContextMenu *Prog_p = Menu_p->Parent_p->Items.pp[i];
@@ -623,6 +664,8 @@ NH_TTY_BEGIN()
                 NH_TTY_MACRO_TAB(((nh_tty_TTY*)nh_core_getWorkloadArg())->Window_p->Tile_p)->MicroWindow.current = i;
             } 
         }
+    } else if (nh_encoding_compareUTF32(Menu_p->Name.p, close_p)) {
+        NH_TTY_MICRO_TAB(NH_TTY_MACRO_TAB(TTY_p->Window_p->Tile_p))->Tile_p->close = NH_TRUE;
     } else {
         // Handle command execution if necessary.
         for (int i = 0; i < Menu_p->Parent_p->Items.size; ++i) {
@@ -642,7 +685,7 @@ NH_TTY_END(NH_TTY_SUCCESS)
 
 // DRAW ============================================================================================
 
-static NH_TTY_RESULT nh_tty_drawContextMenuRecursively(
+NH_TTY_RESULT nh_tty_drawContextMenuRecursively(
     nh_tty_ContextMenu *Menu_p, nh_tty_Row *Grid_p)
 {
 NH_TTY_BEGIN()
@@ -744,23 +787,6 @@ NH_TTY_BEGIN()
         nh_tty_ContextMenu *Child_p = Menu_p->Items.pp[i];
         NH_TTY_CHECK(nh_tty_drawContextMenuRecursively(Child_p, Grid_p))
     }
-
-NH_TTY_END(NH_TTY_SUCCESS)
-}
-
-NH_TTY_RESULT nh_tty_refreshGrid2(
-    nh_tty_TTY *TTY_p)
-{
-NH_TTY_BEGIN()
-
-    nh_tty_View *View_p = TTY_p->Views.pp[0];
-
-    for (int row = 0; row < View_p->rows; ++row) {
-        memset(View_p->Grid2_p[row].Glyphs_p, 0, sizeof(nh_tty_Glyph)*View_p->cols);
-    }
- 
-    NH_TTY_CHECK(nh_tty_drawContextMenuRecursively(TTY_p->Window_p->MouseMenu_p, View_p->Grid2_p))
-    NH_TTY_CHECK(nh_tty_forwardGrid2(View_p))
 
 NH_TTY_END(NH_TTY_SUCCESS)
 }

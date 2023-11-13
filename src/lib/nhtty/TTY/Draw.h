@@ -26,6 +26,10 @@
         nh_tty_TTY *TTY_p
     ); 
 
+    NH_TTY_RESULT nh_tty_refreshGrid2(
+        nh_tty_TTY *TTY_p
+    ); 
+
     NH_TTY_RESULT nh_tty_refreshGrid1Row(
         nh_List *Tiles_p, nh_tty_View *View_p, int row, NH_BOOL sidebar
     );

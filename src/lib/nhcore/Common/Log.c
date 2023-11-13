@@ -133,9 +133,6 @@ NH_CORE_BEGIN()
                 case NH_MODULE_MAKE :
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_MAKE_VERSION_P");
                     break;
-                case NH_MODULE_DOCS :
-                    ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_DOCS_VERSION_P");
-                    break;
             }
             if (!ver_p) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
             sprintf(message_p, "%s%s : ver.%d.%d.%d.%d", NH_MODULE_NAMES_PP[i], indent_p, ver_p[0], ver_p[1], ver_p[2], ver_p[3]);
@@ -147,7 +144,6 @@ NH_CORE_BEGIN()
         memset(message_p, 0, 255);
         memset(option_p, 0, 255);
         memset(indent_p, 0, 64);
-
     }
 
 NH_CORE_END(NH_CORE_SUCCESS)

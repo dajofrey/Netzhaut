@@ -26,6 +26,15 @@
 const NH_BYTE *NH_TTY_SETTING_NAMES_PP[] = {
     "sidebar.state",
     "shell.maxScroll",
+    "windows",
+    "tabs",
+    "menu.program",
+    "menu.split",
+    "menu.append",
+    "menu.window",
+    "menu.tab",
+    "menu.close",
+    "menu.debug",
 };
 
 size_t NH_TTY_SETTING_NAMES_PP_COUNT = 
@@ -59,6 +68,42 @@ NH_TTY_BEGIN()
         case 1 :
             if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
             Config_p->Shell.maxScroll = atoi(Setting_p->pp[0]);
+            break;
+        case 2 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->windows = atoi(Setting_p->pp[0]);
+            break;
+        case 3 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->tabs = atoi(Setting_p->pp[0]);
+            break;
+        case 4 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->Menu.program = atoi(Setting_p->pp[0]);
+            break;
+        case 5 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->Menu.split = atoi(Setting_p->pp[0]);
+            break;
+        case 6 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->Menu.append = atoi(Setting_p->pp[0]);
+            break;
+        case 7 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->Menu.window = atoi(Setting_p->pp[0]);
+            break;
+        case 8 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->Menu.tab = atoi(Setting_p->pp[0]);
+            break;
+        case 9 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->Menu.close = atoi(Setting_p->pp[0]);
+            break;
+        case 10 :
+            if (Setting_p->size != 1) {NH_TTY_END(NH_TTY_ERROR_BAD_STATE)}
+            Config_p->Menu.debug = atoi(Setting_p->pp[0]);
             break;
     }
 

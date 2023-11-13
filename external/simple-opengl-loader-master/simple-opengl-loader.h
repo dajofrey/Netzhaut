@@ -37,11 +37,11 @@ extern "C" {
 #endif
 
 #ifndef SOGL_MAJOR_VERSION
-#define SOGL_MAJOR_VERSION 4 // Changed by Netzhaut.
+#define SOGL_MAJOR_VERSION 1
 #endif
 
 #ifndef SOGL_MINOR_VERSION
-#define SOGL_MINOR_VERSION 6 // Changed by Netzhaut.
+#define SOGL_MINOR_VERSION 0
 #endif
 
 #ifndef SOGL_MAX_REPORTED_FAILURES
@@ -5998,7 +5998,7 @@ SOGL_FUNCTIONS_OVR_multiview
 static HMODULE sogl_libHandle = NULL;
 
 void *sogl_loadOpenGLFunction(const char *name) {
-	typedef PROC (*wglGetProcAddressFP)(LPCSTR Arg1);
+	typedef PROC (WINAPI *wglGetProcAddressFP)(LPCSTR Arg1);
 	static wglGetProcAddressFP wglGetProcAddress = NULL;
 
 	if (!sogl_libHandle) {

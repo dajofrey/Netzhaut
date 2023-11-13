@@ -11,7 +11,7 @@
 // INCLUDES =======================================================================================
 
 #include "UnicodeDataHelper.h"
-#include "UnicodeData.h"
+#include "UnicodeData.gen.h"
 
 #include "../Common/Log.h"
 #include "../Common/Macros.h"

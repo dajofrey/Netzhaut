@@ -9,6 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "Tiling.h"
 #include "Program.h"
 #include "TopBarMessage.h"
 
@@ -37,8 +38,10 @@ typedef struct nh_tty_MicroWindow nh_tty_MicroWindow;
         nh_tty_TopBarMessage Message;
         int state;
         int cursorX;
+        int quitPosition;
         NH_BOOL hasFocus;
 	NH_BOOL refresh;
+        NH_BOOL quitHover;
         nh_encoding_UTF32String Command;
         nh_Array History;
     } nh_tty_TopBar;
@@ -65,12 +68,11 @@ typedef struct nh_tty_MicroWindow nh_tty_MicroWindow;
     );
 
     NH_TTY_RESULT nh_tty_handleTopBarInput(
-        nh_tty_TopBar *TopBar_p, nh_tty_MicroWindow *Canvas_p, nh_wsi_KeyboardEvent Event 
+        nh_tty_Tile *Tile_p, nh_wsi_Event Event 
     );
 
     NH_TTY_RESULT nh_tty_drawTopBarRow(
-        nh_tty_TopBar *TopBar_p, nh_tty_MicroWindow *Canvas_p, nh_tty_Glyph *Glyphs_p, int cols, int row,
-        NH_BOOL standardIO
+        nh_tty_Tile *Tile_p, nh_tty_Glyph *Glyphs_p, int cols, int row, NH_BOOL standardIO
     );
 
     NH_TTY_RESULT nh_tty_updateTopBar(

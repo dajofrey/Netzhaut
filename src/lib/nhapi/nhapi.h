@@ -14,7 +14,6 @@
 #include "nhhtml.h"
 #include "nhterminal.h"
 #include "nhecmascript.h"
-#include "nhmake.h"
 
 #endif
 

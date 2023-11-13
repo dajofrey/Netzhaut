@@ -91,13 +91,13 @@ static void *nh_api_loadCore(
             NH_BYTE exeDir_p[2048] = {'\0'};
             if (nh_api_getExeDir(exeDir_p, 2048) != NH_CORE_SUCCESS) {return NULL;}
             NH_BYTE path_p[2048] = {'\0'};
-            sprintf(path_p, "%s/netzhaut-master/lib/libnhcore.so.0", exeDir_p);
+            sprintf(path_p, "%s/netzhaut-master/lib/libnhcore.so", exeDir_p);
             return nh_api_openCoreLibrary(path_p);
         }
         case NH_LOADER_SCOPE_LOCAL_SYSTEM :
-            return nh_api_openCoreLibrary("/usr/local/lib/libnhcore.so.0");
+            return nh_api_openCoreLibrary("/usr/local/lib/libnhcore.so");
         case NH_LOADER_SCOPE_SYSTEM :
-            return nh_api_openCoreLibrary("libnhcore.so.0");
+            return nh_api_openCoreLibrary("libnhcore.so");
     }
 
 #endif

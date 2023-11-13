@@ -138,9 +138,9 @@ NH_TERMINAL_BEGIN()
         // Render outer box.
         nh_opengl_addCommand(CommandBuffer_p, "glUniform3f", 
            &Data_p->Background.OpenGL.GetUniformLocation_p->Result, 
-           nh_opengl_glfloat(NULL, Config.Foreground.r), 
-           nh_opengl_glfloat(NULL, Config.Foreground.g), 
-           nh_opengl_glfloat(NULL, Config.Foreground.b));
+           nh_opengl_glfloat(NULL, Box_p->accent ? State_p->Gradient.Color.r : Config.Foreground.r), 
+           nh_opengl_glfloat(NULL, Box_p->accent ? State_p->Gradient.Color.g : Config.Foreground.g), 
+           nh_opengl_glfloat(NULL, Box_p->accent ? State_p->Gradient.Color.b : Config.Foreground.b));
         nh_opengl_addCommand(CommandBuffer_p, "glDrawArrays", 
             nh_opengl_glenum(NULL, GL_TRIANGLES), nh_opengl_glint(NULL, offset), nh_opengl_glsizei(NULL, 6));
         offset += 6;

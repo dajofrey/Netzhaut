@@ -1,0 +1,21 @@
+name: Tag version
+
+on:
+  push:
+    branches:
+      - master  # Adjust the branch as needed
+
+jobs:
+  run_script:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check Out Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Tag version 
+        run: | 
+          chmod +x ./.github/scripts/tag-version.sh 
+          ./.github/scripts/tag-version.sh

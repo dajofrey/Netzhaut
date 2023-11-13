@@ -9,7 +9,6 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "TopBar.h"
 #include "../Common/Includes.h"
 #include "../../nhcore/Util/LinkedList.h"
 

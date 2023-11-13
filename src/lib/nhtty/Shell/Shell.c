@@ -532,7 +532,27 @@ NH_TTY_BEGIN()
         }
         if (empty != 0) {empty--;}
 
-        nh_encoding_appendUTF8(&Clipboard, Shell_p->Selection.buffer_pp[i], Shell_p->ST_p->col - empty);
+        if (i == 0) {
+            int length = 0;
+            if (Shell_p->Selection.Start.y == Shell_p->Selection.Stop.y) {
+                length = abs(Shell_p->Selection.Stop.x - Shell_p->Selection.Start.x)+1;
+            } else {
+                length = (Shell_p->ST_p->col - Shell_p->Selection.Start.x)-empty;
+            }
+    
+            // Start-pointer calculation of selection depends on direction from which the selection was initiated.
+            NH_ENCODING_UTF32 *p = NULL;
+            if (Shell_p->Selection.Start.x < Shell_p->Selection.Stop.x) {
+                p = Shell_p->Selection.buffer_pp[i] + Shell_p->Selection.Start.x;
+            } else {
+                p = Shell_p->Selection.buffer_pp[i] + Shell_p->Selection.Stop.x;
+            }
+    
+            if (length > 0) {nh_encoding_appendUTF8(&Clipboard, p, length);}
+    
+        } else if (Shell_p->ST_p->col - empty > 0) {
+            nh_encoding_appendUTF8(&Clipboard, Shell_p->Selection.buffer_pp[i], Shell_p->ST_p->col - empty);
+        }
     }
 
     // TODO sync?
@@ -873,7 +893,22 @@ NH_TTY_BEGIN()
     int stop = index1 > index2 ? index1 : index2;
 
     if (Shell_p->Selection.draw && row - Shell_p->scroll >= start && row - Shell_p->scroll <= stop) {
-        for (int i = 0; i < width; ++i) {Glyphs_p[i].Attributes.reverse = NH_TRUE;}
+        for (int i = 0; i < width; ++i) {
+            if (index1 < index2 || index1 == index2) {
+                if (Shell_p->Selection.Start.x < Shell_p->Selection.Stop.x) {
+                    if (row - Shell_p->scroll == start && i < Shell_p->Selection.Start.x) {continue;}
+                    if (row - Shell_p->scroll == stop && i > Shell_p->Selection.Stop.x) {continue;}
+                } else {
+                    if (row - Shell_p->scroll == start && i > Shell_p->Selection.Start.x) {continue;}
+                    if (row - Shell_p->scroll == stop && i < Shell_p->Selection.Stop.x) {continue;}
+                }
+            }
+            if (index1 > index2) {
+                if (row - Shell_p->scroll == start && i < Shell_p->Selection.Stop.x) {continue;}
+                if (row - Shell_p->scroll == stop && i > Shell_p->Selection.Start.x) {continue;}
+            }
+            Glyphs_p[i].Attributes.reverse = NH_TRUE;
+        }
     }
 
 NH_TTY_SILENT_END()

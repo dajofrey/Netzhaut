@@ -21,6 +21,7 @@
  */
 
     typedef struct nh_terminal_Box {
+        NH_BOOL accent;
         nh_PixelPosition UpperLeft;
         nh_PixelPosition LowerRight;
         float innerVertices_p[18];

@@ -13,7 +13,6 @@
 #include "../../nhapi/nhcore.h"
 #include "../../nhapi/nhencoding.h" 
 #include "../../nhapi/nhurl.h"
-#include "../../nhapi/nhmake.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 #endif // NH_URL_COMMON_INCLUDES_H

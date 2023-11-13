@@ -21,7 +21,6 @@
 #include "../../nhcore/System/Thread.h"
 
 #include "../../nhencoding/Encodings/UTF32.h"
-#include "../../nhdocs/Tagger/Tagger.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -46,13 +45,6 @@ NH_TTY_BEGIN()
             break;
         case NH_TTY_PROGRAM_SHELL :
             Prototype_p = nh_tty_createShellPrototype();
-            break;
-        case NH_TTY_PROGRAM_TAGGER :
-            NH_LOADER.load_f(NH_MODULE_DOCS, 0);
-            nh_docs_createTaggerPrototype_f createTaggerPrototype_f = 
-                nh_core_loadExistingSymbol(NH_MODULE_DOCS, 0, "nh_docs_createTaggerPrototype");
-            NH_TTY_CHECK_NULL_2(NULL, createTaggerPrototype_f)
-            Prototype_p = createTaggerPrototype_f();
             break;
     }
 

@@ -130,7 +130,7 @@ NH_TTY_END(NH_TTY_SUCCESS)
 
 // ADD/REMOVE ======================================================================================
 
-NH_TTY_RESULT nh_tty_insertAndFocusWindow(
+nh_tty_MacroWindow *nh_tty_insertAndFocusWindow(
     void *TTY_p, int index)
 {
 NH_TTY_BEGIN()
@@ -143,9 +143,9 @@ NH_TTY_BEGIN()
 
     nh_tty_MacroWindow *Window_p = nh_core_getFromList(&((nh_tty_TTY*)TTY_p)->Windows, index);
     if (Window_p) {
-        // Only focus tab.
+        // Only focus window.
         ((nh_tty_TTY*)TTY_p)->Window_p = Window_p;
-        NH_TTY_END(NH_TTY_SUCCESS)
+        NH_TTY_END(Window_p)
     } 
 
     Window_p = nh_tty_createMacroWindow(TTY_p);
@@ -156,7 +156,7 @@ NH_TTY_BEGIN()
     // Automatically switch to new window. 
     ((nh_tty_TTY*)TTY_p)->Window_p = Window_p;
  
-NH_TTY_DIAGNOSTIC_END(NH_TTY_SUCCESS)
+NH_TTY_END(Window_p)
 }
 
 NH_TTY_RESULT nh_tty_destroyWindows(
@@ -307,6 +307,7 @@ static NH_TTY_RESULT nh_tty_handleKeyboardInput(
 {
 NH_TTY_BEGIN()
 
+    nh_tty_Config Config = nh_tty_getConfig();
     nh_tty_MacroTile *MacroTile_p = Window_p->Tile_p->p;
     nh_tty_MacroTab *MacroTab_p = MacroTile_p->MacroTabs.pp[MacroTile_p->current];
 
@@ -319,14 +320,21 @@ NH_TTY_BEGIN()
 
     nh_tty_TTY *TTY_p = nh_core_getWorkloadArg();
 
-    // Switch tabs.
+    // Switch window or tab.
     if (nh_encoding_isASCIIDigit(Event.Keyboard.codepoint) && Event.Keyboard.trigger == NH_WSI_TRIGGER_PRESS && TTY_p->alt && TTY_p->ctrl) {
-        Window_p->Tile_p->refresh = NH_TRUE;
-        NH_TTY_END(nh_tty_insertAndFocusWindow(TTY_p, Event.Keyboard.codepoint - '1'))
+        if (Config.windows > Event.Keyboard.codepoint - '1') {
+            Window_p = nh_tty_insertAndFocusWindow(TTY_p, Event.Keyboard.codepoint - '1');
+            Window_p->refreshGrid2 = NH_TRUE;
+            Window_p->Tile_p->refresh = NH_TRUE;
+            NH_TTY_END(NH_TTY_SUCCESS)
+        }
+        NH_TTY_END(NH_TTY_SUCCESS)
     }
     else if (nh_encoding_isASCIIDigit(Event.Keyboard.codepoint) && Event.Keyboard.trigger == NH_WSI_TRIGGER_PRESS && TTY_p->alt) {
-        Window_p->Tile_p->refresh = NH_TRUE;
-        MacroTile_p->current = Event.Keyboard.codepoint - '1';
+        if (Config.tabs > Event.Keyboard.codepoint - '1') {
+            Window_p->Tile_p->refresh = NH_TRUE;
+            MacroTile_p->current = Event.Keyboard.codepoint - '1';
+        }
         NH_TTY_END(NH_TTY_SUCCESS)
     }
  
@@ -370,7 +378,7 @@ NH_TTY_BEGIN()
         Window_p->Tile_p->refresh = NH_TRUE;
     }
     else if (MacroTab_p->TopBar.hasFocus) {
-        NH_TTY_CHECK(nh_tty_handleTopBarInput(&MacroTab_p->TopBar, &MacroTab_p->MicroWindow, Event.Keyboard))
+        NH_TTY_CHECK(nh_tty_handleTopBarInput(Window_p->Tile_p, Event))
         Window_p->Tile_p->refresh = NH_TRUE;
     }
     else if (nh_tty_getCurrentProgram(&MacroTab_p->MicroWindow) != NULL) {
@@ -399,6 +407,7 @@ static NH_TTY_RESULT nh_tty_handleMouseInput(
 {
 NH_TTY_BEGIN()
 
+    nh_tty_TTY *TTY_p = nh_core_getWorkloadArg();
     nh_tty_Tile *MacroTile_p = NULL, *MicroTile_p = NULL;
     nh_List MacroTiles = nh_tty_getTiles(Window_p->RootTile_p);
 
@@ -406,6 +415,7 @@ NH_TTY_BEGIN()
     if (Config.Sidebar.state != NH_TTY_SIDEBAR_STATE_OFF) {col -= 2;}
 
     int cCol = col;
+    int cCol2 = col;
     int cRow = row;
 
     // Get tile that is being hovered over.
@@ -417,6 +427,7 @@ NH_TTY_BEGIN()
         &&  MacroTile_p->colPosition <= col
         &&  MacroTile_p->colPosition  + MacroTile_p->colSize > col) {
             cCol = col - MacroTile_p->colPosition;
+            cCol2 = cCol;
             cRow = row - MacroTile_p->rowPosition;
             if (MacroTile_p->rowPosition <= cRow
             &&  MacroTile_p->rowPosition  + MacroTile_p->rowSize > cRow
@@ -442,17 +453,26 @@ NH_TTY_BEGIN()
             nh_core_freeList(&MicroTiles, NH_FALSE);
             if (MicroTile_p) {break;}
         }
+        MacroTile_p = NULL;
         MicroTile_p = NULL;
     }
 
-    nh_core_freeList(&MacroTiles, NH_FALSE);
+    if (cCol == -2) {
+        // Forward sidebar hit.
+        if (Event.Mouse.trigger == NH_WSI_TRIGGER_PRESS) {
+            NH_TTY_CHECK(nh_tty_handleSideBarHit(Event.Mouse.type, cRow))
+            TTY_p->Window_p->refreshGrid2 = NH_TRUE;
+        }
+    }
+ 
+    if (MacroTile_p == NULL || MicroTile_p == NULL) {NH_TTY_END(NH_TTY_SUCCESS)}
 
     // Handle mouse-menu input.
     if (Window_p->MouseMenu_p) {
         nh_tty_ContextMenu *Hit_p = nh_tty_isContextMenuHit(Window_p->MouseMenu_p, NULL, NH_TRUE, col, row);
         if (Hit_p) {
             if (Event.Mouse.type == NH_WSI_MOUSE_LEFT && Event.Mouse.trigger == NH_WSI_TRIGGER_PRESS) {
-                nh_tty_handleMouseMenuPress(Hit_p);
+                nh_tty_handleMouseMenuPress(Window_p->MouseMenu_p, Hit_p);
                 if (Window_p->MouseMenu_p) {
                     nh_tty_freeContextMenu(Window_p->MouseMenu_p);
                     Window_p->MouseMenu_p = NULL; // Otherwise we end up with an invalid pointer!
@@ -486,9 +506,26 @@ NH_TTY_BEGIN()
         Window_p->Tile_p = MacroTile_p;
 
         if (Window_p->MouseMenu_p) {nh_tty_freeContextMenu(Window_p->MouseMenu_p);}
-        Window_p->MouseMenu_p = nh_tty_createMouseMenu(col, row);
+        Window_p->MouseMenu_p = nh_tty_createMouseMenu1(col, row);
         NH_TTY_CHECK_NULL(Window_p->MouseMenu_p)
         Window_p->MouseMenu_p->active = NH_TRUE;
+        Window_p->MouseMenu_p->cCol = cCol;
+        Window_p->MouseMenu_p->cRow = cRow;
+
+        Window_p->refreshGrid2 = NH_TRUE;
+    }
+
+    // Create mouse-menu on right-click and switch tiles.
+    if (Event.Mouse.type == NH_WSI_MOUSE_MIDDLE && Event.Mouse.trigger == NH_WSI_TRIGGER_PRESS && MicroTile_p) {
+        NH_TTY_MICRO_TAB(NH_TTY_MACRO_TAB(MacroTile_p))->Tile_p = MicroTile_p;
+        Window_p->Tile_p = MacroTile_p;
+
+        if (Window_p->MouseMenu_p) {nh_tty_freeContextMenu(Window_p->MouseMenu_p);}
+        Window_p->MouseMenu_p = nh_tty_createMouseMenu2(col, row);
+        NH_TTY_CHECK_NULL(Window_p->MouseMenu_p)
+        Window_p->MouseMenu_p->active = NH_TRUE;
+        Window_p->MouseMenu_p->cCol = cCol;
+        Window_p->MouseMenu_p->cRow = cRow;
 
         Window_p->refreshGrid2 = NH_TRUE;
     }
@@ -500,14 +537,12 @@ NH_TTY_BEGIN()
         Window_p->refreshGrid2 = NH_TRUE;
     }
 
-    // Handle sidebar, topbar or tile hit.
-    if (cCol == -2) {
-        if (Event.Mouse.trigger == NH_WSI_TRIGGER_PRESS) {
-            NH_TTY_CHECK(nh_tty_handleSideBarHit(Event.Mouse.type, cRow))
-        }
-    } else if (cRow == 0) {
-        // Topbar hit.
+    if (cRow == 0) {
+        // Forward topbar hit.
+        Event.Mouse.Position.x = cCol2;
+        NH_TTY_CHECK(nh_tty_handleTopBarInput(MacroTile_p, Event))
     } else if (MicroTile_p && NH_TTY_MICRO_TILE(MicroTile_p)->Program_p) {
+        // Forward program hit.
         Event.Mouse.Position.x = cCol;
         Event.Mouse.Position.y = cRow - 1; // Subtract topbar. 
         NH_TTY_CHECK(NH_TTY_MICRO_TILE(MicroTile_p)->Program_p->Prototype_p->Callbacks.handleInput_f(
@@ -515,7 +550,16 @@ NH_TTY_BEGIN()
         ))
     }
 
+    if (cRow != 0) {
+        for (int i = 0; i < MacroTiles.size; ++i) {
+            if (((nh_tty_Tile*)MacroTiles.pp[i])->Children.count > 0) {continue;}
+            NH_TTY_MACRO_TAB(MacroTiles.pp[i])->TopBar.quitHover = NH_FALSE;
+        }
+    }
+
 SKIP:
+
+    nh_core_freeList(&MacroTiles, NH_FALSE);
 
 NH_TTY_END(NH_TTY_SUCCESS)
 }

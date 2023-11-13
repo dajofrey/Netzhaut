@@ -59,13 +59,16 @@ NH_TTY_RESULT nh_tty_drawSideBarRow(
 NH_TTY_BEGIN()
 
     nh_tty_TTY *TTY_p = nh_core_getWorkloadArg();
+    nh_tty_Config Config = nh_tty_getConfig();
 
-    if (row < 9) {
-        Glyphs_p[0].codepoint = '0' + row + 1;
+    if (row < Config.windows) {
+        Glyphs_p[0].codepoint = ' ';
         Glyphs_p[0].mark = NH_TTY_MARK_ACCENT;
         Glyphs_p[0].Attributes.reverse = nh_core_getListIndex(&TTY_p->Windows, TTY_p->Window_p) == row;
     } else {
         Glyphs_p[0].codepoint = ' ';
+        Glyphs_p[0].mark = NH_TTY_MARK_ACCENT;
+        Glyphs_p[0].Attributes.reverse = NH_TRUE;
     }
 
     Glyphs_p[1].mark = NH_TTY_MARK_ACCENT | NH_TTY_MARK_LINE_VERTICAL;

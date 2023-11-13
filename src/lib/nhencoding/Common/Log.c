@@ -11,7 +11,7 @@
 #include "Log.h"
 #include "Macros.h"
 
-#include "../Base/UnicodeData.h"
+#include "../Base/UnicodeData.gen.h"
 #include "../../nhcore/System/Logger.h"
 
 #include <stdio.h>
