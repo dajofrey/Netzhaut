@@ -45,9 +45,7 @@ extern "C" {
  * Extensions removed: _nomatch_^
  */
 
-// Changed by Netzhaut. {
-#include "../OpenGL/simple-opengl-loader.h"
-// }
+#include "../simple-opengl-loader-master/simple-opengl-loader.h"
 
 #ifndef GLX_VERSION_1_3
 #define GLX_VERSION_1_3 1

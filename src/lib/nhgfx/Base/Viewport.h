@@ -48,6 +48,9 @@
             nh_PixelSize Size;
             nh_PixelPosition Position;    
             nh_Color ClearColor;
+            nh_Color BorderColor;
+            NH_BOOL border;
+            int borderWidth;
             unsigned int priority;     /**<Defines rendering order. 0 is highest priority aka frontmost viewport. Lesser priorities ascend to +infinity.*/
         } Settings;
         struct {

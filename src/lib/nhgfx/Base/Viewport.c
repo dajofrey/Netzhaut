@@ -43,6 +43,13 @@ NH_GFX_BEGIN()
     Viewport_p->Settings.ClearColor.b = 1.0f;
     Viewport_p->Settings.ClearColor.a = 1.0f;
 
+    Viewport_p->Settings.BorderColor.r = 1.0f;
+    Viewport_p->Settings.BorderColor.g = 1.0f;
+    Viewport_p->Settings.BorderColor.b = 1.0f;
+    Viewport_p->Settings.BorderColor.a = 1.0f;
+ 
+    Viewport_p->Settings.border   = NH_FALSE;
+    Viewport_p->Settings.borderWidth = 0;
     Viewport_p->Settings.Size     = Size;
     Viewport_p->Settings.Position = Position;
     Viewport_p->Settings.priority = 0;
@@ -101,7 +108,7 @@ NH_GFX_BEGIN()
 
     Viewport_p->Settings.Size     = Size;
     Viewport_p->Settings.Position = Position;
- 
+
 NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
 }
 

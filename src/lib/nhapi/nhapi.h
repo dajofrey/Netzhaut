@@ -12,7 +12,6 @@
 #include "nhcore.h"
 #include "nhrenderer.h"
 #include "nhhtml.h"
-#include "nhterminal.h"
 #include "nhecmascript.h"
 
 #endif

@@ -30,10 +30,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-// Changed by Netzhaut. {
 //#include <GL/gl.h>
-#include "simple-opengl-loader.h"
-// }
+#include "../simple-opengl-loader-master/simple-opengl-loader.h"
 
 #if defined(USE_MGL_NAMESPACE)
 #include "glx_mangle.h"

@@ -1,6 +1,6 @@
 # Define the compiler and compile flags
 CC = gcc
-CFLAGS = -fPIC -std=gnu99 -Wl,-rpath=/usr/local/lib
+CFLAGS = -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib
 
 # Define the linker and linker flags
 LD = gcc
@@ -10,19 +10,18 @@ LDFLAGS_NHCORE = -lm -ldl -Lexternal/c_hashmap -l:libc_hashmap.a
 LDFLAGS_NHWSI = -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
 LDFLAGS_NHHTML =
 LDFLAGS_NHDOM =
-LDFLAGS_NHTTY = -lutil -Lexternal/st-0.8.5/ -l:libst.so
-LDFLAGS_NHTERMINAL =
 LDFLAGS_NHNETWORK = -lssl
 LDFLAGS_NHWEBIDL =
 LDFLAGS_NHECMASCRIPT =
 LDFLAGS_NHENCODING =
-LDFLAGS_NHGFX = -lX11 -lXrender -lXext -lfreetype -lharfbuzz -Lexternal/volk-master/ -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
+LDFLAGS_NHGFX = -lX11 -lXrender -lXext -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
 LDFLAGS_NHRENDERER =
 LDFLAGS_NHCSS =
 LDFLAGS_NHURL =
 
-LDFLAGS_NHTTY_BIN = -L$(CURDIR)/lib -lnhapi
-LDFLAGS_NHTERMINAL_BIN = -L$(CURDIR)/lib -lnhapi
+LDFLAGS_C_HASHMAP =
+LDFLAGS_VOLK =
+LDFLAGS_FREETYPE_GL = -I/usr/include/freetype2 -lfreetype -lharfbuzz
 
 # Define the source file directory for each library
 SRC_DIR_NHAPI = src/lib/nhapi
@@ -30,8 +29,6 @@ SRC_DIR_NHCORE = src/lib/nhcore
 SRC_DIR_NHWSI = src/lib/nhwsi
 SRC_DIR_NHHTML = src/lib/nhhtml
 SRC_DIR_NHDOM = src/lib/nhdom
-SRC_DIR_NHTTY = src/lib/nhtty
-SRC_DIR_NHTERMINAL = src/lib/nhterminal
 SRC_DIR_NHNETWORK = src/lib/nhnetwork
 SRC_DIR_NHWEBIDL = src/lib/nhwebidl
 SRC_DIR_NHECMASCRIPT = src/lib/nhecmascript
@@ -41,19 +38,18 @@ SRC_DIR_NHRENDERER = src/lib/nhrenderer
 SRC_DIR_NHCSS = src/lib/nhcss
 SRC_DIR_NHURL = src/lib/nhurl
 
-SRC_DIR_NHTTY_BIN = src/bin/nhtty
-SRC_DIR_NHTERMINAL_BIN = src/bin/nhterminal
+SRC_DIR_C_HASHMAP = external/c_hashmap
+SRC_DIR_VOLK= external/volk
+SRC_DIR_FREETYPE_GL= external/freetype-gl
 
 # List of source files for each library
 SRC_FILES_NHAPI = \
     nhapi.c \
     nhcore.c \
-    nhtty.c \
     nhwsi.c \
     nhgfx.c \
     nhhtml.c \
     nhcss.c \
-    nhterminal.c \
     nhrenderer.c \
     nhecmascript.c \
     nhencoding.c \
@@ -147,57 +143,6 @@ SRC_FILES_NHDOM = \
     Common/Terminate.c \
     Common/About.c \
 
-SRC_FILES_NHTTY = \
-    TTY/TTY.c \
-    TTY/Draw.c \
-    TTY/Program.c \
-    TTY/Macro.c \
-    TTY/SideBar.c \
-    TTY/TopBar.c \
-    TTY/TopBarMessage.c \
-    TTY/Tiling.c \
-    TTY/StandardIO.c \
-    TTY/View.c \
-    TTY/Micro.c \
-    TTY/ContextMenu.c \
-    Editor/TreeListing.c \
-    Editor/Editor.c \
-    Editor/FileEditor.c \
-    Editor/File.c \
-    Editor/TextFile.c \
-    Editor/TextFileInput.c \
-    Editor/SyntaxHighlights.c \
-    Logger/Logger.c \
-    Shell/Shell.c \
-    Shell/Socket.c \
-    Common/Result.c \
-    Common/About.c \
-    Common/Log.c \
-    Common/Config.c \
-    Common/IndexMap.c \
-    Common/Initialize.c \
-    Common/Terminate.c \
-
-SRC_FILES_NHTERMINAL = \
-    Terminal/Terminal.c \
-    Terminal/Grid.c \
-    Terminal/Graphics.c \
-    Terminal/Vertices.c \
-    Vulkan/Pipeline.c \
-    Vulkan/Text.c \
-    Vulkan/Render.c \
-    OpenGL/Foreground.c \
-    OpenGL/Background.c \
-    OpenGL/Boxes.c \
-    OpenGL/Render.c \
-    Common/Result.c \
-    Common/About.c \
-    Common/Log.c \
-    Common/Initialize.c \
-    Common/Terminate.c \
-    Common/Config.c \
-    Common/IndexMap.c \
- 
 SRC_FILES_NHNETWORK = \
     Common/Log.c \
     Common/Result.c \
@@ -373,8 +318,17 @@ SRC_FILES_NHURL = \
     Common/About.c \
     Common/Test.c \
 	
-SRC_FILES_NHTTY_BIN = Main.c
-SRC_FILES_NHTERMINAL_BIN = Main.c
+SRC_FILES_C_HASHMAP = hashmap.c
+SRC_FILES_VOLK = volk.c
+
+SRC_FILES_FREETYPE_GL = \
+    utf8-utils.c \
+    vector.c \
+    texture-atlas.c \
+    texture-font.c \
+    distance-field.c \
+    edtaa3func.c \
+    platform.c \
 
 # Object files derived from source files for each library
 OBJ_FILES_NHAPI = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHAPI)/, $(SRC_FILES_NHAPI)))
@@ -382,8 +336,6 @@ OBJ_FILES_NHCORE = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHCORE)/, $(SRC_FI
 OBJ_FILES_NHWSI = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHWSI)/, $(SRC_FILES_NHWSI)))
 OBJ_FILES_NHHTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHHTML)/, $(SRC_FILES_NHHTML)))
 OBJ_FILES_NHDOM = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHDOM)/, $(SRC_FILES_NHDOM)))
-OBJ_FILES_NHTTY = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHTTY)/, $(SRC_FILES_NHTTY)))
-OBJ_FILES_NHTERMINAL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHTERMINAL)/, $(SRC_FILES_NHTERMINAL)))
 OBJ_FILES_NHNETWORK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHNETWORK)/, $(SRC_FILES_NHNETWORK)))
 OBJ_FILES_NHWEBIDL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHWEBIDL)/, $(SRC_FILES_NHWEBIDL)))
 OBJ_FILES_NHECMASCRIPT = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHECMASCRIPT)/, $(SRC_FILES_NHECMASCRIPT)))
@@ -393,8 +345,9 @@ OBJ_FILES_NHRENDERER = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHRENDERER)/, 
 OBJ_FILES_NHCSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHCSS)/, $(SRC_FILES_NHCSS)))
 OBJ_FILES_NHURL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHURL)/, $(SRC_FILES_NHURL)))
 
-OBJ_FILES_NHTTY_BIN = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHTTY_BIN)/, $(SRC_FILES_NHTTY_BIN)))
-OBJ_FILES_NHTERMINAL_BIN = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHTERMINAL_BIN)/, $(SRC_FILES_NHTERMINAL_BIN)))
+OBJ_FILES_C_HASHMAP = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_C_HASHMAP)/, $(SRC_FILES_C_HASHMAP)))
+OBJ_FILES_VOLK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_VOLK)/, $(SRC_FILES_VOLK)))
+OBJ_FILES_FREETYPE_GL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_FREETYPE_GL)/, $(SRC_FILES_FREETYPE_GL)))
 
 # Name of the shared libraries and binaries
 LIB_NHAPI = lib/libnhapi.so
@@ -402,8 +355,6 @@ LIB_NHCORE = lib/libnhcore.so
 LIB_NHWSI = lib/libnhwsi.so
 LIB_NHHTML = lib/libnhhtml.so
 LIB_NHDOM = lib/libnhdom.so
-LIB_NHTTY = lib/libnhtty.so
-LIB_NHTERMINAL = lib/libnhterminal.so
 LIB_NHNETWORK = lib/libnhnetwork.so
 LIB_NHWEBIDL = lib/libnhwebidl.so
 LIB_NHECMASCRIPT = lib/libnhecmascript.so
@@ -413,19 +364,41 @@ LIB_NHRENDERER = lib/libnhrenderer.so
 LIB_NHCSS = lib/libnhcss.so
 LIB_NHURL = lib/libnhurl.so
 
-BIN_NHTTY = bin/nhtty
-BIN_NHTERMINAL = bin/nhterminal
+LIB_C_HASHMAP = external/c_hashmap/libc_hashmap.a
+LIB_VOLK = external/volk/libvolk.a
+LIB_FREETYPE_GL = external/freetype-gl/libfreetype-gl.so
+
+# Create dirs
+create_lib_dir:
+	mkdir -p lib
+create_bin_dir:
+	mkdir -p bin
 
 # Build targets for each library
-all: $(LIB_NHAPI) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHTTY) $(BIN_NHTTY) $(LIB_NHTERMINAL) $(BIN_NHTERMINAL) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL)
-lib: $(LIB_NHAPI) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHTTY) $(LIB_NHTERMINAL) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL)
-bin: $(BIN_NHTTY) $(BIN_NHTERMINAL)
+all: $(LIB_NHAPI) $(LIB_C_HASHMAP) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL)
+nhapi.so: $(LIB_NHAPI)
+nhcore.so: $(LIB_C_HASHMAP) $(LIB_NHCORE)
+nhwsi.so: $(LIB_NHWSI)
+nhhtml.so: $(LIB_NHHTML)
+nhdom.so: $(LIB_NHDOM)
+nhnetwork.so: $(LIB_NHNETWORK)
+nhwebidl.so: $(LIB_NHWEBIDL)
+nhecmascript.so: $(LIB_NHECMASCRIPT)
+nhencoding.so: $(LIB_NHENCODING)
+nhgfx.so: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX)
+nhrenderer.so: $(LIB_NHRENDERER)
+nhcss.so: $(LIB_NHCSS)
+nhurl.so: $(LIB_NHURL)
 
 # Custom compiler flags
-$(OBJ_FILES_NHGFX): CFLAGS += -Wl,-rpath=external/freetype-gl -I/usr/include/freetype2 -I/usr/include/harfbuzz -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-$(OBJ_FILES_NHTTY): CFLAGS += -Wl,-rpath=external/st-0.8.5
-$(OBJ_FILES_NHTERMINAL): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NHHTML): CFLAGS += -Iexternal
+$(OBJ_FILES_NHAPI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NHRENDERER): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NHWSI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NHGFX): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -I/usr/include/freetype2 -I/usr/include/harfbuzz -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_NHRENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_VOLK): CFLAGS += -ldl -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface -DVOLK_VULKAN_H_PATH=\"../Vulkan-Headers-1.3.220/include/vulkan/vulkan.h\"
+$(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/usr/include/freetype2 -I/usr/include/harfbuzz -lfreetype -lharfbuzz
 
 # Rule to compile source files into object files
 %.o: $(SRC_DIR_NHAPI)/%.c
@@ -437,10 +410,6 @@ $(OBJ_FILES_NHRENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -
 %.o: $(SRC_DIR_NHHTML)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 %.o: $(SRC_DIR_NHDOM)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHTTY)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHTERMINAL)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 %.o: $(SRC_DIR_NHNETWORK)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -459,82 +428,67 @@ $(OBJ_FILES_NHRENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -
 %.o: $(SRC_DIR_NHURL)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: $(SRC_DIR_NHTTY_BIN)/%.c
+%.o: $(SRC_DIR_C_HASHMAP)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
-%.o: $(SRC_DIR_NHTERMINAL_BIN)/%.c
+%.o: $(SRC_DIR_VOLK)/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+%.o: $(SRC_DIR_FREETYPE_GL)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Rule to link object files into the shared libraries
-$(LIB_NHAPI): $(OBJ_FILES_NHAPI)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHAPI) $(LDFLAGS_NHAPI)
-$(LIB_NHCORE): prepare-nhcore $(OBJ_FILES_NHCORE)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHCORE) $(LDFLAGS_NHCORE)
-$(LIB_NHWSI): $(OBJ_FILES_NHWSI)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHWSI) $(LDFLAGS_NHWSI)
-$(LIB_NHHTML): $(OBJ_FILES_NHHTML)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHHTML) $(LDFLAGS_NHHTML)
-$(LIB_NHDOM): $(OBJ_FILES_NHDOM)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHDOM) $(LDFLAGS_NHDOM)
-$(LIB_NHTTY): $(OBJ_FILES_NHTTY)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHTTY) $(LDFLAGS_NHTTY)
-$(LIB_NHTERMINAL): $(OBJ_FILES_NHTERMINAL)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHTERMINAL) $(LDFLAGS_NHTERMINAL)
-$(LIB_NHNETWORK): $(OBJ_FILES_NHNETWORK)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHNETWORK) $(LDFLAGS_NHNETWORK)
-$(LIB_NHWEBIDL): prepare-nhwebidl $(OBJ_FILES_NHWEBIDL)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHWEBIDL) $(LDFLAGS_NHWEBIDL)
-$(LIB_NHECMASCRIPT): $(OBJ_FILES_NHECMASCRIPT)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHECMASCRIPT) $(LDFLAGS_NHECMASCRIPT)
-$(LIB_NHENCODING): $(OBJ_FILES_NHENCODING)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHENCODING) $(LDFLAGS_NHENCODING)
-$(LIB_NHGFX): prepare-nhgfx $(OBJ_FILES_NHGFX)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHGFX) $(LDFLAGS_NHGFX)
-$(LIB_NHRENDERER): $(OBJ_FILES_NHRENDERER)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHRENDERER) $(LDFLAGS_NHRENDERER)
-$(LIB_NHCSS): prepare-nhcss $(OBJ_FILES_NHCSS)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHCSS) $(LDFLAGS_NHCSS)
-$(LIB_NHURL): prepare-nhurl $(OBJ_FILES_NHURL)
-	$(LD) -shared -o $@ $(OBJ_FILES_NHURL) $(LDFLAGS_NHURL)
+$(LIB_NHAPI): create_lib_dir $(OBJ_FILES_NHAPI)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHAPI) $(LDFLAGS_NHAPI)
+$(LIB_NHCORE): create_lib_dir $(OBJ_FILES_NHCORE)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHCORE) $(LDFLAGS_NHCORE)
+$(LIB_NHWSI): create_lib_dir $(OBJ_FILES_NHWSI)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHWSI) $(LDFLAGS_NHWSI)
+$(LIB_NHHTML): create_lib_dir $(OBJ_FILES_NHHTML)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHHTML) $(LDFLAGS_NHHTML)
+$(LIB_NHDOM): create_lib_dir $(OBJ_FILES_NHDOM)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHDOM) $(LDFLAGS_NHDOM)
+$(LIB_NHNETWORK): create_lib_dir $(OBJ_FILES_NHNETWORK)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHNETWORK) $(LDFLAGS_NHNETWORK)
+$(LIB_NHWEBIDL): create_lib_dir $(OBJ_FILES_NHWEBIDL)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHWEBIDL) $(LDFLAGS_NHWEBIDL)
+$(LIB_NHECMASCRIPT): create_lib_dir $(OBJ_FILES_NHECMASCRIPT)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHECMASCRIPT) $(LDFLAGS_NHECMASCRIPT)
+$(LIB_NHENCODING): create_lib_dir $(OBJ_FILES_NHENCODING)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHENCODING) $(LDFLAGS_NHENCODING)
+$(LIB_NHGFX): create_lib_dir $(OBJ_FILES_NHGFX)
+	$(LD) $(CFLAGS) -Wl,-rpath,':$(CURDIR)/external/freetype-gl' -shared -o $@ $(OBJ_FILES_NHGFX) $(LDFLAGS_NHGFX)
+$(LIB_NHRENDERER): create_lib_dir $(OBJ_FILES_NHRENDERER)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHRENDERER) $(LDFLAGS_NHRENDERER)
+$(LIB_NHCSS): create_lib_dir $(OBJ_FILES_NHCSS)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHCSS) $(LDFLAGS_NHCSS)
+$(LIB_NHURL): create_lib_dir $(OBJ_FILES_NHURL)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHURL) $(LDFLAGS_NHURL)
 
-$(BIN_NHTTY): $(OBJ_FILES_NHTTY_BIN)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS_NHTTY_BIN)
-$(BIN_NHTERMINAL): $(OBJ_FILES_NHTERMINAL_BIN)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS_NHTERMINAL_BIN)
-
-# Rule for build-preparation scripts
-prepare-nhcore:
-	sh build/scripts/prepare-nhcore.sh
-prepare-nhgfx:
-	sh build/scripts/prepare-nhgfx.sh
-prepare-nhcss:
-	sh build/scripts/prepare-nhcss.sh
-prepare-nhurl:
-	sh build/scripts/prepare-nhurl.sh
-prepare-nhwebidl:
-	sh build/scripts/prepare-nhwebidl.sh
+$(LIB_C_HASHMAP): $(OBJ_FILES_C_HASHMAP)
+	ar rcs $@ $^ 
+$(LIB_VOLK): $(OBJ_FILES_VOLK)
+	ar rcs $@ $^ 
+$(LIB_FREETYPE_GL): $(OBJ_FILES_FREETYPE_GL)
+	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_FREETYPE_GL) $(LDFLAGS_FREETYPE_GL)
 
 # Clean rule
 clean:
 	rm -f $(OBJ_FILES_NHAPI) $(LIB_NHAPI) 
-	sh build/scripts/prepare-nhcore.sh clean
 	rm -f $(OBJ_FILES_NHCORE) $(LIB_NHCORE) 
 	rm -f $(OBJ_FILES_NHWSI) $(LIB_NHWSI) 
 	rm -f $(OBJ_FILES_NHHTML) $(LIB_NHHTML)
 	rm -f $(OBJ_FILES_NHDOM) $(LIB_NHDOM)
-	rm -f $(OBJ_FILES_NHTTY) $(LIB_NHTTY)
-	rm -f $(OBJ_FILES_NHTERMINAL) $(LIB_NHTERMINAL)
 	rm -f $(OBJ_FILES_NHNETWORK) $(LIB_NHNETWORK)
 	rm -f $(OBJ_FILES_NHWEBIDL) $(LIB_NHWEBIDL)
 	rm -f $(OBJ_FILES_NHECMASCRIPT) $(LIB_NHECMASCRIPT)
 	rm -f $(OBJ_FILES_NHENCODING) $(LIB_NHENCODING)
 	rm -f $(OBJ_FILES_NHGFX) $(LIB_NHGFX)
-	sh build/scripts/prepare-nhgfx.sh clean
 	rm -f $(OBJ_FILES_NHRENDERER) $(LIB_NHRENDERER)
 	rm -f $(OBJ_FILES_NHCSS) $(LIB_NHCSS)
-	sh build/scripts/prepare-nhcss.sh clean
 	rm -f $(OBJ_FILES_NHURL) $(LIB_NHURL)
-	sh build/scripts/prepare-nhurl.sh clean
-	rm -f $(OBJ_FILES_NHTTY_BIN) $(BIN_NHTTY)
-	rm -f $(OBJ_FILES_NHTERMINAL_BIN) $(BIN_NHTERMINAL)
+	rm -f $(OBJ_FILES_C_HASHMAP) $(LIB_C_HASHMAP)
+	rm -f $(OBJ_FILES_VOLK) $(LIB_VOLK)
+	rm -f $(OBJ_FILES_FREETYPE_GL) $(LIB_FREETYPE_GL)
+	rm -rf lib
+	rm -rf bin
 
-.PHONY: all lib bin clean prepare-nhcore prepare-nhgfx prepare-nhcss prepare-nhurl prepare-nhwebidl
+.PHONY: all lib clean

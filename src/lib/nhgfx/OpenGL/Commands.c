@@ -686,7 +686,27 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glRotatef
 // nh_opengl_glScaled
 // nh_opengl_glScalef
-// nh_opengl_glScissor
+
+static NH_GFX_RESULT nh_opengl_glScissor(
+    nh_opengl_Command *Command_p)
+{
+NH_GFX_BEGIN()
+
+    nh_gfx_logOpenGLCommand("glScissor(x: %d, y: %d, width: %d, height: %d)\n",
+        *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
+        *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p),
+        *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
+        *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
+ 
+    glScissor(
+        *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
+        *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p),
+        *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
+        *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
+
+NH_GFX_END(NH_GFX_SUCCESS)
+}
+
 // nh_opengl_glSelectBuffer
 // nh_opengl_glShadeModel
 
@@ -1206,7 +1226,7 @@ nh_opengl_command_f commands_p[] = {
     NULL, // nh_opengl_glRotatef,
     NULL, // nh_opengl_glScaled,
     NULL, // nh_opengl_glScalef,
-    NULL, // nh_opengl_glScissor,
+    nh_opengl_glScissor,
     NULL, // nh_opengl_glSelectBuffer,
     NULL, // nh_opengl_glShadeModel,
     nh_opengl_glShaderSource,

@@ -125,11 +125,6 @@ NH_CORE_BEGIN()
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_URL, 0))
             break;
 
-        case NH_MODULE_TTY :
-            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
-            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
-            break;
-
         case NH_MODULE_WEBIDL : 
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
@@ -149,12 +144,6 @@ NH_CORE_BEGIN()
         case NH_MODULE_DOM :
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_WEBIDL, 0))
-            break;
-
-        case NH_MODULE_TERMINAL :
-            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
-            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_GFX, 0))
-            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_TTY, 0))
             break;
 
         case NH_MODULE_RENDERER : 
@@ -230,17 +219,8 @@ NH_CORE_BEGIN()
             // so we can unload it.
             NH_CORE_END(NH_TRUE)
 
-        case NH_MODULE_TTY :
-            if (NH_LOADER.Modules_p[NH_MODULE_TERMINAL].loaded == NH_TRUE) {
-                // Currently the loaded nhterminal module has a dependency on nhtty,
-                // so we can't unload right now.
-                NH_CORE_END(NH_FALSE)    
-            }
-            NH_CORE_END(NH_TRUE)
-
         case NH_MODULE_ENCODING :
-            if (NH_LOADER.Modules_p[NH_MODULE_TTY].loaded == NH_TRUE
-            ||  NH_LOADER.Modules_p[NH_MODULE_WEBIDL].loaded == NH_TRUE
+            if (NH_LOADER.Modules_p[NH_MODULE_WEBIDL].loaded == NH_TRUE
             ||  NH_LOADER.Modules_p[NH_MODULE_ECMASCRIPT].loaded == NH_TRUE
             ||  NH_LOADER.Modules_p[NH_MODULE_CSS].loaded == NH_TRUE
             ||  NH_LOADER.Modules_p[NH_MODULE_URL].loaded == NH_TRUE) {
@@ -270,9 +250,6 @@ NH_CORE_BEGIN()
             }
             NH_CORE_END(NH_TRUE)
 
-        case NH_MODULE_TERMINAL :
-            NH_CORE_END(NH_TRUE)
-
         case NH_MODULE_RENDERER : 
             NH_CORE_END(NH_TRUE)
 
@@ -286,8 +263,7 @@ NH_CORE_BEGIN()
             NH_CORE_END(NH_TRUE)
 
         case NH_MODULE_GFX :
-            if (NH_LOADER.Modules_p[NH_MODULE_TERMINAL].loaded == NH_TRUE 
-            ||  NH_LOADER.Modules_p[NH_MODULE_RENDERER].loaded == NH_TRUE) {
+            if (NH_LOADER.Modules_p[NH_MODULE_RENDERER].loaded == NH_TRUE) {
                 NH_CORE_END(NH_FALSE)    
             }
             NH_CORE_END(NH_TRUE)

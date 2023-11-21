@@ -94,9 +94,6 @@ NH_CORE_BEGIN()
                 case NH_MODULE_WSI :
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_WSI_VERSION_P");
                     break;
-                case NH_MODULE_TTY :
-                    ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_TTY_VERSION_P");
-                    break;
                 case NH_MODULE_NETWORK :
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_NETWORK_VERSION_P");
                     break;
@@ -120,9 +117,6 @@ NH_CORE_BEGIN()
                     break;
                 case NH_MODULE_CSS :
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_CSS_VERSION_P");
-                    break;
-                case NH_MODULE_TERMINAL :
-                    ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_TERMINAL_VERSION_P");
                     break;
                 case NH_MODULE_RENDERER :
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_RENDERER_VERSION_P");

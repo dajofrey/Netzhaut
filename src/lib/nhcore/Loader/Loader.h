@@ -23,7 +23,6 @@
     typedef enum NH_MODULE_E {
         NH_MODULE_CORE = 0,
         NH_MODULE_WSI,
-        NH_MODULE_TTY,
         NH_MODULE_NETWORK,
         NH_MODULE_ECMASCRIPT,
         NH_MODULE_HTML,
@@ -32,7 +31,6 @@
         NH_MODULE_DOM,
         NH_MODULE_GFX,
         NH_MODULE_CSS,
-        NH_MODULE_TERMINAL,
         NH_MODULE_RENDERER,
         NH_MODULE_URL,
         NH_MODULE_MAKE,

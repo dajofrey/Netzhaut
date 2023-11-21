@@ -42,16 +42,15 @@ NH_CORE_BEGIN()
     nh_LocalTime Time;
 
 #ifdef __unix__ 	
-    struct timeval LTime;
-    gettimeofday(&LTime, NULL);
-    struct tm *tm_p = localtime(&LTime.tv_sec);
-    Time.seconds = tm_p->tm_sec;  
-    Time.minutes = tm_p->tm_min;  
-    Time.hours   = tm_p->tm_hour; 
-    Time.days    = tm_p->tm_mday;
-    Time.months  = tm_p->tm_mon;  
-    Time.years   = tm_p->tm_year + 1900; 
-    Time.weekday = tm_p->tm_wday;
+    time_t t = time(NULL);
+    struct tm *p = localtime(&t);
+    Time.seconds = p->tm_sec;  
+    Time.minutes = p->tm_min;  
+    Time.hours   = p->tm_hour; 
+    Time.days    = p->tm_mday;
+    Time.months  = p->tm_mon + 1;  
+    Time.years   = p->tm_year + 1900; 
+    Time.weekday = p->tm_wday;
 #elif defined(_WIN32) || defined(WIN32)
     SYSTEMTIME WTime;
     GetLocalTime(&WTime);
