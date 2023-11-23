@@ -40,7 +40,6 @@ nh_Loader NH_LOADER;
 const NH_BYTE *NH_MODULE_NAMES_PP[] = {
     "nhcore",
     "nhwsi",
-    "nhtty",
     "nhnetwork",
     "nhecmascript",
     "nhhtml",
@@ -49,10 +48,8 @@ const NH_BYTE *NH_MODULE_NAMES_PP[] = {
     "nhdom",
     "nhgfx",
     "nhcss",
-    "nhterminal",
     "nhrenderer",
     "nhurl",
-    "nhmake",
 };
 
 int nh_core_getModuleIndex(
@@ -68,7 +65,7 @@ NH_CORE_END(-1)
 }
 
 static nh_Module nh_core_initModule(
-    NH_MODULE_E type)
+    int type)
 {
 NH_CORE_BEGIN()
 
@@ -156,9 +153,6 @@ NH_CORE_BEGIN()
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             break;
-
-        case NH_MODULE_MAKE :
-            break;
     }
 
 NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
@@ -188,6 +182,115 @@ NH_CORE_BEGIN()
     NH_CORE_CHECK(nh_core_logModules())
 
 NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+}
+
+// EXTERNAL MODULES ================================================================================
+
+static nh_core_ExternalModule *nh_core_getExternalModule(
+    NH_BYTE *name_p)
+{
+NH_CORE_BEGIN()
+
+    for (int i = 0; i < NH_LOADER.ExternalModules.length; ++i) {
+        nh_core_ExternalModule *Module_p = ((nh_core_ExternalModule*)NH_LOADER.ExternalModules.p)+i;
+        if (Module_p->name_p && !strcmp(Module_p->name_p, name_p)) {
+            NH_CORE_END(Module_p)
+        }
+    }
+
+NH_CORE_END(NULL)
+}
+
+static NH_CORE_RESULT nh_core_callExternalInitializer(
+    nh_core_ExternalModule *Module_p)
+{
+NH_CORE_BEGIN()
+
+    NH_BYTE name_p[255] = {'\0'};
+    sprintf(name_p, "%s_initialize", Module_p->name_p);
+
+    for (int i = 0; i < strlen(name_p); ++i) {
+        if (name_p[i] == '-') {name_p[i] = '_';}
+    }
+
+    initialize_f initializer_f = nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p);
+    if (initializer_f != NULL) {initializer_f();}
+
+NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+}
+
+static NH_CORE_RESULT nh_core_loadExternal(
+    nh_core_ExternalModule *Module_p
+);
+
+static NH_CORE_RESULT nh_core_loadExternalDependencies(
+    nh_core_ExternalModule *Module_p)
+{
+NH_CORE_BEGIN()
+
+    for (int i = 0; i < Module_p->dependencies; ++i) {
+        char *name_p = Module_p->dependencies_pp[i];
+        int index = nh_core_getModuleIndex(name_p);
+        if (index) {
+            NH_LOADER.load_f(index, 0);
+        } else {
+            nh_core_loadExternal(Module_p);
+        }
+    }
+
+NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+}
+
+static NH_CORE_RESULT nh_core_loadExternal(
+    nh_core_ExternalModule *Module_p)
+{
+NH_CORE_BEGIN()
+
+    NH_CORE_CHECK(nh_core_loadExternalDependencies(Module_p))
+
+    Module_p->Data.lib_p = nh_core_loadExternalLibrary(Module_p->name_p);
+    NH_CORE_CHECK_NULL(Module_p->Data.lib_p)
+
+    Module_p->Data.lastModified_p = nh_core_lastModified(Module_p->Data.lib_p);
+    NH_CORE_CHECK_NULL(Module_p->Data.lastModified_p)
+
+    nh_core_callExternalInitializer(Module_p);
+
+    Module_p->Data.loaded = NH_TRUE;
+
+NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+}
+
+static void *nh_core_loadExternalSymbol(
+    NH_BYTE *module_p, const NH_BYTE *name_p)
+{
+NH_CORE_BEGIN()
+
+    nh_core_ExternalModule *Module_p = nh_core_getExternalModule(module_p);
+    if (Module_p == NULL) {
+        NH_CORE_END(NULL)
+    }
+    if (Module_p->Data.loaded) {
+        nh_core_loadExternal(Module_p);
+    }
+
+NH_CORE_END(nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p))
+}
+
+NH_CORE_RESULT nh_core_addExternalModule(
+    const NH_BYTE *name_p, const NH_BYTE **dependencies_pp, size_t dependencies)
+{
+NH_CORE_BEGIN()
+   
+    nh_core_ExternalModule *Module_p = nh_core_incrementArray(&NH_LOADER.ExternalModules);
+    NH_CORE_CHECK_NULL(Module_p)
+
+    Module_p->Data = nh_core_initModule(-1);
+    Module_p->name_p = name_p;
+    Module_p->dependencies_pp = dependencies_pp;
+    Module_p->dependencies = dependencies;
+
+NH_CORE_END(NH_CORE_SUCCESS)
 }
 
 // UNLOAD LIBRARY ==================================================================================
@@ -257,9 +360,6 @@ NH_CORE_BEGIN()
             if (NH_LOADER.Modules_p[NH_MODULE_HTML].loaded == NH_TRUE) {
                 NH_CORE_END(NH_FALSE)    
             }
-            NH_CORE_END(NH_TRUE)
-
-        case NH_MODULE_MAKE :
             NH_CORE_END(NH_TRUE)
 
         case NH_MODULE_GFX :
@@ -349,10 +449,14 @@ NH_CORE_BEGIN()
     NH_LOADER.load_f = nh_core_load; 
     NH_LOADER.unload_f = nh_core_unloadModule;
     NH_LOADER.loadSymbol_f = nh_core_loadSymbol;
+    NH_LOADER.loadExternalSymbol_f = nh_core_loadExternalSymbol;
+    NH_LOADER.addModule_f = nh_core_addExternalModule;
 
     for (int i = 0; i < NH_MODULE_E_COUNT; ++i) {
         NH_LOADER.Modules_p[i] = nh_core_initModule(i);
     }
+
+    NH_LOADER.ExternalModules = nh_core_initArray(sizeof(nh_core_ExternalModule), 8);
 
     if (fallback && install) {
         puts("TODO replace fallback loader");

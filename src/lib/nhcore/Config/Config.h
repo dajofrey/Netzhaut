@@ -27,7 +27,7 @@
  */
 
     typedef struct nh_RawConfigSetting {
-        NH_MODULE_E module;
+        int module;
         NH_BYTE *name_p;
         NH_BYTE namespace_p[255];
         struct nh_RawConfigSetting *Default_p;
@@ -55,7 +55,7 @@
     );
 
     nh_List *nh_core_getGlobalConfigSetting(
-        NH_BYTE *namespace_p, NH_MODULE_E module, const NH_BYTE *name_p
+        NH_BYTE *namespace_p, int _module, const NH_BYTE *name_p
     );
 
     NH_CORE_RESULT nh_core_overwriteGlobalConfig(
@@ -67,7 +67,7 @@
     );
 
     NH_CORE_RESULT nh_core_overwriteGlobalConfigSettingInt(
-        NH_BYTE *namespace_p, NH_MODULE_E module, const NH_BYTE *setting_p, int value 
+        NH_BYTE *namespace_p, int _module, const NH_BYTE *setting_p, int value 
     );
 
 /** @} */

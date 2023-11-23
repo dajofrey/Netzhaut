@@ -10,6 +10,7 @@
  */
 
 #include "../Common/Includes.h"
+#include <stddef.h>
 
 #endif
 
@@ -33,7 +34,6 @@
         NH_MODULE_CSS,
         NH_MODULE_RENDERER,
         NH_MODULE_URL,
-        NH_MODULE_MAKE,
         NH_MODULE_E_COUNT,
     } NH_MODULE_E;
 
@@ -59,6 +59,14 @@
         NH_MODULE_E _module, int major, const NH_BYTE *functionName_p
     );
 
+    typedef void *(*nh_core_loadExternalSymbol_f)(
+        NH_BYTE *name_p, const NH_BYTE *functionName_p
+    );
+
+    typedef NH_CORE_RESULT (*nh_core_addModule_f)(
+        const NH_BYTE *name_p, const NH_BYTE **dependencies_pp, size_t dependencies
+    );
+
 /** @} */
 
 /** @addtogroup lib_nhcore_structs
@@ -73,6 +81,13 @@
         NH_BOOL loaded;
     } nh_Module;
 
+    typedef struct nh_core_ExternalModule {
+        nh_Module Data;
+        NH_BYTE *name_p;
+        NH_BYTE **dependencies_pp;
+        size_t dependencies;
+    } nh_core_ExternalModule;
+
     typedef struct nh_Loader {
         NH_LOADER_SCOPE_E scope;
         NH_BOOL install;
@@ -80,7 +95,10 @@
         nh_core_load_f load_f;
         nh_unload_f unload_f;
         nh_core_loadSymbol_f loadSymbol_f;
+        nh_core_loadExternalSymbol_f loadExternalSymbol_f;
+        nh_core_addModule_f addModule_f;
         nh_Module Modules_p[NH_MODULE_E_COUNT];
+        nh_Array ExternalModules;
     } nh_Loader;
 
 /** @} */

@@ -175,6 +175,23 @@ NH_CORE_BEGIN()
 NH_CORE_END(lib_p)
 }
 
+void *nh_core_loadExternalLibrary(
+    NH_BYTE *name_p)
+{
+NH_CORE_BEGIN()
+
+#ifdef __unix__
+
+    void *lib_p = NULL;
+    NH_BYTE libPath_p[255] = {'\0'};
+    sprintf(libPath_p, "lib%s.so", name_p);
+    lib_p = nh_core_getLibraryHandle(libPath_p);
+
+#endif
+
+NH_CORE_END(lib_p)
+}
+
 void *nh_core_loadSymbolFromLibrary(
     void *lib_p, const NH_BYTE *name_p)
 {

@@ -27,6 +27,10 @@
         NH_MODULE_E _module, int major
     );
     
+    void *nh_core_loadExternalLibrary(
+        NH_BYTE *name_p
+    );
+
     void *nh_core_loadSymbolFromLibrary(
         void *lib_p, const NH_BYTE *name_p
     );

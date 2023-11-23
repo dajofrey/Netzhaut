@@ -56,7 +56,7 @@ NH_CORE_BEGIN()
 NH_CORE_END(NH_CORE_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_parseDefaultConfigSetting(
+static NH_CORE_RESULT nh_core_parseConfigSetting(
     nh_ConfigParser *Parser_p) 
 {
 NH_CORE_BEGIN()
@@ -77,82 +77,31 @@ NH_CORE_BEGIN()
     int module = nh_core_getModuleIndex(Parser_p->Token_p->string_p);
     Parser_p->Token_p->string_p[c] = '.';
 
-    if (module == -1) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
-
     Setting_p->module = module;
-    Setting_p->name_p = malloc(sizeof(NH_BYTE)*(strlen(Parser_p->Token_p->string_p)));
+    Setting_p->name_p = malloc(sizeof(NH_BYTE)*(strlen(Parser_p->Token_p->string_p)+1));
     NH_CORE_CHECK_MEM(Setting_p->name_p)
-
-    memset(Setting_p->name_p, 0, sizeof(NH_BYTE)*(strlen(Parser_p->Token_p->string_p)));
-    strcpy(Setting_p->name_p, Parser_p->Token_p->string_p+c+1);
-
-    ++(Parser_p->Token_p);
-    if (Parser_p->Token_p->type != NH_CONFIG_TOKEN_COLON) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
-    ++(Parser_p->Token_p);
+    memset(Setting_p->name_p, 0, sizeof(NH_BYTE)*(strlen(Parser_p->Token_p->string_p)+1));
  
-    NH_CORE_CHECK(nh_core_parseRawConfigValues(Parser_p, &Setting_p->Values))
-    nh_core_appendToList(&Parser_p->Config_p->Settings, Setting_p);
-
-NH_CORE_END(NH_CORE_SUCCESS)
-}
-
-static NH_CORE_RESULT nh_core_parseCustomConfigSetting(
-    nh_ConfigParser *Parser_p)
-{
-NH_CORE_BEGIN()
-
-    if (!Parser_p->Token_p->string_p) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
-
-    nh_RawConfigSetting *Setting_p = malloc(sizeof(nh_RawConfigSetting));
-    NH_CORE_CHECK_NULL(Setting_p)
-
-    memset(Setting_p, 0, sizeof(nh_RawConfigSetting));
-
-    int c = 0;
-    for (c = 0; c < strlen(Parser_p->Token_p->string_p) && Parser_p->Token_p->string_p[c] != '.'; ++c);
-
-    if (c == strlen(Parser_p->Token_p->string_p)) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
-
-    Parser_p->Token_p->string_p[c] = 0;
-    Setting_p->module = nh_core_getModuleIndex(Parser_p->Token_p->string_p);
-    Parser_p->Token_p->string_p[c] = '.';
-
-    NH_BYTE name_p[255] = {0};
- 
-    if (Setting_p->module == -1) {
-        // Parse namespace.
-        Parser_p->Token_p->string_p[c] = 0;
-        strcpy(Setting_p->namespace_p, Parser_p->Token_p->string_p);
-        Parser_p->Token_p->string_p[c] = '.';
-
-        int c2 = 0;
-        for (c2 = c+1; Parser_p->Token_p->string_p[c2] != '.'; ++c2);
-
-        Parser_p->Token_p->string_p[c2] = 0;
-        Setting_p->module = nh_core_getModuleIndex(Parser_p->Token_p->string_p+c+1);
-        Parser_p->Token_p->string_p[c2] = '.';
-
-        if (Setting_p->module == -1) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
-
-        strcpy(name_p, Parser_p->Token_p->string_p+c2+1);
+    if (module >= 0) {
+        strcpy(Setting_p->name_p, Parser_p->Token_p->string_p+c+1);
     } else {
-        strcpy(name_p, Parser_p->Token_p->string_p+c+1);
+        strcpy(Setting_p->name_p, Parser_p->Token_p->string_p);
     }
 
-    for (int i = 0; i < Parser_p->GlobalConfig_p->Settings.size; ++i) {
-        nh_RawConfigSetting *DefaultSetting_p = Parser_p->GlobalConfig_p->Settings.pp[i];
-        if (!DefaultSetting_p->Default_p && DefaultSetting_p->module == Setting_p->module && !strcmp(DefaultSetting_p->name_p, name_p)) {
-            Setting_p->Default_p = DefaultSetting_p;
-            break;
+    if (Parser_p->GlobalConfig_p) {
+        for (int i = 0; i < Parser_p->GlobalConfig_p->Settings.size; ++i) {
+            nh_RawConfigSetting *DefaultSetting_p = Parser_p->GlobalConfig_p->Settings.pp[i];
+            if (!DefaultSetting_p->Default_p && DefaultSetting_p->module == Setting_p->module && !strcmp(DefaultSetting_p->name_p, Setting_p->name_p)) {
+                Setting_p->Default_p = DefaultSetting_p;
+                break;
+            }
         }
     }
 
-    NH_CORE_CHECK_NULL(Setting_p->Default_p)
-
     ++(Parser_p->Token_p);
     if (Parser_p->Token_p->type != NH_CONFIG_TOKEN_COLON) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
     ++(Parser_p->Token_p);
-
+ 
     NH_CORE_CHECK(nh_core_parseRawConfigValues(Parser_p, &Setting_p->Values))
     nh_core_appendToList(&Parser_p->Config_p->Settings, Setting_p);
 
@@ -170,11 +119,7 @@ NH_CORE_BEGIN()
 
     switch ((Parser_p->Token_p+1)->type) {
         case NH_CONFIG_TOKEN_COLON :
-            if (!Parser_p->GlobalConfig_p) {
-                NH_CORE_END(nh_core_parseDefaultConfigSetting(Parser_p))
-            } else {
-                NH_CORE_END(nh_core_parseCustomConfigSetting(Parser_p))
-            }
+            NH_CORE_END(nh_core_parseConfigSetting(Parser_p))
         case NH_CONFIG_TOKEN_EOF :
             ++(Parser_p->Token_p);
             break;
@@ -186,7 +131,7 @@ NH_CORE_END(NH_CORE_SUCCESS)
 }
 
 NH_CORE_RESULT nh_core_parseRawConfig(
-    nh_RawConfig *Config_p, NH_BYTE *data_p, int length, NH_BOOL globalConfig)
+    nh_RawConfig *Config_p, NH_BYTE *data_p, int length, nh_RawConfig *GlobalConfig_p)
 {
 NH_CORE_BEGIN()
 
@@ -196,7 +141,7 @@ NH_CORE_BEGIN()
     nh_ConfigParser Parser;
     Parser.Token_p = Tokenizer.Tokens_p;
     Parser.Config_p = Config_p;
-    Parser.GlobalConfig_p = globalConfig ? nh_core_getGlobalConfig() : NULL;
+    Parser.GlobalConfig_p = GlobalConfig_p;
 
     while (Parser.Token_p->type != NH_CONFIG_TOKEN_EOF) {
         NH_CORE_CHECK(nh_core_parseConfigToken(&Parser))
