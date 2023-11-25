@@ -58,8 +58,8 @@
         NH_BYTE *namespace_p, int _module, const NH_BYTE *name_p
     );
 
-    NH_CORE_RESULT nh_core_overwriteGlobalConfig(
-        NH_BYTE *data_p, int length
+    NH_CORE_RESULT nh_core_appendConfig(
+        NH_BYTE *data_p, int length, NH_BOOL override
     );
     
     NH_CORE_RESULT nh_core_overwriteGlobalConfigSetting(

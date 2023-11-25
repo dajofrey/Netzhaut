@@ -453,6 +453,7 @@ NH_CORE_BEGIN()
     Command_p->dummy = NH_FALSE;
     Command_p->type = type;
     Command_p->p = p;
+    Command_p->length = byteSize;
 
     if (byteSize > 0) {
         Command_p->p = nh_core_allocate(byteSize+1);

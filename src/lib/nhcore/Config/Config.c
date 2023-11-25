@@ -83,7 +83,7 @@ NH_CORE_BEGIN()
 NH_CORE_END(Config)
 }
 
-static NH_BOOL nh_matchConfigValues(
+static NH_BOOL nh_core_matchConfigValues(
     nh_List *Values1_p, nh_List *Values2_p)
 {
 NH_CORE_BEGIN()
@@ -115,8 +115,8 @@ NH_CORE_BEGIN()
 NH_CORE_END(Values)
 }
 
-NH_CORE_RESULT nh_core_overwriteGlobalConfig(
-    NH_BYTE *data_p, int length)
+NH_CORE_RESULT nh_core_appendConfig(
+    NH_BYTE *data_p, int length, NH_BOOL overwrite)
 {
 NH_CORE_BEGIN()
 
@@ -134,14 +134,16 @@ NH_CORE_BEGIN()
             if (Setting_p == NewSetting_p->Default_p) {
 
                 found = NH_TRUE;
+                if (!overwrite) {break;}
 
                 // If the setting values match, nothing needs to be overwritten.
-                if (nh_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
+                if (nh_core_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
                     break;
                 } else {
                     nh_core_freeList(&Setting_p->Values, NH_TRUE);
                     Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
                     Setting_p->mark = NH_TRUE;
+                    break;
                 }
             }
         }
@@ -153,21 +155,20 @@ NH_CORE_BEGIN()
             if (!strcmp(Setting_p->namespace_p, NewSetting_p->namespace_p) && Setting_p->Default_p == NewSetting_p->Default_p) {
 
                 found = NH_TRUE;
+                if (!overwrite) {break;}
 
-                if (nh_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
+                if (nh_core_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
                     break;
                 } else {
                     nh_core_freeList(&Setting_p->Values, NH_TRUE);
                     Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
                     Setting_p->mark = NH_TRUE;
+                    break;
                 }
             }
         }
 
         if (!found) {
-            if (!NewSetting_p->Default_p || strlen(NewSetting_p->namespace_p) <= 0 || NewSetting_p->module < 0) {
-                continue;
-            }
 
             // If no matching global config setting was found, we have to add it if it's valid.
  
@@ -176,6 +177,8 @@ NH_CORE_BEGIN()
 
             memset(Allocated_p, 0, sizeof(nh_RawConfigSetting));
 
+            Allocated_p->name_p = malloc(sizeof(char)*(strlen(NewSetting_p->name_p)+1));
+            strcpy(Allocated_p->name_p, NewSetting_p->name_p);
             Allocated_p->module = NewSetting_p->module;
             Allocated_p->Default_p = NewSetting_p->Default_p;
             Allocated_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
@@ -198,12 +201,12 @@ NH_CORE_BEGIN()
     NH_BYTE config_p[255];
 
     if (namespace_p) {
-        sprintf(config_p, "%s.%s.%s:%s;", namespace_p, NH_MODULE_NAMES_PP[module], setting_p, value_p);
+        sprintf(config_p, "%s_%s.%s:%s;", namespace_p, NH_MODULE_NAMES_PP[module], setting_p, value_p);
     } else {
         sprintf(config_p, "%s.%s:%s;", NH_MODULE_NAMES_PP[module], setting_p, value_p);
     }
 
-    NH_CORE_CHECK(nh_core_overwriteGlobalConfig(config_p, strlen(config_p)))
+    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), NH_TRUE))
 
 NH_CORE_END(NH_CORE_SUCCESS)
 }
@@ -217,9 +220,9 @@ NH_CORE_BEGIN()
 
     if (namespace_p) {
         if (_module >= 0) {
-            sprintf(config_p, "%s.%s.%s:%d;", namespace_p, NH_MODULE_NAMES_PP[_module], setting_p, value);
+            sprintf(config_p, "%s_%s.%s:%d;", namespace_p, NH_MODULE_NAMES_PP[_module], setting_p, value);
         } else {
-            sprintf(config_p, "%s.%s:%d;", namespace_p, setting_p, value);
+            sprintf(config_p, "%s_%s:%d;", namespace_p, setting_p, value);
         }
     } else {
         if (_module >= 0) {
@@ -229,7 +232,7 @@ NH_CORE_BEGIN()
         }
     }
 
-    NH_CORE_CHECK(nh_core_overwriteGlobalConfig(config_p, strlen(config_p)))
+    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), NH_TRUE))
 
 NH_CORE_END(NH_CORE_SUCCESS)
 }

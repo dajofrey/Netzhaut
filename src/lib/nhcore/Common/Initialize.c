@@ -46,7 +46,7 @@ NH_CORE_RESULT nh_core_initialize(
     NH_CORE_CHECK(nh_core_initGlobalConfig())
 
     if (config_p != NULL && length > 0) {
-        NH_CORE_CHECK(nh_core_overwriteGlobalConfig(config_p, length))
+        NH_CORE_CHECK(nh_core_appendConfig(config_p, length, NH_TRUE))
     }
 
     NH_CORE_CHECK(nh_core_initLogger())

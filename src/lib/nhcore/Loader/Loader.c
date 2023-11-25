@@ -231,10 +231,14 @@ NH_CORE_BEGIN()
     for (int i = 0; i < Module_p->dependencies; ++i) {
         char *name_p = Module_p->dependencies_pp[i];
         int index = nh_core_getModuleIndex(name_p);
-        if (index) {
+        if (index >= 0) {
             NH_LOADER.load_f(index, 0);
         } else {
-            nh_core_loadExternal(Module_p);
+            nh_core_ExternalModule *Dependency_p = nh_core_getExternalModule(name_p);
+            if (!Dependency_p) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)}
+            if (!Dependency_p->Data.loaded) {
+                nh_core_loadExternal(Dependency_p);
+            }
         }
     }
 
@@ -270,7 +274,7 @@ NH_CORE_BEGIN()
     if (Module_p == NULL) {
         NH_CORE_END(NULL)
     }
-    if (Module_p->Data.loaded) {
+    if (!Module_p->Data.loaded) {
         nh_core_loadExternal(Module_p);
     }
 

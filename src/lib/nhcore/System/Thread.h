@@ -47,6 +47,7 @@
         NH_BOOL dummy;
         int type;
         void *p;
+        int length;
     } nh_core_WorkloadCommand;
 
     typedef struct nh_SignalCounter {

@@ -67,25 +67,36 @@ NH_CORE_BEGIN()
     NH_CORE_CHECK_NULL(Setting_p)
 
     memset(Setting_p, 0, sizeof(nh_RawConfigSetting));
+    NH_BYTE *string_p = Parser_p->Token_p->string_p;
 
-    int c = 0;
-    for (c = 0; c < strlen(Parser_p->Token_p->string_p) && Parser_p->Token_p->string_p[c] != '.'; ++c);
+    int c = 0, c2 = 0;
+    for (c = 0; c < strlen(string_p) && string_p[c] != '.'; ++c);
+    for (c2 = 0; c2 < strlen(string_p) && string_p[c2] != '_'; ++c2);
 
-    if (c == strlen(Parser_p->Token_p->string_p)) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
+    // First, handle potential namespace.
+    if (c2 < c) {
+        string_p[c2] = 0; 
+        strcpy(Setting_p->namespace_p, string_p);
+        string_p[c2] = '_';
+        string_p += c2+1;
+    }
 
-    Parser_p->Token_p->string_p[c] = 0;
-    int module = nh_core_getModuleIndex(Parser_p->Token_p->string_p);
-    Parser_p->Token_p->string_p[c] = '.';
+    for (c = 0; c < strlen(string_p) && string_p[c] != '.'; ++c);
+    if (c == strlen(string_p)) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
+
+    string_p[c] = 0;
+    int module = nh_core_getModuleIndex(string_p);
+    string_p[c] = '.';
 
     Setting_p->module = module;
-    Setting_p->name_p = malloc(sizeof(NH_BYTE)*(strlen(Parser_p->Token_p->string_p)+1));
+    Setting_p->name_p = malloc(sizeof(NH_BYTE)*(strlen(string_p)+1));
     NH_CORE_CHECK_MEM(Setting_p->name_p)
-    memset(Setting_p->name_p, 0, sizeof(NH_BYTE)*(strlen(Parser_p->Token_p->string_p)+1));
+    memset(Setting_p->name_p, 0, sizeof(NH_BYTE)*(strlen(string_p)+1));
  
     if (module >= 0) {
-        strcpy(Setting_p->name_p, Parser_p->Token_p->string_p+c+1);
+        strcpy(Setting_p->name_p, string_p+c+1);
     } else {
-        strcpy(Setting_p->name_p, Parser_p->Token_p->string_p);
+        strcpy(Setting_p->name_p, string_p);
     }
 
     if (Parser_p->GlobalConfig_p) {

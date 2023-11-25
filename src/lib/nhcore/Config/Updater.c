@@ -153,12 +153,14 @@ NH_CORE_BEGIN()
             nh_core_appendToList(&NH_CONFIG_UPDATER.Files, File_p);
             long length = 0;
             NH_BYTE *data_p = nh_core_getFileData(File_p->path_p, &length);
-            nh_core_overwriteGlobalConfig(data_p, length);
+            nh_core_appendConfig(data_p, length, NH_TRUE);
             nh_core_free(data_p);
             break;
         }
         case NH_CONFIG_UPDATER_COMMAND_LOAD_CONFIG :
+        {
             break;
+        }
     }
 
 NH_CORE_END(NH_SIGNAL_OK)
