@@ -59,7 +59,8 @@ NH_GFX_BEGIN()
         nh_opengl_glsizei(NULL, Viewport_p->Settings.Size.height-(Viewport_p->Settings.borderWidth*2)));
  
     nh_opengl_addCommand(
-        Viewport_p->OpenGL.CommandBuffer_p, "glColorMask",
+        Viewport_p->OpenGL.CommandBuffer_p, 
+        "glColorMask",
         nh_opengl_glboolean(NULL, GL_TRUE),
         nh_opengl_glboolean(NULL, GL_TRUE),
         nh_opengl_glboolean(NULL, GL_TRUE),
@@ -102,11 +103,12 @@ NH_GFX_BEGIN()
         nh_opengl_glsizei(NULL, Viewport_p->Settings.Size.height-Viewport_p->Settings.borderWidth*2));
     
     nh_opengl_addCommand(
-        Viewport_p->OpenGL.CommandBuffer_p, "glClearColor",
-        nh_opengl_glfloat(NULL, 0.0f),
-        nh_opengl_glfloat(NULL, 0.0f),
-        nh_opengl_glfloat(NULL, 0.0f),
-        nh_opengl_glfloat(NULL, 1.0f));
+        Viewport_p->OpenGL.CommandBuffer_p, 
+        "glClearColor",
+        nh_opengl_glfloat(NULL, Viewport_p->Settings.ClearColor.r),
+        nh_opengl_glfloat(NULL, Viewport_p->Settings.ClearColor.g),
+        nh_opengl_glfloat(NULL, Viewport_p->Settings.ClearColor.b),
+        nh_opengl_glfloat(NULL, Viewport_p->Settings.ClearColor.a));
 
     nh_opengl_addCommand(
         Viewport_p->OpenGL.CommandBuffer_p, 
@@ -123,21 +125,23 @@ NH_GFX_BEGIN()
 
     nh_opengl_addCommand(Viewport_p->OpenGL.CommandBuffer_p, "glDisable", nh_opengl_glenum(NULL, GL_SCISSOR_TEST));
 
-//    nh_opengl_addCommand(
-//        CommandBuffer_p, "glColorMask", 
-//        nh_opengl_glboolean(NULL, GL_FALSE),
-//        nh_opengl_glboolean(NULL, GL_FALSE),
-//        nh_opengl_glboolean(NULL, GL_FALSE),
-//        nh_opengl_glboolean(NULL, GL_TRUE));
-//
-//    nh_opengl_addCommand(
-//        CommandBuffer_p, "glClearColor",
-//        nh_opengl_glfloat(NULL, 0.0f),
-//        nh_opengl_glfloat(NULL, 0.0f),
-//        nh_opengl_glfloat(NULL, 0.0f),
-//        nh_opengl_glfloat(NULL, 1.0f)); // Transparency can be set here.
-//
-//    nh_opengl_addCommand(CommandBuffer_p, "glClear", nh_opengl_glenum(NULL, GL_COLOR_BUFFER_BIT));
+    nh_opengl_addCommand(
+        Viewport_p->OpenGL.CommandBuffer_p, 
+        "glColorMask", 
+        nh_opengl_glboolean(NULL, GL_FALSE),
+        nh_opengl_glboolean(NULL, GL_FALSE),
+        nh_opengl_glboolean(NULL, GL_FALSE),
+        nh_opengl_glboolean(NULL, GL_TRUE));
+
+    nh_opengl_addCommand(
+        Viewport_p->OpenGL.CommandBuffer_p, 
+        "glClearColor",
+        nh_opengl_glfloat(NULL, 0.0f),
+        nh_opengl_glfloat(NULL, 0.0f),
+        nh_opengl_glfloat(NULL, 0.0f),
+        nh_opengl_glfloat(NULL, 1.0f)); // Transparency can be set here.
+
+    nh_opengl_addCommand(Viewport_p->OpenGL.CommandBuffer_p, "glClear", nh_opengl_glenum(NULL, GL_COLOR_BUFFER_BIT));
 
 NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
 }
