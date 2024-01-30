@@ -20,15 +20,15 @@
  */
 
     NH_CORE_RESULT nh_installLibrary(
-        NH_MODULE_E _module
+        NH_MODULE_E type 
     );
     
     void *nh_core_loadLibrary(
-        NH_MODULE_E _module, int major
+        NH_MODULE_E type, char *path_p
     );
     
     void *nh_core_loadExternalLibrary(
-        NH_BYTE *name_p
+        NH_BYTE *name_p, char *path_p
     );
 
     void *nh_core_loadSymbolFromLibrary(

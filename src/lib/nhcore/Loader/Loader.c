@@ -77,14 +77,11 @@ NH_CORE_END(Module)
 }
 
 static nh_Module *nh_core_getModule(
-    NH_MODULE_E module, int major)
+    NH_MODULE_E module)
 {
 NH_CORE_BEGIN()
 
     if (NH_LOADER.Modules_p[module].loaded == NH_FALSE) {
-        NH_CORE_END(NULL)
-    }
-    if (major != -1 && NH_LOADER.Modules_p[module].major != major) {
         NH_CORE_END(NULL)
     }
 
@@ -110,7 +107,7 @@ NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
 }
 
 static NH_CORE_RESULT nh_core_loadDependencies(
-    NH_MODULE_E _module, int major)
+    NH_MODULE_E _module, char *path_p)
 {
 NH_CORE_BEGIN()
 
@@ -159,17 +156,17 @@ NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
 }
 
 static NH_CORE_RESULT nh_core_load(
-    NH_MODULE_E _module, int major)
+    NH_MODULE_E type, NH_BYTE *path_p)
 {
 NH_CORE_BEGIN()
 
-    if (nh_core_getModule(_module, major)) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
+    if (nh_core_getModule(type)) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
  
-    NH_CORE_CHECK(nh_core_loadDependencies(_module, major))
+    NH_CORE_CHECK(nh_core_loadDependencies(type, path_p))
 
-    nh_Module *Module_p = &NH_LOADER.Modules_p[_module];
+    nh_Module *Module_p = &NH_LOADER.Modules_p[type];
 
-    Module_p->lib_p = nh_core_loadLibrary(_module, -1);
+    Module_p->lib_p = nh_core_loadLibrary(type, path_p);
     NH_CORE_CHECK_NULL(Module_p->lib_p)
 
     Module_p->lastModified_p = nh_core_lastModified(Module_p->lib_p);
@@ -252,7 +249,7 @@ NH_CORE_BEGIN()
 
     NH_CORE_CHECK(nh_core_loadExternalDependencies(Module_p))
 
-    Module_p->Data.lib_p = nh_core_loadExternalLibrary(Module_p->name_p);
+    Module_p->Data.lib_p = nh_core_loadExternalLibrary(Module_p->name_p, Module_p->path_p);
     NH_CORE_CHECK_NULL(Module_p->Data.lib_p)
 
     Module_p->Data.lastModified_p = nh_core_lastModified(Module_p->Data.lib_p);
@@ -282,17 +279,23 @@ NH_CORE_END(nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p))
 }
 
 NH_CORE_RESULT nh_core_addExternalModule(
-    const NH_BYTE *name_p, const NH_BYTE **dependencies_pp, size_t dependencies)
+    const NH_BYTE *name_p, const char *path_p, const NH_BYTE **dependencies_pp, size_t dependencies)
 {
 NH_CORE_BEGIN()
    
     nh_core_ExternalModule *Module_p = nh_core_incrementArray(&NH_LOADER.ExternalModules);
     NH_CORE_CHECK_NULL(Module_p)
 
+    memset(Module_p, 0, sizeof(nh_core_ExternalModule));
+
     Module_p->Data = nh_core_initModule(-1);
     Module_p->name_p = name_p;
     Module_p->dependencies_pp = dependencies_pp;
     Module_p->dependencies = dependencies;
+    
+    if (path_p != NULL) {
+        strcpy(Module_p->path_p, path_p);
+    } 
 
 NH_CORE_END(NH_CORE_SUCCESS)
 }
@@ -308,7 +311,7 @@ NH_CORE_BEGIN()
 
     NH_BYTE functionName_p[255] = {'\0'};
     sprintf(functionName_p, "nh_%s_terminate", NH_MODULE_NAMES_PP[Module_p->type] + 2);
-    terminate_f terminator_f = NH_LOADER.loadSymbol_f(Module_p->type, Module_p->major, functionName_p);
+    terminate_f terminator_f = NH_LOADER.loadSymbol_f(Module_p->type, 0, functionName_p);
     if (terminator_f != NULL) {terminator_f();}
 
 NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
@@ -406,7 +409,7 @@ void *nh_core_loadExistingSymbol(
 {
 NH_CORE_BEGIN()
 
-    nh_Module *Module_p = nh_core_getModule(type, major);
+    nh_Module *Module_p = nh_core_getModule(type);
     if (Module_p == NULL) {NH_CORE_END(NULL)}
 
 NH_CORE_END(nh_core_loadSymbolFromLibrary(Module_p->lib_p, name_p))
@@ -417,10 +420,10 @@ static void *nh_core_loadSymbol(
 {
 NH_CORE_BEGIN()
 
-    nh_Module *Module_p = nh_core_getModule(type, major);
+    nh_Module *Module_p = nh_core_getModule(type);
     if (Module_p == NULL) {
-        if (nh_core_load(type, major) == NH_CORE_SUCCESS) {
-            Module_p = nh_core_getModule(type, major);
+        if (nh_core_load(type, 0) == NH_CORE_SUCCESS) {
+            Module_p = nh_core_getModule(type);
         }
     }
 
@@ -434,22 +437,20 @@ void *nh_core_loadSymbolUsingModuleName(
 {
 NH_CORE_BEGIN()
 
-    NH_MODULE_E module = nh_core_getModuleIndex(module_p);
-    if (module == -1) {NH_CORE_END(NULL)}
+    NH_MODULE_E index = nh_core_getModuleIndex(module_p);
+    if (index == -1) {NH_CORE_END(NULL)}
 
-NH_CORE_END(nh_core_loadSymbol(module, -1, symbol_p))
+NH_CORE_END(nh_core_loadSymbol(index, 0, symbol_p))
 }
 
 // INIT/DESTROY ====================================================================================
 
 nh_Loader *nh_core_initLoader(
-    NH_LOADER_SCOPE_E scope, NH_BOOL fallback, NH_BOOL install)
+    NH_BOOL fallback, NH_BOOL install)
 {
 NH_CORE_BEGIN()
 
-    NH_LOADER.scope = scope;
     NH_LOADER.install = install;
-
     NH_LOADER.load_f = nh_core_load; 
     NH_LOADER.unload_f = nh_core_unloadModule;
     NH_LOADER.loadSymbol_f = nh_core_loadSymbol;

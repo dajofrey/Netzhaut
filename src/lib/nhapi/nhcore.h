@@ -39,12 +39,6 @@
         NH_ON = 1,  /**<Indicates on.*/
     } NH_SWITCH;
 
-    typedef enum NH_LOADER_SCOPE_E {
-        NH_LOADER_SCOPE_LOCAL,
-        NH_LOADER_SCOPE_LOCAL_SYSTEM,
-        NH_LOADER_SCOPE_SYSTEM,
-    } NH_LOADER_SCOPE_E;
-
     typedef enum NH_SIGNAL {
         NH_SIGNAL_OK,
         NH_SIGNAL_DONE,
@@ -227,7 +221,7 @@
      * Todo. 
      */
     NH_CORE_RESULT nh_api_initialize(
-        NH_LOADER_SCOPE_E scope, NH_BYTE *path_p, NH_BYTE *config_p, int length
+        char *path_p, char *config_p, int length
     );
 
     /**
@@ -286,6 +280,13 @@
 
     NH_CORE_RESULT nh_api_loadConfig(
         NH_BYTE *data_p, int length
+    );
+
+    void *nh_api_createMonitorInterface(
+    );
+    
+    void nh_api_freeMonitorInterface(
+        void *Interface_p
     );
 
 /** @} */

@@ -42,7 +42,7 @@ NH_CORE_END(result)
 
 // INIT/DESTROY ====================================================================================
 
-nh_Logger NH_LOGGER;
+nh_core_Logger NH_LOGGER;
 
 NH_CORE_RESULT nh_core_initLogger()
 {
@@ -61,7 +61,7 @@ NH_CORE_END(NH_CORE_SUCCESS)
 }
 
 static void nh_core_freeLoggerNode(
-    nh_LoggerNode *Node_p)
+    nh_core_LoggerNode *Node_p)
 {
 NH_CORE_BEGIN()
 
@@ -88,21 +88,21 @@ NH_CORE_END(NH_CORE_SUCCESS)
 
 // LOGGER ==========================================================================================
 
-typedef struct nh_LoggerOption {
+typedef struct nh_core_LoggerOption {
     nh_String Name;
     nh_String Value;
-} nh_LoggerOption;
+} nh_core_LoggerOption;
 
-typedef struct nh_LoggerOptions {
+typedef struct nh_core_LoggerOptions {
     int replace;
-} nh_LoggerOptions;
+} nh_core_LoggerOptions;
 
-static nh_LoggerNode *nh_core_getLoggerNode(
-    nh_LoggerNode *Node_p, NH_BYTE *node_p)
+static nh_core_LoggerNode *nh_core_getLoggerNode(
+    nh_core_LoggerNode *Node_p, NH_BYTE *node_p)
 {
     if (*node_p) 
     {
-        nh_LoggerNode *Next_p = NULL;
+        nh_core_LoggerNode *Next_p = NULL;
         if (*node_p == ':') {node_p = node_p + 1;}
 
         NH_BYTE current_p[255] = {'\0'};
@@ -113,13 +113,13 @@ static nh_LoggerNode *nh_core_getLoggerNode(
         memcpy(current_p, node_p, length);
 
         for (int i = 0; i < Node_p->Children.size; ++i) {
-            nh_LoggerNode *Child_p = Node_p->Children.pp[i];
+            nh_core_LoggerNode *Child_p = Node_p->Children.pp[i];
             if (!strcmp(Child_p->name_p, current_p)) {Next_p = Child_p; break;}
         }
 
         if (Next_p == NULL) 
         {
-            Next_p = nh_core_allocate(sizeof(nh_LoggerNode));
+            Next_p = nh_core_allocate(sizeof(nh_core_LoggerNode));
             if (Next_p == NULL) {return NULL;}
 
             Next_p->name_p = nh_core_allocateBytes(current_p);
@@ -152,7 +152,7 @@ static void nh_core_parseLoggerOptions(
     }
     if (!*options_p || *options_p != '=') {
         if (Name.length > 0) {
-            nh_LoggerOption *Option_p = nh_core_incrementArray(Options_p);
+            nh_core_LoggerOption *Option_p = nh_core_incrementArray(Options_p);
             Option_p->Name = Name;
             Option_p->Value = Value;
         }
@@ -164,7 +164,7 @@ static void nh_core_parseLoggerOptions(
         options_p++;
     }
     if (Value.length > 0) {
-        nh_LoggerOption *Option_p = nh_core_incrementArray(Options_p);
+        nh_core_LoggerOption *Option_p = nh_core_incrementArray(Options_p);
         Option_p->Name = Name;
         Option_p->Value = Value;
     }
@@ -174,15 +174,15 @@ static void nh_core_parseLoggerOptions(
     return;
 }
 
-static nh_LoggerOptions nh_processLoggerOptions(
+static nh_core_LoggerOptions nh_processLoggerOptions(
     nh_Array *Options_p)
 {
-    nh_LoggerOptions Options;
+    nh_core_LoggerOptions Options;
     Options.replace = -1;
 
     for (int i = 0; i < Options_p->length; ++i)
     {
-        nh_LoggerOption *Option_p = &((nh_LoggerOption*)Options_p->p)[i];
+        nh_core_LoggerOption *Option_p = &((nh_core_LoggerOption*)Options_p->p)[i];
 
         if (!strcmp(Option_p->Name.p, "replace")) {
             Options.replace = atoi(Option_p->Value.p);
@@ -193,7 +193,7 @@ static nh_LoggerOptions nh_processLoggerOptions(
 }
 
 static NH_CORE_RESULT nh_core_addLogMessage(
-    nh_LoggerNode *Node_p, nh_LoggerOptions Options, NH_BYTE *message_p)
+    nh_core_LoggerNode *Node_p, nh_core_LoggerOptions Options, NH_BYTE *message_p)
 {
     NH_BYTE *allocated_p = nh_core_allocate(strlen(message_p) + 1);
     if (allocated_p == NULL) {return NH_CORE_ERROR_BAD_STATE;}
@@ -214,18 +214,18 @@ static NH_CORE_RESULT nh_core_addLogMessage(
 static NH_CORE_RESULT nh_core_updateLogger(
     NH_BYTE *node_p, NH_BYTE *options_p, NH_BYTE *message_p)
 {
-    nh_LoggerNode *Node_p = nh_core_getLoggerNode(&NH_LOGGER.Root, node_p);
+    nh_core_LoggerNode *Node_p = nh_core_getLoggerNode(&NH_LOGGER.Root, node_p);
     if (Node_p == NULL) {return NH_CORE_ERROR_BAD_STATE;}
 
-    nh_Array ParsedOptions = nh_core_initArray(sizeof(nh_LoggerOption), 1);
+    nh_Array ParsedOptions = nh_core_initArray(sizeof(nh_core_LoggerOption), 1);
     nh_core_parseLoggerOptions(options_p, &ParsedOptions);
 
-    nh_LoggerOptions Options = nh_processLoggerOptions(&ParsedOptions);
+    nh_core_LoggerOptions Options = nh_processLoggerOptions(&ParsedOptions);
 
     nh_core_addLogMessage(Node_p, Options, message_p);
     
     for (int i = 0; i < ParsedOptions.length; ++i) {
-        nh_LoggerOption *Option_p = &((nh_LoggerOption*)ParsedOptions.p)[i];
+        nh_core_LoggerOption *Option_p = &((nh_core_LoggerOption*)ParsedOptions.p)[i];
         nh_core_freeString(&Option_p->Name);
         nh_core_freeString(&Option_p->Value);
     }

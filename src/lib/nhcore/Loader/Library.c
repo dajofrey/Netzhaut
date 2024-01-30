@@ -44,7 +44,7 @@ NH_CORE_END(fileExists)
 }
 
 NH_CORE_RESULT nh_installLibrary(
-    NH_MODULE_E _module)
+    NH_MODULE_E type)
 {
 NH_CORE_BEGIN()
 
@@ -57,24 +57,24 @@ NH_CORE_BEGIN()
 
 #ifdef __unix__
 
-    NH_BYTE command_p[2048] = {'\0'};
-    memset(command_p, '\0', sizeof(NH_BYTE) * 2048);
-
-    switch (NH_LOADER.scope)
-    {
-        case NH_LOADER_SCOPE_LOCAL :
-            sprintf(command_p, "./netzhaut-master/bin/installer/nhinstaller -l %s", NH_MODULE_NAMES_PP[_module]);
-            break;
-        case NH_LOADER_SCOPE_LOCAL_SYSTEM :
-            sprintf(command_p, "./netzhaut-master/bin/installer/nhinstaller -li %s", NH_MODULE_NAMES_PP[_module]);
-            break;
-        case NH_LOADER_SCOPE_SYSTEM :
-            NH_CORE_END(NH_CORE_ERROR_BAD_STATE)
-            break;
-    }
-
-    int status = system(command_p);
-    if (WEXITSTATUS(status) || WIFSIGNALED(status)) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)}
+//    NH_BYTE command_p[2048] = {'\0'};
+//    memset(command_p, '\0', sizeof(NH_BYTE) * 2048);
+//
+//    switch (NH_LOADER.scope)
+//    {
+//        case NH_LOADER_SCOPE_LOCAL :
+//            sprintf(command_p, "./netzhaut-master/bin/installer/nhinstaller -l %s", NH_MODULE_NAMES_PP[_module]);
+//            break;
+//        case NH_LOADER_SCOPE_LOCAL_SYSTEM :
+//            sprintf(command_p, "./netzhaut-master/bin/installer/nhinstaller -li %s", NH_MODULE_NAMES_PP[_module]);
+//            break;
+//        case NH_LOADER_SCOPE_SYSTEM :
+//            NH_CORE_END(NH_CORE_ERROR_BAD_STATE)
+//            break;
+//    }
+//
+//    int status = system(command_p);
+//    if (WEXITSTATUS(status) || WIFSIGNALED(status)) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)}
 
 #endif
 
@@ -110,73 +110,31 @@ NH_CORE_END(dl_p)
 }
 
 void *nh_core_loadLibrary(
-    NH_MODULE_E _module, int major)
+    NH_MODULE_E type, char *path_p)
 {
 NH_CORE_BEGIN()
 
-#ifdef __unix__
-
     void *lib_p = NULL;
+    char libPath_p[255] = {0};
 
-    switch (NH_LOADER.scope)
-    {
-        case NH_LOADER_SCOPE_LOCAL :
-        {
-            NH_BYTE exeDir_p[2048] = {'\0'};
-            if (nh_core_getExeDir(exeDir_p, 2048) != NH_CORE_SUCCESS) {NH_CORE_END(NULL)}
-            NH_BYTE libPath_p[2048] = {'\0'};
-
-            if (major == -1) {
-                sprintf(libPath_p, "%s/netzhaut-master/lib/lib%s.so", exeDir_p, NH_MODULE_NAMES_PP[_module]);
-            }
-            else {
-                sprintf(libPath_p, "%s/netzhaut-master/lib/lib%s.so.%d", exeDir_p, NH_MODULE_NAMES_PP[_module], major);
-            }
-
-            lib_p = nh_core_getLibraryHandle(libPath_p);
-        }
-
-        case NH_LOADER_SCOPE_LOCAL_SYSTEM :
-        {
-            NH_BYTE libPath_p[255] = {'\0'};
-
-            if (major == -1) {
-                sprintf(libPath_p, "/usr/local/lib/lib%s.so", NH_MODULE_NAMES_PP[_module]);
-            }
-            else {
-                sprintf(libPath_p, "/usr/local/lib/lib%s.so.%d", NH_MODULE_NAMES_PP[_module], major);
-            }
-
-            lib_p = nh_core_getLibraryHandle(libPath_p);
-        }
-
-        case NH_LOADER_SCOPE_SYSTEM :
-        {
-            NH_BYTE libPath_p[255] = {'\0'};
-
-            if (major == -1) {
-                sprintf(libPath_p, "lib%s.so", NH_MODULE_NAMES_PP[_module]);
-            }
-            else {
-                sprintf(libPath_p, "lib%s.so.%d", NH_MODULE_NAMES_PP[_module], major);
-            }
-
-            lib_p = nh_core_getLibraryHandle(libPath_p);
-        }
+    if (path_p) {
+        sprintf(libPath_p, "%s/lib%s.so", path_p, NH_MODULE_NAMES_PP[type]);
+        lib_p = nh_core_getLibraryHandle(libPath_p);
+    } else {
+        sprintf(libPath_p, "lib%s.so", NH_MODULE_NAMES_PP[type]);
+        lib_p = nh_core_getLibraryHandle(libPath_p);
     }
 
-#endif
-
-    if (lib_p == NULL && NH_LOADER.install) {
-        if (nh_installLibrary(_module) != NH_CORE_SUCCESS) {NH_CORE_END(NULL)}
-        NH_CORE_END(nh_core_loadLibrary(_module, major))
-    }
+//    if (lib_p == NULL && NH_LOADER.install) {
+//        if (nh_installLibrary(type) != NH_CORE_SUCCESS) {NH_CORE_END(NULL)}
+//        NH_CORE_END(nh_core_loadLibrary(type, NULL))
+//    }
 
 NH_CORE_END(lib_p)
 }
 
 void *nh_core_loadExternalLibrary(
-    NH_BYTE *name_p)
+    NH_BYTE *name_p, char *path_p)
 {
 NH_CORE_BEGIN()
 
@@ -184,7 +142,13 @@ NH_CORE_BEGIN()
 
     void *lib_p = NULL;
     NH_BYTE libPath_p[255] = {'\0'};
-    sprintf(libPath_p, "lib%s.so", name_p);
+
+    if (path_p) {
+        sprintf(libPath_p, "%s/lib%s.so", path_p, name_p);
+    } else {
+        sprintf(libPath_p, "lib%s.so", name_p);
+    }
+
     lib_p = nh_core_getLibraryHandle(libPath_p);
 
 #endif

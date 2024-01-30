@@ -20,16 +20,16 @@
  *  @{
  */
 
-    typedef struct nh_LoggerNode {
+    typedef struct nh_core_LoggerNode {
         NH_BYTE *name_p;
         nh_List Children;
         nh_List Messages;
-        struct nh_LoggerNode *Parent_p;
-    } nh_LoggerNode;
+        struct nh_core_LoggerNode *Parent_p;
+    } nh_core_LoggerNode;
 
-    typedef struct nh_Logger {
-        nh_LoggerNode Root;
-    } nh_Logger;
+    typedef struct nh_core_Logger {
+        nh_core_LoggerNode Root;
+    } nh_core_Logger;
 
 /** @} */
 
@@ -37,7 +37,7 @@
  *  @{
  */
 
-    extern nh_Logger NH_LOGGER;
+    extern nh_core_Logger NH_LOGGER;
 
 /** @} */
 

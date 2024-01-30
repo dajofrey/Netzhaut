@@ -44,11 +44,11 @@
  */
 
     typedef nh_Loader *(*nh_core_initLoader_f)(
-        NH_LOADER_SCOPE_E scope, NH_BOOL fallback, NH_BOOL install
+        NH_BOOL fallback, NH_BOOL install
     );
 
     typedef NH_CORE_RESULT (*nh_core_load_f)(
-        NH_MODULE_E _module, int major
+        NH_MODULE_E _module, char *path_p
     );
     
     typedef NH_CORE_RESULT (*nh_unload_f)(
@@ -64,7 +64,7 @@
     );
 
     typedef NH_CORE_RESULT (*nh_core_addModule_f)(
-        const NH_BYTE *name_p, const NH_BYTE **dependencies_pp, size_t dependencies
+        const NH_BYTE *name_p, const char *path_p, const NH_BYTE **dependencies_pp, size_t dependencies
     );
 
 /** @} */
@@ -86,10 +86,10 @@
         NH_BYTE *name_p;
         NH_BYTE **dependencies_pp;
         size_t dependencies;
+        char path_p[255];
     } nh_core_ExternalModule;
 
     typedef struct nh_Loader {
-        NH_LOADER_SCOPE_E scope;
         NH_BOOL install;
         NH_BOOL unload;
         nh_core_load_f load_f;
@@ -125,7 +125,7 @@
     );
 
     nh_Loader *nh_core_initLoader(
-        NH_LOADER_SCOPE_E scope, NH_BOOL fallback, NH_BOOL install
+        NH_BOOL fallback, NH_BOOL install
     );
 
     NH_CORE_RESULT nh_core_freeLoader(

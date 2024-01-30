@@ -41,7 +41,7 @@ NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
 }
 
 NH_CORE_RESULT nh_core_initialize(
-    NH_LOADER_SCOPE_E scope, NH_BYTE *path_p, NH_BYTE *config_p, int length)
+    char *path_p, char *config_p, int length)
 {
     NH_CORE_CHECK(nh_core_initGlobalConfig())
 

@@ -4,3 +4,6 @@
 [submodule "external/volk"]
 	path = external/volk
 	url = https://github.com/zeux/volk
+[submodule "external/TTyr"]
+	path = external/TTyr
+	url = https://github.com/dajofrey/TTyr.git

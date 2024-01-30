@@ -4,7 +4,8 @@
  * Published under MIT.
  */
 
-#include "../../lib/nhapi/nhapi.h"
+#include "nhapi/nhapi.h"
+#include "ttyr-api/ttyr-tty.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -39,7 +40,7 @@ static void *getFileData(
     return data_p;
 }
 
-static nh_tty_TTY *TTY_p = NULL;
+static ttyr_tty_TTY *TTY_p = NULL;
 
 static void handleInput(
     nh_wsi_Window *Window_p, nh_wsi_Event Event)
@@ -47,53 +48,37 @@ static void handleInput(
     switch (Event.type)
     {
         case NH_WSI_EVENT_KEYBOARD :
-            nh_api_sendEvent(TTY_p, Event);
+            ttyr_api_sendEvent(TTY_p, Event);
             break;
     }
 }
 
-static int openLogger(
-    nh_gfx_Surface *Surface_p)
+void *Interface_p = NULL;
+
+static int openMonitor()
 {
-//    TTY_p = nh_tty_openTTY();
-//    if (!TTY_p) {return 1;}
-//
-//    if (nh_tty_addDefaultProgram(TTY_p, "logger") != NH_TTY_SUCCESS) {
-//        return 1;
-//    }
-//
-//    nh_terminal_Terminal *Terminal_p =  nh_terminal_openTerminal(TTY_p);
-//    if (!Terminal_p) {return 1;}
-//
-//    nh_PixelSize Size;
-//    Size.width  = 1000;
-//    Size.height = 300;
-//
-//    nh_PixelPosition Position;
-//    Position.x = 0;
-//    Position.y = 700;
-//
-//    nh_gfx_Viewport *Viewport_p = nh_gfx_createViewport(Surface_p, Position, Size);
-//    if (!Viewport_p) {return 1;}
-//
-//    if (nh_terminal_setViewport(Terminal_p, Viewport_p) != NH_TERMINAL_SUCCESS) {
-//        return 1;
-//    }
-//
+    Interface_p = nh_api_createMonitorInterface();
+    if (!Interface_p) {return 1;}
+
+    TTY_p = ttyr_api_openTTY(NULL, Interface_p);
+    if (!TTY_p) {return 1;}
+
+    if (ttyr_api_claimStandardIO(TTY_p)) {return 1;}
+
     return 0;
 }
 
 int main(
     int argc, char **argv_pp) 
 {
-//    if (argc <= 1) {return 1;}
-//
+    if (nh_api_initialize(NH_LOADER_SCOPE_SYSTEM, NULL, NULL, 0) != NH_CORE_SUCCESS) {return 1;}
+
+    if (!openMonitor()) {return 1;}
+
 //    long size;
 //    void *document_p = getFileData(argv_pp[1], &size);
 //
 //    if (!document_p || !size) {return 1;}
-//
-//    if (nh_core_initialize(NH_LOADER_SCOPE_SYSTEM, NULL, NH_FALSE) != NH_SUCCESS) {return 1;}
 //
 //    nh_PixelSize Size;
 //    Size.width  = 1000;
@@ -129,12 +114,11 @@ int main(
 //
 //    if (nh_renderer_addViewport(Renderer_p, Viewport_p)) {return 1;}
 //    if (nh_html_loadBytes(DocumentContext_p, document_p, size)) {return 1;}
-//
-//    while (1) {
-//        if (!nh_core_run()) {usleep(10000);}
-//        if (!nh_core_keepRunning()) {break;}
-//    }
-//
-//    nh_core_terminate();
-}
 
+    while (1) {
+        if (!nh_api_run()) {usleep(10000);}
+        if (!nh_api_keepRunning()) {break;}
+    }
+
+    nh_api_terminate();
+}

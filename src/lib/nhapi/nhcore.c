@@ -29,6 +29,12 @@
 nh_Loader *NH_LOADER_P = NULL;
 static void *core_p  = NULL;
 
+typedef void *(*nh_core_createMonitorInterface_f)(
+);
+typedef void (*nh_core_freeMonitorInterface_f)(
+    void *Interface_p
+);
+
 // HELPER ==========================================================================================
 
 static void *nh_api_openCoreLibrary(
@@ -79,32 +85,6 @@ static NH_CORE_RESULT nh_api_getExeDir(
 #endif
 }
 
-static void *nh_api_loadCore(
-    NH_LOADER_SCOPE_E scope)
-{
-#ifdef __unix__
-
-    switch (scope)
-    {
-        case NH_LOADER_SCOPE_LOCAL :
-        {
-            NH_BYTE exeDir_p[2048] = {'\0'};
-            if (nh_api_getExeDir(exeDir_p, 2048) != NH_CORE_SUCCESS) {return NULL;}
-            NH_BYTE path_p[2048] = {'\0'};
-            sprintf(path_p, "%s/netzhaut-master/lib/libnhcore.so", exeDir_p);
-            return nh_api_openCoreLibrary(path_p);
-        }
-        case NH_LOADER_SCOPE_LOCAL_SYSTEM :
-            return nh_api_openCoreLibrary("/usr/local/lib/libnhcore.so");
-        case NH_LOADER_SCOPE_SYSTEM :
-            return nh_api_openCoreLibrary("libnhcore.so");
-    }
-
-#endif
-
-    return NULL;
-}
-
 static void *nh_api_loadCoreFunction(
     const NH_BYTE *functionName_p)
 {
@@ -127,11 +107,11 @@ static void *nh_api_loadCoreFunction(
 // INITIALIZE/TERMINATE ============================================================================
 
 NH_CORE_RESULT nh_api_initialize(
-    NH_LOADER_SCOPE_E scope, NH_BYTE *path_p, NH_BYTE *config_p, int length)
+    char *path_p, char *config_p, int length)
 {
     if (core_p != NULL || NH_LOADER_P != NULL) {return NH_CORE_ERROR_BAD_STATE;}
 
-    core_p = nh_api_loadCore(scope);
+    core_p = nh_api_openCoreLibrary("libnhcore.so");
 
     NH_BOOL fallback = !core_p && path_p != NULL;
     if (fallback) {core_p = nh_api_openCoreLibrary(path_p);}
@@ -139,7 +119,7 @@ NH_CORE_RESULT nh_api_initialize(
     if (!core_p) {return NH_CORE_ERROR_BAD_STATE;}
 
     nh_core_initLoader_f initLoader_f = nh_api_loadCoreFunction("nh_core_initLoader");
-    NH_LOADER_P = !initLoader_f ? NULL : initLoader_f(scope, NH_FALSE, NH_FALSE);
+    NH_LOADER_P = !initLoader_f ? NULL : initLoader_f(NH_FALSE, NH_FALSE);
 
     return NH_LOADER_P ? NH_CORE_SUCCESS : NH_CORE_ERROR_BAD_STATE;
 }
@@ -218,4 +198,19 @@ NH_CORE_RESULT nh_api_loadConfig(
 {
     nh_core_loadConfig_f loadConfig_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_loadConfig");
     return loadConfig_f ? loadConfig_f(data_p, length) : NH_CORE_ERROR_BAD_STATE;
+}
+
+// INTERFACE FUNCTIONS =============================================================================
+
+void *nh_api_createMonitorInterface()
+{
+    nh_core_createMonitorInterface_f createMonitorInterface_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_createMonitorInterface");
+    return createMonitorInterface_f ? createMonitorInterface_f() : NULL;
+}
+
+void nh_api_freeMonitorInterface(
+    void *Interface_p)
+{
+    nh_core_freeMonitorInterface_f freeMonitorInterface_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_freeMonitorInterface");
+    freeMonitorInterface_f(Interface_p);
 }

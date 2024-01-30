@@ -63,6 +63,7 @@ SRC_FILES_NHCORE = \
     System/Thread.c \
     System/Channel.c \
     System/Logger.c \
+    System/Monitor.c \
     System/Memory.c \
     System/Process.c \
     Util/MediaType.c \
@@ -349,7 +350,7 @@ OBJ_FILES_C_HASHMAP = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_C_HASHMAP)/, $(
 OBJ_FILES_VOLK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_VOLK)/, $(SRC_FILES_VOLK)))
 OBJ_FILES_FREETYPE_GL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_FREETYPE_GL)/, $(SRC_FILES_FREETYPE_GL)))
 
-# Name of the shared libraries and binaries
+# Names of the shared libraries
 LIB_NHAPI = lib/libnhapi.so
 LIB_NHCORE = lib/libnhcore.so
 LIB_NHWSI = lib/libnhwsi.so
@@ -371,8 +372,6 @@ LIB_FREETYPE_GL = external/freetype-gl/libfreetype-gl.so
 # Create dirs
 create_lib_dir:
 	mkdir -p lib
-create_bin_dir:
-	mkdir -p bin
 
 # Build targets for each library
 all: $(LIB_NHAPI) $(LIB_C_HASHMAP) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL)
@@ -391,6 +390,7 @@ nhcss.so: $(LIB_NHCSS)
 nhurl.so: $(LIB_NHURL)
 
 # Custom compiler flags
+$(OBJ_FILES_NHCORE): CFLAGS += -Isrc/lib
 $(OBJ_FILES_NHHTML): CFLAGS += -Iexternal
 $(OBJ_FILES_NHAPI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_NHRENDERER): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
@@ -489,6 +489,5 @@ clean:
 	rm -f $(OBJ_FILES_VOLK) $(LIB_VOLK)
 	rm -f $(OBJ_FILES_FREETYPE_GL) $(LIB_FREETYPE_GL)
 	rm -rf lib
-	rm -rf bin
 
 .PHONY: all lib clean

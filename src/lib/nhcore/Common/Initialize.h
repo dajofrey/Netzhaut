@@ -18,7 +18,7 @@
  */
 
     typedef nh_Loader *(*nh_core_initialize_f)(
-        NH_LOADER_SCOPE_E scope, NH_BYTE *path_p, NH_BYTE *config_p, int length
+        char *path_p, char *config_p, int length
     );
 
 /** @} */

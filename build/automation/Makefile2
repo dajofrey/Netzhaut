@@ -1,0 +1,46 @@
+# Define the compiler and compile flags
+CC = gcc
+CFLAGS = -fPIC -std=gnu99 -Wl,-rpath-link,$(CURDIR)/lib:$(CURDIR)/external/TTyr/lib
+
+# Define the linker and linker flags
+LD = gcc
+
+LDFLAGS_NHHTML = -Llib -lnhapi -Lexternal/TTyr/external/Netzhaut/lib -lttyr-api
+
+# Define the source file directory for each binary
+SRC_DIR_NHHTML = src/bin/nhhtml
+
+# List of source files for each binary
+SRC_FILES_NHHTML = Main.c
+
+# Object files derived from source files for each binary 
+OBJ_FILES_NHHTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHHTML)/, $(SRC_FILES_NHHTML)))
+
+# Names of the shared libraries
+BIN_NHHTML = bin/nhhtml
+
+build_ttyr:
+	(cd external/TTyr && make -f build/automation/Makefile all)
+create_bin_dir:
+	mkdir -p bin
+
+# Build targets for each library
+all: build_ttyr $(BIN_NHHTML)
+
+# Custom compiler flags
+$(OBJ_FILES_NHHTML): CFLAGS += -Iexternal/TTyr/src/lib -Isrc/lib
+
+# Rule to compile source files into object files
+%.o: $(SRC_DIR_NHHTML)/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Rule to link object files into the shared libraries
+$(BIN_NHHTML): create_bin_dir $(OBJ_FILES_NHHTML)
+	$(LD) $(CFLAGS) -o $@ $(OBJ_FILES_NHHTML) $(LDFLAGS_NHHTML)
+
+# Clean rule
+clean:
+	rm -f $(OBJ_FILES_NHHTML) $(BIN_NHHTML)
+	rm -rf bin 
+
+.PHONY: all lib clean
