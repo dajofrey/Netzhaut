@@ -17,7 +17,11 @@ The documentation for this project, apart from code-documentation, is fully cont
 
 ### Linux
 
-`make -f build/automation/Makefile`
+```bash 
+git clone https://github.com/dajofrey/Netzhaut
+cd Netzhaut && git submodule update --init --recursive 
+make -f build/automation/Makefile all 
+``` 
 
 ## Architecture
 

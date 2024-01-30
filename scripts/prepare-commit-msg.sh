@@ -2,6 +2,7 @@
 
 # Declare an empty array
 files_to_process=()
+misc="false"
 
 # Run 'git diff --staged --name-only' and process each line
 while IFS= read -r line; do
@@ -9,6 +10,8 @@ while IFS= read -r line; do
   if [[ $line == *src/lib/nh* ]]; then
     # Add the line to the array
     files_to_process+=("$line")
+  else
+    misc="true"
   fi
 done < <(git diff --staged --name-only)
 
@@ -71,6 +74,34 @@ for unique_file in "${unique_files[@]}"; do
     esac
   done
 done
+
+if [[ "$misc" = true ]]; then 
+  echo -e "\nWorkload in: misc" 
+  echo "Workload scope options:" 
+  for option in "${workload_options[@]}"; do 
+    echo "$option" 
+  done 
+ 
+  while true; do 
+    read -p "Workload scope? (1-4): " workload_input 
+    case $workload_input in 
+      1|2|3|4) 
+        case $workload_input in 
+          1) workload_scope="patch" ;; 
+          2) workload_scope="minor" ;; 
+          3) workload_scope="major" ;; 
+          4) workload_scope="api" ;; 
+        esac 
+        echo "Selected workload scope: $workload_scope" 
+        actions+=("Increments-${workload_scope}-version-of: misc") 
+        break 
+        ;; 
+      *) 
+        echo "Invalid input. Please enter a number from 1 to 4." 
+        ;; 
+    esac 
+  done 
+fi 
 
 # Print the actions array
 echo -e "\nResult:"
