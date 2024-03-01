@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Config.h"
-#include "IndexMap.h"
 #include "Macros.h"
 
 #include "../Window/Window.h"
@@ -48,17 +47,14 @@ NH_WSI_END(NH_WSI_SETTING_NAMES_PP[setting])
 // CONFIG ==========================================================================================
 
 static NH_WSI_RESULT_E nh_wsi_getWindowSetting(
-    nh_wsi_WindowConfig *Config_p, NH_BYTE *namespace_p, NH_BYTE *setting_p)
+    nh_wsi_WindowConfig *Config_p, NH_BYTE *namespace_p, int index)
 {
 NH_WSI_BEGIN()
 
-    unsigned int *index_p = nh_core_getFromHashMap(&NH_WSI_INDEXMAP.SettingNames, setting_p);
-    NH_WSI_CHECK_NULL(index_p)
-
-    nh_List *Setting_p = nh_core_getGlobalConfigSetting(namespace_p, NH_MODULE_WSI, setting_p);
+    nh_List *Setting_p = nh_core_getGlobalConfigSetting(strlen(namespace_p) == 0 ? NULL : namespace_p, NH_MODULE_WSI, NH_WSI_SETTING_NAMES_PP[index]);
     NH_WSI_CHECK_NULL(Setting_p)
 
-    switch (*index_p) {
+    switch (index) {
         case 0 :
             if (Setting_p->size != 1) {NH_WSI_END(NH_WSI_ERROR_BAD_STATE)}
             strcpy(Config_p->title_p, Setting_p->pp[0]);
@@ -150,7 +146,7 @@ NH_WSI_BEGIN()
     memset(&Config, 0, sizeof(nh_wsi_WindowConfig));
 
     for (int i = 0; i < NH_WSI_SETTING_NAMES_PP_COUNT; ++i) {
-        NH_WSI_CHECK_2(Config, nh_wsi_getWindowSetting(&Config, ((nh_wsi_Window*)Window_p)->namespace_p, NH_WSI_SETTING_NAMES_PP[i]))
+        nh_wsi_getWindowSetting(&Config, ((nh_wsi_Window*)Window_p)->namespace_p, i);
     }
 
 NH_WSI_END(Config)

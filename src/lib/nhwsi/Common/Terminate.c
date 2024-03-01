@@ -11,7 +11,6 @@
 #include "Terminate.h"
 #include "Config.h"
 #include "Macros.h"
-#include "IndexMap.h"
 
 #include "../Window/Listener.h"
 #include "../Platforms/X11/Init.h"
@@ -30,7 +29,6 @@ NH_WSI_BEGIN()
 
     NH_WSI_CHECK(nh_x11_close())
     nh_wsi_freeClipboard();
-    nh_wsi_freeIndexMap();
 
 NH_WSI_END(NH_WSI_SUCCESS)
 }

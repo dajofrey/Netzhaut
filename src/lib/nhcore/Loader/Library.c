@@ -138,22 +138,32 @@ void *nh_core_loadExternalLibrary(
 {
 NH_CORE_BEGIN()
 
+    void *lib_p = NULL;
+
 #ifdef __unix__
 
-    void *lib_p = NULL;
-    NH_BYTE libPath_p[255] = {'\0'};
-
-    if (path_p) {
-        sprintf(libPath_p, "%s/lib%s.so", path_p, name_p);
-    } else {
+    if (!path_p) {
+        char libPath_p[255];
         sprintf(libPath_p, "lib%s.so", name_p);
+        lib_p = nh_core_getLibraryHandle(libPath_p);
+        NH_CORE_END(lib_p)
     }
 
-    lib_p = nh_core_getLibraryHandle(libPath_p);
+    char path2_p[255];
+    strcpy(path2_p, path_p);
+
+    char *p = strtok(path2_p, ":");
+    while (p != NULL && !lib_p) {
+        char libPath_p[255];
+        sprintf(libPath_p, "%s/lib%s.so", p, name_p);
+        lib_p = nh_core_getLibraryHandle(libPath_p);
+ 	p = strtok(NULL, ":");
+    }
+    NH_CORE_END(lib_p)
 
 #endif
 
-NH_CORE_END(lib_p)
+NH_CORE_END(NULL)
 }
 
 void *nh_core_loadSymbolFromLibrary(

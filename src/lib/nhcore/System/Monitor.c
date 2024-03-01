@@ -425,9 +425,7 @@ NH_CORE_BEGIN()
             break;
 
         case 'd' :
-
             Current_p->isOpen = NH_TRUE;
-
             if (Current_p->LoggerNode_p->Messages.size == 0) {
                 Monitor_p->listingWidth = nh_core_getCategoryListingWidth(Monitor_p);
             }
@@ -436,6 +434,10 @@ NH_CORE_BEGIN()
                 Current_p->isSelected = NH_TRUE;
                 Current_p->hasFocus = NH_TRUE;
             }
+            break;
+
+        case 'q' :
+            Program_p->close = true;
             break;
 
 //        case CTRL_KEY('b') :
@@ -469,13 +471,14 @@ NH_CORE_SILENT_END()
 static const NH_BYTE *help_pp[] =
 {
     "",
-    "General Controls                             ",
-    "---------------------------------------------",
+    "Keyboard Controls                            ",
+    "",
     "[w][a][s][d] Navigate logging categories.    ",
     "[h][j][k][l] Navigate log entries.           ",
     "[f][g]       Jump to left/right selected log.",
     "[c]          Copy selected log entry.        ",
     "[b]          Toggle logging categories.      ",
+    "[q]          Quit.                           ",
     "",
 };
 

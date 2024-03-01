@@ -33,7 +33,7 @@ NH_GFX_RESULT nh_gfx_initialize()
     NH_GFX_CHECK(nh_gfx_initializeFontManager())
     NH_GFX_CHECK(nh_gfx_createSurfaceRequirements())
 
-//    nh_vk_initVulkan();
+    nh_vk_initVulkan();
     nh_opengl_initOpenGL();
 }
 

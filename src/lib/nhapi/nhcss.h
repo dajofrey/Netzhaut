@@ -51,21 +51,21 @@
     /**
      * Todo.
      */
-    nh_css_LayoutEngine *nh_css_createLayoutEngine(
+    nh_css_LayoutEngine *nh_api_createLayoutEngine(
         nh_html_DocumentContext *DocumentContext_p
     );
 
     /**
      * Todo.
      */
-    nh_css_CanvasType nh_css_createCanvasType(
+    nh_css_CanvasType nh_api_createCanvasType(
         nh_PixelSize Size 
     );
 
     /**
      * Todo.
      */
-    NH_CSS_RESULT nh_css_addCanvasType(
+    NH_CSS_RESULT nh_api_addCanvasType(
         nh_css_LayoutEngine *LayoutEngine_p, nh_css_CanvasType CanvasType
     );
 

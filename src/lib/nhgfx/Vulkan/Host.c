@@ -140,21 +140,22 @@ NH_GFX_BEGIN();
     const NH_BYTE* instanceLayers_pp[1] = {VALIDATION_LAYER};
 	
 #ifdef __unix__
-    const NH_BYTE* instanceExtensions_pp[3]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_xlib_surface"};
-    const NH_BYTE* instanceExtensions2_pp[2] = {"VK_KHR_surface", "VK_KHR_xlib_surface"};
+    const NH_BYTE* instanceExtensions_pp[]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_xlib_surface", "VK_KHR_portability_enumeration"};
+    const NH_BYTE* instanceExtensions2_pp[] = {"VK_KHR_surface", "VK_KHR_xlib_surface", "VK_KHR_portability_enumeration"};
 #elif defined(_WIN32) || defined (WIN32)
-    const NH_BYTE* instanceExtensions_pp[3]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_win32_surface"};
-    const NH_BYTE* instanceExtensions2_pp[2] = {"VK_KHR_surface", "VK_KHR_win32_surface"};
+    const NH_BYTE* instanceExtensions_pp[]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_win32_surface"};
+    const NH_BYTE* instanceExtensions2_pp[] = {"VK_KHR_surface", "VK_KHR_win32_surface"};
 #endif
 
     VkInstanceCreateInfo InstanceInfo = 
     {
         .sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .pApplicationInfo        = &VkApplicationInfo,
-        .enabledExtensionCount   = 3,
+        .enabledExtensionCount   = 4,
         .ppEnabledExtensionNames = instanceExtensions_pp,
         .enabledLayerCount       = 1,
-        .ppEnabledLayerNames     = instanceLayers_pp
+        .ppEnabledLayerNames     = instanceLayers_pp,
+        .flags                   = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
     };
 
     if ((nh_vk_validationLayerSupported(Host_p) == NH_FALSE) || !validation) {
@@ -162,7 +163,7 @@ NH_GFX_BEGIN();
     }
     
     if ((nh_vk_validationExtensionSupported(Host_p) == NH_FALSE) || !validation) {
-        InstanceInfo.enabledExtensionCount   = 2;
+        InstanceInfo.enabledExtensionCount   = 3;
         InstanceInfo.ppEnabledExtensionNames = instanceExtensions2_pp;
     }
 

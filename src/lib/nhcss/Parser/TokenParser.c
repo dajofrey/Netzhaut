@@ -331,19 +331,14 @@ NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
 
 static nh_css_Declaration nh_css_initDeclaration()
 {
-NH_CSS_BEGIN()
-
     nh_css_Declaration Declaration;
     Declaration.important = NH_FALSE;
-
-NH_CSS_END(Declaration)
+    return Declaration;
 }
 
 static nh_Array nh_css_consumeDeclarations(
     nh_css_TokenParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_Array Declarations = nh_core_initArray(sizeof(nh_css_Declaration), 8);
 
     while (Parser_p->length)
@@ -355,7 +350,7 @@ NH_CSS_BEGIN()
                 break;
 
             case NH_CSS_TOKEN_EOF :
-                NH_CSS_END(Declarations)
+                return Declarations;
 
             case NH_CSS_TOKEN_AT_KEYWORD :
                 break; // TODO
@@ -392,7 +387,7 @@ NH_CSS_BEGIN()
                 }
 
                 nh_core_freeList(&Tmp, NH_FALSE);
-                if (Parser_p->length == 0) {NH_CSS_END(Declarations)}
+                if (Parser_p->length == 0) {return Declarations;}
 
                 break;
             }
@@ -404,7 +399,7 @@ NH_CSS_BEGIN()
         nh_css_advanceTokenParser(Parser_p, 1);
     }
 
-NH_CSS_END(Declarations)
+    return Declarations;
 }
 
 // ENTRY POINTS ====================================================================================
@@ -412,13 +407,13 @@ NH_CSS_END(Declarations)
 nh_css_StyleSheetObject *nh_css_parseStyleSheet(
     nh_css_TokenParser *Parser_p, nh_css_DocumentObject *Document_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_StyleSheetObject *StyleSheet_p = (nh_css_StyleSheetObject*)nh_webidl_createObject("CSS", "CSSStyleSheet");
     NH_CSS_CHECK_NULL_2(NULL, StyleSheet_p)
 
     nh_Array Rules = nh_css_consumeRules(Parser_p, NH_TRUE);
     NH_CSS_CHECK_2(NULL, nh_css_logRules(StyleSheet_p, &Rules))
+
+    if (!nh_css_getRuleList(StyleSheet_p)) {return NULL;}
 
     NH_CSS_CHECK_2(NULL, nh_css_parseRules(&Rules, nh_css_getRuleList(StyleSheet_p)))
     NH_CSS_CHECK_2(NULL, nh_css_logRuleObjects(StyleSheet_p, nh_css_getRuleListData(nh_css_getRuleList(StyleSheet_p))))
@@ -430,33 +425,30 @@ NH_CSS_BEGIN()
 
     nh_core_freeArray(&Rules);
 
-NH_CSS_END(StyleSheet_p)
+    return StyleSheet_p;
 }
 
 nh_Array nh_css_parseDeclarations(
     nh_css_TokenParser *Parser_p)
 {
-NH_CSS_BEGIN()
-NH_CSS_END(nh_css_consumeDeclarations(Parser_p))
+    return nh_css_consumeDeclarations(Parser_p);
 }
 
 NH_CSS_RESULT nh_css_parseComponentValue(
     nh_css_TokenParser *Parser_p, nh_css_ComponentValue *Value_p)
 {
-NH_CSS_BEGIN()
-
     while (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_WHITESPACE) {
         nh_css_advanceTokenParser(Parser_p, 1);
     }
 
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_EOF) {
         // syntax error
-        NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        return NH_CSS_ERROR_BAD_STATE;
     }
 
     nh_css_ComponentValue Value;
     if (nh_css_consumeComponentValue(Parser_p, &Value) != NH_CSS_SUCCESS) {
-        NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        return NH_CSS_ERROR_BAD_STATE;
     }
 
     while (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_WHITESPACE) {
@@ -465,19 +457,17 @@ NH_CSS_BEGIN()
 
     if (Parser_p->Tokens_pp[0]->type != NH_CSS_TOKEN_EOF) {
         // syntax error
-        NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        return NH_CSS_ERROR_BAD_STATE;
     }
 
     *Value_p = Value;
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+    return NH_CSS_SUCCESS;
 }
 
 nh_Array nh_css_parseComponentValues(
     nh_css_TokenParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_Array ComponentValues = nh_core_initArray(sizeof(nh_css_ComponentValue), 1);
 
     while (Parser_p->length && Parser_p->Tokens_pp[0]->type != NH_CSS_TOKEN_EOF)
@@ -490,6 +480,6 @@ NH_CSS_BEGIN()
         else {break;}
     }
 
-NH_CSS_END(ComponentValues)
+    return ComponentValues;
 }
 

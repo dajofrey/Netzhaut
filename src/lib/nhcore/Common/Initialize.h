@@ -13,14 +13,4 @@
 
 #endif
 
-/** @addtogroup lib_nhcore_typedefs
- *  @{
- */
-
-    typedef nh_Loader *(*nh_core_initialize_f)(
-        char *path_p, char *config_p, int length
-    );
-
-/** @} */
-
 #endif

@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "IndexMap.h"
 #include "Macros.h"
 
 #include "../Window/Listener.h"
@@ -25,7 +24,6 @@
 
 NH_WSI_RESULT_E nh_wsi_initialize()
 {
-    NH_WSI_CHECK(nh_wsi_createIndexMap())
     NH_WSI_CHECK(nh_wsi_normalizeListener())
     NH_WSI_CHECK(nh_x11_initialize())
 }

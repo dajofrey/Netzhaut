@@ -35,6 +35,10 @@ typedef void (*nh_core_freeMonitorInterface_f)(
     void *Interface_p
 );
 
+typedef void  *(*nh_core_initialize_f)( 
+    char *path_p, char *config_p, int length 
+); 
+
 // HELPER ==========================================================================================
 
 static void *nh_api_openCoreLibrary(
@@ -118,8 +122,8 @@ NH_CORE_RESULT nh_api_initialize(
 
     if (!core_p) {return NH_CORE_ERROR_BAD_STATE;}
 
-    nh_core_initLoader_f initLoader_f = nh_api_loadCoreFunction("nh_core_initLoader");
-    NH_LOADER_P = !initLoader_f ? NULL : initLoader_f(NH_FALSE, NH_FALSE);
+    nh_core_initialize_f initialize_f = nh_api_loadCoreFunction("nh_core_initialize");
+    NH_LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
 
     return NH_LOADER_P ? NH_CORE_SUCCESS : NH_CORE_ERROR_BAD_STATE;
 }

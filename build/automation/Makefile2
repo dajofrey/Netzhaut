@@ -1,11 +1,10 @@
 # Define the compiler and compile flags
 CC = gcc
-CFLAGS = -fPIC -std=gnu99 -Wl,-rpath-link,$(CURDIR)/lib:$(CURDIR)/external/TTyr/lib
+CFLAGS = -std=gnu99 -Wl,-rpath,$(CURDIR)/lib,-rpath,$(CURDIR)/external/TTyr/lib
 
 # Define the linker and linker flags
 LD = gcc
-
-LDFLAGS_NHHTML = -Llib -lnhapi -Lexternal/TTyr/external/Netzhaut/lib -lttyr-api
+LDFLAGS_NHHTML = -Llib -lnhapi -Lexternal/TTyr/lib -lttyr-api
 
 # Define the source file directory for each binary
 SRC_DIR_NHHTML = src/bin/nhhtml
@@ -20,7 +19,7 @@ OBJ_FILES_NHHTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHHTML)/, $(SRC_FI
 BIN_NHHTML = bin/nhhtml
 
 build_ttyr:
-	(cd external/TTyr && make -f build/automation/Makefile all)
+	(cd external/TTyr && make -f build/automation/Makefile lib NETZHAUT_PATH=$(CURDIR))
 create_bin_dir:
 	mkdir -p bin
 
@@ -28,7 +27,7 @@ create_bin_dir:
 all: build_ttyr $(BIN_NHHTML)
 
 # Custom compiler flags
-$(OBJ_FILES_NHHTML): CFLAGS += -Iexternal/TTyr/src/lib -Isrc/lib
+$(OBJ_FILES_NHHTML): CFLAGS += -Isrc/lib -Iexternal/TTyr/src/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 
 # Rule to compile source files into object files
 %.o: $(SRC_DIR_NHHTML)/%.c
@@ -42,5 +41,6 @@ $(BIN_NHHTML): create_bin_dir $(OBJ_FILES_NHHTML)
 clean:
 	rm -f $(OBJ_FILES_NHHTML) $(BIN_NHHTML)
 	rm -rf bin 
+	(cd external/TTyr && make -f build/automation/Makefile clean)
 
 .PHONY: all lib clean

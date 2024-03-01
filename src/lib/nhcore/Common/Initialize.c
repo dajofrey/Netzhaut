@@ -40,23 +40,23 @@ NH_CORE_BEGIN()
 NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_initialize(
+nh_Loader *nh_core_initialize(
     char *path_p, char *config_p, int length)
 {
-    NH_CORE_CHECK(nh_core_initGlobalConfig())
+    nh_core_initGlobalConfig();
 
     if (config_p != NULL && length > 0) {
-        NH_CORE_CHECK(nh_core_appendConfig(config_p, length, NH_TRUE))
+        nh_core_appendConfig(config_p, length, NH_TRUE);
     }
 
-    NH_CORE_CHECK(nh_core_initLogger())
-    NH_CORE_CHECK(nh_core_initMemory())
-    NH_CORE_CHECK(nh_core_initProcessPool())
-    NH_CORE_CHECK(nh_core_createIndexMap())
-    NH_CORE_CHECK(nh_core_initSystem())
+    nh_core_initLogger();
+    nh_core_initMemory();
+    nh_core_initProcessPool();
+    nh_core_createIndexMap();
+    nh_core_initSystem();
 
-    NH_CORE_CHECK(nh_core_startWorkloads())
+    nh_core_startWorkloads();
 
-    return NH_CORE_SUCCESS;
+    return nh_core_initLoader(false, false);
 }
 

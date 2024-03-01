@@ -21,14 +21,14 @@
 
 // CREATE ==========================================================================================
 
-nh_renderer_Renderer *nh_renderer_createRenderer(
+nh_renderer_Renderer *nh_api_createRenderer(
     nh_css_LayoutEngine *LayoutEngine_p)
 {
     nh_renderer_createRenderer_f createRenderer_f = !NH_LOADER_P || !LayoutEngine_p ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_RENDERER, 0, "nh_renderer_createRenderer");
     return createRenderer_f ? createRenderer_f(LayoutEngine_p) : NULL;
 }
 
-NH_RENDERER_RESULT nh_renderer_addViewport(
+NH_RENDERER_RESULT nh_api_addViewport(
     nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p)
 {
     nh_renderer_addViewport_f addViewport_f = !NH_LOADER_P || !Renderer_p || !Viewport_p ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_RENDERER, 0, "nh_renderer_addViewport");

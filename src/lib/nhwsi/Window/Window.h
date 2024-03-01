@@ -35,7 +35,7 @@
  */
 
     typedef nh_wsi_Window *(*nh_wsi_createWindow_f)(
-        NH_BYTE namespace_p[255], nh_gfx_SurfaceRequirements *Requirements_p
+        NH_BYTE *namespace_p, nh_gfx_SurfaceRequirements *Requirements_p
     );
    
     typedef NH_WSI_RESULT_E (*nh_wsi_moveWindow_f)(

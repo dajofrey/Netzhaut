@@ -47,7 +47,7 @@ NH_WSI_END(type)
 }
 
 nh_wsi_Window *nh_wsi_createWindow(
-    NH_BYTE namespace_p[255], nh_gfx_SurfaceRequirements *Requirements_p)
+    NH_BYTE *namespace_p, nh_gfx_SurfaceRequirements *Requirements_p)
 {
 NH_WSI_BEGIN();
 

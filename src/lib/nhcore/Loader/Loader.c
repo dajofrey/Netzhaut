@@ -176,7 +176,7 @@ NH_CORE_BEGIN()
 
     Module_p->loaded = NH_TRUE;
 
-    NH_CORE_CHECK(nh_core_logModules())
+//    NH_CORE_CHECK(nh_core_logModules())
 
 NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
 }
