@@ -37,8 +37,8 @@ NH_CSS_BEGIN()
     NH_CSS_CHECK(nh_css_createInitialPropertyValues())
 
     nh_encoding_UTF32String String = nh_encoding_decodeUTF8(default_css_inc, default_css_inc_len, NULL);
-
     NH_CSS_DEFAULT_STYLE_SHEET_P = nh_css_parseStyleSheetFromUTF32(&String, NULL);
+
     NH_CSS_CHECK_NULL(NH_CSS_DEFAULT_STYLE_SHEET_P)
 
     nh_encoding_freeUTF32(&String);

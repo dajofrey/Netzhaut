@@ -158,6 +158,7 @@ NH_CORE_BEGIN()
 
     nh_SystemTime Now = nh_core_getSystemTime();
     if (nh_core_getSystemTimeDiffInSeconds(Monitor_p->LastUpdate, Now) < Monitor_p->updateIntervalInSeconds) {
+        // Skip update if update-interval not met.
         NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
     }
 
@@ -470,8 +471,9 @@ NH_CORE_SILENT_END()
 
 static const NH_BYTE *help_pp[] =
 {
+    "Netzhaut Monitor                             ",
     "",
-    "Keyboard Controls                            ",
+    "- Keyboard Controls -                        ",
     "",
     "[w][a][s][d] Navigate logging categories.    ",
     "[h][j][k][l] Navigate log entries.           ",

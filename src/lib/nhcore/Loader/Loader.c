@@ -161,7 +161,6 @@ static NH_CORE_RESULT nh_core_load(
 NH_CORE_BEGIN()
 
     if (nh_core_getModule(type)) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
- 
     NH_CORE_CHECK(nh_core_loadDependencies(type, path_p))
 
     nh_Module *Module_p = &NH_LOADER.Modules_p[type];
@@ -172,10 +171,11 @@ NH_CORE_BEGIN()
     Module_p->lastModified_p = nh_core_lastModified(Module_p->lib_p);
     NH_CORE_CHECK_NULL(Module_p->lastModified_p)
 
-    nh_core_callDefaultInitializer(Module_p);
-
+    // This needs to be set before calling initalizer, 
+    // because e.g. nhcss uses the loader in the initializer.
     Module_p->loaded = NH_TRUE;
 
+    nh_core_callDefaultInitializer(Module_p);
 //    NH_CORE_CHECK(nh_core_logModules())
 
 NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
@@ -461,6 +461,7 @@ NH_CORE_BEGIN()
         NH_LOADER.Modules_p[i] = nh_core_initModule(i);
     }
 
+    NH_LOADER.Modules_p[0].loaded = true;
     NH_LOADER.ExternalModules = nh_core_initArray(sizeof(nh_core_ExternalModule), 8);
 
     if (fallback && install) {

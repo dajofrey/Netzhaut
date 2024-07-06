@@ -107,9 +107,9 @@ NH_WEBIDL_BEGIN()
 
     // CRITICAL DESIGN DECISION: In the next line nh_core_loadExisitingSymbol() is used, which means that 
     // modules are expected to be loaded manually. This avoids unnecessary dependencies.
-
     init_f initNewObject_f = nh_core_loadExistingSymbol(_module, 0, funcName_p);
     if (initNewObject_f) {NH_WEBIDL_CHECK_2(NULL, initNewObject_f(Object_p))} 
+    else {printf("Object initializer %s couldn't be found.\n", funcName_p);}
 
     if (Interface_p->Inheritance_p != NULL) 
     {

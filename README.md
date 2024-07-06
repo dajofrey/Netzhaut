@@ -4,7 +4,7 @@ Netzhaut is a **multi-purpose open-source web-browser-engine** written from scra
 
 The project is currently in the **experimental** phase and thus not usable. 
 
-The documentation for this project, apart from code-documentation, is fully contained in this document.
+The documentation for this project is fully contained in this README.
 
 ## Contents
   
@@ -15,13 +15,32 @@ The documentation for this project, apart from code-documentation, is fully cont
 
 ## Build
 
-### Linux
 
+### Get sources: Git
 ```bash 
 git clone https://github.com/dajofrey/Netzhaut
 cd Netzhaut && git submodule update --init --recursive 
-make -f build/automation/Makefile all 
-``` 
+```
+
+### Compile: Make
+
+Workflow:
+```bash 
+# build libraries
+make -f build/automation/lib.mk all 
+
+# build binaries
+make -f build/automation/bin.mk all
+```
+
+CCFLAGS:
+```bash
+MONITOR # Enable monitor (binaries).
+```
+CCFLAGS Example:
+```bash
+make -f build/automation/bin.mk all CCFLAGS="-DMONITOR"
+```
 
 ## Architecture
 

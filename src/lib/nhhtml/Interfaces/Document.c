@@ -39,7 +39,8 @@ NH_HTML_BEGIN()
     nh_webidl_Object *Document_p = nh_webidl_createCompositeObject("HTML", "Document");
     NH_HTML_CHECK_MEM_2(NULL, Document_p)
 
-    // The node document of a document is that document itself. All nodes have a node document at all times. 
+    // The node document of a document is that document itself. 
+    // All nodes have a node document at all times. 
     nh_dom_setNodeDocument(nh_dom_getNode(Document_p), Document_p);
 
 NH_HTML_END(Document_p)

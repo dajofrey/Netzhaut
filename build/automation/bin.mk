@@ -27,7 +27,7 @@ create_bin_dir:
 all: build_ttyr $(BIN_NHHTML)
 
 # Custom compiler flags
-$(OBJ_FILES_NHHTML): CFLAGS += -Isrc/lib -Iexternal/TTyr/src/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NHHTML): CFLAGS += $(CCFLAGS) -Isrc/lib -Iexternal/TTyr/src/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 
 # Rule to compile source files into object files
 %.o: $(SRC_DIR_NHHTML)/%.c

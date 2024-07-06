@@ -90,6 +90,7 @@ NH_DOM_BEGIN()
 NH_DOM_DIAGNOSTIC_END(NH_DOM_ERROR_BAD_STATE)
 }
 
+// NOTE Keep public otherwise can't be loaded.
 NH_DOM_RESULT nh_dom_initializeNode(
     nh_webidl_Object *Node_p)
 {
