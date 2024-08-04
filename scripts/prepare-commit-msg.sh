@@ -110,12 +110,15 @@ for action in "${actions[@]}"; do
 done
 
 # Check if a command-line argument was provided
-if [ $# -eq 1 ]; then
+if [ $# -gt 0 ]; then
   argfile="$1"
   # Append the actions to the specified file
   echo -e "\nAppending result to $argfile"
+  echo "" >> "$argfile"
   for action in "${actions[@]}"; do
     echo "$action" >> "$argfile"
   done
+else
+  echo "Unable to append to commit message!"
 fi
 

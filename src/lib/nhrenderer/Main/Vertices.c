@@ -220,7 +220,6 @@ NH_RENDERER_BEGIN()
     {
         nh_gfx_Glyph Glyph = nh_gfx_getGlyph(Segment_p->FontInstance_p, Infos_p[i].id);
 
-        float xAdvance = Infos_p[i].xAdvance/(float)(Segment_p->FontInstance_p->hres*64);
         float xOffset  = Infos_p[i].xOffset/(float)(Segment_p->FontInstance_p->hres*64);
         float yAdvance = Infos_p[i].yAdvance/(float)(64);
         float yOffset  = Infos_p[i].yOffset/(float)(64);
@@ -262,8 +261,8 @@ NH_RENDERER_BEGIN()
         for (int j = 0; j < 6; ++j) {indices_p[indicesIndex++] = offset + letterIndices_p[j];}
         offset += 4;
 
-        GlyphBox.Position.x -= xOffset + Glyph.xOffset; 
-        GlyphBox.Position.x += xAdvance; 
+        GlyphBox.Position.x -= xOffset + Glyph.xOffset;
+        GlyphBox.Position.x += Infos_p[i].xAdvance;
         GlyphBox.Position.y += yOffset + Glyph.yOffset; 
         GlyphBox.Position.y += yAdvance; 
     }

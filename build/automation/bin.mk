@@ -2,9 +2,12 @@
 CC = gcc
 CFLAGS = -std=gnu99 -Wl,-rpath,$(CURDIR)/lib,-rpath,$(CURDIR)/external/TTyr/lib
 
+# Check flags
+MONITOR_FLAG := $(filter -DMONITOR_CLI -DMONITOR_SA,$(CCFLAGS))
+
 # Define the linker and linker flags
 LD = gcc
-LDFLAGS_NHHTML = -Llib -lnhapi -Lexternal/TTyr/lib -lttyr-api
+LDFLAGS_NHHTML = -Llib -lnhapi
 
 # Define the source file directory for each binary
 SRC_DIR_NHHTML = src/bin/nhhtml
@@ -18,16 +21,25 @@ OBJ_FILES_NHHTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHHTML)/, $(SRC_FI
 # Names of the shared libraries
 BIN_NHHTML = bin/nhhtml
 
+ifneq ($(strip $(MONITOR_FLAG)),)
+    $(info MONITOR flag was provided)
+    BUILD_TTYR_TARGET := build_ttyr
+    LDFLAGS_NHHTML += -Lexternal/TTyr/lib -lttyr-api
+else
+    $(info MONITOR flag was not provided)
+    BUILD_TTYR_TARGET := # don't build TTyr
+endif
+
 build_ttyr:
 	(cd external/TTyr && make -f build/automation/Makefile lib NETZHAUT_PATH=$(CURDIR))
 create_bin_dir:
 	mkdir -p bin
 
 # Build targets for each library
-all: build_ttyr $(BIN_NHHTML)
+all: $(BUILD_TTYR_TARGET) $(BIN_NHHTML)
 
 # Custom compiler flags
-$(OBJ_FILES_NHHTML): CFLAGS += $(CCFLAGS) -Isrc/lib -Iexternal/TTyr/src/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NHHTML): CFLAGS += $(CCFLAGS) -Iexternal/TTyr/src/lib -Isrc/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 
 # Rule to compile source files into object files
 %.o: $(SRC_DIR_NHHTML)/%.c

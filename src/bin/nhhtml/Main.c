@@ -43,25 +43,27 @@ static void *getFileData(
     return data_p;
 }
 
-//static void handleInput(
-//    nh_wsi_Window *Window_p, nh_wsi_Event Event)
-//{
-//    switch (Event.type)
-//    {
-//        case NH_WSI_EVENT_KEYBOARD :
-//            ttyr_api_sendEvent(TTY_p, Event);
-//            break;
-//    }
-//}
+#if defined(MONITOR_CLI) || defined(MONITOR_SA)
 
-#ifdef MONITOR
+static ttyr_tty_TTY *TTY_p = NULL;
+
+static void handleMonitorInput(
+    nh_wsi_Window *Window_p, nh_wsi_Event Event)
+{
+    switch (Event.type)
+    {
+        case NH_WSI_EVENT_KEYBOARD :
+            ttyr_api_sendEvent(TTY_p, Event);
+            break;
+    }
+}
 
 /** 
- * Create cli monitor interface for development purposes. Must be enabled during build.
+ * Create monitor interface for development purposes. 
+ * Must be enabled during build.
  */
 static int openMonitor()
 {
-    static ttyr_tty_TTY *TTY_p = NULL;
     static void *Interface_p = NULL;
 
     Interface_p = nh_api_createMonitorInterface();
@@ -72,11 +74,38 @@ static int openMonitor()
     TTY_p = ttyr_api_openTTY(NULL, Interface_p);
     if (!TTY_p) {return 1;}
 
-    if (ttyr_api_claimStandardIO(TTY_p)) {return 1;}
+    #if defined(MONITOR_CLI)
+        if (ttyr_api_claimStandardIO(TTY_p)) {return 1;}
+
+    #elif defined(MONITOR_SA)
+        ttyr_terminal_Terminal *Terminal_p = ttyr_api_openTerminal(NULL, TTY_p); 
+        if (!Terminal_p) {return 1;} 
+ 
+        nh_wsi_Window *Window_p = 
+            nh_api_createWindow(NULL, nh_api_getSurfaceRequirements()); 
+        if (!Window_p) {return 1;} 
+ 
+        nh_gfx_Surface *Surface_p = nh_api_createSurface(Window_p, NH_GFX_API_OPENGL); 
+        if (!Surface_p) {return 1;} 
+ 
+        nh_PixelPosition Position = {0};
+        nh_PixelSize Size; 
+        Size.width  = 700; 
+        Size.height = 700; 
+ 
+        nh_gfx_Viewport *Viewport_p = nh_api_createViewport(Surface_p, Position, Size); 
+        if (!Viewport_p) {return 1;} 
+ 
+        if (ttyr_api_setViewport(Terminal_p, Viewport_p)) {return 1;}
+
+        nh_api_setWindowEventListener(Window_p, handleMonitorInput);
+
+    #endif
 
     return 0;
 }
-#endif // MONITOR
+
+#endif
 
 /** 
  * Routine of opening a webpage using cli. 
@@ -94,12 +123,12 @@ int main(
         return 1;
     }
 
-#ifdef MONITOR
+#if defined(MONITOR_CLI) || defined(MONITOR_SA)
     if (openMonitor()) {
         puts("Opening monitor failed. Exiting.");
         return 1;
     }
-#endif // MONITOR
+#endif
 
     long size;
     void *document_p = getFileData(argv_pp[1], &size);
@@ -114,8 +143,6 @@ int main(
         puts("Creating window failed. Exiting.");
         return 1;
     }
-
-//    nh_api_setWindowEventListener(Window_p, handleInput);
 
     nh_gfx_Surface *Surface_p = nh_api_createSurface(Window_p, NH_GFX_API_VULKAN);
     if (!Surface_p) {
