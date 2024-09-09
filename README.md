@@ -1,6 +1,6 @@
 # Netzhaut
  
-Netzhaut is a **multi-purpose open-source WEB-BROWSER-ENGINE** written from scratch in **C99**. Web-Browser-Engines are software systems which run web content on client machines. Popular examples are Chromium (Chrome), Gecko (Firefox) and WebKit (Safari). 
+Netzhaut is a **multi-purpose open-source Web-Browser-Engine** written from scratch in **C99**. Web-Browser-Engines are software systems which run web content on client machines. Popular examples are Chromium (Chrome), Gecko (Firefox) and WebKit (Safari). 
 
 The project is currently in the **EXPERIMENTAL** phase and thus not usable. 
 
@@ -19,29 +19,21 @@ The documentation for this project is fully contained in this README.
 ### Get sources using [Git](https://git-scm.com/)
 ```bash 
 git clone https://github.com/dajofrey/Netzhaut
-cd Netzhaut && git submodule update --init --recursive 
+cd Netzhaut && git submodule update --init
 ```
 
 ### Compile using [Make](https://en.wikipedia.org/wiki/Make_\(software\))
 
-#### Workflow:
+#### Build (default)
 ```bash 
-# build libraries
 make -f build/automation/lib.mk all 
-
-# build binaries
 make -f build/automation/bin.mk all
 ```
 
-#### CCFLAGS for bin.mk:
+#### Build with monitor
 ```bash
-MONITOR_CLI # Enable cli monitor.
-MONITOR_SA # Enable standalone monitor.
-```
-
-#### CCFLAGS Usage-Example:
-```bash
-make -f build/automation/bin.mk all CCFLAGS="-DMONITOR_CLI"
+make -f build/automation/lib.mk all MONITOR=1
+make -f build/automation/bin.mk all CCFLAGS="-DMONITOR"
 ```
 
 ## Architecture

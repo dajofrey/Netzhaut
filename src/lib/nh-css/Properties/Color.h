@@ -1,0 +1,202 @@
+#ifndef NH_CSS_COLOR_H
+#define NH_CSS_COLOR_H
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+/**
+ * Netzhaut - Web Browser Engine
+ * Copyright (C) 2022  Dajo Frey
+ * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
+ */
+
+#include "Values.h"
+
+#include "../Common/Includes.h"
+
+#endif
+
+/** @addtogroup lib_nh-css_vars
+ *  @{
+ */
+
+    extern const char *NH_CSS_COLORS_PP[];
+    extern unsigned int NH_CSS_COLORS_PP_COUNT;
+
+/** @} */
+
+/** @addtogroup lib_nh-css_enums
+ *  @{
+ */
+
+    typedef enum NH_CSS_COLOR {
+        NH_CSS_COLOR_ALICE_BLUE, 	
+        NH_CSS_COLOR_ANTIQUE_WHITE,  	
+        NH_CSS_COLOR_AQUA, 
+        NH_CSS_COLOR_AQUAMARINE,
+        NH_CSS_COLOR_AZURE,	
+        NH_CSS_COLOR_BEIGE,	
+        NH_CSS_COLOR_BISQUE, 	
+        NH_CSS_COLOR_BLACK,	
+        NH_CSS_COLOR_BLANCHED_ALMOND,
+        NH_CSS_COLOR_BLUE,
+        NH_CSS_COLOR_BLUE_VIOLET, 	
+        NH_CSS_COLOR_BROWN,	
+        NH_CSS_COLOR_BURLY_WOOD,  	
+        NH_CSS_COLOR_CADET_BLUE,	
+        NH_CSS_COLOR_CHARTREUSE, 	
+        NH_CSS_COLOR_CHOCOLATE,	
+        NH_CSS_COLOR_CORAL,	
+        NH_CSS_COLOR_CORNFLOWER_BLUE, 
+        NH_CSS_COLOR_CORNSILK,	
+        NH_CSS_COLOR_CRIMSON,	
+        NH_CSS_COLOR_CYAN,
+        NH_CSS_COLOR_DARK_BLUE,
+        NH_CSS_COLOR_DARK_CYAN,	
+        NH_CSS_COLOR_DARK_GOLDEN_ROD,
+        NH_CSS_COLOR_DARK_GRAY,
+        NH_CSS_COLOR_DARK_GREY,	
+        NH_CSS_COLOR_DARK_GREEN, 	
+        NH_CSS_COLOR_DARK_KHAKI,	
+        NH_CSS_COLOR_DARK_MAGENTA,  	
+        NH_CSS_COLOR_DARK_OLIVE_GREEN, 
+        NH_CSS_COLOR_DARK_ORANGE,
+        NH_CSS_COLOR_DARK_ORCHID,	
+        NH_CSS_COLOR_DARK_RED,	
+        NH_CSS_COLOR_DARK_SALMON,  	
+        NH_CSS_COLOR_DARK_SEA_GREEN, 	
+        NH_CSS_COLOR_DARK_SLATE_BLUE, 
+        NH_CSS_COLOR_DARK_SLATE_GRAY,  
+        NH_CSS_COLOR_DARK_SLATE_GREY,  
+        NH_CSS_COLOR_DARK_TURQUOISE,  
+        NH_CSS_COLOR_DARK_VIOLET,  	
+        NH_CSS_COLOR_DEEP_PINK,	
+        NH_CSS_COLOR_DEEP_SKY_BLUE,  	
+        NH_CSS_COLOR_DIM_GRAY,	
+        NH_CSS_COLOR_DIM_GREY,	
+        NH_CSS_COLOR_DODGER_BLUE, 	
+        NH_CSS_COLOR_FIRE_BRICK,	
+        NH_CSS_COLOR_FLORAL_WHITE,  	
+        NH_CSS_COLOR_FOREST_GREEN,	
+        NH_CSS_COLOR_FUCHSIA,	
+        NH_CSS_COLOR_GAINSBORO,  	
+        NH_CSS_COLOR_GHOST_WHITE, 	
+        NH_CSS_COLOR_GOLD,
+        NH_CSS_COLOR_GOLDEN_ROD,
+        NH_CSS_COLOR_GRAY,
+        NH_CSS_COLOR_GREY,	 
+        NH_CSS_COLOR_GREEN, 	
+        NH_CSS_COLOR_GREEN_YELLOW, 	
+        NH_CSS_COLOR_HONEY_DEW,	
+        NH_CSS_COLOR_HOT_PINK,	
+        NH_CSS_COLOR_INDIAN_RED,   	
+        NH_CSS_COLOR_INDIGO,	
+        NH_CSS_COLOR_IVORY,	
+        NH_CSS_COLOR_KHAKI,	
+        NH_CSS_COLOR_LAVENDER,  	
+        NH_CSS_COLOR_LAVENDER_BLUSH,
+        NH_CSS_COLOR_LAWN_GREEN,
+        NH_CSS_COLOR_LEMON_CHIFFON,  	
+        NH_CSS_COLOR_LIGHT_BLUE,	
+        NH_CSS_COLOR_LIGHT_CORAL, 	
+        NH_CSS_COLOR_LIGHT_CYAN,	
+        NH_CSS_COLOR_LIGHT_GOLDEN_ROD,
+        NH_CSS_COLOR_LIGHT_GRAY,
+        NH_CSS_COLOR_LIGHT_GREY,	
+        NH_CSS_COLOR_LIGHT_GREEN, 	
+        NH_CSS_COLOR_LIGHT_PINK,	
+        NH_CSS_COLOR_LIGHT_SALMON,  	
+        NH_CSS_COLOR_LIGHT_SEA_GREEN,
+        NH_CSS_COLOR_LIGHT_SKY_BLUE,
+        NH_CSS_COLOR_LIGHT_SLATE_GRAY, 
+        NH_CSS_COLOR_LIGHT_SLATE_GREY,
+        NH_CSS_COLOR_LIGHT_STEEL_BLUE,
+        NH_CSS_COLOR_LIGHT_YELLOW,
+        NH_CSS_COLOR_LIME,
+        NH_CSS_COLOR_LIME_GREEN,	
+        NH_CSS_COLOR_LINEN,	
+        NH_CSS_COLOR_MAGENTA,  	
+        NH_CSS_COLOR_MAROON,	
+        NH_CSS_COLOR_MEDIUM_AQUAMARINE,
+        NH_CSS_COLOR_MEDIUM_BLUE,
+        NH_CSS_COLOR_MEDIUM_ORCHID,  	
+        NH_CSS_COLOR_MEDIUM_PURPLE,	
+        NH_CSS_COLOR_MEDIUM_SEA_GREEN, 	
+        NH_CSS_COLOR_MEDIUM_SLATE_BLUE,	
+        NH_CSS_COLOR_MEDIUM_SPRING_GREEN,	
+        NH_CSS_COLOR_MEDIUM_TURQUOISE,	
+        NH_CSS_COLOR_MEDIUM_VIOLET_RED,	
+        NH_CSS_COLOR_MIDNIGHT_BLUE,
+        NH_CSS_COLOR_MINT_CREAM,	
+        NH_CSS_COLOR_MISTY_ROSE,	
+        NH_CSS_COLOR_MOCCASIN,	
+        NH_CSS_COLOR_NAVAJO_WHITE,  	
+        NH_CSS_COLOR_NAVY,
+        NH_CSS_COLOR_OLD_LACE,  	
+        NH_CSS_COLOR_OLIVE,	
+        NH_CSS_COLOR_OLIVE_DRAB,  	
+        NH_CSS_COLOR_ORANGE,	
+        NH_CSS_COLOR_ORANGE_RED,  	
+        NH_CSS_COLOR_ORCHID,	
+        NH_CSS_COLOR_PALE_GOLDEN_ROD,  
+        NH_CSS_COLOR_PALE_GREEN,
+        NH_CSS_COLOR_PALE_TURQUOISE,  
+        NH_CSS_COLOR_PALE_VIOLET_RED,
+        NH_CSS_COLOR_PAPAYA_WHIP,
+        NH_CSS_COLOR_PEACH_PUFF,	
+        NH_CSS_COLOR_PERU,
+        NH_CSS_COLOR_PINK,
+        NH_CSS_COLOR_PLUM,
+        NH_CSS_COLOR_POWDER_BLUE,  	
+        NH_CSS_COLOR_PURPLE,	
+        NH_CSS_COLOR_REBECCA_PURPLE,  
+        NH_CSS_COLOR_RED,
+        NH_CSS_COLOR_ROSY_BROWN,
+        NH_CSS_COLOR_ROYAL_BLUE,	
+        NH_CSS_COLOR_SADDLE_BROWN, 	
+        NH_CSS_COLOR_SALMON,	
+        NH_CSS_COLOR_SANDY_BROWN,	
+        NH_CSS_COLOR_SEA_GREEN,	
+        NH_CSS_COLOR_SEA_SHELL,	
+        NH_CSS_COLOR_SIENNA,	
+        NH_CSS_COLOR_SILVER,	
+        NH_CSS_COLOR_SKY_BLUE, 	
+        NH_CSS_COLOR_SLATE_BLUE,  	
+        NH_CSS_COLOR_SLATE_GRAY,	
+        NH_CSS_COLOR_SLATE_GREY,	
+        NH_CSS_COLOR_SNOW,
+        NH_CSS_COLOR_SPRING_GREEN,
+        NH_CSS_COLOR_STEEL_BLUE,	
+        NH_CSS_COLOR_TAN,
+        NH_CSS_COLOR_TEAL,
+        NH_CSS_COLOR_THISTLE,  	
+        NH_CSS_COLOR_TOMATO,	
+        NH_CSS_COLOR_TURQUOISE,  	
+        NH_CSS_COLOR_VIOLET,	
+        NH_CSS_COLOR_WHEAT,	
+        NH_CSS_COLOR_WHITE,	
+        NH_CSS_COLOR_WHITE_SMOKE,  	
+        NH_CSS_COLOR_YELLOW,	
+        NH_CSS_COLOR_YELLOW_GREEN,  
+    } NH_CSS_COLOR;
+
+/** @} */
+
+/** @addtogroup lib_nh-css_functions
+ *  @{
+ */
+
+    NH_CSS_RESULT nh_css_getColorFromName(
+        NH_BYTE *name_p, NH_BYTE *hex_p
+    );
+
+    nh_Color nh_css_getColor(
+        nh_css_Value Color
+    );
+
+    void nh_css_colorToArray(
+        nh_Color Color, float *color_p
+    );
+
+/** @} */
+
+#endif 

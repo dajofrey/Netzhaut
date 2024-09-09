@@ -25,15 +25,15 @@ fi
 
 cd ${SCRIPT_DIR}/../../external/glslang-main/StandAlone
 
-if [ "$1" = "nhrenderer" ]; then
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/Color.vert.inc ../../../build/data/glsl/nhrenderer/Main/Color.vert
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/Color.frag.inc ../../../build/data/glsl/nhrenderer/Main/Color.frag
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/BackgroundImage.vert.inc ../../../build/data/glsl/nhrenderer/Main/BackgroundImage.vert
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/BackgroundImage.frag.inc ../../../build/data/glsl/nhrenderer/Main/BackgroundImage.frag
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/Image.vert.inc ../../../build/data/glsl/nhrenderer/Main/Image.vert
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/Image.frag.inc ../../../build/data/glsl/nhrenderer/Main/Image.frag
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/TextSDF.vert.inc ../../../build/data/glsl/nhrenderer/Main/TextSDF.vert
-    ./glslangValidator -V -x -o ../../../src/lib/nhrenderer/Common/Data/GLSL/Main/TextSDF.frag.inc ../../../build/data/glsl/nhrenderer/Main/TextSDF.frag
+if [ "$1" = "nh-renderer" ]; then
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/Color.vert.inc ../../../build/data/glsl/nh-renderer/Main/Color.vert
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/Color.frag.inc ../../../build/data/glsl/nh-renderer/Main/Color.frag
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/BackgroundImage.vert.inc ../../../build/data/glsl/nh-renderer/Main/BackgroundImage.vert
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/BackgroundImage.frag.inc ../../../build/data/glsl/nh-renderer/Main/BackgroundImage.frag
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/Image.vert.inc ../../../build/data/glsl/nh-renderer/Main/Image.vert
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/Image.frag.inc ../../../build/data/glsl/nh-renderer/Main/Image.frag
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/TextSDF.vert.inc ../../../build/data/glsl/nh-renderer/Main/TextSDF.vert
+    ./glslangValidator -V -x -o ../../../src/lib/nh-renderer/Common/Data/GLSL/Main/TextSDF.frag.inc ../../../build/data/glsl/nh-renderer/Main/TextSDF.frag
 fi
 
 if [ "$1" = "nhterminal" ]; then

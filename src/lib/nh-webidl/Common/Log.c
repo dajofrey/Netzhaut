@@ -1,0 +1,179 @@
+// LICENSE NOTICE ==================================================================================
+
+/**
+ * Netzhaut - Web Browser Engine
+ * Copyright (C) 2022  Dajo Frey
+ * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
+ */
+
+// INCLUDES ========================================================================================
+
+#include "Log.h"
+#include "Macros.h"
+
+#include "../Runtime/Definitions.h"
+#include "../../nh-core/System/Logger.h"
+
+#include <string.h>
+#include <stdio.h>
+
+// DEBUG ===========================================================================================
+
+NH_WEBIDL_RESULT _nh_webidl_logBegin(
+    const char *file_p, const char *function_p)
+{
+//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
+//    return _nh_begin(file_p, function_p);
+}
+
+NH_WEBIDL_RESULT _nh_webidl_logEnd(
+    const char *file_p, const char *function_p)
+{
+//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
+//    return _nh_end(file_p, function_p);
+}
+
+NH_WEBIDL_RESULT _nh_webidl_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_WEBIDL_RESULT result, int line)
+{
+//    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
+//    _nh_diagnosticEnd(file_p, function_p, result, line);
+//    return result;
+}
+
+NH_WEBIDL_RESULT nh_webidl_logTokens(
+    NH_BYTE *fragmentName_p, nh_Array *Tokens_p, NH_BOOL dirty)
+{
+NH_WEBIDL_BEGIN()
+
+    NH_BYTE message_p[1023] = {0};
+    NH_BYTE node_p[255] = {0};
+
+    for (int i = 0; i < Tokens_p->length; ++i) 
+    {
+        nh_webidl_Token *Token_p = &((nh_webidl_Token*)Tokens_p->p)[i];
+        nh_String String = nh_core_initString(64);
+        nh_core_appendToString(&String, Token_p->String.p, Token_p->String.length);
+
+        for (int i = 0; i < String.length; ++i) {
+            if (String.p[i] == '\n' || String.p[i] == '\r') {String.p[i] = ' ';}
+        }
+
+        sprintf(node_p, dirty ? "nh-webidl:Parser:%s:TokensDirty" : "nh-webidl:Parser:%s:TokensClean", fragmentName_p);
+        sprintf(message_p, "%s [%s]", NH_WEBIDL_TOKENS_PP[Token_p->type], String.p);
+
+        nh_core_sendLogMessage(node_p, NULL, message_p);
+
+        nh_core_freeString(&String);
+
+        memset(message_p, 0, 1023);
+        memset(node_p, 0, 255);
+    }
+
+NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+}
+
+#define MAX_DEPTH 1024
+
+static NH_WEBIDL_RESULT nh_webidl_logParseTreeRecursively(
+    NH_BYTE *fragmentName_p, nh_webidl_ParseNode *ParseNode_p, nh_webidl_ParseNode *Parent_p, int depth, 
+    NH_BOOL *branch_p, NH_BYTE *message_p, NH_BYTE *indent_p, NH_BYTE *node_p)
+{
+NH_WEBIDL_BEGIN()
+
+    if (depth >= MAX_DEPTH) {NH_WEBIDL_END(NH_WEBIDL_ERROR_BAD_STATE)}
+
+    int offset;
+    for (offset = 0; offset < depth; ++offset) {
+        indent_p[offset] = branch_p[offset] == NH_TRUE ? '|' : ' ';
+    }
+
+    if (ParseNode_p->Token_p == NULL) {
+        sprintf(message_p, "%s%s", indent_p, NH_WEBIDL_PARSE_NODE_NAMES_PP[ParseNode_p->type]);
+    }
+    else {
+        sprintf(message_p, "%sTERMINAL %s", indent_p, ParseNode_p->Token_p->String.p);
+    }
+
+    sprintf(node_p, "nh-webidl:Parser:%s:ParseTree", fragmentName_p);
+    nh_core_sendLogMessage(node_p, NULL, message_p);
+
+    branch_p[depth] = NH_TRUE;
+    if (Parent_p != NULL && ParseNode_p == Parent_p->Children.pp[Parent_p->Children.size - 1]) {
+        branch_p[depth - 1] = NH_FALSE;
+    }
+
+    memset(message_p, 0, 2047);
+    memset(indent_p, 0, MAX_DEPTH);
+    memset(node_p, 0, 255);
+
+    for (int i = 0; i < ParseNode_p->Children.size; ++i) {
+        nh_webidl_logParseTreeRecursively(
+            fragmentName_p, ParseNode_p->Children.pp[i], ParseNode_p, depth + 1, branch_p, message_p, 
+            indent_p, node_p
+        );
+    }
+
+NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+}
+
+NH_WEBIDL_RESULT nh_webidl_logParseTree(
+    NH_BYTE *fragmentName_p, nh_webidl_ParseNode *ParseNode_p)
+{
+NH_WEBIDL_BEGIN()
+
+    NH_BYTE indent_p[MAX_DEPTH] = {'\0'};
+    NH_BYTE message_p[2047] = {'\0'};
+    NH_BYTE node_p[255] = {0};
+
+    NH_BOOL branch_p[MAX_DEPTH];
+    memset(branch_p, NH_FALSE, MAX_DEPTH);
+
+    nh_webidl_logParseTreeRecursively(
+        fragmentName_p, ParseNode_p, NULL, 0, branch_p, message_p, indent_p, node_p
+    );
+
+NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+}
+
+NH_WEBIDL_RESULT nh_webidl_logFragment(
+    NH_BYTE *specification_p, nh_webidl_Fragment *Fragment_p)
+{
+NH_WEBIDL_BEGIN()
+
+    NH_BYTE message_p[1023] = {'\0'};
+
+    for (int i = 0; i < Fragment_p->Interfaces.length; ++i) 
+    {
+        nh_webidl_Interface *Interface_p = &((nh_webidl_Interface*)Fragment_p->Interfaces.p)[i];
+        NH_BYTE className_p[255] = {'\0'};
+        sprintf(className_p, Interface_p->partial ? "%s (partial)" : "%s", Interface_p->name_p);
+
+        NH_BYTE node_p[255] = {0};
+        sprintf(node_p, "nh-webidl:%s:Interfaces:%s", specification_p, className_p);
+
+        if (Interface_p->Inheritance_p) 
+        {
+            sprintf(
+                message_p, "Inherits %s (%s)", Interface_p->Inheritance_p->interface_p, Interface_p->Inheritance_p->specification_p ? Interface_p->Inheritance_p->specification_p : Interface_p->Specification_p->name_p
+            );
+            nh_core_sendLogMessage(node_p, NULL, message_p);
+            memset(message_p, 0, 1023);
+        }
+
+        nh_core_sendLogMessage(node_p, NULL, "Members:");
+
+        for (int j = 0; j < Interface_p->Members.length; ++j) 
+        {
+            nh_webidl_InterfaceMember *InterfaceMember_p = &((nh_webidl_InterfaceMember*)Interface_p->Members.p)[j];
+            sprintf(
+                message_p, "  %s %s", NH_WEBIDL_PARSE_NODE_NAMES_PP[InterfaceMember_p->Node_p->type], InterfaceMember_p->name_p == NULL ? "null" : InterfaceMember_p->name_p
+            );
+            nh_core_sendLogMessage(node_p, NULL, message_p);
+            memset(message_p, 0, 1023);
+        }
+    }
+
+NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+}
+

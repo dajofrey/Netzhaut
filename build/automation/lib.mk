@@ -24,19 +24,19 @@ LDFLAGS_VOLK =
 LDFLAGS_FREETYPE_GL = -I/usr/include/freetype2 -lfreetype -lharfbuzz
 
 # Define the source file directory for each library
-SRC_DIR_NHAPI = src/lib/nhapi
-SRC_DIR_NHCORE = src/lib/nhcore
-SRC_DIR_NHWSI = src/lib/nhwsi
-SRC_DIR_NHHTML = src/lib/nhhtml
-SRC_DIR_NHDOM = src/lib/nhdom
-SRC_DIR_NHNETWORK = src/lib/nhnetwork
-SRC_DIR_NHWEBIDL = src/lib/nhwebidl
-SRC_DIR_NHECMASCRIPT = src/lib/nhecmascript
-SRC_DIR_NHENCODING = src/lib/nhencoding
-SRC_DIR_NHGFX = src/lib/nhgfx
-SRC_DIR_NHRENDERER = src/lib/nhrenderer
-SRC_DIR_NHCSS = src/lib/nhcss
-SRC_DIR_NHURL = src/lib/nhurl
+SRC_DIR_NHAPI = src/lib/nh-api
+SRC_DIR_NHCORE = src/lib/nh-core
+SRC_DIR_NHWSI = src/lib/nh-wsi
+SRC_DIR_NHHTML = src/lib/nh-html
+SRC_DIR_NHDOM = src/lib/nh-dom
+SRC_DIR_NHNETWORK = src/lib/nh-network
+SRC_DIR_NHWEBIDL = src/lib/nh-webidl
+SRC_DIR_NHECMASCRIPT = src/lib/nh-ecmascript
+SRC_DIR_NHENCODING = src/lib/nh-encoding
+SRC_DIR_NHGFX = src/lib/nh-gfx
+SRC_DIR_NHRENDERER = src/lib/nh-renderer
+SRC_DIR_NHCSS = src/lib/nh-css
+SRC_DIR_NHURL = src/lib/nh-url
 
 SRC_DIR_C_HASHMAP = external/c_hashmap
 SRC_DIR_VOLK= external/volk
@@ -44,15 +44,15 @@ SRC_DIR_FREETYPE_GL= external/freetype-gl
 
 # List of source files for each library
 SRC_FILES_NHAPI = \
-    nhapi.c \
-    nhcore.c \
-    nhwsi.c \
-    nhgfx.c \
-    nhhtml.c \
-    nhcss.c \
-    nhrenderer.c \
-    nhecmascript.c \
-    nhencoding.c \
+    nh-api.c \
+    nh-core.c \
+    nh-wsi.c \
+    nh-gfx.c \
+    nh-html.c \
+    nh-css.c \
+    nh-renderer.c \
+    nh-ecmascript.c \
+    nh-encoding.c \
 
 SRC_FILES_NHCORE = \
     Loader/Library.c \
@@ -63,7 +63,6 @@ SRC_FILES_NHCORE = \
     System/Thread.c \
     System/Channel.c \
     System/Logger.c \
-    System/Monitor.c \
     System/Memory.c \
     System/Process.c \
     Util/MediaType.c \
@@ -90,6 +89,10 @@ SRC_FILES_NHCORE = \
     Common/Log.c \
     Common/About.c \
     Common/Config.c \
+
+ifdef MONITOR
+SRC_FILES_NHCORE += System/Monitor.c
+endif
 
 SRC_FILES_NHWSI = \
     Window/Window.c \
@@ -350,19 +353,19 @@ OBJ_FILES_VOLK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_VOLK)/, $(SRC_FILES_
 OBJ_FILES_FREETYPE_GL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_FREETYPE_GL)/, $(SRC_FILES_FREETYPE_GL)))
 
 # Names of the shared libraries
-LIB_NHAPI = lib/libnhapi.so
-LIB_NHCORE = lib/libnhcore.so
-LIB_NHWSI = lib/libnhwsi.so
-LIB_NHHTML = lib/libnhhtml.so
-LIB_NHDOM = lib/libnhdom.so
-LIB_NHNETWORK = lib/libnhnetwork.so
-LIB_NHWEBIDL = lib/libnhwebidl.so
-LIB_NHECMASCRIPT = lib/libnhecmascript.so
-LIB_NHENCODING = lib/libnhencoding.so
-LIB_NHGFX = lib/libnhgfx.so
-LIB_NHRENDERER = lib/libnhrenderer.so
-LIB_NHCSS = lib/libnhcss.so
-LIB_NHURL = lib/libnhurl.so
+LIB_NHAPI = lib/libnh-api.so
+LIB_NHCORE = lib/libnh-core.so
+LIB_NHWSI = lib/libnh-wsi.so
+LIB_NHHTML = lib/libnh-html.so
+LIB_NHDOM = lib/libnh-dom.so
+LIB_NHNETWORK = lib/libnh-network.so
+LIB_NHWEBIDL = lib/libnh-webidl.so
+LIB_NHECMASCRIPT = lib/libnh-ecmascript.so
+LIB_NHENCODING = lib/libnh-encoding.so
+LIB_NHGFX = lib/libnh-gfx.so
+LIB_NHRENDERER = lib/libnh-renderer.so
+LIB_NHCSS = lib/libnh-css.so
+LIB_NHURL = lib/libnh-url.so
 
 LIB_C_HASHMAP = external/c_hashmap/libc_hashmap.a
 LIB_VOLK = external/volk/libvolk.a
@@ -374,19 +377,19 @@ create_lib_dir:
 
 # Build targets for each library
 all: $(LIB_NHAPI) $(LIB_C_HASHMAP) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS)
-nhapi.so: $(LIB_NHAPI)
-nhcore.so: $(LIB_C_HASHMAP) $(LIB_NHCORE)
-nhwsi.so: $(LIB_NHWSI)
-nhhtml.so: $(LIB_NHHTML)
-nhdom.so: $(LIB_NHDOM)
-nhnetwork.so: $(LIB_NHNETWORK)
-nhwebidl.so: $(LIB_NHWEBIDL)
-nhecmascript.so: $(LIB_NHECMASCRIPT)
-nhencoding.so: $(LIB_NHENCODING)
-nhgfx.so: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX)
-nhrenderer.so: $(LIB_NHRENDERER)
-nhcss.so: $(LIB_NHCSS)
-nhurl.so: $(LIB_NHURL)
+nh-api.so: $(LIB_NHAPI)
+nh-core.so: $(LIB_C_HASHMAP) $(LIB_NHCORE)
+nh-wsi.so: $(LIB_NHWSI)
+nh-html.so: $(LIB_NHHTML)
+nh-dom.so: $(LIB_NHDOM)
+nh-network.so: $(LIB_NHNETWORK)
+nh-webidl.so: $(LIB_NHWEBIDL)
+nh-ecmascript.so: $(LIB_NHECMASCRIPT)
+nh-encoding.so: $(LIB_NHENCODING)
+nh-gfx.so: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX)
+nh-renderer.so: $(LIB_NHRENDERER)
+nh-css.so: $(LIB_NHCSS)
+nh-url.so: $(LIB_NHURL)
 
 # Custom compiler flags
 $(OBJ_FILES_NHCORE): CFLAGS += -Isrc/lib

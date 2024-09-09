@@ -7,10 +7,10 @@ MONITOR_FLAG := $(filter -DMONITOR_CLI -DMONITOR_SA,$(CCFLAGS))
 
 # Define the linker and linker flags
 LD = gcc
-LDFLAGS_NHHTML = -Llib -lnhapi
+LDFLAGS_NHHTML = -Llib -lnh-api
 
 # Define the source file directory for each binary
-SRC_DIR_NHHTML = src/bin/nhhtml
+SRC_DIR_NHHTML = src/bin/nh-html
 
 # List of source files for each binary
 SRC_FILES_NHHTML = Main.c
@@ -19,7 +19,7 @@ SRC_FILES_NHHTML = Main.c
 OBJ_FILES_NHHTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHHTML)/, $(SRC_FILES_NHHTML)))
 
 # Names of the shared libraries
-BIN_NHHTML = bin/nhhtml
+BIN_NHHTML = bin/nh-html
 
 ifneq ($(strip $(MONITOR_FLAG)),)
     $(info MONITOR flag was provided)
