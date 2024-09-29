@@ -229,6 +229,7 @@ SRC_FILES_NHGFX = \
     Vulkan/Vulkan.c \
     Vulkan/Viewport.c \
     OpenGL/Surface.c \
+    OpenGL/SurfaceRequirements.c \
     OpenGL/CommandBuffer.c \
     OpenGL/Data.c \
     OpenGL/API.c \
@@ -243,6 +244,7 @@ SRC_FILES_NHGFX = \
     Fonts/Text.c \
     Base/Texture.c \
     Base/Surface.c \
+    Base/SurfaceRequirements.c \
     Base/Viewport.c \
     Common/Result.c \
     Common/Initialize.c \

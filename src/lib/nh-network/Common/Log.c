@@ -25,7 +25,7 @@ void nh_network_logReceive(
 {
 NH_NETWORK_BEGIN()
 
-//    if (NH_CONFIG.Flags.Log.receive == NH_TRUE)
+//    if (NH_CONFIG.Flags.Log.receive == true)
 //    {
 //        nh_String String = nh_core_initString(128); 
 //
@@ -43,7 +43,7 @@ void nh_network_logSend(
 {
 NH_NETWORK_BEGIN()
 
-//    if (NH_CONFIG.Flags.Log.send == NH_TRUE)
+//    if (NH_CONFIG.Flags.Log.send == true)
 //    {
 //        nh_String String = nh_core_initString(128); 
 //
@@ -56,25 +56,25 @@ NH_NETWORK_BEGIN()
 NH_NETWORK_SILENT_END()
 }
 
-NH_NETWORK_RESULT _nh_network_logBegin(
+NH_API_RESULT _nh_network_logBegin(
     const char *file_p, const char *function_p)
 {
-//    if (!NH_CONFIG.Flags.Log.Flow.net) {return NH_NETWORK_SUCCESS;}
+//    if (!NH_CONFIG.Flags.Log.Flow.net) {return NH_API_SUCCESS;}
 //    return _nh_begin(file_p, function_p);
 }
 
-NH_NETWORK_RESULT _nh_network_logEnd(
+NH_API_RESULT _nh_network_logEnd(
     const char *file_p, const char *function_p)
 {
-//    if (!NH_CONFIG.Flags.Log.Flow.net) {return NH_NETWORK_SUCCESS;}
+//    if (!NH_CONFIG.Flags.Log.Flow.net) {return NH_API_SUCCESS;}
 //    return _nh_end(file_p, function_p);
 }
 
-NH_NETWORK_RESULT _nh_network_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_NETWORK_RESULT result, int line)
+NH_API_RESULT _nh_network_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.net) {return result;}
-//    _nh_diagnosticEnd(file_p, function_p, NH_NETWORK_RESULTS_PP[result], line, result == NH_NETWORK_SUCCESS);
+//    _nh_diagnosticEnd(file_p, function_p, NH_API_RESULTS_PP[result], line, result == NH_API_SUCCESS);
     return result;
 }
 

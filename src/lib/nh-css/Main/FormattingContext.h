@@ -19,15 +19,15 @@
  *  @{
  */
 
-    const NH_BYTE *nh_css_inPrimaryFormattingContextName(
+    const char *nh_css_inPrimaryFormattingContextName(
         NH_CSS_FORMATTING_CONTEXT type
     );
     
-    NH_CSS_RESULT nh_css_createFormattingContext(
+    NH_API_RESULT nh_css_createFormattingContext(
         nh_css_BoxTreeNode *Node_p, NH_CSS_FORMATTING_CONTEXT type
     );
     
-    NH_BOOL nh_css_startsFormattingContext(
+    bool nh_css_startsFormattingContext(
         nh_css_BoxTreeNode *Node_p, NH_CSS_FORMATTING_CONTEXT type
     );
 

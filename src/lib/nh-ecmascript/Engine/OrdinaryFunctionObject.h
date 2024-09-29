@@ -44,7 +44,7 @@
     );
 
     nh_ecmascript_Completion nh_ecmascript_makeConstructor(
-        nh_ecmascript_Object *Function_p, NH_BOOL writablePrototype, nh_ecmascript_Object *Prototype_p
+        nh_ecmascript_Object *Function_p, bool writablePrototype, nh_ecmascript_Object *Prototype_p
     );
 
     nh_ecmascript_Completion nh_ecmascript_setFunctionLength(
@@ -52,7 +52,7 @@
     );
 
     nh_ecmascript_Completion nh_ecmascript_setFunctionName(
-        nh_ecmascript_Object *Function_p, nh_ecmascript_Any Name, NH_BYTE *prefix_p
+        nh_ecmascript_Object *Function_p, nh_ecmascript_Any Name, char *prefix_p
     );
 
 /** @} */

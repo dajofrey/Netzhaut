@@ -29,7 +29,7 @@
 
 // DEBUG ===========================================================================================
 
-NH_CSS_RESULT nh_css_initialize()
+NH_API_RESULT nh_css_initialize()
 {
 NH_CSS_BEGIN()
 
@@ -43,6 +43,6 @@ NH_CSS_BEGIN()
 
     nh_encoding_freeUTF32(&String);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

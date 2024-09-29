@@ -21,7 +21,7 @@
 
 // DATA ============================================================================================
 
-static NH_BYTE *synthetic_p = "*default*";
+static char *synthetic_p = "*default*";
 
 // HELPER ==========================================================================================
 
@@ -36,7 +36,7 @@ NH_ECMASCRIPT_BEGIN()
         }
     }
 
-    nh_core_freeList(Names_p, NH_FALSE);
+    nh_core_freeList(Names_p, false);
 
 NH_ECMASCRIPT_SILENT_END()
 }
@@ -97,7 +97,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 3) {
                 nh_List BindingNames = nh_ecmascript_getBoundNames(Node_p->Children.pp[2]);
                 nh_core_appendItemsToList(&Names, &BindingNames);
-                nh_core_freeList(&BindingNames, NH_FALSE);
+                nh_core_freeList(&BindingNames, false);
             }
             NH_ECMASCRIPT_END(Names)
         }
@@ -112,7 +112,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 3) {
                 nh_List DeclarationNames = nh_ecmascript_getBoundNames(Node_p->Children.pp[2]);
                 nh_core_appendItemsToList(&Names, &DeclarationNames);
-                nh_core_freeList(&DeclarationNames, NH_FALSE);
+                nh_core_freeList(&DeclarationNames, false);
             }
             NH_ECMASCRIPT_END(Names)
         }
@@ -125,7 +125,7 @@ NH_ECMASCRIPT_BEGIN()
                 nh_List Names = nh_ecmascript_getBoundNames(Node_p->Children.pp[1]);
                 nh_List RestNames = nh_ecmascript_getBoundNames(Node_p->Children.pp[3]);
                 nh_core_appendItemsToList(&Names, &RestNames);
-                nh_core_freeList(&RestNames, NH_FALSE);
+                nh_core_freeList(&RestNames, false);
                 NH_ECMASCRIPT_END(Names)
             }
             if (Node_p->Children.size >= 3) {
@@ -142,7 +142,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 3) {
                 nh_List PropertyNames = nh_ecmascript_getBoundNames(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Names, &PropertyNames);
-                nh_core_freeList(&PropertyNames, NH_FALSE);
+                nh_core_freeList(&PropertyNames, false);
             }
             NH_ECMASCRIPT_END(Names)
         }
@@ -173,7 +173,7 @@ NH_ECMASCRIPT_BEGIN()
 //                    for (int i = 0; i < BindingRestElementNames.size; ++i) {
 //                        nh_core_appendToList(&BindingElementListNames, BindingRestElementNames.pp[i]);
 //                    }
-//                    nh_core_freeList(&BindingRestElementNames, NH_FALSE);
+//                    nh_core_freeList(&BindingRestElementNames, false);
 //                    NH_ECMASCRIPT_END(BindingElementListNames)
 //                }
 //            }
@@ -183,7 +183,7 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < BindingRestElementNames.size; ++i) {
 //                    nh_core_appendToList(&BindingElementListNames, BindingRestElementNames.pp[i]);
 //                }
-//                nh_core_freeList(&BindingRestElementNames, NH_FALSE);
+//                nh_core_freeList(&BindingRestElementNames, false);
 //                NH_ECMASCRIPT_END(BindingElementListNames)
 //            }
 //            break;
@@ -200,7 +200,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List ElementNames = nh_ecmascript_getBoundNames(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Names, &ElementNames);
-                nh_core_freeList(&ElementNames, NH_FALSE);
+                nh_core_freeList(&ElementNames, false);
             }
             NH_ECMASCRIPT_END(Names)
         }
@@ -242,7 +242,7 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < FunctionRestParameterNames.size; ++i) {
 //                    nh_core_appendToList(&FormalParameterListNames, FunctionRestParameterNames.pp[i]);
 //                }
-//                nh_core_freeList(&FunctionRestParameterNames, NH_FALSE);
+//                nh_core_freeList(&FunctionRestParameterNames, false);
 //                NH_ECMASCRIPT_END(FormalParameterListNames)
 //            }
 //            break;
@@ -255,7 +255,7 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < FormalParameterNames.size; ++i) {
 //                    nh_core_appendToList(&Names, FormalParameterNames.pp[i]);
 //                }
-//                nh_core_freeList(&FormalParameterNames, NH_FALSE);
+//                nh_core_freeList(&FormalParameterNames, false);
 //            }
 //            NH_ECMASCRIPT_END(Names)
 //        }

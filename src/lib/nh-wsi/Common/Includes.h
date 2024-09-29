@@ -9,8 +9,8 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-// Include public API.
 #include "../../nh-api/nh-wsi.h"
+#include "../../nh-encoding/Encodings/UTF32.h"
 
 #endif
 

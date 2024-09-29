@@ -22,9 +22,9 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_Completion Completion;
     Completion.type = NH_ECMASCRIPT_COMPLETION_THROW;
-    Completion.Value.empty   = NH_TRUE;
+    Completion.Value.empty   = true;
     Completion.Value.Payload = nh_ecmascript_wrapUndefined();
-    Completion.Target.empty  = NH_TRUE;
+    Completion.Target.empty  = true;
     Completion.Target.String = nh_core_initString(8);
 
 NH_ECMASCRIPT_END(Completion)
@@ -36,9 +36,9 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_Completion Completion;
     Completion.type = NH_ECMASCRIPT_COMPLETION_THROW;
-    Completion.Value.empty   = NH_TRUE;
+    Completion.Value.empty   = true;
     Completion.Value.Payload = nh_ecmascript_wrapUndefined();
-    Completion.Target.empty  = NH_TRUE;
+    Completion.Target.empty  = true;
     Completion.Target.String = nh_core_initString(8);
 
 NH_ECMASCRIPT_END(Completion)
@@ -51,9 +51,9 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_Completion Completion;
     Completion.type = NH_ECMASCRIPT_COMPLETION_NORMAL;
-    Completion.Value.empty   = NH_FALSE;
+    Completion.Value.empty   = false;
     Completion.Value.Payload = Argument;
-    Completion.Target.empty  = NH_TRUE;
+    Completion.Target.empty  = true;
     Completion.Target.String = nh_core_initString(8);
 
 NH_ECMASCRIPT_END(Completion)
@@ -65,9 +65,9 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_Completion Completion;
     Completion.type = NH_ECMASCRIPT_COMPLETION_NORMAL;
-    Completion.Value.empty   = NH_TRUE;
+    Completion.Value.empty   = true;
     Completion.Value.Payload = nh_ecmascript_wrapUndefined();
-    Completion.Target.empty  = NH_TRUE;
+    Completion.Target.empty  = true;
     Completion.Target.String = nh_core_initString(8);
 
 NH_ECMASCRIPT_END(Completion)

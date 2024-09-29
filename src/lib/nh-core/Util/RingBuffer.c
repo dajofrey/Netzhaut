@@ -20,7 +20,7 @@
 
 // ITERATOR ========================================================================================
 
-NH_CORE_RESULT nh_core_initRingBuffer(
+NH_API_RESULT nh_core_initRingBuffer(
     nh_RingBuffer *Buffer_p, int itemCount, int itemByteSize, void init_f(nh_RingBuffer *Buffer_p, int itemCount))
 {
 NH_CORE_BEGIN()
@@ -43,7 +43,7 @@ NH_CORE_BEGIN()
     Buffer_p->overflow = 0;
     Buffer_p->index = -1;
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void *nh_core_advanceRingBuffer(

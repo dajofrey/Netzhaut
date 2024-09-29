@@ -11,6 +11,7 @@
 
 #include "Parser.h"
 #include "../Common/Includes.h"
+#include "../ECMAScriptBinding/Interface.h"
 #include "../../nh-core/Util/Array.h"
 
 #endif
@@ -20,7 +21,7 @@
  */
 
     typedef struct nh_webidl_Fragment {
-        NH_BYTE name_p[255];
+        char name_p[255];
         nh_webidl_Specification *Specification_p;
         nh_webidl_FragmentParseResult ParseResult;
         nh_Array Interfaces;
@@ -44,23 +45,23 @@
  *  @{
  */
 
-    NH_WEBIDL_RESULT nh_webidl_initRuntime(
+    NH_API_RESULT nh_webidl_initRuntime(
     );
 
-    NH_WEBIDL_RESULT nh_webidl_load(
-        NH_BYTE *specification_p, NH_BYTE *fragmentName_p, nh_webidl_FragmentParseResult ParseResult
+    NH_API_RESULT nh_webidl_load(
+        char *specification_p, char *fragmentName_p, nh_webidl_FragmentParseResult ParseResult
     );
 
     nh_webidl_Specification *nh_webidl_getSpecification(
-        NH_BYTE *specification_p
+        char *specification_p
     );
 
     nh_webidl_Fragment *nh_webidl_getFragment(
-        NH_BYTE *specification_p, NH_BYTE *fragment_p
+        char *specification_p, char *fragment_p
     );
 
     nh_webidl_Interface *nh_webidl_getInterface(
-        NH_BYTE *specification_p, NH_BYTE *interface_p
+        char *specification_p, char *interface_p
     );
 
     nh_List nh_webidl_getCompositeInterfaces(

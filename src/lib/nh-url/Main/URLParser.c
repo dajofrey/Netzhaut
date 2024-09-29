@@ -39,21 +39,21 @@ typedef struct nh_url_Parser {
     nh_url_URL *URL_p;
     nh_url_URL *Base_p;
     nh_encoding_UTF32String Buffer;
-    NH_BOOL atSignSeen;
-    NH_BOOL insideBrackets;
-    NH_BOOL passwordTokenSeen;
+    bool atSignSeen;
+    bool insideBrackets;
+    bool passwordTokenSeen;
 } nh_url_Parser;
 
 // HELPER ==========================================================================================
 
-static NH_BOOL nh_url_isFileScheme(
+static bool nh_url_isFileScheme(
     NH_ENCODING_UTF32 *scheme_p)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_encoding_compareUTF32ASCII(scheme_p, "file"))
 }
 
-static NH_URL_RESULT nh_url_shortenURLPath(
+static NH_API_RESULT nh_url_shortenURLPath(
     nh_url_URL *URL_p)
 {
 NH_URL_BEGIN()
@@ -61,9 +61,9 @@ NH_URL_BEGIN()
     if (nh_url_isFileScheme(URL_p->Scheme.p) && URL_p->Path.length == 1) {	
         nh_encoding_UTF32String UTF32 = 
             nh_encoding_decodeUTF8(((nh_String*)URL_p->Path.p)->p, ((nh_String*)URL_p->Path.p)->length, NULL);
-        NH_BOOL skip = nh_url_isNormalizedWindowsDriveLetter(&UTF32);
+        bool skip = nh_url_isNormalizedWindowsDriveLetter(&UTF32);
         nh_encoding_freeUTF32(&UTF32);
-        if (skip) {NH_URL_END(NH_URL_SUCCESS)}
+        if (skip) {NH_URL_END(NH_API_SUCCESS)}
     }
 
     if (URL_p->Path.length > 0) {
@@ -71,10 +71,10 @@ NH_URL_BEGIN()
         nh_core_removeTailFromArray(&URL_p->Path, 1);
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
-static NH_BOOL nh_url_hasTwoRemainingASCIIHexDigits(
+static bool nh_url_hasTwoRemainingASCIIHexDigits(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -82,15 +82,15 @@ NH_URL_BEGIN()
     if (*Parser_p->pointer != 0
     &&  nh_encoding_isASCIIHexDigit(*(Parser_p->pointer+1)) 
     &&  nh_encoding_isASCIIHexDigit(*(Parser_p->pointer+2))) {
-        NH_URL_END(NH_TRUE)
+        NH_URL_END(true)
     }
 
-NH_URL_END(NH_FALSE)
+NH_URL_END(false)
 }
 
 // STATES ==========================================================================================
 
-static NH_URL_RESULT nh_url_parseSchemeStart(
+static NH_API_RESULT nh_url_parseSchemeStart(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -105,13 +105,13 @@ NH_URL_BEGIN()
     }
     else {
         // val err
-        NH_URL_END(NH_URL_ERROR_BAD_STATE)
+        NH_URL_END(NH_API_ERROR_BAD_STATE)
     }
  
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseScheme(
+static NH_API_RESULT nh_url_parseScheme(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -158,7 +158,7 @@ NH_URL_BEGIN()
             Parser_p->pointer++;
         }
         else {
-            Parser_p->URL_p->cannotBeABaseURL = NH_TRUE;
+            Parser_p->URL_p->cannotBeABaseURL = true;
             Parser_p->state = NH_URL_PARSER_STATE_CANNOT_BE_A_BASE_URL_PATH;
         }
     }
@@ -169,20 +169,20 @@ NH_URL_BEGIN()
     }
     else {
         // val err
-        NH_URL_END(NH_URL_ERROR_BAD_STATE)
+        NH_URL_END(NH_API_ERROR_BAD_STATE)
     }
  
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseNoScheme(
+static NH_API_RESULT nh_url_parseNoScheme(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
 
     if (!Parser_p->Base_p || (Parser_p->Base_p->cannotBeABaseURL && *Parser_p->pointer != 0x23)) {
         // val err
-        NH_URL_END(NH_URL_ERROR_BAD_STATE)
+        NH_URL_END(NH_API_ERROR_BAD_STATE)
     }
     else if (Parser_p->Base_p->cannotBeABaseURL && *Parser_p->pointer == 0x23) {
         // TODO
@@ -196,10 +196,10 @@ NH_URL_BEGIN()
         Parser_p->pointer--;
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseSpecialRelativeOrAuthority(
+static NH_API_RESULT nh_url_parseSpecialRelativeOrAuthority(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -214,10 +214,10 @@ NH_URL_BEGIN()
         Parser_p->pointer--;
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parsePathOrAuthority(
+static NH_API_RESULT nh_url_parsePathOrAuthority(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -231,10 +231,10 @@ NH_URL_BEGIN()
         Parser_p->pointer--;
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseRelative(
+static NH_API_RESULT nh_url_parseRelative(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -252,10 +252,10 @@ NH_URL_BEGIN()
 //        // TODO
 //    }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseRelativeSlash(
+static NH_API_RESULT nh_url_parseRelativeSlash(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -273,10 +273,10 @@ NH_URL_BEGIN()
 //        // TODO
 //    }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseSpecialAuthoritySlashes(
+static NH_API_RESULT nh_url_parseSpecialAuthoritySlashes(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -291,10 +291,10 @@ NH_URL_BEGIN()
         Parser_p->pointer--;
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseSpecialAuthorityIgnoreSlashes(
+static NH_API_RESULT nh_url_parseSpecialAuthorityIgnoreSlashes(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -307,10 +307,10 @@ NH_URL_BEGIN()
         // val err
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseAuthority(
+static NH_API_RESULT nh_url_parseAuthority(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -322,7 +322,7 @@ NH_URL_BEGIN()
     else if (*Parser_p->pointer == 0 || *Parser_p->pointer == 0x2F || *Parser_p->pointer == 0x3F || *Parser_p->pointer == 0x23) {
         if (Parser_p->atSignSeen && Parser_p->Buffer.length == 0) {
             // val err
-            NH_URL_DIAGNOSTIC_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
         Parser_p->pointer -= Parser_p->Buffer.length+1;
         nh_encoding_freeUTF32(&Parser_p->Buffer);
@@ -332,10 +332,10 @@ NH_URL_BEGIN()
         nh_encoding_appendUTF32Codepoint(&Parser_p->Buffer, *Parser_p->pointer);
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseHostName(
+static NH_API_RESULT nh_url_parseHostName(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -347,10 +347,10 @@ NH_URL_BEGIN()
     else if (*Parser_p->pointer == 0x3A && !Parser_p->insideBrackets) {
         if (Parser_p->Buffer.length == 0) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
         if (Parser_p->stateOverride && Parser_p->stateOverride == NH_URL_PARSER_STATE_HOSTNAME) {
-            NH_URL_END(NH_URL_SUCCESS)
+            NH_URL_END(NH_API_SUCCESS)
         }
         // TODO
     }
@@ -358,14 +358,14 @@ NH_URL_BEGIN()
         Parser_p->pointer--;
         if (nh_url_getSpecialScheme(Parser_p->URL_p->Scheme.p) && Parser_p->Buffer.length == 0) {
             // val err
-            NH_URL_DIAGNOSTIC_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
         else if (Parser_p->stateOverride && Parser_p->Buffer.length == 0) {
             // TODO
         }
         Parser_p->URL_p->Host_p = nh_core_allocate(sizeof(nh_url_Host));
         NH_URL_CHECK_MEM(Parser_p->URL_p->Host_p)
-        NH_URL_CHECK(nh_url_parseHost(Parser_p->Buffer, NH_TRUE, Parser_p->URL_p->Host_p))
+        NH_URL_CHECK(nh_url_parseHost(Parser_p->Buffer, true, Parser_p->URL_p->Host_p))
         nh_encoding_freeUTF32(&Parser_p->Buffer);
         Parser_p->state = NH_URL_PARSER_STATE_PATH_START;
         if (Parser_p->stateOverride) {
@@ -373,15 +373,15 @@ NH_URL_BEGIN()
         }
     }
     else {
-        if (*Parser_p->pointer == 0x5B) {Parser_p->insideBrackets = NH_TRUE;}
-        if (*Parser_p->pointer == 0x5D) {Parser_p->insideBrackets = NH_FALSE;}
+        if (*Parser_p->pointer == 0x5B) {Parser_p->insideBrackets = true;}
+        if (*Parser_p->pointer == 0x5D) {Parser_p->insideBrackets = false;}
         nh_encoding_appendUTF32Codepoint(&Parser_p->Buffer, *Parser_p->pointer);
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parsePort(
+static NH_API_RESULT nh_url_parsePort(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -393,10 +393,10 @@ NH_URL_BEGIN()
         // TODO
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseFile(
+static NH_API_RESULT nh_url_parseFile(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -415,10 +415,10 @@ NH_URL_BEGIN()
         Parser_p->pointer--;
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseFileSlash(
+static NH_API_RESULT nh_url_parseFileSlash(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -437,10 +437,10 @@ NH_URL_BEGIN()
         Parser_p->pointer--;
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseFileHost(
+static NH_API_RESULT nh_url_parseFileHost(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -452,7 +452,7 @@ NH_URL_BEGIN()
             Parser_p->state = NH_URL_PARSER_STATE_PATH;
         }
         else if (Parser_p->Buffer.length == 0) {
-            if (Parser_p->stateOverride) {NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)}
+            if (Parser_p->stateOverride) {NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)}
             Parser_p->state = NH_URL_PARSER_STATE_PATH_START;
         }
         else {
@@ -463,10 +463,10 @@ NH_URL_BEGIN()
         nh_encoding_appendUTF32Codepoint(&Parser_p->Buffer, *Parser_p->pointer);
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parsePathStart(
+static NH_API_RESULT nh_url_parsePathStart(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -481,14 +481,14 @@ NH_URL_BEGIN()
         }
     }
     else if (!Parser_p->stateOverride && *Parser_p->pointer == 0x3F) {
-        if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_URL_ERROR_BAD_STATE)}
+        if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
         Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_String));
         NH_URL_CHECK_MEM(Parser_p->URL_p->Query_p)
         *Parser_p->URL_p->Query_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_QUERY;
     }
     else if (!Parser_p->stateOverride && *Parser_p->pointer == 0x23) {
-        if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_URL_ERROR_BAD_STATE)}
+        if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
         Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_String));
         NH_URL_CHECK_MEM(Parser_p->URL_p->Fragment_p)
         *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
@@ -504,10 +504,10 @@ NH_URL_BEGIN()
         // TODO
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parsePath(
+static NH_API_RESULT nh_url_parsePath(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -533,22 +533,22 @@ NH_URL_BEGIN()
             NH_URL_CHECK_MEM(Part_p)
             *Part_p = nh_core_initString(Parser_p->Buffer.length+1);
             for (int i = 0; i < Parser_p->Buffer.length; ++i) {
-                if (Parser_p->Buffer.p[i] >= 128) {NH_URL_DIAGNOSTIC_END(NH_URL_ERROR_BAD_STATE)}
-                nh_core_appendByteToString(Part_p, (NH_BYTE)Parser_p->Buffer.p[i]);
+                if (Parser_p->Buffer.p[i] >= 128) {NH_URL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+                nh_core_appendByteToString(Part_p, (char)Parser_p->Buffer.p[i]);
             }
         }
 
         nh_encoding_freeUTF32(&Parser_p->Buffer);
 
         if (*Parser_p->pointer == 0x3F) {
-            if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_URL_ERROR_BAD_STATE)}
+            if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
             Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_String));
             NH_URL_CHECK_MEM(Parser_p->URL_p->Query_p)
             *Parser_p->URL_p->Query_p = nh_core_initString(16);
             Parser_p->state = NH_URL_PARSER_STATE_QUERY;
         }
         if (*Parser_p->pointer == 0x23) {
-            if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_URL_ERROR_BAD_STATE)}
+            if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
             Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_String));
             NH_URL_CHECK_MEM(Parser_p->URL_p->Fragment_p)
             *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
@@ -572,17 +572,17 @@ NH_URL_BEGIN()
         nh_core_freeString(&String);
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseCannotBeABaseURLPath(
+static NH_API_RESULT nh_url_parseCannotBeABaseURLPath(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
 
     if (*Parser_p->pointer == 0x3F) {
         if (Parser_p->URL_p->Query_p) {
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
         Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_String));
         NH_URL_CHECK_MEM(Parser_p->URL_p->Query_p)
@@ -591,7 +591,7 @@ NH_URL_BEGIN()
     }
     else if (*Parser_p->pointer == 0x23) {
         if (Parser_p->URL_p->Fragment_p) {
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
         Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_String));
         NH_URL_CHECK_MEM(Parser_p->URL_p->Fragment_p)
@@ -608,20 +608,20 @@ NH_URL_BEGIN()
         }
     }
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseQuery(
+static NH_API_RESULT nh_url_parseQuery(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
 
     // TODO
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseFragment(
+static NH_API_RESULT nh_url_parseFragment(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -640,12 +640,12 @@ NH_URL_BEGIN()
         nh_core_freeString(&String);
     } 
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // STATE MACHINE ===================================================================================
 
-static NH_URL_RESULT nh_url_runStateMachine(
+static NH_API_RESULT nh_url_runStateMachine(
     nh_url_Parser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -675,7 +675,7 @@ NH_URL_BEGIN()
         case NH_URL_PARSER_STATE_FRAGMENT                         : NH_URL_END(nh_url_parseFragment(Parser_p))
     }
 
-NH_URL_END(NH_URL_ERROR_BAD_STATE)
+NH_URL_END(NH_API_ERROR_BAD_STATE)
 }
 
 // PARSE ===========================================================================================
@@ -693,7 +693,7 @@ NH_URL_BEGIN()
     URL_p->Path = nh_core_initArray(sizeof(nh_String), 8);
     URL_p->Query_p = NULL;
     URL_p->Fragment_p = NULL;
-    URL_p->cannotBeABaseURL = NH_FALSE;
+    URL_p->cannotBeABaseURL = false;
 
 NH_URL_END(URL_p)
 }
@@ -738,9 +738,9 @@ NH_URL_BEGIN()
     Parser.state = stateOverride ? stateOverride : NH_URL_PARSER_STATE_SCHEME_START;
     Parser.stateOverride = stateOverride ? stateOverride : NH_URL_PARSER_STATE_UNDEFINED;
     Parser.Buffer = nh_encoding_initUTF32(16);
-    Parser.atSignSeen = NH_FALSE;
-    Parser.insideBrackets = NH_FALSE;
-    Parser.passwordTokenSeen = NH_FALSE;
+    Parser.atSignSeen = false;
+    Parser.insideBrackets = false;
+    Parser.passwordTokenSeen = false;
     Parser.pointer = Input.p;
     Parser.input_p = Input.p;
 

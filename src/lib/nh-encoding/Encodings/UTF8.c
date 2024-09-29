@@ -24,10 +24,10 @@
 
 typedef struct nh_encoding_UTF8Decoder {
     NH_ENCODING_UTF32 codepoint;
-    NH_UNSIGNED_BYTE bytesSeen;
-    NH_UNSIGNED_BYTE bytesNeeded;
-    NH_UNSIGNED_BYTE lowerBoundary;
-    NH_UNSIGNED_BYTE upperBoundary;
+    unsigned char bytesSeen;
+    unsigned char bytesNeeded;
+    unsigned char lowerBoundary;
+    unsigned char upperBoundary;
 } nh_encoding_UTF8Decoder;
 
 // DECODER =========================================================================================
@@ -49,7 +49,7 @@ NH_ENCODING_END(Decoder)
 
 // https://encoding.spec.whatwg.org/#utf-8-encoder
 static int nh_encoding_decodeUTF8Codepoint(
-    nh_encoding_UTF8Decoder *Decoder_p, NH_UNSIGNED_BYTE byte) 
+    nh_encoding_UTF8Decoder *Decoder_p, unsigned char byte) 
 {
 NH_ENCODING_BEGIN()
 
@@ -101,7 +101,7 @@ NH_ENCODING_END(1)
 }
 
 nh_encoding_UTF32String nh_encoding_decodeUTF8(
-    NH_UNSIGNED_BYTE *p, unsigned long bytes, unsigned long *read_p)
+    unsigned char *p, unsigned long bytes, unsigned long *read_p)
 {
 NH_ENCODING_BEGIN()
 
@@ -129,7 +129,7 @@ NH_ENCODING_END(Result)
 }
 
 NH_ENCODING_UTF32 nh_encoding_decodeUTF8Single(
-    NH_UNSIGNED_BYTE *p, unsigned long bytes, unsigned long *read_p)
+    unsigned char *p, unsigned long bytes, unsigned long *read_p)
 {
 NH_ENCODING_BEGIN()
 
@@ -152,7 +152,7 @@ NH_ENCODING_END(codepoint)
 // ENCODER =========================================================================================
 
 // https://encoding.spec.whatwg.org/#utf-8-encoder
-NH_ENCODING_RESULT nh_encoding_appendUTF8(
+NH_API_RESULT nh_encoding_appendUTF8(
     nh_encoding_UTF8String *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length)
 {
 NH_ENCODING_BEGIN()
@@ -160,7 +160,7 @@ NH_ENCODING_BEGIN()
     for (unsigned long i = 0; i < length; ++i) 
     {
         if (nh_encoding_isASCIICodepoint(codepoints_p[i])) {
-            NH_BYTE byte = codepoints_p[i];
+            char byte = codepoints_p[i];
             nh_core_appendToString(String_p, &byte, 1);
             continue;
         }
@@ -180,13 +180,13 @@ NH_ENCODING_BEGIN()
             offset = 0xF0;
         }
 
-        NH_BYTE p[4];
+        char p[4];
         memset(p, 0, 4);
         p[0] = (codepoints_p[i] >> (6 * count)) + offset;
         int index = 1, bytes = count + 1;
 
         while (count) {
-            NH_BYTE temp = codepoints_p[i] >> (6 * (count - 1));
+            char temp = codepoints_p[i] >> (6 * (count - 1));
             p[index++] = 0x80 | (temp & 0x3F);
             count--;
         }
@@ -194,17 +194,17 @@ NH_ENCODING_BEGIN()
         nh_core_appendToString(String_p, p, bytes);
     }
 
-NH_ENCODING_END(NH_ENCODING_SUCCESS)
+NH_ENCODING_END(NH_API_SUCCESS)
 }
 
-NH_ENCODING_RESULT nh_encoding_appendUTF8Single(
+NH_API_RESULT nh_encoding_appendUTF8Single(
     nh_encoding_UTF8String *String_p, NH_ENCODING_UTF32 codepoint)
 {
 NH_ENCODING_BEGIN()
 
     NH_ENCODING_CHECK(nh_encoding_appendUTF8(String_p, &codepoint, 1))
 
-NH_ENCODING_END(NH_ENCODING_SUCCESS)
+NH_ENCODING_END(NH_API_SUCCESS)
 }
 
 nh_encoding_UTF8String nh_encoding_encodeUTF8(
@@ -219,7 +219,7 @@ NH_ENCODING_END(Result)
 }
 
 int nh_encoding_encodeUTF8Single(
-    NH_ENCODING_UTF32 codepoint, NH_BYTE *p)
+    NH_ENCODING_UTF32 codepoint, char *p)
 {
 NH_ENCODING_BEGIN()
 

@@ -30,39 +30,39 @@ nh_url_IDNAMappingTable NH_URL_IDNA_MAPPING_TABLE;
 
 typedef struct nh_url_IDNAMappingTableParser {
     nh_url_IDNAMappingTableEntry *Entry_p;
-    NH_BYTE *p;
+    char *p;
     int expect;
 } nh_url_IDNAMappingTableParser;
 
 // PARSE ===========================================================================================
 
-static NH_URL_RESULT nh_url_parseCodepoints(
+static NH_API_RESULT nh_url_parseCodepoints(
     nh_url_IDNAMappingTableParser *Parser_p)
 {
 NH_URL_BEGIN()
 
-    NH_BYTE *p = Parser_p->p;
-    NH_BOOL seekFirst = NH_TRUE, seekSecond = NH_FALSE;
+    char *p = Parser_p->p;
+    bool seekFirst = true, seekSecond = false;
 
     while (*p != ';' && *p != ' ') {
         if (seekFirst && nh_encoding_isASCIIHexDigit(*p)) {
             Parser_p->Entry_p->begin = (int)strtol(p, NULL, 16);
-            seekFirst = NH_FALSE;
+            seekFirst = false;
         }
         if (seekSecond && *p != '.') {
             Parser_p->Entry_p->end = (int)strtol(p, NULL, 16);
             break;
         }
         if (*p == '.') {
-            seekSecond = NH_TRUE;
+            seekSecond = true;
         }
         p++;
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseStatus(
+static NH_API_RESULT nh_url_parseStatus(
     nh_url_IDNAMappingTableParser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -93,20 +93,20 @@ NH_URL_BEGIN()
                     Parser_p->Entry_p->status = NH_URL_IDNA_STATUS_DISALLOWED;
                 }
             }
-            else {NH_URL_END(NH_URL_ERROR_BAD_STATE)}
+            else {NH_URL_END(NH_API_ERROR_BAD_STATE)}
             break;
-        default : NH_URL_END(NH_URL_ERROR_BAD_STATE)
+        default : NH_URL_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseMapping(
+static NH_API_RESULT nh_url_parseMapping(
     nh_url_IDNAMappingTableParser *Parser_p)
 {
 NH_URL_BEGIN()
 
-    NH_BYTE *p = Parser_p->p;
+    char *p = Parser_p->p;
 
     while (*p != ';' && *p != '#' && *p != '\n') {
         if (nh_encoding_isASCIIHexDigit(*p)) {
@@ -116,14 +116,14 @@ NH_URL_BEGIN()
         p++;
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
-static NH_URL_RESULT nh_url_parseIDNA2008Status(
+static NH_API_RESULT nh_url_parseIDNA2008Status(
     nh_url_IDNAMappingTableParser *Parser_p)
 {
 NH_URL_BEGIN()
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // PARSE ===========================================================================================
@@ -140,7 +140,7 @@ NH_URL_BEGIN()
 NH_URL_END(Parser)
 }
 
-static NH_URL_RESULT nh_url_parseNextField(
+static NH_API_RESULT nh_url_parseNextField(
     nh_url_IDNAMappingTableParser *Parser_p)
 {
 NH_URL_BEGIN()
@@ -158,7 +158,7 @@ NH_URL_BEGIN()
         case 3 : nh_url_parseIDNA2008Status(Parser_p); break;
     }
 
-    NH_BYTE *p = Parser_p->p;
+    char *p = Parser_p->p;
     while (*p != 0 && *p != ';' && *p != '\n') {p++;}
 
     if (*p == '\n') {Parser_p->expect = 0;}
@@ -168,11 +168,11 @@ NH_URL_BEGIN()
 
     Parser_p->p = p;
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // https://www.unicode.org/reports/tr46/#IDNA_Mapping_Table
-NH_URL_RESULT nh_url_parseIDNAMappingTable()
+NH_API_RESULT nh_url_parseIDNAMappingTable()
 {
 NH_URL_BEGIN()
 
@@ -194,7 +194,7 @@ NH_URL_BEGIN()
         NH_URL_CHECK(nh_url_parseNextField(&Parser))
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // GET =============================================================================================

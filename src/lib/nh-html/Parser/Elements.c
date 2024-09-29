@@ -22,7 +22,7 @@
 
 // TAG NAMES =======================================================================================
 
-const NH_BYTE *NH_HTML_TAG_NAMES_PP[] =
+const char *NH_HTML_TAG_NAMES_PP[] =
 {
     "a",
     "abbr",
@@ -173,11 +173,11 @@ unsigned long NH_HTML_TAG_NAMES_PP_COUNT = sizeof(NH_HTML_TAG_NAMES_PP) / sizeof
 // GET INDEX =======================================================================================
 
 int nh_html_getTagIndex(
-    NH_BYTE *tagname_p)
+    char *tagname_p)
 {
 NH_HTML_BEGIN()
 
-    NH_BYTE lower_p[255] = {0};
+    char lower_p[255] = {0};
     memset(lower_p, 255, 0); 
     for (int i = 0; i < strlen(tagname_p); ++i) {lower_p[i] = tolower(tagname_p[i]);}
 
@@ -191,7 +191,7 @@ NH_HTML_END(*((unsigned int*)value_p))
 
 // https://html.spec.whatwg.org/multipage/dom.html#elements-in-the-dom
 nh_webidl_Interface *nh_html_getElementInterface(
-    NH_BYTE *tagname_p)
+    char *tagname_p)
 {
 NH_HTML_BEGIN()
 

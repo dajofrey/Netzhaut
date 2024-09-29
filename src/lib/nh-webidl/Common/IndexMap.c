@@ -32,13 +32,13 @@ typedef enum NH_WEBIDL_INDEXMAP_E {
 
 // DATA ============================================================================================
 
-static NH_BOOL init = NH_FALSE;
+static bool init = false;
 nh_webidl_IndexMap NH_WEBIDL_INDEXMAP;
 unsigned int *indices_pp[NH_WEBIDL_INDEXMAP_COUNT] = {NULL};
 
 // CREATE/FREE =====================================================================================
 
-static NH_WEBIDL_RESULT nh_webidl_getNames(
+static NH_API_RESULT nh_webidl_getNames(
     NH_WEBIDL_INDEXMAP_E type, char ***array_ppp, int *size_p)
 {
 NH_WEBIDL_BEGIN()
@@ -63,15 +63,15 @@ NH_WEBIDL_BEGIN()
             *size_p = NH_WEBIDL_PARSE_NODE_NAMES_PP_COUNT; 
             break;
         }
-        default : NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_ERROR_BAD_STATE)
+        default : NH_WEBIDL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-    if (array_ppp == NULL) {NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_ERROR_BAD_STATE)}
+    if (array_ppp == NULL) {NH_WEBIDL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_WEBIDL_RESULT nh_webidl_createSingleIndexMap(
+static NH_API_RESULT nh_webidl_createSingleIndexMap(
     NH_WEBIDL_INDEXMAP_E type, nh_HashMap *map_p)
 {
 NH_WEBIDL_BEGIN()
@@ -82,24 +82,24 @@ NH_WEBIDL_BEGIN()
     *map_p = nh_core_createHashMap();
 
     for (int i = 0; i < count; ++i) {
-        NH_CORE_CHECK_2(NH_WEBIDL_ERROR_BAD_STATE, nh_core_addToHashMap(map_p, names_pp[i], &indices_pp[type][i]))
+        NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_core_addToHashMap(map_p, names_pp[i], &indices_pp[type][i]))
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_WEBIDL_RESULT nh_webidl_createIndexMap()
+NH_API_RESULT nh_webidl_createIndexMap()
 {
 NH_WEBIDL_BEGIN()
 
-    if (init) {NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)}
+    if (init) {NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     for (int type = 0; type < NH_WEBIDL_INDEXMAP_COUNT; ++type)  
     {
         int count = 0;
         const char **names_pp = NULL;
-        if (nh_webidl_getNames(type, (char***)&names_pp, &count) != NH_WEBIDL_SUCCESS) {
-            NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_ERROR_BAD_STATE)
+        if (nh_webidl_getNames(type, (char***)&names_pp, &count) != NH_API_SUCCESS) {
+            NH_WEBIDL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
         if (count == 0) {continue;}
 
@@ -113,9 +113,9 @@ NH_WEBIDL_BEGIN()
 //    NH_WEBIDL_CHECK(nh_webidl_createSingleIndexMap(NH_WEBIDL_INDEXMAP_FRAGMENT_FUNCTION_NAMES, &NH_WEBIDL_INDEXMAP.FragmentFunctionNames))
     NH_WEBIDL_CHECK(nh_webidl_createSingleIndexMap(NH_WEBIDL_INDEXMAP_PARSE_NODE_NAMES, &NH_WEBIDL_INDEXMAP.ParseNodeNames))
 
-    init = NH_TRUE;
+    init = true;
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_webidl_freeIndexMap()
@@ -134,7 +134,7 @@ NH_WEBIDL_BEGIN()
     nh_core_freeHashMap(NH_WEBIDL_INDEXMAP.FragmentFunctionNames);
     nh_core_freeHashMap(NH_WEBIDL_INDEXMAP.ParseNodeNames);
 
-    init = NH_FALSE;
+    init = false;
 
 NH_WEBIDL_SILENT_END()
 }

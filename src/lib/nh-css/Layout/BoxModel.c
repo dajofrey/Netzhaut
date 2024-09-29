@@ -29,17 +29,17 @@
 )
 
 nh_css_ClipBox nh_css_convertToClipBox(
-    nh_gfx_Viewport *Viewport_p, nh_css_PixelBox PixelBox)
+    void *Viewport_p, nh_css_PixelBox PixelBox)
 {
 NH_CSS_BEGIN()
 
     nh_css_ClipBox ClipBox = {0};
 
-    ClipBox.Position.x = PIXEL_TO_CLIP(PixelBox.Position.x, Viewport_p, NH_TRUE);
-    ClipBox.Position.y = PIXEL_TO_CLIP(PixelBox.Position.y, Viewport_p, NH_FALSE);
+    ClipBox.Position.x = PIXEL_TO_CLIP(PixelBox.Position.x, ((nh_gfx_Viewport*)Viewport_p), true);
+    ClipBox.Position.y = PIXEL_TO_CLIP(PixelBox.Position.y, ((nh_gfx_Viewport*)Viewport_p), false);
 
-    ClipBox.Size.width  = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.width, Viewport_p, NH_TRUE));
-    ClipBox.Size.height = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.height, Viewport_p, NH_FALSE));
+    ClipBox.Size.width  = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.width, ((nh_gfx_Viewport*)Viewport_p), true));
+    ClipBox.Size.height = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.height, ((nh_gfx_Viewport*)Viewport_p), false));
 
     ClipBox.depth = PixelBox.depth;
 
@@ -48,14 +48,14 @@ NH_CSS_END(ClipBox)
 
 // MAX =============================================================================================
 
-NH_PIXEL nh_css_getMaxX(
+int nh_css_getMaxX(
     nh_css_PixelBox Box)
 {
 NH_CSS_BEGIN()
 NH_CSS_END(Box.Position.x + Box.Size.width)
 }
 
-NH_PIXEL nh_css_getMaxY(
+int nh_css_getMaxY(
     nh_css_PixelBox Box)
 {
 NH_CSS_BEGIN()

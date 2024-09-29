@@ -185,8 +185,8 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_getColorFromName(
-        NH_BYTE *name_p, NH_BYTE *hex_p
+    NH_API_RESULT nh_css_getColorFromName(
+        char *name_p, char *hex_p
     );
 
     nh_Color nh_css_getColor(

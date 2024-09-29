@@ -41,7 +41,7 @@ static void *getFileData(
 }
 
 void printLog(
-    NH_BYTE *node_p, NH_BYTE *options_p, NH_BYTE *message_p)
+    char *node_p, char *options_p, char *message_p)
 {
     if (strstr(node_p, "nh-ecmascript")) {
         printf("%s %s\n", node_p, message_p);
@@ -57,7 +57,7 @@ int main(
     void *script_p = getFileData(argv_pp[1], &size);
 
     if (!script_p || !size) {return 1;}
-    if (nh_api_initialize(NH_LOADER_SCOPE_SYSTEM, NULL, NULL, 0) != NH_CORE_SUCCESS) {return 1;}
+    if (nh_api_initialize(NH_LOADER_SCOPE_SYSTEM, NULL, NULL, 0) != NH_API_SUCCESS) {return 1;}
 
     if (nh_api_addLogCallback(printLog)) {return 1;}
 

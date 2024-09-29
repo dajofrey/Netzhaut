@@ -87,20 +87,20 @@
         nh_ecmascript_Object *Object_p, nh_ecmascript_Any ProportyKey, nh_ecmascript_PropertyDescriptor Descriptor
     );
 
-    NH_BOOL nh_ecmascript_abstractHasProperty(
+    bool nh_ecmascript_abstractHasProperty(
         nh_ecmascript_Object *Object_p, nh_ecmascript_Any PropertyKey
     );
 
-    NH_BOOL nh_ecmascript_abstractHasOwnProperty(
+    bool nh_ecmascript_abstractHasOwnProperty(
         nh_ecmascript_Object *Object_p, nh_ecmascript_Any PropertyKey
     );
 
-    NH_BOOL nh_ecmascript_abstractIsExtensible(
+    bool nh_ecmascript_abstractIsExtensible(
         nh_ecmascript_Object *Object_p
     );
 
     nh_ecmascript_Completion nh_ecmascript_abstractSet(
-        nh_ecmascript_Object *Object_p, nh_ecmascript_Any Key, nh_ecmascript_Any Value, NH_BOOL _throw
+        nh_ecmascript_Object *Object_p, nh_ecmascript_Any Key, nh_ecmascript_Any Value, bool _throw
     );
 
     NH_ECMASCRIPT_BOOLEAN nh_ecmascript_abstractCreateDataProperty(

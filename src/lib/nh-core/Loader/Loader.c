@@ -37,7 +37,7 @@ nh_Loader NH_LOADER;
 /**
  * Must match NH_MODULE enum. 
  */
-const NH_BYTE *NH_MODULE_NAMES_PP[] = {
+const char *NH_MODULE_NAMES_PP[] = {
     "nh-core",
     "nh-wsi",
     "nh-network",
@@ -53,7 +53,7 @@ const NH_BYTE *NH_MODULE_NAMES_PP[] = {
 };
 
 int nh_core_getModuleIndex(
-    NH_BYTE *name_p)
+    char *name_p)
 {
 NH_CORE_BEGIN()
 
@@ -81,7 +81,7 @@ static nh_Module *nh_core_getModule(
 {
 NH_CORE_BEGIN()
 
-    if (NH_LOADER.Modules_p[module].loaded == NH_FALSE) {
+    if (NH_LOADER.Modules_p[module].loaded == false) {
         NH_CORE_END(NULL)
     }
 
@@ -92,21 +92,21 @@ NH_CORE_END(&NH_LOADER.Modules_p[module])
 
 typedef int (*initialize_f)();
 
-static NH_CORE_RESULT nh_core_callDefaultInitializer(
+static NH_API_RESULT nh_core_callDefaultInitializer(
     nh_Module *Module_p)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE functionName_p[255] = {'\0'};
+    char functionName_p[255] = {'\0'};
     sprintf(functionName_p, "nh_%s_initialize", NH_MODULE_NAMES_PP[Module_p->type] + 3);
 
     initialize_f initializer_f = nh_core_loadSymbolFromLibrary(Module_p->lib_p, functionName_p);
     if (initializer_f != NULL) {initializer_f();}
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_loadDependencies(
+static NH_API_RESULT nh_core_loadDependencies(
     NH_MODULE_E _module, char *path_p)
 {
 NH_CORE_BEGIN()
@@ -152,15 +152,15 @@ NH_CORE_BEGIN()
             break;
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_load(
-    NH_MODULE_E type, NH_BYTE *path_p)
+static NH_API_RESULT nh_core_load(
+    NH_MODULE_E type, char *path_p)
 {
 NH_CORE_BEGIN()
 
-    if (nh_core_getModule(type)) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
+    if (nh_core_getModule(type)) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
     NH_CORE_CHECK(nh_core_loadDependencies(type, path_p))
 
     nh_Module *Module_p = &NH_LOADER.Modules_p[type];
@@ -173,18 +173,18 @@ NH_CORE_BEGIN()
 
     // This needs to be set before calling initalizer, 
     // because e.g. nh-css uses the loader in the initializer.
-    Module_p->loaded = NH_TRUE;
+    Module_p->loaded = true;
 
     nh_core_callDefaultInitializer(Module_p);
 //    NH_CORE_CHECK(nh_core_logModules())
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // EXTERNAL MODULES ================================================================================
 
 static nh_core_ExternalModule *nh_core_getExternalModule(
-    NH_BYTE *name_p)
+    char *name_p)
 {
 NH_CORE_BEGIN()
 
@@ -198,12 +198,12 @@ NH_CORE_BEGIN()
 NH_CORE_END(NULL)
 }
 
-static NH_CORE_RESULT nh_core_callExternalInitializer(
+static NH_API_RESULT nh_core_callExternalInitializer(
     nh_core_ExternalModule *Module_p)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE name_p[255] = {'\0'};
+    char name_p[255] = {'\0'};
     sprintf(name_p, "%s_initialize", Module_p->name_p);
 
     for (int i = 0; i < strlen(name_p); ++i) {
@@ -213,14 +213,14 @@ NH_CORE_BEGIN()
     initialize_f initializer_f = nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p);
     if (initializer_f != NULL) {initializer_f();}
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_loadExternal(
+static NH_API_RESULT nh_core_loadExternal(
     nh_core_ExternalModule *Module_p
 );
 
-static NH_CORE_RESULT nh_core_loadExternalDependencies(
+static NH_API_RESULT nh_core_loadExternalDependencies(
     nh_core_ExternalModule *Module_p)
 {
 NH_CORE_BEGIN()
@@ -232,17 +232,17 @@ NH_CORE_BEGIN()
             NH_LOADER.load_f(index, 0);
         } else {
             nh_core_ExternalModule *Dependency_p = nh_core_getExternalModule(name_p);
-            if (!Dependency_p) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)}
+            if (!Dependency_p) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
             if (!Dependency_p->Data.loaded) {
                 nh_core_loadExternal(Dependency_p);
             }
         }
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_loadExternal(
+static NH_API_RESULT nh_core_loadExternal(
     nh_core_ExternalModule *Module_p)
 {
 NH_CORE_BEGIN()
@@ -257,13 +257,13 @@ NH_CORE_BEGIN()
 
     nh_core_callExternalInitializer(Module_p);
 
-    Module_p->Data.loaded = NH_TRUE;
+    Module_p->Data.loaded = true;
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static void *nh_core_loadExternalSymbol(
-    NH_BYTE *module_p, const NH_BYTE *name_p)
+    char *module_p, const char *name_p)
 {
 NH_CORE_BEGIN()
 
@@ -278,8 +278,8 @@ NH_CORE_BEGIN()
 NH_CORE_END(nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p))
 }
 
-NH_CORE_RESULT nh_core_addExternalModule(
-    const NH_BYTE *name_p, const char *path_p, const NH_BYTE **dependencies_pp, size_t dependencies)
+NH_API_RESULT nh_core_addExternalModule(
+    const char *name_p, const char *path_p, const char **dependencies_pp, size_t dependencies)
 {
 NH_CORE_BEGIN()
    
@@ -297,27 +297,27 @@ NH_CORE_BEGIN()
         strcpy(Module_p->path_p, path_p);
     } 
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 // UNLOAD LIBRARY ==================================================================================
 
 typedef int (*terminate_f)();
 
-static NH_CORE_RESULT nh_core_callDefaultTerminator(
+static NH_API_RESULT nh_core_callDefaultTerminator(
     nh_Module *Module_p)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE functionName_p[255] = {'\0'};
+    char functionName_p[255] = {'\0'};
     sprintf(functionName_p, "nh_%s_terminate", NH_MODULE_NAMES_PP[Module_p->type] + 3);
     terminate_f terminator_f = NH_LOADER.loadSymbol_f(Module_p->type, 0, functionName_p);
     if (terminator_f != NULL) {terminator_f();}
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_BOOL nh_core_isUnloadAllowed(
+static bool nh_core_isUnloadAllowed(
     NH_MODULE_E _module)
 {
 NH_CORE_BEGIN()
@@ -327,59 +327,59 @@ NH_CORE_BEGIN()
         case NH_MODULE_HTML : 
             // No module has this module currently as a dependency, 
             // so we can unload it.
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_ENCODING :
-            if (NH_LOADER.Modules_p[NH_MODULE_WEBIDL].loaded == NH_TRUE
-            ||  NH_LOADER.Modules_p[NH_MODULE_ECMASCRIPT].loaded == NH_TRUE
-            ||  NH_LOADER.Modules_p[NH_MODULE_CSS].loaded == NH_TRUE
-            ||  NH_LOADER.Modules_p[NH_MODULE_URL].loaded == NH_TRUE) {
-                NH_CORE_END(NH_FALSE)    
+            if (NH_LOADER.Modules_p[NH_MODULE_WEBIDL].loaded == true
+            ||  NH_LOADER.Modules_p[NH_MODULE_ECMASCRIPT].loaded == true
+            ||  NH_LOADER.Modules_p[NH_MODULE_CSS].loaded == true
+            ||  NH_LOADER.Modules_p[NH_MODULE_URL].loaded == true) {
+                NH_CORE_END(false)    
             }
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_WEBIDL : 
-            if (NH_LOADER.Modules_p[NH_MODULE_DOM].loaded == NH_TRUE) {
-                NH_CORE_END(NH_FALSE)    
+            if (NH_LOADER.Modules_p[NH_MODULE_DOM].loaded == true) {
+                NH_CORE_END(false)    
             }
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_ECMASCRIPT : 
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_CSS :
-            if (NH_LOADER.Modules_p[NH_MODULE_RENDERER].loaded == NH_TRUE) {
-                NH_CORE_END(NH_FALSE)    
+            if (NH_LOADER.Modules_p[NH_MODULE_RENDERER].loaded == true) {
+                NH_CORE_END(false)    
             }
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_DOM :
-            if (NH_LOADER.Modules_p[NH_MODULE_HTML].loaded == NH_TRUE
-            ||  NH_LOADER.Modules_p[NH_MODULE_CSS].loaded == NH_TRUE) {
-                NH_CORE_END(NH_FALSE)    
+            if (NH_LOADER.Modules_p[NH_MODULE_HTML].loaded == true
+            ||  NH_LOADER.Modules_p[NH_MODULE_CSS].loaded == true) {
+                NH_CORE_END(false)    
             }
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_RENDERER : 
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_URL :
-            if (NH_LOADER.Modules_p[NH_MODULE_HTML].loaded == NH_TRUE) {
-                NH_CORE_END(NH_FALSE)    
+            if (NH_LOADER.Modules_p[NH_MODULE_HTML].loaded == true) {
+                NH_CORE_END(false)    
             }
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
 
         case NH_MODULE_GFX :
-            if (NH_LOADER.Modules_p[NH_MODULE_RENDERER].loaded == NH_TRUE) {
-                NH_CORE_END(NH_FALSE)    
+            if (NH_LOADER.Modules_p[NH_MODULE_RENDERER].loaded == true) {
+                NH_CORE_END(false)    
             }
-            NH_CORE_END(NH_TRUE)
+            NH_CORE_END(true)
     }
 
-NH_CORE_END(NH_TRUE)
+NH_CORE_END(true)
 }
 
-static NH_CORE_RESULT nh_core_unloadModule(
+static NH_API_RESULT nh_core_unloadModule(
     NH_MODULE_E module)
 {
 NH_CORE_BEGIN()
@@ -387,7 +387,7 @@ NH_CORE_BEGIN()
     nh_Module *Module_p = &NH_LOADER.Modules_p[module];
 
     // nh-core is unloaded in the API.
-    if (Module_p->loaded == NH_FALSE || module == NH_MODULE_CORE) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
+    if (Module_p->loaded == false || module == NH_MODULE_CORE) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     NH_CORE_CHECK(nh_core_callDefaultTerminator(Module_p))
 
@@ -399,13 +399,13 @@ NH_CORE_BEGIN()
 
     *Module_p = nh_core_initModule(module);
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // LOAD SYMBOL =====================================================================================
 
 void *nh_core_loadExistingSymbol(
-    NH_MODULE_E type, int major, const NH_BYTE *name_p)
+    NH_MODULE_E type, int major, const char *name_p)
 {
 NH_CORE_BEGIN()
 
@@ -416,13 +416,13 @@ NH_CORE_END(nh_core_loadSymbolFromLibrary(Module_p->lib_p, name_p))
 }
 
 static void *nh_core_loadSymbol(
-    NH_MODULE_E type, int major, const NH_BYTE *name_p)
+    NH_MODULE_E type, int major, const char *name_p)
 {
 NH_CORE_BEGIN()
 
     nh_Module *Module_p = nh_core_getModule(type);
     if (Module_p == NULL) {
-        if (nh_core_load(type, 0) == NH_CORE_SUCCESS) {
+        if (nh_core_load(type, 0) == NH_API_SUCCESS) {
             Module_p = nh_core_getModule(type);
         }
     }
@@ -433,7 +433,7 @@ NH_CORE_END(nh_core_loadSymbolFromLibrary(Module_p->lib_p, name_p))
 }
 
 void *nh_core_loadSymbolUsingModuleName(
-    NH_BYTE *module_p, NH_BYTE *symbol_p)
+    char *module_p, char *symbol_p)
 {
 NH_CORE_BEGIN()
 
@@ -446,7 +446,7 @@ NH_CORE_END(nh_core_loadSymbol(index, 0, symbol_p))
 // INIT/DESTROY ====================================================================================
 
 nh_Loader *nh_core_initLoader(
-    NH_BOOL fallback, NH_BOOL install)
+    bool fallback, bool install)
 {
 NH_CORE_BEGIN()
 
@@ -472,21 +472,21 @@ NH_CORE_BEGIN()
 NH_CORE_END(&NH_LOADER)
 }
 
-NH_CORE_RESULT nh_core_freeLoader()
+NH_API_RESULT nh_core_freeLoader()
 {
 NH_CORE_BEGIN()
 
     while (1) {
-        NH_BOOL unloadNeeded = NH_FALSE;
+        bool unloadNeeded = false;
         // We skip the nh-core module since it's unloaded in the API.
         for (int i = 1; i < NH_MODULE_E_COUNT; ++i) {
             if (nh_core_isUnloadAllowed(i)) {
                 NH_CORE_CHECK(nh_core_unloadModule(i))
             }
-            if (NH_LOADER.Modules_p[i].loaded == NH_TRUE) {unloadNeeded = NH_TRUE;}
+            if (NH_LOADER.Modules_p[i].loaded == true) {unloadNeeded = true;}
         }
         if (!unloadNeeded) {break;}
     }
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }

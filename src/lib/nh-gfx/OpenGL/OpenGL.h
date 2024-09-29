@@ -26,10 +26,10 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_opengl_initOpenGL(
+    NH_API_RESULT nh_opengl_initOpenGL(
     );
 
-    NH_GFX_RESULT nh_opengl_terminateOpenGL(
+    NH_API_RESULT nh_opengl_terminateOpenGL(
     );
 
 /** @} */

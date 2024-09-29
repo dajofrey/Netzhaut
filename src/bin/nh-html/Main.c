@@ -48,7 +48,7 @@ static void *getFileData(
 static ttyr_tty_TTY *TTY_p = NULL;
 
 static void handleMonitorInput(
-    nh_wsi_Window *Window_p, nh_wsi_Event Event)
+    nh_api_Window *Window_p, nh_api_Event Event)
 {
     switch (Event.type)
     {
@@ -80,15 +80,15 @@ static int openMonitor()
     ttyr_terminal_Terminal *Terminal_p = ttyr_api_openTerminal(NULL, TTY_p); 
     if (!Terminal_p) {return 1;} 
  
-    nh_wsi_Window *Window_p = 
+    nh_api_Window *Window_p = 
         nh_api_createWindow(NULL, nh_api_getSurfaceRequirements()); 
     if (!Window_p) {return 1;} 
  
-    nh_gfx_Surface *Surface_p = nh_api_createSurface(Window_p, NH_GFX_API_OPENGL); 
+    nh_gfx_Surface *Surface_p = nh_api_createSurface(Window_p, NH_API_GRAPHICS_BACKEND_OPENGL); 
     if (!Surface_p) {return 1;} 
  
-    nh_PixelPosition Position = {0};
-    nh_PixelSize Size; 
+    nh_api_PixelPosition Position = {0};
+    nh_api_PixelSize Size; 
     Size.width  = 700; 
     Size.height = 700; 
  
@@ -110,7 +110,7 @@ static int openMonitor()
 int main(
     int argc, char **argv_pp) 
 {
-    if (nh_api_initialize(NULL, NULL, 0) != NH_CORE_SUCCESS) {
+    if (nh_api_initialize(NULL, NULL, 0) != NH_API_SUCCESS) {
         puts("API initialization failed. Exiting.\n");
         return 1;
     }
@@ -135,45 +135,45 @@ int main(
         return 1;
     }
 
-    nh_wsi_Window *Window_p = nh_api_createWindow(NULL, nh_api_getSurfaceRequirements());
+    nh_api_Window *Window_p = nh_api_createWindow(NULL, nh_api_getSurfaceRequirements());
     if (!Window_p) {
         puts("Creating window failed. Exiting.");
         return 1;
     }
 
-    nh_gfx_Surface *Surface_p = nh_api_createSurface(Window_p, NH_GFX_API_VULKAN);
+    nh_api_Surface *Surface_p = nh_api_createSurface(Window_p, NH_API_GRAPHICS_BACKEND_VULKAN);
     if (!Surface_p) {
         puts("Creating surface failed. Exiting.");
         return 1;
     }
 
-    nh_PixelSize Size;
+    nh_api_PixelSize Size;
     Size.width = 700;
     Size.height = 700;
 
-    nh_PixelPosition Position;
+    nh_api_PixelPosition Position;
     Position.x = 0;
     Position.y = 0;
 
-    nh_gfx_Viewport *Viewport_p = nh_api_createViewport(Surface_p, Position, Size);
+    nh_api_Viewport *Viewport_p = nh_api_createViewport(Surface_p, Position, Size);
     if (!Viewport_p) {
         puts("Creating viewport failed. Exiting.");
         return 1;
     }
 
-    nh_html_DocumentContext *DocumentContext_p = nh_api_createDocumentContext(NH_FALSE);
+    nh_api_DocumentContext *DocumentContext_p = nh_api_createDocumentContext(false);
     if (!DocumentContext_p) {
         puts("Creating document context failed. Exiting.");
         return 1;
     }
 
-    nh_css_LayoutEngine *LayoutEngine_p = nh_api_createLayoutEngine(DocumentContext_p);
+    nh_api_LayoutEngine *LayoutEngine_p = nh_api_createLayoutEngine(DocumentContext_p);
     if (!LayoutEngine_p) {
         puts("Creating layout engine failed. Exiting.");
         return 1;
     }
 
-    nh_renderer_Renderer *Renderer_p = nh_api_createRenderer(LayoutEngine_p);
+    nh_api_Renderer *Renderer_p = nh_api_createRenderer(LayoutEngine_p);
     if (!Renderer_p) {
         puts("Creating renderer failed. Exiting.");
         return 1;

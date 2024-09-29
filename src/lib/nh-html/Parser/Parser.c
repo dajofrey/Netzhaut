@@ -25,7 +25,7 @@
 
 // PARSE ERROR =====================================================================================
 
-NH_HTML_RESULT nh_html_newParseError(
+NH_API_RESULT nh_html_newParseError(
     nh_html_Parser *Parser_p, unsigned long index, NH_HTML_PARSE_ERROR type)
 {
 NH_HTML_BEGIN()
@@ -36,7 +36,7 @@ NH_HTML_BEGIN()
     Error_p->type  = type;
     Error_p->index = index;
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // PRE-PROCESS =====================================================================================
@@ -71,7 +71,7 @@ NH_HTML_BEGIN()
 NH_HTML_END(Normalized)
 }
 
-static NH_HTML_RESULT nh_html_checkInputStream(
+static NH_API_RESULT nh_html_checkInputStream(
     nh_html_Parser *Parser_p, nh_encoding_UTF32String InputStream)
 {
 NH_HTML_BEGIN()
@@ -89,7 +89,7 @@ NH_HTML_BEGIN()
         }
     } 
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // PARSER ==========================================================================================
@@ -103,11 +103,11 @@ NH_HTML_BEGIN()
 
     Parser.insertionMode            = NH_HTML_INSERTION_MODE_INITIAL;
     Parser.originalInsertionMode    = Parser.insertionMode;
-    Parser.framesetOk               = NH_TRUE;
-    Parser.pause                    = NH_FALSE;
-    Parser.stop                     = NH_FALSE;
-    Parser.scripting                = NH_TRUE;
-    Parser.fosterParenting          = NH_FALSE;
+    Parser.framesetOk               = true;
+    Parser.pause                    = false;
+    Parser.stop                     = false;
+    Parser.scripting                = true;
+    Parser.fosterParenting          = false;
     Parser.scriptNestingLevel       = 0;
     Parser.OpenElements             = nh_core_initStack(255);
     Parser.TemplateInsertionModes   = nh_core_initStack(255);
@@ -122,8 +122,8 @@ NH_HTML_BEGIN()
 NH_HTML_END(Parser)
 }
 
-NH_HTML_RESULT nh_html_parseDocument(
-    NH_BYTE *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p)
+NH_API_RESULT nh_html_parseDocument(
+    char *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p)
 {
 NH_HTML_BEGIN()
 
@@ -147,6 +147,6 @@ NH_HTML_BEGIN()
 
     nh_webidl_freeUSVString(&Tokenizer.InputStream);
 
-NH_HTML_END(NH_HTML_SUCCESS)
+NH_HTML_END(NH_API_SUCCESS)
 }
 

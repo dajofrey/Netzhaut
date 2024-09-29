@@ -26,13 +26,13 @@
 // PERCENT ENCODE ==================================================================================
 
 void nh_url_percentEncodeByte(
-    NH_BYTE byte, nh_String *Output_p)
+    char byte, nh_String *Output_p)
 {
 NH_URL_BEGIN()
 
     nh_core_appendByteToString(Output_p, 0x25);
 
-    NH_BYTE hex_p[8];
+    char hex_p[8];
     memset(hex_p, 0, 8);
 
     sprintf(hex_p, "%02X", byte);
@@ -44,7 +44,7 @@ NH_URL_END()
 
 nh_String nh_url_percentEncodeAfterEncoding(
     NH_ENCODING_NAME encoding, nh_encoding_UTF32String Input, NH_URL_PERCENT_ENCODE_SET percentEncodeSet, 
-    NH_BOOL spaceAsPlus)
+    bool spaceAsPlus)
 {
 NH_URL_BEGIN()
 
@@ -77,7 +77,7 @@ nh_String nh_url_percentEncodeAfterEncodingUTF8(
     nh_encoding_UTF32String Input, NH_URL_PERCENT_ENCODE_SET percentEncodeSet)
 {
 NH_URL_BEGIN()
-NH_URL_END(nh_url_percentEncodeAfterEncoding(NH_ENCODING_NAME_UTF_8, Input, percentEncodeSet, NH_FALSE))
+NH_URL_END(nh_url_percentEncodeAfterEncoding(NH_ENCODING_NAME_UTF_8, Input, percentEncodeSet, false))
 }
 
 nh_String nh_url_percentEncodeCodepointAfterEncodingUTF8(
@@ -88,7 +88,7 @@ NH_URL_BEGIN()
     nh_encoding_UTF32String Input = nh_encoding_initUTF32(1);
     nh_encoding_appendUTF32(&Input, &codepoint, 1);
 
-    nh_String Output = nh_url_percentEncodeAfterEncoding(NH_ENCODING_NAME_UTF_8, Input, percentEncodeSet, NH_FALSE);
+    nh_String Output = nh_url_percentEncodeAfterEncoding(NH_ENCODING_NAME_UTF_8, Input, percentEncodeSet, false);
 
     nh_encoding_freeUTF32(&Input);
 
@@ -113,7 +113,7 @@ NH_URL_BEGIN()
             nh_core_appendByteToString(&Output, Input.p[i]);
         }
         else {
-            NH_BYTE replace = 0;
+            char replace = 0;
             if (i+3<Input.length) {replace = Input.p[i+3];}
             int number = (int)strtol(&Input.p[i+1], NULL, 16);
             nh_core_appendByteToString(&Output, number);
@@ -139,56 +139,56 @@ NH_URL_END(Output)
 
 // PERCENT ENCODE SET ==============================================================================
 
-static NH_BOOL nh_url_inC0ControlPercentEncodeSet(
+static bool nh_url_inC0ControlPercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_encoding_isC0Control(codepoint) || codepoint > 0x7E)
 }
 
-static NH_BOOL nh_url_inFragmentPercentEncodeSet(
+static bool nh_url_inFragmentPercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_inC0ControlPercentEncodeSet(codepoint) || codepoint == 0x20 || codepoint == 0x22 || codepoint == 0x3C || codepoint == 0x3E || codepoint == 0x60)
 }
 
-static NH_BOOL nh_url_inQueryPercentEncodeSet(
+static bool nh_url_inQueryPercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_inC0ControlPercentEncodeSet(codepoint) || codepoint == 0x20 || codepoint == 0x22 || codepoint == 0x23 || codepoint == 0x3C || codepoint == 0x3E)
 }
 
-static NH_BOOL nh_url_inSpecialQueryPercentEncodeSet(
+static bool nh_url_inSpecialQueryPercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_inQueryPercentEncodeSet(codepoint) || codepoint == 0x27)
 }
 
-static NH_BOOL nh_url_inPathPercentEncodeSet(
+static bool nh_url_inPathPercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_inQueryPercentEncodeSet(codepoint) || codepoint == 0x3F || codepoint == 0x60 || codepoint == 0x7B || codepoint == 0x7D)
 }
 
-static NH_BOOL nh_url_inUserinfoPercentEncodeSet(
+static bool nh_url_inUserinfoPercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_inPathPercentEncodeSet(codepoint) || codepoint == 0x2F || codepoint == 0x3A || codepoint == 0x3B || codepoint == 0x3D || codepoint == 0x40 || (codepoint >= 0x5B && codepoint <= 0x5E) || codepoint == 0x7C)
 }
 
-static NH_BOOL nh_url_inComponentPercentEncodeSet(
+static bool nh_url_inComponentPercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_inUserinfoPercentEncodeSet(codepoint) || (codepoint >= 0x24 && codepoint <= 0x26) || codepoint == 0x2B || codepoint == 0x2C)
 }
 
-NH_BOOL nh_url_inPercentEncodeSet(
+bool nh_url_inPercentEncodeSet(
     NH_URL_PERCENT_ENCODE_SET encodeSet, NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
@@ -204,6 +204,6 @@ NH_URL_BEGIN()
         case NH_URL_PERCENT_ENCODE_SET_COMPONENT     : NH_URL_END(nh_url_inComponentPercentEncodeSet(codepoint))
     }
 
-NH_URL_END(NH_FALSE)
+NH_URL_END(false)
 }
 

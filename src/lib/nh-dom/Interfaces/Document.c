@@ -39,7 +39,7 @@ nh_webidl_DOMString NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS;
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeDocument(
+NH_API_RESULT nh_dom_initializeDocument(
     nh_webidl_Object *Document_p)
 {
 NH_DOM_BEGIN()
@@ -49,12 +49,12 @@ NH_DOM_BEGIN()
 
     MODE = &NH_DOM_DOCUMENT_MODE_NO_QUIRKS;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================
 
-NH_DOM_RESULT nh_dom_initDocumentModes()
+NH_API_RESULT nh_dom_initDocumentModes()
 {
 NH_DOM_BEGIN()
 
@@ -66,10 +66,10 @@ NH_DOM_BEGIN()
     nh_webidl_appendToDOMString(&NH_DOM_DOCUMENT_MODE_QUIRKS, "quirks", 6);
     nh_webidl_appendToDOMString(&NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS, "limited-quirks", 14);
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_DOM_RESULT nh_dom_freeDocumentModes()
+NH_API_RESULT nh_dom_freeDocumentModes()
 {
 NH_DOM_BEGIN()
 
@@ -77,27 +77,27 @@ NH_DOM_BEGIN()
     nh_webidl_freeDOMString(&NH_DOM_DOCUMENT_MODE_QUIRKS);
     nh_webidl_freeDOMString(&NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS);
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_DOM_RESULT nh_dom_setDocumentMode(
+NH_API_RESULT nh_dom_setDocumentMode(
     nh_webidl_Object *Document_p, nh_webidl_DOMString *Mode_p)
 {
 NH_DOM_BEGIN()
 
     MODE = Mode_p;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_DOM_RESULT nh_dom_setDocumentType(
+NH_API_RESULT nh_dom_setDocumentType(
     nh_webidl_Object *Document_p, nh_webidl_Object *DocumentType_p)
 {
 NH_DOM_BEGIN()
 
     DOCTYPE = DocumentType_p;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================

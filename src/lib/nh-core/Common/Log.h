@@ -19,27 +19,27 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_logThread(
+    NH_API_RESULT nh_core_logThread(
         nh_ThreadPool *ThreadPool_p, nh_Thread *Thread_p
     );
 
-    NH_CORE_RESULT nh_core_logModules(
+    NH_API_RESULT nh_core_logModules(
     );
 
     void nh_core_logSystemInfo(
-        NH_BYTE *info_p, int line
+        char *info_p, int line
     );
 
-    NH_CORE_RESULT _nh_core_logBegin(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_core_logBegin(
+        const char *file_p, const char *function_p
     );
 
-    NH_CORE_RESULT _nh_core_logEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_core_logEnd(
+        const char *file_p, const char *function_p
     );
 
-    NH_CORE_RESULT _nh_core_logDiagnosticEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p, NH_CORE_RESULT result, int line
+    NH_API_RESULT _nh_core_logDiagnosticEnd(
+        const char *file_p, const char *function_p, NH_API_RESULT result, int line
     );
 
 /** @} */

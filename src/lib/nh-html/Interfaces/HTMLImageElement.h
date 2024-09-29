@@ -17,16 +17,16 @@
  *  @{
  */
 
-    NH_HTML_RESULT nh_html_initializeHTMLImageElement(
+    NH_API_RESULT nh_html_initializeHTMLImageElement(
         nh_webidl_Object *Image_p
     );
 
-    nh_html_HTMLImageElement *nh_html_getHTMLImageElement(
+    void *nh_html_getHTMLImageElement(
         nh_webidl_Object *Object_p
     );
     
     void nh_html_updateImageData(
-        nh_html_HTMLImageElement *Image_p, NH_BOOL restartAnimations
+        void *Image_p, bool restartAnimations
     );
 
 /** @} */

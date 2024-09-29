@@ -12,7 +12,7 @@
 
 // CHARACTER REFERENCES ============================================================================
 
-const NH_BYTE *NH_HTML_CHARACTER_REFERENCES_PP[] = 
+const char *NH_HTML_CHARACTER_REFERENCES_PP[] = 
 {
     "Aacute;",
     "Aacute",

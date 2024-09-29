@@ -21,12 +21,12 @@
 
 // DEBUG ===========================================================================================
 
-NH_ENCODING_RESULT nh_encoding_terminate()
+NH_API_RESULT nh_encoding_terminate()
 {
 NH_ENCODING_BEGIN()
 
     nh_encoding_freeIndexMap();
 
-NH_ENCODING_DIAGNOSTIC_END(NH_ENCODING_SUCCESS)
+NH_ENCODING_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

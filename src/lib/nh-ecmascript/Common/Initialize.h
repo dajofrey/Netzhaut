@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_initialize(
+    NH_API_RESULT nh_ecmascript_initialize(
     );
     
 /** @} */

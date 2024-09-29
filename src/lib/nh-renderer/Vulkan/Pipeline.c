@@ -16,22 +16,22 @@
 
 // DECLARE ========================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createColorPipeline(
+static NH_API_RESULT nh_renderer_vk_createColorPipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
 );  
-static NH_RENDERER_RESULT nh_renderer_vk_createTextSDFPipeline(
+static NH_API_RESULT nh_renderer_vk_createTextSDFPipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
 );  
-static NH_RENDERER_RESULT nh_renderer_vk_createImagePipeline(
+static NH_API_RESULT nh_renderer_vk_createImagePipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
 );  
-static NH_RENDERER_RESULT nh_renderer_vk_createBackgroundImagePipeline(
+static NH_API_RESULT nh_renderer_vk_createBackgroundImagePipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
 );  
 
 // IMPLEMENT ======================================================================================
 
-NH_RENDERER_RESULT nh_renderer_vk_createPipelines(
+NH_API_RESULT nh_renderer_vk_createPipelines(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipelines_p)
 {
 NH_RENDERER_BEGIN()
@@ -44,7 +44,7 @@ NH_RENDERER_BEGIN()
     NH_RENDERER_CHECK(nh_renderer_vk_createImagePipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_IMAGE], &Info))
     NH_RENDERER_CHECK(nh_renderer_vk_createBackgroundImagePipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_BACKGROUND_IMAGE], &Info))
 
-NH_RENDERER_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_renderer_vk_destroyPipelines(
@@ -61,7 +61,7 @@ NH_RENDERER_SILENT_END()
 
 // COLOR ===========================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createColorPipeline(
+static NH_API_RESULT nh_renderer_vk_createColorPipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
 {
 NH_RENDERER_BEGIN()
@@ -83,7 +83,7 @@ NH_RENDERER_BEGIN()
     };
     
     VkDescriptorSetLayout Layout;
-    NH_GFX_CHECK_VULKAN_2(NH_RENDERER_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
+    NH_GFX_CHECK_VULKAN_2(NH_API_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
     
     VkPipelineLayoutCreateInfo PipelineLayoutInfo = 
     {
@@ -103,9 +103,9 @@ NH_RENDERER_BEGIN()
         #include "../Common/Data/GLSL/Main/Color.frag.inc"
     };
     VkShaderModule vertShaderModule;
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
     VkShaderModule fragShaderModule; 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
     
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -170,18 +170,18 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // SDF TEXT ========================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createTextSDFPipeline(
+static NH_API_RESULT nh_renderer_vk_createTextSDFPipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
 {
 NH_RENDERER_BEGIN()
@@ -221,7 +221,7 @@ NH_RENDERER_BEGIN()
     };
 
     VkDescriptorSetLayout Layout;
-    NH_GFX_CHECK_VULKAN_2(NH_RENDERER_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
+    NH_GFX_CHECK_VULKAN_2(NH_API_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
 
     VkPipelineLayoutCreateInfo PipelineLayoutInfo = 
     {
@@ -241,8 +241,8 @@ NH_RENDERER_BEGIN()
     {
         #include "../Common/Data/GLSL/Main/TextSDF.frag.inc"
     };
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
 
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -321,18 +321,18 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // IMAGE ===========================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createImagePipeline(
+static NH_API_RESULT nh_renderer_vk_createImagePipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
 {
 NH_RENDERER_BEGIN()
@@ -364,7 +364,7 @@ NH_RENDERER_BEGIN()
     };
 
     VkDescriptorSetLayout Layout;
-    NH_GFX_CHECK_VULKAN_2(NH_RENDERER_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
+    NH_GFX_CHECK_VULKAN_2(NH_API_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
 
     VkPipelineLayoutCreateInfo PipelineLayoutInfo = 
     {
@@ -384,9 +384,9 @@ NH_RENDERER_BEGIN()
         #include "../Common/Data/GLSL/Main/Image.frag.inc"
     };
     VkShaderModule vertShaderModule;
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
     VkShaderModule fragShaderModule; 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
     
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -462,18 +462,18 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // BACKGROUND IMAGE ================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createBackgroundImagePipeline(
+static NH_API_RESULT nh_renderer_vk_createBackgroundImagePipeline(
     nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
 {
 NH_RENDERER_BEGIN()
@@ -505,7 +505,7 @@ NH_RENDERER_BEGIN()
     };
 
     VkDescriptorSetLayout Layout;
-    NH_GFX_CHECK_VULKAN_2(NH_RENDERER_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
+    NH_GFX_CHECK_VULKAN_2(NH_API_ERROR_BAD_STATE, Driver_p->Functions.vkCreateDescriptorSetLayout(Driver_p->Device, &LayoutInfo, VK_NULL_HANDLE, &Layout))
 
     VkPipelineLayoutCreateInfo PipelineLayoutInfo = 
     {
@@ -525,9 +525,9 @@ NH_RENDERER_BEGIN()
         #include "../Common/Data/GLSL/Main/BackgroundImage.frag.inc"
     };
     VkShaderModule vertShaderModule;
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
     VkShaderModule fragShaderModule; 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
     
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -603,12 +603,12 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

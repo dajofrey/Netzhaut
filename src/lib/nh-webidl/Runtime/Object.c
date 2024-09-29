@@ -34,7 +34,7 @@ typedef int (*init_f)(nh_webidl_Object *Object_p);
 
 // CREATE OBJECT ===================================================================================
 
-static NH_BOOL nh_webidl_isAttribute(
+static bool nh_webidl_isAttribute(
     nh_webidl_ParseNode *Node_p)
 {
 NH_WEBIDL_BEGIN()
@@ -45,14 +45,14 @@ NH_WEBIDL_BEGIN()
         case NH_WEBIDL_PARSE_NODE_READ_WRITE_ATTRIBUTE :
         case NH_WEBIDL_PARSE_NODE_READ_WRITE_MAPLIKE   :
         case NH_WEBIDL_PARSE_NODE_READ_WRITE_SETLIKE   :
-            NH_WEBIDL_END(NH_TRUE)
+            NH_WEBIDL_END(true)
     }
 
-NH_WEBIDL_END(NH_FALSE)
+NH_WEBIDL_END(false)
 }
 
 static nh_webidl_Object *nh_webidl_createObjectWithParent(
-    NH_BYTE *specification_p, NH_BYTE *interface_p, nh_webidl_Object *Parent_p)
+    char *specification_p, char *interface_p, nh_webidl_Object *Parent_p)
 {
 NH_WEBIDL_BEGIN()
 
@@ -92,14 +92,14 @@ NH_WEBIDL_BEGIN()
 
     for (int i = 0; i < attributes; ++i) {nh_core_appendToList(&Object_p->Attributes, NULL);}
 
-    NH_BYTE lowerName_p[255] = {'\0'};
+    char lowerName_p[255] = {'\0'};
     sprintf(lowerName_p, "%s", Object_p->Interface_p->Specification_p->name_p);
     for (int i = 0; i < strlen(lowerName_p); ++i) {lowerName_p[i] = tolower(lowerName_p[i]);}
 
-    NH_BYTE funcName_p[255] = {'\0'};
+    char funcName_p[255] = {'\0'};
     sprintf(funcName_p, "nh_%s_initialize%s", lowerName_p, Object_p->Interface_p->name_p);
 
-    NH_BYTE libName_p[255] = {'\0'};
+    char libName_p[255] = {'\0'};
     sprintf(libName_p, "nh-%s", lowerName_p);
 
     int _module = nh_core_getModuleIndex(libName_p);
@@ -114,8 +114,8 @@ NH_WEBIDL_BEGIN()
     if (Interface_p->Inheritance_p != NULL) 
     {
         Object_p->Child_p = nh_webidl_createObjectWithParent(
-            Interface_p->Inheritance_p->specification_p ? (NH_BYTE*)Interface_p->Inheritance_p->specification_p : (NH_BYTE*)Interface_p->Specification_p->name_p, 
-            (NH_BYTE*)Interface_p->Inheritance_p->interface_p, 
+            Interface_p->Inheritance_p->specification_p ? (char*)Interface_p->Inheritance_p->specification_p : (char*)Interface_p->Specification_p->name_p, 
+            (char*)Interface_p->Inheritance_p->interface_p, 
             Object_p
         );
         NH_WEBIDL_CHECK_MEM_2(NULL, Object_p->Child_p)
@@ -132,7 +132,7 @@ NH_WEBIDL_END(nh_webidl_createObjectFromInterfaceWithParent(Interface_p, NULL))
 }
 
 nh_webidl_Object *nh_webidl_createObject(
-    NH_BYTE *specification_p, NH_BYTE *interface_p)
+    char *specification_p, char *interface_p)
 {
 NH_WEBIDL_BEGIN()
 NH_WEBIDL_END(nh_webidl_createObjectWithParent(specification_p, interface_p, NULL))
@@ -141,7 +141,7 @@ NH_WEBIDL_END(nh_webidl_createObjectWithParent(specification_p, interface_p, NUL
 // CREATE COMPOSITE OBJECT =========================================================================
 
 nh_webidl_Object *nh_webidl_createCompositeObject(
-    NH_BYTE *specification_p, NH_BYTE *interface_p, ...)
+    char *specification_p, char *interface_p, ...)
 {
 NH_WEBIDL_BEGIN()
 
@@ -178,7 +178,7 @@ NH_WEBIDL_BEGIN()
         nh_core_appendToList(&Object_p->Parts, Part_p);
     }
 
-    nh_core_freeList(&Interfaces, NH_FALSE);
+    nh_core_freeList(&Interfaces, false);
 
 NH_WEBIDL_END(Object_p)
 }
@@ -186,7 +186,7 @@ NH_WEBIDL_END(Object_p)
 // GET =============================================================================================
 
 static nh_webidl_Object *nh_webidl_getPart(
-    nh_webidl_Object *Object_p, NH_BYTE *specification_p, NH_BYTE *interface_p) 
+    nh_webidl_Object *Object_p, char *specification_p, char *interface_p) 
 {
 NH_WEBIDL_BEGIN()
 
@@ -209,7 +209,7 @@ NH_WEBIDL_END(NULL)
 }
 
 nh_webidl_Object *nh_webidl_getObject(
-    nh_webidl_Object *Object_p, NH_BYTE *specification_p, NH_BYTE *interface_p) 
+    nh_webidl_Object *Object_p, char *specification_p, char *interface_p) 
 {
 NH_WEBIDL_BEGIN()
 
@@ -232,7 +232,7 @@ NH_WEBIDL_END(NULL)
 }
 
 void *nh_webidl_getAttribute(
-    nh_webidl_Object *Object_p, NH_BYTE *attribute_p)
+    nh_webidl_Object *Object_p, char *attribute_p)
 {
 NH_WEBIDL_BEGIN()
 

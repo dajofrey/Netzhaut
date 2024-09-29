@@ -1,5 +1,5 @@
-#ifndef NH_WEBIDL_RESULT_H
-#define NH_WEBIDL_RESULT_H
+#ifndef NH_API_RESULT_H
+#define NH_API_RESULT_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -27,14 +27,14 @@
 //
 //    typedef struct nh_webidl_Boolean {
 //        nh_webidl_Object *Exception_p;
-//        NH_BOOL boolean;
+//        bool boolean;
 //    } nh_webidl_Boolean;
 
 /** @} */
 /** @{ */
 
-    extern const char *NH_WEBIDL_RESULTS_PP[];
-    extern unsigned int NH_WEBIDL_RESULTS_PP_COUNT;
+    extern const char *NH_API_RESULTS_PP[];
+    extern unsigned int NH_API_RESULTS_PP_COUNT;
 
 /** @} */
 

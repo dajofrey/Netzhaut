@@ -21,8 +21,6 @@
 #include "../../Common/Macros.h"
 #include "../../Common/Config.h"
 
-#include "../../../nh-gfx/Base/Surface.h"
-
 #include <fcntl.h>
 #include <time.h>
 #include <stdio.h>
@@ -39,7 +37,7 @@
 // HELPER ==========================================================================================
 
 typedef struct nh_x11_Property {
-    NH_UNSIGNED_BYTE *data;
+    unsigned char *data;
     int format, nitems;
     Atom type;
 } nh_x11_Property;
@@ -52,7 +50,7 @@ static nh_x11_Property nh_x11_readProperty(
     int read_bytes = 1024;	
     unsigned long nitems;
     unsigned long bytes_after;
-    NH_UNSIGNED_BYTE *ret = 0;	
+    unsigned char *ret = 0;	
 
     do {
         if(ret != 0) {
@@ -171,7 +169,7 @@ typedef enum NH_X11_MOVERESIZE_E {
  * @param Window_p Valid nh_x11_Window handle.
  * @param border Value from NH_X11_MOVERESIZE_E.
  */
-static NH_WSI_RESULT_E nh_x11_resizeWindowDrag(
+static NH_API_RESULT nh_x11_resizeWindowDrag(
     nh_x11_Window *Window_p, int border)
 {
 NH_WSI_BEGIN()
@@ -200,7 +198,7 @@ NH_WSI_BEGIN()
     XSendEvent(NH_WSI_X11.Display_p, NH_WSI_X11.root, False, SubstructureRedirectMask | SubstructureNotifyMask, (XEvent *)&xclient);
     XFlush(NH_WSI_X11.Display_p);
 
-NH_WSI_END(NH_WSI_SUCCESS)
+NH_WSI_END(NH_API_SUCCESS)
 }
 
 /**
@@ -208,7 +206,7 @@ NH_WSI_END(NH_WSI_SUCCESS)
  *
  * @param Window_p Valid nh_x11_Window handle.
  */
-NH_WSI_RESULT_E nh_x11_moveWindow(
+NH_API_RESULT nh_x11_moveWindow(
     nh_x11_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -238,7 +236,7 @@ NH_WSI_BEGIN()
     XSendEvent(NH_WSI_X11.Display_p, NH_WSI_X11.root, False, SubstructureRedirectMask | SubstructureNotifyMask, (XEvent *)&xclient);
     XFlush(NH_WSI_X11.Display_p);
 
-NH_WSI_END(NH_WSI_SUCCESS)
+NH_WSI_END(NH_API_SUCCESS)
 }
 
 // GET INPUT =======================================================================================
@@ -246,8 +244,8 @@ NH_WSI_END(NH_WSI_SUCCESS)
 // This is needed because we don't want to block execution of other stuff in single threaded mode.
 #define NH_X11_INPUT_LIMIT 30
 
-NH_WSI_RESULT_E nh_x11_getInput(
-    nh_wsi_Window *Window_p, NH_BOOL *idle_p) 
+NH_API_RESULT nh_x11_getInput(
+    nh_wsi_Window *Window_p, bool *idle_p) 
 {
 NH_WSI_BEGIN()
    
@@ -259,7 +257,7 @@ NH_WSI_BEGIN()
 
     while (XPending(NH_WSI_X11.Display_p) > 0) 
     {
-        *idle_p = NH_FALSE;
+        *idle_p = false;
         XNextEvent(NH_WSI_X11.Display_p, &Event);
         
         if (Event.type == ClientMessage)
@@ -328,12 +326,12 @@ NH_WSI_BEGIN()
             XGetWindowAttributes(NH_WSI_X11.Display_p, 
                 nh_x11_getTopLevelParent(NH_WSI_X11.Display_p, Window_p->X11.Handle), &XWA);
 
-            nh_wsi_sendWindowEvent(Window_p, NH_WSI_WINDOW_CONFIGURE, XWA.x, XWA.y, Configure.width, Configure.height);
+            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, XWA.x, XWA.y, Configure.width, Configure.height);
         }
         else if (Event.type == MotionNotify)
         {
-            nh_wsi_sendMouseEvent(Window_p, Event.xbutton.x, Event.xbutton.y, NH_WSI_TRIGGER_MOVE, 
-                NH_WSI_MOUSE_MOVE);
+            nh_wsi_sendMouseEvent(Window_p, Event.xbutton.x, Event.xbutton.y, NH_API_TRIGGER_MOVE, 
+                NH_API_MOUSE_MOVE);
 
             if (Config.resizable && !Config.decorated) {
                 int width, height;
@@ -362,16 +360,16 @@ NH_WSI_BEGIN()
         }
         else if (Event.type == ButtonPress || Event.type == ButtonRelease)
         {
-            NH_WSI_TRIGGER_E trigger = Event.type == ButtonPress ? NH_WSI_TRIGGER_PRESS : NH_WSI_TRIGGER_RELEASE;
-            NH_WSI_MOUSE_E button = 0;
+            NH_API_TRIGGER_E trigger = Event.type == ButtonPress ? NH_API_TRIGGER_PRESS : NH_API_TRIGGER_RELEASE;
+            NH_API_MOUSE_E button = 0;
 
             switch (Event.xbutton.button)
             {
-                case Button1 : button = NH_WSI_MOUSE_LEFT; break;
-                case Button2 : button = NH_WSI_MOUSE_MIDDLE; break;
-                case Button3 : button = NH_WSI_MOUSE_RIGHT; break;
-                case Button4 : button = NH_WSI_MOUSE_SCROLL; trigger = NH_WSI_TRIGGER_UP; break;
-                case Button5 : button = NH_WSI_MOUSE_SCROLL; trigger = NH_WSI_TRIGGER_DOWN; break;
+                case Button1 : button = NH_API_MOUSE_LEFT; break;
+                case Button2 : button = NH_API_MOUSE_MIDDLE; break;
+                case Button3 : button = NH_API_MOUSE_RIGHT; break;
+                case Button4 : button = NH_API_MOUSE_SCROLL; trigger = NH_API_TRIGGER_UP; break;
+                case Button5 : button = NH_API_MOUSE_SCROLL; trigger = NH_API_TRIGGER_DOWN; break;
             }
 
             if (Config.resizable && !Config.decorated) {
@@ -403,8 +401,8 @@ NH_WSI_BEGIN()
         }
         else if (Event.type == KeyPress || Event.type == KeyRelease)
         {
-            NH_WSI_TRIGGER_E trigger = Event.type == KeyPress ? NH_WSI_TRIGGER_PRESS : NH_WSI_TRIGGER_RELEASE;
-            NH_WSI_KEY_E special = 0;
+            NH_API_TRIGGER_E trigger = Event.type == KeyPress ? NH_API_TRIGGER_PRESS : NH_API_TRIGGER_RELEASE;
+            NH_API_KEY_E special = 0;
 
             // https://tronche.com/gui/x/xlib/input/keyboard-encoding.html
             // XLookupString seems to be the most straight forward way to get modified e.g. shifted keysym.
@@ -416,132 +414,132 @@ NH_WSI_BEGIN()
             switch (keysym)
             {
                 // TTY function keys
-                case XK_BackSpace   : special = NH_WSI_KEY_BACKSPACE; break;
-                case XK_Tab         : special = NH_WSI_KEY_TAB; break;  
-                case XK_Linefeed    : special = NH_WSI_KEY_LINEFEED; break;  
-                case XK_Clear       : special = NH_WSI_KEY_CLEAR; break;  
-                case XK_Return      : special = NH_WSI_KEY_RETURN; break;  
-                case XK_Pause       : special = NH_WSI_KEY_PAUSE; break;  
-                case XK_Scroll_Lock : special = NH_WSI_KEY_SCROLL_LOCK; break;
-                case XK_Sys_Req     : special = NH_WSI_KEY_SYS_REQ; break;  
-                case XK_Escape      : special = NH_WSI_KEY_ESCAPE; break;  
-                case XK_Delete      : special = NH_WSI_KEY_DELETE; break;    
+                case XK_BackSpace   : special = NH_API_KEY_BACKSPACE; break;
+                case XK_Tab         : special = NH_API_KEY_TAB; break;  
+                case XK_Linefeed    : special = NH_API_KEY_LINEFEED; break;  
+                case XK_Clear       : special = NH_API_KEY_CLEAR; break;  
+                case XK_Return      : special = NH_API_KEY_RETURN; break;  
+                case XK_Pause       : special = NH_API_KEY_PAUSE; break;  
+                case XK_Scroll_Lock : special = NH_API_KEY_SCROLL_LOCK; break;
+                case XK_Sys_Req     : special = NH_API_KEY_SYS_REQ; break;  
+                case XK_Escape      : special = NH_API_KEY_ESCAPE; break;  
+                case XK_Delete      : special = NH_API_KEY_DELETE; break;    
 
                 // Modifiers
-                case XK_Shift_L    : special = NH_WSI_KEY_SHIFT_L; break; 
-                case XK_Shift_R    : special = NH_WSI_KEY_SHIFT_R; break;   
-                case XK_Control_L  : special = NH_WSI_KEY_CONTROL_L; break; 
-                case XK_Control_R  : special = NH_WSI_KEY_CONTROL_R; break;
-                case XK_Caps_Lock  : special = NH_WSI_KEY_CAPS_LOCK; break; 
-                case XK_Shift_Lock : special = NH_WSI_KEY_SHIFT_LOCK; break;
-                case XK_Meta_L     : special = NH_WSI_KEY_META_L; break;    
-                case XK_Meta_R     : special = NH_WSI_KEY_META_R; break;    
-                case XK_Alt_L      : special = NH_WSI_KEY_ALT_L; break;     
-                case XK_Alt_R      : special = NH_WSI_KEY_ALT_R; break;     
-                case XK_Super_L    : special = NH_WSI_KEY_SUPER_L; break;   
-                case XK_Super_R    : special = NH_WSI_KEY_SUPER_R; break;   
-                case XK_Hyper_L    : special = NH_WSI_KEY_HYPER_L; break;   
-                case XK_Hyper_R    : special = NH_WSI_KEY_HYPER_R; break;  
+                case XK_Shift_L    : special = NH_API_KEY_SHIFT_L; break; 
+                case XK_Shift_R    : special = NH_API_KEY_SHIFT_R; break;   
+                case XK_Control_L  : special = NH_API_KEY_CONTROL_L; break; 
+                case XK_Control_R  : special = NH_API_KEY_CONTROL_R; break;
+                case XK_Caps_Lock  : special = NH_API_KEY_CAPS_LOCK; break; 
+                case XK_Shift_Lock : special = NH_API_KEY_SHIFT_LOCK; break;
+                case XK_Meta_L     : special = NH_API_KEY_META_L; break;    
+                case XK_Meta_R     : special = NH_API_KEY_META_R; break;    
+                case XK_Alt_L      : special = NH_API_KEY_ALT_L; break;     
+                case XK_Alt_R      : special = NH_API_KEY_ALT_R; break;     
+                case XK_Super_L    : special = NH_API_KEY_SUPER_L; break;   
+                case XK_Super_R    : special = NH_API_KEY_SUPER_R; break;   
+                case XK_Hyper_L    : special = NH_API_KEY_HYPER_L; break;   
+                case XK_Hyper_R    : special = NH_API_KEY_HYPER_R; break;  
 
                 // Cursor control & motion
-                case XK_Home      : special = NH_WSI_KEY_HOME; break;
-                case XK_Left      : special = NH_WSI_KEY_LEFT; break;
-                case XK_Up        : special = NH_WSI_KEY_UP; break;
-                case XK_Right     : special = NH_WSI_KEY_RIGHT; break;
-                case XK_Down      : special = NH_WSI_KEY_DOWN; break; 
-                case XK_Page_Up   : special = NH_WSI_KEY_PAGE_UP; break;
-                case XK_Page_Down : special = NH_WSI_KEY_PAGE_DOWN; break;
-                case XK_End       : special = NH_WSI_KEY_END; break;
-                case XK_Begin     : special = NH_WSI_KEY_BEGIN; break;
+                case XK_Home      : special = NH_API_KEY_HOME; break;
+                case XK_Left      : special = NH_API_KEY_LEFT; break;
+                case XK_Up        : special = NH_API_KEY_UP; break;
+                case XK_Right     : special = NH_API_KEY_RIGHT; break;
+                case XK_Down      : special = NH_API_KEY_DOWN; break; 
+                case XK_Page_Up   : special = NH_API_KEY_PAGE_UP; break;
+                case XK_Page_Down : special = NH_API_KEY_PAGE_DOWN; break;
+                case XK_End       : special = NH_API_KEY_END; break;
+                case XK_Begin     : special = NH_API_KEY_BEGIN; break;
 
                 // Misc functions
-                case XK_Select        : special = NH_WSI_KEY_SELECT; break;
-                case XK_Print         : special = NH_WSI_KEY_PRINT; break;
-                case XK_Execute       : special = NH_WSI_KEY_EXECUTE; break;
-                case XK_Insert        : special = NH_WSI_KEY_INSERT; break;
-                case XK_Undo          : special = NH_WSI_KEY_UNDO; break;
-                case XK_Redo          : special = NH_WSI_KEY_REDO; break;
-                case XK_Menu          : special = NH_WSI_KEY_MENU; break;
-                case XK_Find          : special = NH_WSI_KEY_FIND; break;
-                case XK_Cancel        : special = NH_WSI_KEY_CANCEL; break;
-                case XK_Help          : special = NH_WSI_KEY_HELP; break;
-                case XK_Break         : special = NH_WSI_KEY_BREAK; break;
-                case XK_Mode_switch   : special = NH_WSI_KEY_MODE_SWITCH; break;
-                case XK_Num_Lock      : special = NH_WSI_KEY_NUM_LOCK; break;
+                case XK_Select        : special = NH_API_KEY_SELECT; break;
+                case XK_Print         : special = NH_API_KEY_PRINT; break;
+                case XK_Execute       : special = NH_API_KEY_EXECUTE; break;
+                case XK_Insert        : special = NH_API_KEY_INSERT; break;
+                case XK_Undo          : special = NH_API_KEY_UNDO; break;
+                case XK_Redo          : special = NH_API_KEY_REDO; break;
+                case XK_Menu          : special = NH_API_KEY_MENU; break;
+                case XK_Find          : special = NH_API_KEY_FIND; break;
+                case XK_Cancel        : special = NH_API_KEY_CANCEL; break;
+                case XK_Help          : special = NH_API_KEY_HELP; break;
+                case XK_Break         : special = NH_API_KEY_BREAK; break;
+                case XK_Mode_switch   : special = NH_API_KEY_MODE_SWITCH; break;
+                case XK_Num_Lock      : special = NH_API_KEY_NUM_LOCK; break;
 
                 // Keypad functions
-                case XK_KP_Space     : special = NH_WSI_KEY_KP_SPACE; break;
-                case XK_KP_Tab       : special = NH_WSI_KEY_KP_TAB; break;
-                case XK_KP_Enter     : special = NH_WSI_KEY_KP_ENTER; break;
-                case XK_KP_F1        : special = NH_WSI_KEY_KP_F1; break;
-                case XK_KP_F2        : special = NH_WSI_KEY_KP_F2; break;
-                case XK_KP_F3        : special = NH_WSI_KEY_KP_F3; break;
-                case XK_KP_F4        : special = NH_WSI_KEY_KP_F4; break;
-                case XK_KP_Home      : special = NH_WSI_KEY_KP_HOME; break;
-                case XK_KP_Left      : special = NH_WSI_KEY_KP_LEFT; break;
-                case XK_KP_Up        : special = NH_WSI_KEY_KP_UP; break;
-                case XK_KP_Right     : special = NH_WSI_KEY_KP_RIGHT; break;
-                case XK_KP_Down      : special = NH_WSI_KEY_KP_DOWN; break;
-                case XK_KP_Prior     : special = NH_WSI_KEY_KP_PRIOR; break;
-                case XK_KP_Next      : special = NH_WSI_KEY_KP_NEXT; break;
-                case XK_KP_End       : special = NH_WSI_KEY_KP_END; break;
-                case XK_KP_Begin     : special = NH_WSI_KEY_KP_BEGIN; break;
-                case XK_KP_Insert    : special = NH_WSI_KEY_KP_INSERT; break;
-                case XK_KP_Delete    : special = NH_WSI_KEY_KP_DELETE; break;
-                case XK_KP_Equal     : special = NH_WSI_KEY_KP_EQUAL; break;
-                case XK_KP_Multiply  : special = NH_WSI_KEY_KP_MULTIPLY; break;
-                case XK_KP_Add       : special = NH_WSI_KEY_KP_ADD; break;
-                case XK_KP_Separator : special = NH_WSI_KEY_KP_SEPARATOR; break;
-                case XK_KP_Subtract  : special = NH_WSI_KEY_KP_SUBTRACT; break;
-                case XK_KP_Decimal   : special = NH_WSI_KEY_KP_DECIMAL; break;
-                case XK_KP_Divide    : special = NH_WSI_KEY_KP_DIVIDE; break;
+                case XK_KP_Space     : special = NH_API_KEY_KP_SPACE; break;
+                case XK_KP_Tab       : special = NH_API_KEY_KP_TAB; break;
+                case XK_KP_Enter     : special = NH_API_KEY_KP_ENTER; break;
+                case XK_KP_F1        : special = NH_API_KEY_KP_F1; break;
+                case XK_KP_F2        : special = NH_API_KEY_KP_F2; break;
+                case XK_KP_F3        : special = NH_API_KEY_KP_F3; break;
+                case XK_KP_F4        : special = NH_API_KEY_KP_F4; break;
+                case XK_KP_Home      : special = NH_API_KEY_KP_HOME; break;
+                case XK_KP_Left      : special = NH_API_KEY_KP_LEFT; break;
+                case XK_KP_Up        : special = NH_API_KEY_KP_UP; break;
+                case XK_KP_Right     : special = NH_API_KEY_KP_RIGHT; break;
+                case XK_KP_Down      : special = NH_API_KEY_KP_DOWN; break;
+                case XK_KP_Prior     : special = NH_API_KEY_KP_PRIOR; break;
+                case XK_KP_Next      : special = NH_API_KEY_KP_NEXT; break;
+                case XK_KP_End       : special = NH_API_KEY_KP_END; break;
+                case XK_KP_Begin     : special = NH_API_KEY_KP_BEGIN; break;
+                case XK_KP_Insert    : special = NH_API_KEY_KP_INSERT; break;
+                case XK_KP_Delete    : special = NH_API_KEY_KP_DELETE; break;
+                case XK_KP_Equal     : special = NH_API_KEY_KP_EQUAL; break;
+                case XK_KP_Multiply  : special = NH_API_KEY_KP_MULTIPLY; break;
+                case XK_KP_Add       : special = NH_API_KEY_KP_ADD; break;
+                case XK_KP_Separator : special = NH_API_KEY_KP_SEPARATOR; break;
+                case XK_KP_Subtract  : special = NH_API_KEY_KP_SUBTRACT; break;
+                case XK_KP_Decimal   : special = NH_API_KEY_KP_DECIMAL; break;
+                case XK_KP_Divide    : special = NH_API_KEY_KP_DIVIDE; break;
 
-                case XK_KP_0 : special = NH_WSI_KEY_KP_0; break;
-                case XK_KP_1 : special = NH_WSI_KEY_KP_1; break;
-                case XK_KP_2 : special = NH_WSI_KEY_KP_2; break;
-                case XK_KP_3 : special = NH_WSI_KEY_KP_3; break;
-                case XK_KP_4 : special = NH_WSI_KEY_KP_4; break;
-                case XK_KP_5 : special = NH_WSI_KEY_KP_5; break;
-                case XK_KP_6 : special = NH_WSI_KEY_KP_6; break;
-                case XK_KP_7 : special = NH_WSI_KEY_KP_7; break;
-                case XK_KP_8 : special = NH_WSI_KEY_KP_8; break;
-                case XK_KP_9 : special = NH_WSI_KEY_KP_9; break;
+                case XK_KP_0 : special = NH_API_KEY_KP_0; break;
+                case XK_KP_1 : special = NH_API_KEY_KP_1; break;
+                case XK_KP_2 : special = NH_API_KEY_KP_2; break;
+                case XK_KP_3 : special = NH_API_KEY_KP_3; break;
+                case XK_KP_4 : special = NH_API_KEY_KP_4; break;
+                case XK_KP_5 : special = NH_API_KEY_KP_5; break;
+                case XK_KP_6 : special = NH_API_KEY_KP_6; break;
+                case XK_KP_7 : special = NH_API_KEY_KP_7; break;
+                case XK_KP_8 : special = NH_API_KEY_KP_8; break;
+                case XK_KP_9 : special = NH_API_KEY_KP_9; break;
 
-                case XK_F1  : special = NH_WSI_KEY_F1; break;
-                case XK_F2  : special = NH_WSI_KEY_F2; break;
-                case XK_F3  : special = NH_WSI_KEY_F3; break;
-                case XK_F4  : special = NH_WSI_KEY_F4; break;
-                case XK_F5  : special = NH_WSI_KEY_F5; break;
-                case XK_F6  : special = NH_WSI_KEY_F6; break;
-                case XK_F7  : special = NH_WSI_KEY_F7; break;
-                case XK_F8  : special = NH_WSI_KEY_F8; break;
-                case XK_F9  : special = NH_WSI_KEY_F9; break;
-                case XK_F10 : special = NH_WSI_KEY_F10; break;
-                case XK_F11 : special = NH_WSI_KEY_F11; break;
-                case XK_F12 : special = NH_WSI_KEY_F12; break;
-                case XK_F13 : special = NH_WSI_KEY_F13; break;
-                case XK_F14 : special = NH_WSI_KEY_F14; break;
-                case XK_F15 : special = NH_WSI_KEY_F15; break;
-                case XK_F16 : special = NH_WSI_KEY_F16; break;
-                case XK_F17 : special = NH_WSI_KEY_F17; break;
-                case XK_F18 : special = NH_WSI_KEY_F18; break;
-                case XK_F19 : special = NH_WSI_KEY_F19; break;
-                case XK_F20 : special = NH_WSI_KEY_F20; break;
-                case XK_F21 : special = NH_WSI_KEY_F21; break;
-                case XK_F22 : special = NH_WSI_KEY_F22; break;
-                case XK_F23 : special = NH_WSI_KEY_F23; break;
-                case XK_F24 : special = NH_WSI_KEY_F24; break;
-                case XK_F25 : special = NH_WSI_KEY_F25; break;
-                case XK_F26 : special = NH_WSI_KEY_F26; break;
-                case XK_F27 : special = NH_WSI_KEY_F27; break;
-                case XK_F28 : special = NH_WSI_KEY_F28; break;
-                case XK_F29 : special = NH_WSI_KEY_F29; break;
-                case XK_F30 : special = NH_WSI_KEY_F30; break;
-                case XK_F31 : special = NH_WSI_KEY_F31; break;
-                case XK_F32 : special = NH_WSI_KEY_F32; break;
-                case XK_F33 : special = NH_WSI_KEY_F33; break;
-                case XK_F34 : special = NH_WSI_KEY_F34; break;
-                case XK_F35 : special = NH_WSI_KEY_F35; break;
+                case XK_F1  : special = NH_API_KEY_F1; break;
+                case XK_F2  : special = NH_API_KEY_F2; break;
+                case XK_F3  : special = NH_API_KEY_F3; break;
+                case XK_F4  : special = NH_API_KEY_F4; break;
+                case XK_F5  : special = NH_API_KEY_F5; break;
+                case XK_F6  : special = NH_API_KEY_F6; break;
+                case XK_F7  : special = NH_API_KEY_F7; break;
+                case XK_F8  : special = NH_API_KEY_F8; break;
+                case XK_F9  : special = NH_API_KEY_F9; break;
+                case XK_F10 : special = NH_API_KEY_F10; break;
+                case XK_F11 : special = NH_API_KEY_F11; break;
+                case XK_F12 : special = NH_API_KEY_F12; break;
+                case XK_F13 : special = NH_API_KEY_F13; break;
+                case XK_F14 : special = NH_API_KEY_F14; break;
+                case XK_F15 : special = NH_API_KEY_F15; break;
+                case XK_F16 : special = NH_API_KEY_F16; break;
+                case XK_F17 : special = NH_API_KEY_F17; break;
+                case XK_F18 : special = NH_API_KEY_F18; break;
+                case XK_F19 : special = NH_API_KEY_F19; break;
+                case XK_F20 : special = NH_API_KEY_F20; break;
+                case XK_F21 : special = NH_API_KEY_F21; break;
+                case XK_F22 : special = NH_API_KEY_F22; break;
+                case XK_F23 : special = NH_API_KEY_F23; break;
+                case XK_F24 : special = NH_API_KEY_F24; break;
+                case XK_F25 : special = NH_API_KEY_F25; break;
+                case XK_F26 : special = NH_API_KEY_F26; break;
+                case XK_F27 : special = NH_API_KEY_F27; break;
+                case XK_F28 : special = NH_API_KEY_F28; break;
+                case XK_F29 : special = NH_API_KEY_F29; break;
+                case XK_F30 : special = NH_API_KEY_F30; break;
+                case XK_F31 : special = NH_API_KEY_F31; break;
+                case XK_F32 : special = NH_API_KEY_F32; break;
+                case XK_F33 : special = NH_API_KEY_F33; break;
+                case XK_F34 : special = NH_API_KEY_F34; break;
+                case XK_F35 : special = NH_API_KEY_F35; break;
             }
 
             // Get UTF32 representation.
@@ -555,11 +553,11 @@ NH_WSI_BEGIN()
         }
         else if (Event.type == FocusIn)
         {
-            nh_wsi_sendWindowEvent(Window_p, NH_WSI_WINDOW_FOCUS_IN, 0, 0, 0, 0);
+            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0);
         }
         else if (Event.type == FocusOut)
         {
-            nh_wsi_sendWindowEvent(Window_p, NH_WSI_WINDOW_FOCUS_OUT, 0, 0, 0, 0);
+            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0);
         }
         else if (Event.type == PropertyNotify)
         {
@@ -588,7 +586,7 @@ NH_WSI_BEGIN()
             XGetWindowProperty(NH_WSI_X11.Display_p, Window_p->X11.Handle, NH_WSI_X11.Atoms.PENGUIN, 0, size, False, AnyPropertyType,
                                &data, &di, &dul, &dul, &data_p);
 
-            NH_WSI_CHECK(nh_wsi_setClipboard(data_p, size, NH_FALSE))
+            NH_WSI_CHECK(nh_wsi_setClipboard(data_p, size, false))
             XFree(data_p);
         }
         else if (Event.type == SelectionClear)
@@ -633,7 +631,7 @@ NH_WSI_BEGIN()
                 Response.property = Request_p->property;
             }
             else if (Request_p->target == NH_WSI_X11.Atoms.UTF8_STRING || Request_p->target == NH_WSI_X11.Atoms.STRING || Request_p->target == NH_WSI_X11.Atoms.TEXT) {
-                NH_BYTE *clipboard_p = nh_wsi_getClipboard();
+                char *clipboard_p = nh_wsi_getClipboard();
                 if (clipboard_p == NULL) {continue;}
             
                 XChangeProperty(
@@ -658,7 +656,7 @@ NH_WSI_BEGIN()
         if (limit++ == NH_X11_INPUT_LIMIT) {break;}
     }
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // WINDOW ==========================================================================================
@@ -860,7 +858,7 @@ NH_WSI_BEGIN()
 NH_WSI_SILENT_END()
 }
 
-NH_WSI_RESULT_E nh_x11_createWindow(
+NH_API_RESULT nh_x11_createWindow(
     nh_x11_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
 {
 NH_WSI_BEGIN()
@@ -906,7 +904,7 @@ NH_WSI_BEGIN()
     }
 
     if (!Info_p) {
-        NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+        NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     XSetWindowAttributes Attributes = {0,};
@@ -1006,10 +1004,10 @@ NH_WSI_BEGIN()
 
     XMapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_WSI_RESULT_E nh_x11_destroyWindow(
+NH_API_RESULT nh_x11_destroyWindow(
     nh_x11_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -1017,20 +1015,20 @@ NH_WSI_BEGIN()
     XUnmapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
     XDestroyWindow(NH_WSI_X11.Display_p, Window_p->Handle);
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_WSI_RESULT_E nh_x11_setClipboardOwner(
+NH_API_RESULT nh_x11_setClipboardOwner(
     nh_x11_Window *Window_p)
 {
 NH_WSI_BEGIN()
 
     XSetSelectionOwner(NH_WSI_X11.Display_p, NH_WSI_X11.Atoms.CLIPBOARD, Window_p->Handle, CurrentTime);
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_BOOL nh_x11_isClipboardOwner(
+bool nh_x11_isClipboardOwner(
     nh_x11_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -1040,7 +1038,7 @@ NH_WSI_BEGIN()
 NH_WSI_END(Window_p->Handle == window)
 }
 
-NH_WSI_RESULT_E nh_x11_requestClipboardConversion(
+NH_API_RESULT nh_x11_requestClipboardConversion(
     nh_x11_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -1048,6 +1046,6 @@ NH_WSI_BEGIN()
     XConvertSelection(NH_WSI_X11.Display_p, NH_WSI_X11.Atoms.CLIPBOARD, NH_WSI_X11.Atoms.UTF8_STRING, 
         NH_WSI_X11.Atoms.PENGUIN, Window_p->Handle, CurrentTime);
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

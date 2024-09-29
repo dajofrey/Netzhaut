@@ -31,7 +31,7 @@
 
 // DATA ============================================================================================
 
-const NH_BYTE *NH_ECMASCRIPT_RESERVED_WORDS_PP[] = {
+const char *NH_ECMASCRIPT_RESERVED_WORDS_PP[] = {
     "await",
     "break",
     "case",
@@ -72,7 +72,7 @@ const NH_BYTE *NH_ECMASCRIPT_RESERVED_WORDS_PP[] = {
     "yield",
 };
 
-const NH_BYTE *NH_ECMASCRIPT_PARSE_NODE_NAMES_PP[] = {
+const char *NH_ECMASCRIPT_PARSE_NODE_NAMES_PP[] = {
     "AdditiveExpression",
     "Arguments",
     "ArrayBindingPattern",
@@ -226,11 +226,11 @@ NH_ECMASCRIPT_END(Result)
 }
 
 static nh_ecmascript_ParseNode *nh_ecmascript_allocateNonTerminalParseNode(
-    const NH_BYTE *name_p, int chunkSize)
+    const char *name_p, int chunkSize)
 {
 NH_ECMASCRIPT_BEGIN()
 
-    unsigned int *index_p = nh_core_getFromHashMap(&NH_ECMASCRIPT_INDEXMAP.ParseNodeNames, (NH_BYTE*)name_p);
+    unsigned int *index_p = nh_core_getFromHashMap(&NH_ECMASCRIPT_INDEXMAP.ParseNodeNames, (char*)name_p);
     if (index_p == NULL) {NH_ECMASCRIPT_END(NULL)}
 
     nh_ecmascript_ParseNode *Node_p = nh_core_allocate(sizeof(nh_ecmascript_ParseNode));
@@ -273,7 +273,7 @@ NH_ECMASCRIPT_END(Parser)
 }
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseEasyRecursiveProductionStep(
-    nh_ecmascript_Parser *Parser_p, nh_ecmascript_ParseNode *Previous_p, NH_BYTE *name_p, NH_BOOL commaSeparated, 
+    nh_ecmascript_Parser *Parser_p, nh_ecmascript_ParseNode *Previous_p, char *name_p, bool commaSeparated, 
     nh_ecmascript_ParseResult (*parseItem_f)(nh_ecmascript_Parser *Parser_p)) 
 {
 NH_ECMASCRIPT_BEGIN()
@@ -305,7 +305,7 @@ NH_ECMASCRIPT_END(nh_ecmascript_parseEasyRecursiveProductionStep(Parser_p, NewNo
 }
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseEasyRecursiveProduction(
-    nh_ecmascript_Parser *Parser_p, NH_BYTE *name_p, NH_BOOL commaSeparated, nh_ecmascript_ParseResult (*parseItem_f)(nh_ecmascript_Parser *Parser_p))
+    nh_ecmascript_Parser *Parser_p, char *name_p, bool commaSeparated, nh_ecmascript_ParseResult (*parseItem_f)(nh_ecmascript_Parser *Parser_p))
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -1223,7 +1223,7 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseVariableDeclarationList(
     nh_ecmascript_Parser *Parser_p)
 {
 NH_ECMASCRIPT_BEGIN()
-NH_ECMASCRIPT_END(nh_ecmascript_parseEasyRecursiveProduction(Parser_p, "VariableDeclarationList", NH_TRUE, nh_ecmascript_parseVariableDeclaration))
+NH_ECMASCRIPT_END(nh_ecmascript_parseEasyRecursiveProduction(Parser_p, "VariableDeclarationList", true, nh_ecmascript_parseVariableDeclaration))
 }
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseVariableStatement(
@@ -1282,7 +1282,7 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseExpression(
     nh_ecmascript_Parser *Parser_p)
 {
 NH_ECMASCRIPT_BEGIN()
-NH_ECMASCRIPT_END(nh_ecmascript_parseEasyRecursiveProduction(Parser_p, "Expression", NH_TRUE, nh_ecmascript_parseAssignmentExpression))
+NH_ECMASCRIPT_END(nh_ecmascript_parseEasyRecursiveProduction(Parser_p, "Expression", true, nh_ecmascript_parseAssignmentExpression))
 }
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseExpressionStatement(
@@ -1373,7 +1373,7 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseStatementList(
     nh_ecmascript_Parser *Parser_p)
 {
 NH_ECMASCRIPT_BEGIN()
-NH_ECMASCRIPT_END(nh_ecmascript_parseEasyRecursiveProduction(Parser_p, "StatementList", NH_FALSE, nh_ecmascript_parseStatementListItem))
+NH_ECMASCRIPT_END(nh_ecmascript_parseEasyRecursiveProduction(Parser_p, "StatementList", false, nh_ecmascript_parseStatementListItem))
 }
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseScriptBody(

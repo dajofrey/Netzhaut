@@ -60,16 +60,16 @@
     nh_vk_Surface nh_vk_initSurface(
     );
 
-    NH_GFX_RESULT nh_vk_createSurface(
-        nh_vk_Surface *Surface_p, nh_wsi_Window *Window_p, nh_vk_GPU *GPU_p
+    NH_API_RESULT nh_vk_createSurface(
+        nh_vk_Surface *Surface_p, nh_api_Window *Window_p, nh_vk_GPU *GPU_p
     );
 
-    NH_GFX_RESULT nh_vk_destroySurface(
-        nh_vk_Surface *Surface_p, NH_BOOL destroySurfaceKHR
+    NH_API_RESULT nh_vk_destroySurface(
+        nh_vk_Surface *Surface_p, bool destroySurfaceKHR
     );
 
-    NH_GFX_RESULT nh_vk_resize(
-        nh_vk_Surface *Surface_p, nh_wsi_Window *Window_p
+    NH_API_RESULT nh_vk_resize(
+        nh_vk_Surface *Surface_p, nh_api_Window *Window_p
     );
 
 /** @} */

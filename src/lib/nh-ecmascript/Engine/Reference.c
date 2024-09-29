@@ -29,10 +29,10 @@ nh_ecmascript_Reference nh_ecmascript_initReference()
 NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_Reference Reference;
-    Reference.Base.unresolvable = NH_TRUE;
+    Reference.Base.unresolvable = true;
     Reference.ReferencedName = nh_ecmascript_wrapUndefined();
-    Reference.strict = NH_FALSE;
-    Reference.ThisValue.empty = NH_TRUE;
+    Reference.strict = false;
+    Reference.ThisValue.empty = true;
 
 NH_ECMASCRIPT_END(Reference)
 }
@@ -45,21 +45,21 @@ NH_ECMASCRIPT_BEGIN()
     nh_ecmascript_Reference Reference;
 
     if (Environment_p == NULL) {
-        Reference.Base.unresolvable = NH_TRUE;
+        Reference.Base.unresolvable = true;
         Reference.ReferencedName = nh_ecmascript_wrapString(Name_p);
         Reference.strict = strict;
-        Reference.ThisValue.empty = NH_TRUE;
+        Reference.ThisValue.empty = true;
         NH_ECMASCRIPT_END(Reference)
     }
 
-    NH_BOOL exists = nh_ecmascript_hasBinding(Environment_p, Name_p);
+    bool exists = nh_ecmascript_hasBinding(Environment_p, Name_p);
 
     if (exists) {
-        Reference.Base.unresolvable = NH_FALSE;
+        Reference.Base.unresolvable = false;
         Reference.Base.Environment_p = Environment_p;
         Reference.ReferencedName = nh_ecmascript_wrapString(Name_p);
         Reference.strict = strict;
-        Reference.ThisValue.empty = NH_TRUE;
+        Reference.ThisValue.empty = true;
         NH_ECMASCRIPT_END(Reference)
     }
 
@@ -73,10 +73,10 @@ NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isPropertyReference(
 {
 NH_ECMASCRIPT_BEGIN()
 
-    if (Reference.Base.unresolvable) {NH_ECMASCRIPT_END(NH_FALSE)}
-    if (Reference.Base.Environment_p != NULL) {NH_ECMASCRIPT_END(NH_FALSE)}
+    if (Reference.Base.unresolvable) {NH_ECMASCRIPT_END(false)}
+    if (Reference.Base.Environment_p != NULL) {NH_ECMASCRIPT_END(false)}
 
-NH_ECMASCRIPT_END(NH_TRUE)
+NH_ECMASCRIPT_END(true)
 }
 
 nh_ecmascript_Completion nh_ecmascript_getValue(
@@ -105,7 +105,7 @@ NH_ECMASCRIPT_BEGIN()
     if (Reference.Base.unresolvable) {
         if (Reference.strict) {NH_ECMASCRIPT_END(nh_ecmascript_throwReferenceError())}
         nh_ecmascript_Object *GlobalObject_p = nh_ecmascript_getGlobalObject();
-        NH_ECMASCRIPT_END(nh_ecmascript_abstractSet(GlobalObject_p, Reference.ReferencedName, Value, NH_FALSE))
+        NH_ECMASCRIPT_END(nh_ecmascript_abstractSet(GlobalObject_p, Reference.ReferencedName, Value, false))
     }
     else if (nh_ecmascript_isPropertyReference(Reference)) {
     }

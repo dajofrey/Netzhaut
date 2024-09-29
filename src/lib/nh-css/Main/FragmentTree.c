@@ -25,7 +25,7 @@
 // FRAGMENT ========================================================================================
 
 nh_css_Fragment nh_css_initFragment(
-    nh_css_BoxTreeNode *Node_p, nh_css_Fragment *Parent_p, NH_CSS_FRAGMENT type, nh_css_CanvasType *Type_p)
+    nh_css_BoxTreeNode *Node_p, nh_css_Fragment *Parent_p, NH_CSS_FRAGMENT type, nh_api_CanvasType *Type_p)
 {
 NH_CSS_BEGIN()
 
@@ -52,7 +52,7 @@ NH_CSS_END(Fragment)
 }
 
 static nh_css_Fragment *nh_css_insertFragment(
-    nh_css_BoxTreeNode *Node_p, nh_css_Fragment *Parent_p, NH_CSS_FRAGMENT type, nh_css_CanvasType *Type_p)
+    nh_css_BoxTreeNode *Node_p, nh_css_Fragment *Parent_p, NH_CSS_FRAGMENT type, nh_api_CanvasType *Type_p)
 {
 NH_CSS_BEGIN()
 
@@ -67,7 +67,7 @@ NH_CSS_END(Fragment_p)
 }
 
 static nh_css_Fragment *nh_css_createFragment(
-    nh_css_BoxTreeNode *Node_p, nh_css_Fragment *Parent_p, nh_css_CanvasType *Type_p)
+    nh_css_BoxTreeNode *Node_p, nh_css_Fragment *Parent_p, nh_api_CanvasType *Type_p)
 {
 NH_CSS_BEGIN()
 
@@ -94,7 +94,7 @@ NH_CSS_END(Fragment_p)
 // BOX TREE ========================================================================================
 
 nh_css_FragmentTree nh_css_createFragmentTree(
-    nh_css_BoxTreeNode *Node_p, nh_css_CanvasType *Type_p)
+    nh_css_BoxTreeNode *Node_p, nh_api_CanvasType *Type_p)
 {
 NH_CSS_BEGIN()
 

@@ -26,8 +26,8 @@
 
 // MARGIN COLLAPSE =================================================================================
 
-NH_CSS_RESULT nh_css_collapse(
-    nh_css_Fragment *Fragment_p, NH_PIXEL *advance_p)
+NH_API_RESULT nh_css_collapse(
+    nh_css_Fragment *Fragment_p, int *advance_p)
 {
 NH_CSS_BEGIN()
 
@@ -58,13 +58,13 @@ NH_CSS_BEGIN()
         Previous_p->Box.Values.marginBottom = 0;
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // BLOCK ===========================================================================================
 
-NH_CSS_RESULT nh_css_arrangeBlockFormattingContext(
-    nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p, NH_PIXEL *advance_p)
+NH_API_RESULT nh_css_arrangeBlockFormattingContext(
+    nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p, int *advance_p)
 {
 NH_CSS_BEGIN()
 
@@ -78,7 +78,7 @@ NH_CSS_BEGIN()
     }
 
     if (Fragment_p->Box.Values.Width.type == NH_CSS_BOX_SIZING_PERCENTAGE) {
-        Fragment_p->Block.Size.width = (NH_PIXEL)((float)Fragment_p->Block.Size.width * (Fragment_p->Box.Values.Width.percentage/100.0f));
+        Fragment_p->Block.Size.width = (int)((float)Fragment_p->Block.Size.width * (Fragment_p->Box.Values.Width.percentage/100.0f));
     }
     else if (Fragment_p->Box.Values.Width.type == NH_CSS_BOX_SIZING_LENGTH) {
         Fragment_p->Block.Size.width = Fragment_p->Box.Values.Width.value;
@@ -86,7 +86,7 @@ NH_CSS_BEGIN()
 
     if (Fragment_p->Box.Values._float != NH_CSS_FLOAT_NONE) {
         nh_css_arrangeFloat(Canvas_p, Fragment_p);
-        Canvas_p->_float = NH_TRUE;
+        Canvas_p->_float = true;
     }
 
     for (int i = 0, advance = 0; i < Fragment_p->Children.size; ++i) 
@@ -128,8 +128,8 @@ NH_CSS_BEGIN()
         i += newFragments;
     }
 
-    Canvas_p->_float = NH_FALSE;
+    Canvas_p->_float = false;
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

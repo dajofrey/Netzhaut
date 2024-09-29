@@ -30,12 +30,12 @@ typedef enum NH_CSS_INDEXMAP_E {
 
 nh_css_IndexMap NH_CSS_INDEXMAP;
 static unsigned int *indices_pp[NH_CSS_INDEXMAP_COUNT] = {NULL};
-static NH_BOOL allocated = NH_FALSE;
+static bool allocated = false;
 
 // CREATE/DESTROY ==================================================================================
 
-static NH_CSS_RESULT nh_css_getNames(
-    NH_CSS_INDEXMAP_E type, NH_BYTE ***array_ppp, int *count_p)
+static NH_API_RESULT nh_css_getNames(
+    NH_CSS_INDEXMAP_E type, char ***array_ppp, int *count_p)
 {
 NH_CSS_BEGIN()
 
@@ -43,31 +43,31 @@ NH_CSS_BEGIN()
     {
         case NH_CSS_INDEXMAP_COLORS :
         {
-            *array_ppp = (NH_BYTE**)NH_CSS_COLORS_PP; 
+            *array_ppp = (char**)NH_CSS_COLORS_PP; 
             *count_p = NH_CSS_COLORS_PP_COUNT; 
             break;
         }
         case NH_CSS_INDEXMAP_PROPERTIES :
         {
-            *array_ppp = (NH_BYTE**)NH_CSS_PROPERTY_NAMES_PP; 
+            *array_ppp = (char**)NH_CSS_PROPERTY_NAMES_PP; 
             *count_p = NH_CSS_PROPERTY_COUNT; 
             break;
         }
 
-        default : NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        default : NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-    if (*array_ppp == NULL) {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)}
+    if (*array_ppp == NULL) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_createSingleIndexMap(
+static NH_API_RESULT nh_css_createSingleIndexMap(
     NH_CSS_INDEXMAP_E type, nh_HashMap *map_p)
 {
 NH_CSS_BEGIN()
 
-    int count = 0; NH_BYTE **names_pp = NULL;
+    int count = 0; char **names_pp = NULL;
     NH_CSS_CHECK(nh_css_getNames(type, &names_pp, &count))
 
     *map_p = nh_core_createHashMap();
@@ -76,21 +76,21 @@ NH_CSS_BEGIN()
         nh_core_addToHashMap(map_p, names_pp[i], &indices_pp[type][i]);
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CSS_RESULT nh_css_createIndexMap()
+NH_API_RESULT nh_css_createIndexMap()
 {
 NH_CSS_BEGIN()
 
-    if (allocated) {NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)}
+    if (allocated) {NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     for (int type = 0; type < NH_CSS_INDEXMAP_COUNT; ++type)  
     {
         int count = 0;
-        const NH_BYTE **names_pp = NULL;
-        if (nh_css_getNames(type, (NH_BYTE***)&names_pp, &count) != NH_CSS_SUCCESS) {
-            NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        const char **names_pp = NULL;
+        if (nh_css_getNames(type, (char***)&names_pp, &count) != NH_API_SUCCESS) {
+            NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
 
         indices_pp[type] = nh_core_allocate(sizeof(unsigned int) * count);
@@ -104,9 +104,9 @@ NH_CSS_BEGIN()
     NH_CSS_CHECK(nh_css_createSingleIndexMap(NH_CSS_INDEXMAP_COLORS, &NH_CSS_INDEXMAP.Colors))
     NH_CSS_CHECK(nh_css_createSingleIndexMap(NH_CSS_INDEXMAP_PROPERTIES, &NH_CSS_INDEXMAP.Properties))
 
-    allocated = NH_TRUE;
+    allocated = true;
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_css_freeIndexMap()
@@ -124,7 +124,7 @@ NH_CSS_BEGIN()
     nh_core_freeHashMap(NH_CSS_INDEXMAP.Colors);
     nh_core_freeHashMap(NH_CSS_INDEXMAP.Properties);
 
-    allocated = NH_FALSE;
+    allocated = false;
 
 NH_CSS_SILENT_END()
 }

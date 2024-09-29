@@ -37,7 +37,7 @@
  *  @{
  */
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_createIndexMap(
+    NH_API_RESULT nh_ecmascript_createIndexMap(
     );
 
     void nh_ecmascript_freeIndexMap(

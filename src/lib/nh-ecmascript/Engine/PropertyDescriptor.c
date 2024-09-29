@@ -49,13 +49,13 @@ NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isGenericDescriptor(
 NH_ECMASCRIPT_BEGIN()
 
     if (Descriptor.type == -1) {
-        NH_ECMASCRIPT_END(NH_FALSE)
+        NH_ECMASCRIPT_END(false)
     }
 
     if (!nh_ecmascript_isAccessorDescriptor(Descriptor) && !nh_ecmascript_isDataDescriptor(Descriptor)) {
-        NH_ECMASCRIPT_END(NH_TRUE)
+        NH_ECMASCRIPT_END(true)
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 

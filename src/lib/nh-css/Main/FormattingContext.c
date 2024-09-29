@@ -28,12 +28,12 @@
 
 // NAMES ===========================================================================================
 
-const NH_BYTE *nh_css_inPrimaryFormattingContextName(
+const char *nh_css_inPrimaryFormattingContextName(
     NH_CSS_FORMATTING_CONTEXT type)
 {
 NH_CSS_BEGIN()
 
-    static const NH_BYTE *formattingContextNames_pp[] = 
+    static const char *formattingContextNames_pp[] = 
     {
         "Block Formatting Context",
         "Inline Formatting Context",
@@ -44,7 +44,7 @@ NH_CSS_END(formattingContextNames_pp[type])
 
 // FORMATTING CONTEXT ==============================================================================
 
-NH_CSS_RESULT nh_css_createFormattingContext(
+NH_API_RESULT nh_css_createFormattingContext(
     nh_css_BoxTreeNode *Node_p, NH_CSS_FORMATTING_CONTEXT type)
 {
 NH_CSS_BEGIN()
@@ -59,24 +59,24 @@ NH_CSS_BEGIN()
         NH_CSS_CHECK_MEM(Node_p->FormattingContexts_pp[1])
         Node_p->FormattingContexts_pp[1]->type = type;
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-NH_BOOL nh_css_startsFormattingContext(
+bool nh_css_startsFormattingContext(
     nh_css_BoxTreeNode *Node_p, NH_CSS_FORMATTING_CONTEXT type)
 {
 NH_CSS_BEGIN()
     
     if (Node_p->FormattingContexts_pp[0] && Node_p->FormattingContexts_pp[0]->type == type) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
     else if (Node_p->FormattingContexts_pp[1] && Node_p->FormattingContexts_pp[1]->type == type) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
 nh_css_BoxTreeNode *nh_css_inFormattingContext(

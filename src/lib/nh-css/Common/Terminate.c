@@ -18,12 +18,12 @@
 
 // DEBUG ===========================================================================================
 
-NH_CSS_RESULT nh_css_terminate()
+NH_API_RESULT nh_css_terminate()
 {
 NH_CSS_BEGIN()
 
     nh_css_freeIndexMap();
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

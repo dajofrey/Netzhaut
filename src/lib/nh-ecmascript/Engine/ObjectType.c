@@ -32,12 +32,12 @@ NH_ECMASCRIPT_BEGIN()
     Obj_p->InternalSlots = nh_ecmascript_initInternalSlots(lookup_p, lookupLength);
     Obj_p->InternalMethods_p = &NH_ECMASCRIPT_ORDINARY_OBJECT_INTERNAL_METHODS; 
 
-    nh_ecmascript_setInternalSlot(&Obj_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*) NH_TRUE);
+    nh_ecmascript_setInternalSlot(&Obj_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*) true);
 
 NH_ECMASCRIPT_END(Obj_p)
 }
 
-static NH_ECMASCRIPT_RESULT nh_ecmascript_allocatePropertyKeyAndValue(
+static NH_API_RESULT nh_ecmascript_allocatePropertyKeyAndValue(
     nh_ecmascript_Any *PropertyKey_p, nh_ecmascript_PropertyDescriptor *PropertyDescriptor_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -54,7 +54,7 @@ NH_ECMASCRIPT_BEGIN()
             break;
 
         default :
-            NH_ECMASCRIPT_END(NH_ECMASCRIPT_ERROR_BAD_STATE)
+            NH_ECMASCRIPT_END(NH_API_ERROR_BAD_STATE)
     }
 
     if (PropertyDescriptor_p->type == NH_ECMASCRIPT_PROPERTY_DATA)
@@ -74,14 +74,14 @@ NH_ECMASCRIPT_BEGIN()
                 break;
 
             default :
-                NH_ECMASCRIPT_END(NH_ECMASCRIPT_ERROR_BAD_STATE)
+                NH_ECMASCRIPT_END(NH_API_ERROR_BAD_STATE)
         }
     }
     else {
-        NH_ECMASCRIPT_END(NH_ECMASCRIPT_ERROR_BAD_STATE)
+        NH_ECMASCRIPT_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_ECMASCRIPT_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_END(NH_API_SUCCESS)
 }
 
 nh_ecmascript_Completion nh_ecmascript_abstractDefinePropertyOrThrow(
@@ -95,30 +95,30 @@ NH_ECMASCRIPT_BEGIN()
         Object_p, PropertyKey, PropertyDescriptor
     );
 
-    if (success == NH_FALSE) {NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())}
+    if (success == false) {NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())}
 
 NH_ECMASCRIPT_END(nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(success)))
 }
 
-NH_BOOL nh_ecmascript_abstractHasProperty(
+bool nh_ecmascript_abstractHasProperty(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Any PropertyKey)
 {
 NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(Object_p->InternalMethods_p->hasProperty_f(Object_p, PropertyKey))
 }
 
-NH_BOOL nh_ecmascript_abstractHasOwnProperty(
+bool nh_ecmascript_abstractHasOwnProperty(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Any PropertyKey)
 {
 NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_PropertyDescriptor Descriptor = Object_p->InternalMethods_p->getOwnProperty_f(Object_p, PropertyKey);
-    if (Descriptor.type == -1) {NH_ECMASCRIPT_END(NH_FALSE)}
+    if (Descriptor.type == -1) {NH_ECMASCRIPT_END(false)}
 
-NH_ECMASCRIPT_END(NH_TRUE)
+NH_ECMASCRIPT_END(true)
 }
 
-NH_BOOL nh_ecmascript_abstractIsExtensible(
+bool nh_ecmascript_abstractIsExtensible(
     nh_ecmascript_Object *Object_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -126,11 +126,11 @@ NH_ECMASCRIPT_END(Object_p->InternalMethods_p->isExtensible_f(Object_p))
 }
 
 nh_ecmascript_Completion nh_ecmascript_abstractSet(
-    nh_ecmascript_Object *Object_p, nh_ecmascript_Any Key, nh_ecmascript_Any Value, NH_BOOL _throw)
+    nh_ecmascript_Object *Object_p, nh_ecmascript_Any Key, nh_ecmascript_Any Value, bool _throw)
 {
 NH_ECMASCRIPT_BEGIN()
 
-    NH_BOOL success = Object_p->InternalMethods_p->set_f(Object_p, Key, Value, nh_ecmascript_wrapObject(Object_p));
+    bool success = Object_p->InternalMethods_p->set_f(Object_p, Key, Value, nh_ecmascript_wrapObject(Object_p));
     if (!success && _throw) {NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())}
 
 NH_ECMASCRIPT_END(nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(success)))
@@ -143,10 +143,10 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_PropertyDescriptor Descriptor;
     Descriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
-    Descriptor.enumerable = NH_TRUE;
-    Descriptor.configurable = NH_TRUE;
+    Descriptor.enumerable = true;
+    Descriptor.configurable = true;
     Descriptor.Fields.Data.Value = Value;
-    Descriptor.Fields.Data.writable = NH_TRUE; 
+    Descriptor.Fields.Data.writable = true; 
 
 NH_ECMASCRIPT_END(Object_p->InternalMethods_p->defineOwnProperty_f(Object_p, PropertyKey, Descriptor))
 }

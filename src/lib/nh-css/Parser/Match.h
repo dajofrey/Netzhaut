@@ -19,7 +19,7 @@
  *  @{
  */
 
-    NH_BOOL nh_css_matchSelectors(
+    bool nh_css_matchSelectors(
         nh_css_SelectorParseNode *Selectors_p, nh_dom_Element *Element_p
     );
 

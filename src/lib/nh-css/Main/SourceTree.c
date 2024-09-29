@@ -62,7 +62,7 @@ NH_CSS_BEGIN()
 NH_CSS_END(nh_encoding_initUTF32(16))
 }
 
-static NH_CSS_RESULT nh_css_handleListItem(
+static NH_API_RESULT nh_css_handleListItem(
     nh_css_LogContext LogContext, nh_webidl_Object *Object_p, nh_css_StyleSheetListObject *StyleSheetList_p, 
     nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
 {
@@ -74,38 +74,38 @@ NH_CSS_BEGIN()
     if (ListStyleType_p->Common.type == NH_CSS_VALUE_KEYWORD) 
     {
         nh_encoding_UTF32String MarkerString = nh_css_getMarkerString(StyleSheetList_p, ListStyleType_p);
-        if (MarkerString.length <= 0) {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+        if (MarkerString.length <= 0) {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
         nh_css_Source *Marker_p = nh_core_allocate(sizeof(nh_css_Source));
         NH_CSS_CHECK_NULL(Marker_p)
 
         Marker_p->type = NH_CSS_SOURCE_TEXT_NODE;
         Marker_p->pseudo = NH_CSS_PSEUDO_ELEMENT_MARKER;
-        Marker_p->mark = NH_FALSE;
+        Marker_p->mark = false;
         Marker_p->Parent_p = Parent_p;
         Marker_p->ComputedValues_p = NULL;
         Marker_p->TextNode.String = MarkerString;
 
         nh_core_appendToList(&Parent_p->Element.Children, Marker_p);
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // SOURCE NODE =====================================================================================
 
-static NH_BOOL nh_css_displayNode(
+static bool nh_css_displayNode(
     nh_dom_Node *Node_p)
 {
 NH_CSS_BEGIN()
 
     nh_List *Values_p = nh_dom_getComputedPropertyValues(Node_p);
     if (Values_p->size && !strcmp(((nh_css_Value*)Values_p->pp[NH_CSS_PROPERTY_DISPLAY])->String.p, "none")) {
-        NH_CSS_END(NH_FALSE)
+        NH_CSS_END(false)
     }
 
-NH_CSS_END(NH_TRUE)
+NH_CSS_END(true)
 }
 
 static nh_css_LogContext nh_css_updateLogContext(
@@ -127,9 +127,9 @@ NH_CSS_BEGIN()
 NH_CSS_END(Context)
 }
 
-static NH_CSS_RESULT nh_css_createSourceNode(
+static NH_API_RESULT nh_css_createSourceNode(
     nh_css_LogContext LogContext, nh_webidl_Object *Object_p, nh_css_StyleSheetListObject *StyleSheetList_p, 
-    NH_BOOL updateAll, nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
+    bool updateAll, nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
 {
 NH_CSS_BEGIN()
 
@@ -137,7 +137,7 @@ NH_CSS_BEGIN()
     nh_dom_Node *Node_p = nh_dom_getNode(Object_p);
     NH_CSS_CHECK_NULL(Node_p)
 
-    NH_BOOL modified = NH_FALSE;
+    bool modified = false;
     if (Element_p && (updateAll || nh_dom_getUpdateAnnotationsFlag(Node_p)))
     {
         LogContext = nh_css_updateLogContext(LogContext, Element_p, depth);
@@ -148,19 +148,19 @@ NH_CSS_BEGIN()
         NH_CSS_CHECK(nh_css_setSpecifiedValues(&LogContext, Element_p, StyleSheetList_p, nh_core_initList(0)))
         NH_CSS_CHECK(nh_css_computeSpecifiedValues(&LogContext, Node_p))
 
-        nh_dom_setUpdateAnnotationsFlag(Node_p, NH_FALSE);
+        nh_dom_setUpdateAnnotationsFlag(Node_p, false);
     }
 
     if (!strcmp(Object_p->Interface_p->name_p, "Text")) 
     {
-        NH_BOOL emptyText = NH_TRUE;
+        bool emptyText = true;
 
         nh_webidl_DOMString *String_p = nh_dom_getTextString((nh_dom_Text*)Object_p);
         NH_CSS_CHECK_NULL(String_p)
 
         nh_encoding_UTF32String Decoded = nh_encoding_decodeUTF8(String_p->p, String_p->length, NULL);
         for (int i = 0; i < Decoded.length; ++i) {
-            if (!nh_encoding_isNonCharacter(Decoded.p[i]) && !nh_encoding_isControl(Decoded.p[i]) && Decoded.p[i] != ' ') {emptyText = NH_FALSE; break;}
+            if (!nh_encoding_isNonCharacter(Decoded.p[i]) && !nh_encoding_isControl(Decoded.p[i]) && Decoded.p[i] != ' ') {emptyText = false; break;}
         }
 
         if (!emptyText) {
@@ -168,7 +168,7 @@ NH_CSS_BEGIN()
             NH_CSS_CHECK_MEM(*Source_pp)
             (*Source_pp)->type = NH_CSS_SOURCE_TEXT_NODE;
             (*Source_pp)->pseudo = NH_CSS_PSEUDO_ELEMENT_UNDEFINED;
-            (*Source_pp)->mark = NH_FALSE;
+            (*Source_pp)->mark = false;
             (*Source_pp)->Parent_p = Parent_p;
             (*Source_pp)->ComputedValues_p = nh_dom_getComputedPropertyValues(Node_p);
             (*Source_pp)->TextNode.String = Decoded;
@@ -181,7 +181,7 @@ NH_CSS_BEGIN()
 
         (*Source_pp)->type = NH_CSS_SOURCE_ELEMENT;
         (*Source_pp)->pseudo = NH_CSS_PSEUDO_ELEMENT_UNDEFINED;
-        (*Source_pp)->mark = NH_FALSE;
+        (*Source_pp)->mark = false;
         (*Source_pp)->Parent_p = Parent_p;
         (*Source_pp)->ComputedValues_p = nh_dom_getComputedPropertyValues(Node_p);
         (*Source_pp)->Element.Children = nh_core_initList(nh_dom_getNodeChildren(Node_p)->size);
@@ -199,12 +199,12 @@ NH_CSS_BEGIN()
         nh_css_Source *Source_p = NULL;           
         NH_CSS_CHECK(nh_css_createSourceNode(LogContext, Children_p->pp[i], StyleSheetList_p, updateAll, &Source_p, *Source_pp, depth + 2))
         if (Source_p) {
-            if (!Source_pp || !*Source_pp) {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)}
+            if (!Source_pp || !*Source_pp) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
             nh_core_appendToList(&(*Source_pp)->Element.Children, Source_p);
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // SOURCE TREE =====================================================================================
@@ -224,7 +224,7 @@ NH_CSS_END(Context)
 }
 
 nh_css_SourceTree nh_css_createSourceTree(
-    nh_webidl_Object *HTMLElement_p, nh_css_StyleSheetListObject *StyleSheetList_p, NH_BOOL updateAll,
+    nh_webidl_Object *HTMLElement_p, nh_css_StyleSheetListObject *StyleSheetList_p, bool updateAll,
     void *canvas_p)
 {
 NH_CSS_BEGIN()
@@ -246,7 +246,7 @@ NH_CSS_BEGIN()
         for (int i = 0; i < Source_p->Element.Children.size; ++i) {
             nh_css_freeSource(Source_p->Element.Children.pp[i]);
         }
-        nh_core_freeList(&Source_p->Element.Children, NH_FALSE);
+        nh_core_freeList(&Source_p->Element.Children, false);
     }
 
     nh_core_free(Source_p);

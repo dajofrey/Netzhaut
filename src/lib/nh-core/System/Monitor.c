@@ -34,10 +34,10 @@
 
 typedef struct nh_core_MonitorNode {
     nh_core_LoggerNode *LoggerNode_p;
-    NH_BOOL isOpen;
-    NH_BOOL isCurrent;
-    NH_BOOL isSelected;
-    NH_BOOL hasFocus;
+    bool isOpen;
+    bool isCurrent;
+    bool isSelected;
+    bool hasFocus;
     long focusedRow;
     long offset;
     int peak;
@@ -53,7 +53,7 @@ typedef struct nh_core_MonitorView {
 
 typedef struct nh_core_Monitor {
     nh_core_MonitorView View;
-    NH_BOOL showCategories;
+    bool showCategories;
     int listingWidth;
     nh_core_MonitorNode Root;
     nh_SystemTime LastUpdate;
@@ -62,7 +62,7 @@ typedef struct nh_core_Monitor {
 
 // UPDATE LOGGER ===================================================================================
 
-static NH_CORE_RESULT nh_core_updateMonitorNode(
+static NH_API_RESULT nh_core_updateMonitorNode(
     nh_core_LoggerNode *LoggerNode_p, nh_core_MonitorNode *MonitorNode_p)
 {
 NH_CORE_BEGIN()
@@ -79,10 +79,10 @@ NH_CORE_BEGIN()
 
             NextMonitorNode_p->Children     = nh_core_initList(8);
             NextMonitorNode_p->LoggerNode_p = NextLoggerNode_p;
-            NextMonitorNode_p->isOpen       = NH_FALSE;
-            NextMonitorNode_p->isCurrent    = NH_FALSE;
-            NextMonitorNode_p->isSelected   = NH_FALSE;
-            NextMonitorNode_p->hasFocus     = NH_FALSE;
+            NextMonitorNode_p->isOpen       = false;
+            NextMonitorNode_p->isCurrent    = false;
+            NextMonitorNode_p->isSelected   = false;
+            NextMonitorNode_p->hasFocus     = false;
             NextMonitorNode_p->focusedRow   = 0;
             NextMonitorNode_p->offset       = 0;
             NextMonitorNode_p->peak         = 0;
@@ -94,7 +94,7 @@ NH_CORE_BEGIN()
         NH_CORE_CHECK(nh_core_updateMonitorNode(NextLoggerNode_p, NextMonitorNode_p))
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static void nh_core_getMonitorNodes(
@@ -144,12 +144,12 @@ NH_CORE_BEGIN()
         }
     }
 
-    nh_core_freeList(&Nodes, NH_FALSE);
+    nh_core_freeList(&Nodes, false);
 
 NH_CORE_END(maxWidth + 2)
 }
 
-static NH_CORE_RESULT nh_core_updateMonitor(
+static NH_API_RESULT nh_core_updateMonitor(
     ttyr_tty_Program *Program_p)
 {
 NH_CORE_BEGIN()
@@ -159,24 +159,24 @@ NH_CORE_BEGIN()
     nh_SystemTime Now = nh_core_getSystemTime();
     if (nh_core_getSystemTimeDiffInSeconds(Monitor_p->LastUpdate, Now) < Monitor_p->updateIntervalInSeconds) {
         // Skip update if update-interval not met.
-        NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+        NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
-    NH_BOOL init = Monitor_p->Root.Children.size == 0;
+    bool init = Monitor_p->Root.Children.size == 0;
 
     nh_core_updateMonitorNode(&NH_LOGGER.Root, &Monitor_p->Root);
 
     if (init && Monitor_p->Root.Children.size > 0) {
-        ((nh_core_MonitorNode*)Monitor_p->Root.Children.pp[0])->isCurrent = NH_TRUE;
+        ((nh_core_MonitorNode*)Monitor_p->Root.Children.pp[0])->isCurrent = true;
     }
 
     Monitor_p->listingWidth = nh_core_getCategoryListingWidth(Monitor_p);
     Monitor_p->LastUpdate = Now;
 
     // force screen refresh
-    Program_p->refresh = NH_TRUE;
+    Program_p->refresh = true;
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INPUT ===========================================================================================
@@ -196,7 +196,7 @@ NH_CORE_BEGIN()
         }
     }
 
-    nh_core_freeList(&Nodes, NH_FALSE);
+    nh_core_freeList(&Nodes, false);
 
 NH_CORE_END(SelectedNodes)
 }
@@ -208,9 +208,9 @@ NH_CORE_BEGIN()
 
     nh_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
     for (int i = 0; i < SelectedNodes.size; ++i) {
-        ((nh_core_MonitorNode*)SelectedNodes.pp[i])->hasFocus = NH_FALSE;
+        ((nh_core_MonitorNode*)SelectedNodes.pp[i])->hasFocus = false;
     }
-    nh_core_freeList(&SelectedNodes, NH_FALSE);
+    nh_core_freeList(&SelectedNodes, false);
 
 NH_CORE_SILENT_END()
 }
@@ -227,7 +227,7 @@ NH_CORE_BEGIN()
     for (focus = 0; focus < SelectedNodes.size && !((nh_core_MonitorNode*)SelectedNodes.pp[focus])->hasFocus; ++focus);
     nh_core_MonitorNode *Node_p = SelectedNodes.pp[focus];
 
-    nh_core_freeList(&SelectedNodes, NH_FALSE);
+    nh_core_freeList(&SelectedNodes, false);
 
 NH_CORE_END(Node_p)
 }
@@ -270,8 +270,8 @@ NH_CORE_BEGIN()
         case 'w' :
             if (index > 0) 
             {
-                Current_p->isCurrent = NH_FALSE;
-                ((nh_core_MonitorNode*)Nodes.pp[index - 1])->isCurrent = NH_TRUE;
+                Current_p->isCurrent = false;
+                ((nh_core_MonitorNode*)Nodes.pp[index - 1])->isCurrent = true;
 
                 if (Monitor_p->View.screenCursor == 0 && Monitor_p->View.rowOffset > 0) {Monitor_p->View.rowOffset--;}
                 else if (Monitor_p->View.screenCursor > 0) {Monitor_p->View.screenCursor--;}
@@ -280,8 +280,8 @@ NH_CORE_BEGIN()
         case 's' :
             if (Nodes.size > index + 1) 
             {
-                Current_p->isCurrent = NH_FALSE;
-                ((nh_core_MonitorNode*)Nodes.pp[index + 1])->isCurrent = NH_TRUE;
+                Current_p->isCurrent = false;
+                ((nh_core_MonitorNode*)Nodes.pp[index + 1])->isCurrent = true;
 
                 if (Monitor_p->View.screenCursor < Monitor_p->View.height - 1) {Monitor_p->View.screenCursor++;}
                 else {Monitor_p->View.rowOffset++;}
@@ -289,7 +289,7 @@ NH_CORE_BEGIN()
             break;
     }
 
-    nh_core_freeList(&Nodes, NH_FALSE);
+    nh_core_freeList(&Nodes, false);
 
 NH_CORE_SILENT_END()
 }
@@ -306,19 +306,19 @@ NH_CORE_BEGIN()
         int index;
         for (index = 0; index < SelectedNodes.size && SelectedNodes.pp[index] != Selected_p; ++index);
 
-        if (index == 0) {((nh_core_MonitorNode*)SelectedNodes.pp[SelectedNodes.size - 1])->hasFocus = NH_TRUE;}
+        if (index == 0) {((nh_core_MonitorNode*)SelectedNodes.pp[SelectedNodes.size - 1])->hasFocus = true;}
         else if (index == SelectedNodes.size - 1) {
-            ((nh_core_MonitorNode*)SelectedNodes.pp[0])->hasFocus = NH_TRUE;
+            ((nh_core_MonitorNode*)SelectedNodes.pp[0])->hasFocus = true;
         }
         else {
-            ((nh_core_MonitorNode*)SelectedNodes.pp[index - 1])->hasFocus = NH_TRUE;
+            ((nh_core_MonitorNode*)SelectedNodes.pp[index - 1])->hasFocus = true;
         }
     }
 
-    Selected_p->isSelected = NH_FALSE;
-    Selected_p->hasFocus = NH_FALSE;
+    Selected_p->isSelected = false;
+    Selected_p->hasFocus = false;
 
-    nh_core_freeList(&SelectedNodes, NH_FALSE);
+    nh_core_freeList(&SelectedNodes, false);
 
 NH_CORE_SILENT_END()
 }
@@ -338,39 +338,39 @@ NH_CORE_BEGIN()
     {
         case 'f' :
             if (focus > 0) {
-                ((nh_core_MonitorNode*)SelectedNodes.pp[focus])->hasFocus = NH_FALSE;
-                ((nh_core_MonitorNode*)SelectedNodes.pp[focus - 1])->hasFocus = NH_TRUE;
+                ((nh_core_MonitorNode*)SelectedNodes.pp[focus])->hasFocus = false;
+                ((nh_core_MonitorNode*)SelectedNodes.pp[focus - 1])->hasFocus = true;
             }
             break;
         case 'g' :
             if (focus < SelectedNodes.size - 1) {
-                ((nh_core_MonitorNode*)SelectedNodes.pp[focus])->hasFocus = NH_FALSE;
-                ((nh_core_MonitorNode*)SelectedNodes.pp[focus + 1])->hasFocus = NH_TRUE;
+                ((nh_core_MonitorNode*)SelectedNodes.pp[focus])->hasFocus = false;
+                ((nh_core_MonitorNode*)SelectedNodes.pp[focus + 1])->hasFocus = true;
             }
             break;
     }
 
-    nh_core_freeList(&SelectedNodes, NH_FALSE);
+    nh_core_freeList(&SelectedNodes, false);
 
 NH_CORE_SILENT_END()
 }
 
-static NH_CORE_RESULT nh_core_handleMonitorInput(
-    ttyr_tty_Program *Program_p, nh_wsi_Event Event)
+static NH_API_RESULT nh_core_handleMonitorInput(
+    ttyr_tty_Program *Program_p, nh_api_WSIEvent Event)
 {
 NH_CORE_BEGIN()
 
-    if (Event.type != NH_WSI_EVENT_KEYBOARD) {
-        NH_CORE_END(NH_CORE_SUCCESS)
+    if (Event.type != NH_API_WSI_EVENT_KEYBOARD) {
+        NH_CORE_END(NH_API_SUCCESS)
     }
 
-    if (Event.Keyboard.trigger != NH_WSI_TRIGGER_PRESS) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
+    if (Event.Keyboard.trigger != NH_API_TRIGGER_PRESS) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     NH_ENCODING_UTF32 c = Event.Keyboard.codepoint;
 
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
     nh_core_MonitorNode *Current_p = nh_core_getCurrentMonitorNode(&Monitor_p->Root);
-    if (Current_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
+    if (Current_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     nh_core_MonitorNode *Node_p = nh_core_getFocusedMonitorNode(Monitor_p);
 
@@ -418,22 +418,22 @@ NH_CORE_BEGIN()
                     if (Sibling_p->isSelected) {
                         nh_core_unselectMonitorNode(Monitor_p, Sibling_p);
                     } 
-                    Sibling_p->isCurrent = NH_FALSE;
+                    Sibling_p->isCurrent = false;
                 }
-                Current_p->Parent_p->isOpen = NH_FALSE;
-                Current_p->Parent_p->isCurrent = NH_TRUE;
+                Current_p->Parent_p->isOpen = false;
+                Current_p->Parent_p->isCurrent = true;
             }
             break;
 
         case 'd' :
-            Current_p->isOpen = NH_TRUE;
+            Current_p->isOpen = true;
             if (Current_p->LoggerNode_p->Messages.size == 0) {
                 Monitor_p->listingWidth = nh_core_getCategoryListingWidth(Monitor_p);
             }
             else {
                 nh_core_resetMonitorFocuses(Monitor_p);
-                Current_p->isSelected = NH_TRUE;
-                Current_p->hasFocus = NH_TRUE;
+                Current_p->isSelected = true;
+                Current_p->hasFocus = true;
             }
             break;
 
@@ -446,9 +446,9 @@ NH_CORE_BEGIN()
 //            break;
     }
  
-    Program_p->refresh = NH_TRUE;
+    Program_p->refresh = true;
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 // DRAW ============================================================================================
@@ -460,7 +460,7 @@ NH_CORE_BEGIN()
 
     ttyr_tty_Glyph Glyph;
     memset(&Glyph, 0, sizeof(ttyr_tty_Glyph));
-    Glyph.Attributes.reverse = NH_FALSE;
+    Glyph.Attributes.reverse = false;
     Glyph.codepoint = codepoint;
  
     (*Glyphs_pp)[0] = Glyph;
@@ -469,7 +469,7 @@ NH_CORE_BEGIN()
 NH_CORE_SILENT_END()
 }
 
-static const NH_BYTE *help_pp[] =
+static const char *help_pp[] =
 {
     "Netzhaut Monitor                             ",
     "",
@@ -484,7 +484,7 @@ static const NH_BYTE *help_pp[] =
     "",
 };
 
-static NH_CORE_RESULT nh_core_drawHelp(
+static NH_API_RESULT nh_core_drawHelp(
     ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
 NH_CORE_BEGIN()
@@ -508,10 +508,10 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_drawSelected(
+static NH_API_RESULT nh_core_drawSelected(
     nh_core_Monitor *Monitor_p, ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
 NH_CORE_BEGIN()
@@ -533,7 +533,7 @@ NH_CORE_BEGIN()
         }
 
         nh_List *Messages_p = &SelectedNode_p->LoggerNode_p->Messages;
-        NH_BYTE *message_p = nh_core_getFromList(Messages_p, row + SelectedNode_p->offset);
+        char *message_p = nh_core_getFromList(Messages_p, row + SelectedNode_p->offset);
 
         if (message_p != NULL) 
         {
@@ -566,12 +566,12 @@ NH_CORE_BEGIN()
 
     if (SelectedNodes.size == 0) {nh_core_drawHelp(Glyphs_pp, row, cols, rows);}
 
-    nh_core_freeList(&SelectedNodes, NH_FALSE);
+    nh_core_freeList(&SelectedNodes, false);
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_drawMonitorRow(
+static NH_API_RESULT nh_core_drawMonitorRow(
     ttyr_tty_Program *Program_p, ttyr_tty_Glyph *Glyphs_p, int width, int height, int row)
 {
 NH_CORE_BEGIN()
@@ -624,9 +624,9 @@ NH_CORE_BEGIN()
     }
     else {NH_CORE_CHECK(nh_core_drawSelected(Monitor_p, &Glyphs_p, row, width, height))}
 
-    nh_core_freeList(&Nodes, NH_FALSE);
+    nh_core_freeList(&Nodes, false);
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INIT/DESTROY ====================================================================================
@@ -641,14 +641,14 @@ NH_CORE_BEGIN()
 
     memset(&Monitor_p->View, 0, sizeof(nh_core_MonitorView));
 
-    Monitor_p->showCategories = NH_TRUE;
+    Monitor_p->showCategories = true;
     Monitor_p->listingWidth   = 0;
     Monitor_p->LastUpdate     = nh_core_getSystemTime();
     Monitor_p->updateIntervalInSeconds = 1.0;
 
     Monitor_p->Root.LoggerNode_p = &NH_LOGGER.Root;
-    Monitor_p->Root.isOpen       = NH_TRUE;
-    Monitor_p->Root.isCurrent    = NH_FALSE;
+    Monitor_p->Root.isOpen       = true;
+    Monitor_p->Root.isCurrent    = false;
     Monitor_p->Root.Children     = nh_core_initList(4);
     Monitor_p->Root.Parent_p     = NULL;
 

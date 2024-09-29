@@ -54,7 +54,7 @@ NH_CSS_END((nh_css_CounterStyleRuleObject*)nh_webidl_getObject(Object_p, "CSS", 
 // MARKER CALCULATION ==============================================================================
 
 static nh_css_Declaration *nh_css_getCounterStyleRuleDeclaration(
-    nh_css_CounterStyleRuleObject *CounterStyleRule_p, NH_BYTE *declaration_p)
+    nh_css_CounterStyleRuleObject *CounterStyleRule_p, char *declaration_p)
 {
 NH_CSS_BEGIN()
 

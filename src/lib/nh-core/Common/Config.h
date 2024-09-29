@@ -30,7 +30,7 @@
  */
 
     typedef struct nh_core_Config {
-        NH_BOOL loaderUnload;
+        bool loaderUnload;
     } nh_core_Config;
 
 /** @} */

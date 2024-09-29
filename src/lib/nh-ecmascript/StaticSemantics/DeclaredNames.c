@@ -40,7 +40,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List StatementNames = nh_ecmascript_getLexicallyDeclaredNames(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Names, &StatementNames);
-                nh_core_freeList(&StatementNames, NH_FALSE);
+                nh_core_freeList(&StatementNames, false);
             }
             NH_ECMASCRIPT_END(Names)
         }
@@ -70,7 +70,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List ModuleNames = nh_ecmascript_getLexicallyDeclaredNames(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Names, &ModuleNames);
-                nh_core_freeList(&ModuleNames, NH_FALSE);
+                nh_core_freeList(&ModuleNames, false);
             }
             NH_ECMASCRIPT_END(Names)
         }
@@ -173,7 +173,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List StatementNames = nh_ecmascript_getTopLevelLexicallyDeclaredNames(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Names, &StatementNames);
-                nh_core_freeList(&StatementNames, NH_FALSE);
+                nh_core_freeList(&StatementNames, false);
             }
             NH_ECMASCRIPT_END(Names)
         }
@@ -234,7 +234,7 @@ NH_ECMASCRIPT_BEGIN()
                 if (Node_p->Children.size == 2) {
                     nh_List StatementNames = nh_ecmascript_getBoundNames(Node_p->Children.pp[1]);
                     nh_core_appendItemsToList(&Names, &StatementNames);
-                    nh_core_freeList(&StatementNames, NH_FALSE);
+                    nh_core_freeList(&StatementNames, false);
                 }
                 NH_ECMASCRIPT_END(Names)
             }
@@ -254,7 +254,7 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < SecondStatementNames.size; ++i) {
 //                    nh_core_appendToList(&FirstStatementNames, SecondStatementNames.pp[i]);
 //                }
-//                nh_core_freeList(&SecondStatementNames, NH_FALSE);
+//                nh_core_freeList(&SecondStatementNames, false);
 //                NH_ECMASCRIPT_END(FirstStatementNames)
 //            }
 //            else if (Node_p->Children.size == 2) {
@@ -275,7 +275,7 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < StatementNames.size; ++i) {
 //                    nh_core_appendToList(&VariableDeclarationListNames, StatementNames.pp[i]);
 //                }
-//                nh_core_freeList(&StatementNames, NH_FALSE);
+//                nh_core_freeList(&StatementNames, false);
 //                NH_ECMASCRIPT_END(VariableDeclarationListNames)
 //            }
 //            else {
@@ -289,7 +289,7 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < StatementNames.size; ++i) {
 //                    nh_core_appendToList(&ForBindingNames, StatementNames.pp[i]);
 //                }
-//                nh_core_freeList(&StatementNames, NH_FALSE);
+//                nh_core_freeList(&StatementNames, false);
 //                NH_ECMASCRIPT_END(ForBindingNames)
 //            }
 //            else {
@@ -316,13 +316,13 @@ NH_ECMASCRIPT_BEGIN()
 //                    for (int i = 0; i < DefaultClauseNames.size; ++i) {
 //                        nh_core_appendToList(&Names, DefaultClauseNames.pp[i]);
 //                    }
-//                    nh_core_freeList(&DefaultClauseNames, NH_FALSE);
+//                    nh_core_freeList(&DefaultClauseNames, false);
 //                    if (Node_p->Children.size > 2) {
 //                        nh_List CaseClausesNames = nh_ecmascript_getVarDeclaredNames(Node_p->Children.pp[1]);
 //                        for (int i = 0; i < CaseClausesNames.size; ++i) {
 //                            nh_core_appendToList(&Names, CaseClausesNames.pp[i]);
 //                        }
-//                        nh_core_freeList(&CaseClausesNames, NH_FALSE);
+//                        nh_core_freeList(&CaseClausesNames, false);
 //                    }
 //                }
 //                else {
@@ -332,7 +332,7 @@ NH_ECMASCRIPT_BEGIN()
 //                        for (int i = 0; i < CaseClausesNames.size; ++i) {
 //                            nh_core_appendToList(&Names, CaseClausesNames.pp[i]);
 //                        }
-//                        nh_core_freeList(&CaseClausesNames, NH_FALSE);
+//                        nh_core_freeList(&CaseClausesNames, false);
 //                    }
 //                }
 //                NH_ECMASCRIPT_END(Names)
@@ -347,7 +347,7 @@ NH_ECMASCRIPT_BEGIN()
 //                    for (int i = 0; i < ClauseNames.size; ++i) {
 //                        nh_core_appendToList(&Names, ClauseNames.pp[i]);
 //                    }
-//                    nh_core_freeList(&ClauseNames, NH_FALSE);
+//                    nh_core_freeList(&ClauseNames, false);
 //                }
 //                NH_ECMASCRIPT_END(Names)
 //            }
@@ -381,7 +381,7 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < CatchOrFinallyNames.size; ++i) {
 //                    nh_core_appendToList(&BlockNames, CatchOrFinallyNames.pp[i]);
 //                }
-//                nh_core_freeList(&CatchOrFinallyNames, NH_FALSE);
+//                nh_core_freeList(&CatchOrFinallyNames, false);
 //                NH_ECMASCRIPT_END(BlockNames)
 //            }
 //            else if (Node_p->Children.size == 3) {
@@ -394,8 +394,8 @@ NH_ECMASCRIPT_BEGIN()
 //                for (int i = 0; i < FinallyNames.size; ++i) {
 //                    nh_core_appendToList(&BlockNames, FinallyNames.pp[i]);
 //                }
-//                nh_core_freeList(&CatchNames, NH_FALSE);
-//                nh_core_freeList(&FinallyNames, NH_FALSE);
+//                nh_core_freeList(&CatchNames, false);
+//                nh_core_freeList(&FinallyNames, false);
 //                NH_ECMASCRIPT_END(BlockNames)
 //            }
 //            break;
@@ -437,7 +437,7 @@ NH_ECMASCRIPT_BEGIN()
                 if (Node_p->Children.size == 2) {
                     nh_List StatementNames = nh_ecmascript_getTopLevelVarDeclaredNames(Node_p->Children.pp[1]);
                     nh_core_appendItemsToList(&Names, &StatementNames);
-                    nh_core_freeList(&StatementNames, NH_FALSE);
+                    nh_core_freeList(&StatementNames, false);
                 }
                 NH_ECMASCRIPT_END(Names)
             }

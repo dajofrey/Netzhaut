@@ -47,20 +47,20 @@
 
 #define NH_WSI_CHECK(checkable)                                             \
 {                                                                           \
-    NH_WSI_RESULT_E checkResult = checkable;                                  \
-    if (checkResult != NH_WSI_SUCCESS) {NH_WSI_DIAGNOSTIC_END(checkResult)} \
+    NH_API_RESULT checkResult = checkable;                                  \
+    if (checkResult != NH_API_SUCCESS) {NH_WSI_DIAGNOSTIC_END(checkResult)} \
 }
 
 #define NH_WSI_CHECK_2(checkReturn, checkable)                   \
 {                                                                \
-    NH_WSI_RESULT_E checkResult = checkable;                       \
-    if (checkResult != NH_WSI_SUCCESS) {NH_WSI_END(checkReturn)} \
+    NH_API_RESULT checkResult = checkable;                       \
+    if (checkResult != NH_API_SUCCESS) {NH_WSI_END(checkReturn)} \
 }
 
 #define NH_WSI_CHECK_NULL(checkable)                                              \
 {                                                                                 \
     void *checkResult_p = checkable;                                              \
-    if (checkResult_p == NULL) {NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_NULL_POINTER)} \
+    if (checkResult_p == NULL) {NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_NULL_POINTER)} \
 }
 
 #define NH_WSI_CHECK_NULL_2(checkReturn, checkable)      \
@@ -72,7 +72,7 @@
 #define NH_WSI_CHECK_MEM(checkable)                                                    \
 {                                                                                      \
     void *checkResult_p = checkable;                                                   \
-    if (checkResult_p == NULL) {NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_MEMORY_ALLOCATION)} \
+    if (checkResult_p == NULL) {NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_MEMORY_ALLOCATION)} \
 }
 
 #define NH_WSI_CHECK_MEM_2(checkReturn, checkable)       \

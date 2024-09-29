@@ -1,5 +1,5 @@
-#ifndef NH_URL_RESULT_H
-#define NH_URL_RESULT_H
+#ifndef NH_API_RESULT_H
+#define NH_API_RESULT_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -13,8 +13,8 @@
 
 /** @{ */
 
-    extern const char *NH_URL_RESULTS_PP[];
-    extern unsigned int NH_URL_RESULTS_PP_COUNT;
+    extern const char *NH_API_RESULTS_PP[];
+    extern unsigned int NH_API_RESULTS_PP_COUNT;
 
 /** @} */
 

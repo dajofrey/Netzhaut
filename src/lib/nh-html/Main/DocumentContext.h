@@ -20,9 +20,9 @@
     typedef struct nh_html_DocumentContext {
         nh_List Documents;
         nh_webidl_Object *Document_p;
-        NH_BOOL scripting;
-        NH_BOOL browsingContext;
-        nh_css_LayoutEngine *LayoutEngine_p;
+        bool scripting;
+        bool browsingContext;
+        nh_api_LayoutEngine *LayoutEngine_p;
     } nh_html_DocumentContext;
 
 /** @} */
@@ -40,11 +40,11 @@
  */
 
     typedef nh_html_DocumentContext *(*nh_html_createDocumentContext_f)(
-        NH_BOOL browsingContext
+        bool browsingContext
     );
 
-    typedef NH_HTML_RESULT (*nh_html_loadBytes_f)(
-        nh_html_DocumentContext *Context_p, NH_BYTE *bytes_p, unsigned long long size
+    typedef NH_API_RESULT (*nh_html_loadBytes_f)(
+        nh_html_DocumentContext *Context_p, char *bytes_p, unsigned long long size
     );
 
 /** @} */
@@ -54,11 +54,11 @@
  */
 
     nh_html_DocumentContext *nh_html_createDocumentContext(
-        NH_BOOL browsingContext
+        bool browsingContext
     );
 
-    NH_HTML_RESULT nh_html_loadBytes(
-        nh_html_DocumentContext *Context_p, NH_BYTE *bytes_p, unsigned long long size
+    NH_API_RESULT nh_html_loadBytes(
+        nh_html_DocumentContext *Context_p, char *bytes_p, unsigned long long size
     );
 
 /** @} */

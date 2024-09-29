@@ -31,7 +31,7 @@
         int chunkSize
     );
      
-    NH_CORE_RESULT nh_pushStack(
+    NH_API_RESULT nh_pushStack(
         nh_Stack *Stack_p, void *handle_p
     );
      

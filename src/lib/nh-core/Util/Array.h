@@ -13,6 +13,17 @@
 
 #endif
 
+    /** 
+     * Generic linked-list which holds data pointers. 
+     */ 
+    typedef struct nh_Array { 
+        int elementSize;             /**<Number of items.*/ 
+        int allocatedLengthPerChunk; 
+        int allocatedLength; 
+        unsigned long length; 
+        char *p;
+    } nh_Array; 
+
 /** @addtogroup lib_nh-core_functions
  *  @{
  */
@@ -21,15 +32,15 @@
         int elementSize, int allocatedLengthPerChunk
     );
 
-    NH_CORE_RESULT nh_core_appendToArray(
+    NH_API_RESULT nh_core_appendToArray(
         nh_Array *Array_p, void *p, unsigned long count
     );
 
-    NH_CORE_RESULT nh_core_appendToArrayRepeatedly(
+    NH_API_RESULT nh_core_appendToArrayRepeatedly(
         nh_Array *Array_p, void *p, unsigned long count
     );
 
-    NH_CORE_RESULT nh_core_insertIntoArray(
+    NH_API_RESULT nh_core_insertIntoArray(
         nh_Array *Array_p, int index, void *elements_p, int length
     );
 
@@ -49,11 +60,11 @@
         nh_Array *Array_p
     );
 
-    NH_CORE_RESULT nh_core_removeTailFromArray(
+    NH_API_RESULT nh_core_removeTailFromArray(
         nh_Array *Array_p, unsigned int count
     );
 
-    NH_CORE_RESULT nh_core_removeFromArray(
+    NH_API_RESULT nh_core_removeFromArray(
         nh_Array *Array_p, int index, unsigned int count
     );
 

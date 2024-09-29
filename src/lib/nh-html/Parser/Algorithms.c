@@ -32,7 +32,7 @@
 // HELPER ==========================================================================================
 
 // https://html.spec.whatwg.org/multipage/semantics.html#update-a-style-block
-NH_HTML_RESULT nh_html_updateAStyleBlock(
+NH_API_RESULT nh_html_updateAStyleBlock(
     nh_webidl_Object *Object_p)
 {
 NH_HTML_BEGIN()
@@ -41,10 +41,10 @@ NH_HTML_BEGIN()
     NH_HTML_CHECK_NULL(Document_p)
 
     nh_List *Children_p = nh_dom_getNodeChildren(nh_dom_getNode(Object_p));
-    if (!Children_p || Children_p->size < 1) {NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)}
+    if (!Children_p || Children_p->size < 1) {NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     nh_dom_Text *Text_p = nh_dom_getText(Children_p->pp[0]);
-    if (!Text_p) {NH_HTML_DIAGNOSTIC_END(NH_HTML_ERROR_BAD_STATE)}
+    if (!Text_p) {NH_HTML_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     // TODO
 
@@ -59,7 +59,7 @@ exit(0);
 
     // TODO
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_url_URL *nh_html_parseURL(

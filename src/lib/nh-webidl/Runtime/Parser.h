@@ -161,7 +161,7 @@
  */
 
     typedef nh_webidl_FragmentParseResult (*nh_webidl_parse_f)(
-        NH_BYTE *logName_p, NH_BYTE *fragment_p
+        char *logName_p, char *fragment_p
     );
 
     typedef void (*nh_webidl_unparse_f)(
@@ -174,7 +174,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_WEBIDL_PARSE_NODE_NAMES_PP[];
+    extern const char *NH_WEBIDL_PARSE_NODE_NAMES_PP[];
     extern size_t NH_WEBIDL_PARSE_NODE_NAMES_PP_COUNT;
 
 /** @} */
@@ -187,14 +187,14 @@
     );
 
     nh_webidl_FragmentParseResult nh_webidl_parse(
-        NH_BYTE *logName_p, NH_BYTE *fragment_p
+        char *logName_p, char *fragment_p
     );
 
     void nh_webidl_unparse(
         nh_webidl_FragmentParseResult ParseResult
     );
 
-    NH_WEBIDL_RESULT nh_webidl_getParseNodes(
+    NH_API_RESULT nh_webidl_getParseNodes(
         nh_webidl_ParseNode *Node_p, NH_WEBIDL_PARSE_NODE type, nh_List *Nodes_p
     );
 

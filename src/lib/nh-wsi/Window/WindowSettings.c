@@ -23,7 +23,7 @@
 
 // SET =============================================================================================
 
-//static NH_WSI_RESULT_E nh_wsi_setWindowBackgroundColor(
+//static NH_API_RESULT nh_wsi_setWindowBackgroundColor(
 //    nh_wsi_Window *Window_p, nh_Color Color)
 //{
 //NH_WSI_BEGIN()
@@ -33,10 +33,10 @@
 //        case NH_WSI_TYPE_X11 : NH_WSI_DIAGNOSTIC_END(nh_x11_setWindowBackgroundColor(&Window_p->X11, Color))
 //    }
 //
-//NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+//NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 //}
 
-static NH_WSI_RESULT_E nh_wsi_setWindowDecorated(
+static NH_API_RESULT nh_wsi_setWindowDecorated(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -50,10 +50,10 @@ NH_WSI_BEGIN()
             break;
     }
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-static NH_WSI_RESULT_E nh_wsi_setWindowState(
+static NH_API_RESULT nh_wsi_setWindowState(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -65,10 +65,10 @@ NH_WSI_BEGIN()
         case NH_WSI_TYPE_X11 : NH_WSI_DIAGNOSTIC_END(nh_x11_setWindowState(&Window_p->X11, Config.state_p))
     }
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-static NH_WSI_RESULT_E nh_wsi_setWindowType(
+static NH_API_RESULT nh_wsi_setWindowType(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -80,10 +80,10 @@ NH_WSI_BEGIN()
         case NH_WSI_TYPE_X11 : NH_WSI_DIAGNOSTIC_END(nh_x11_setWindowType(&Window_p->X11, Config.type))
     }
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-static NH_WSI_RESULT_E nh_wsi_setWindowTitle(
+static NH_API_RESULT nh_wsi_setWindowTitle(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -95,15 +95,15 @@ NH_WSI_BEGIN()
         case NH_WSI_TYPE_X11 : NH_WSI_DIAGNOSTIC_END(nh_x11_setWindowTitle(&Window_p->X11, Config.title_p))
     }
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-NH_WSI_RESULT_E nh_wsi_setMouseCursor(
+NH_API_RESULT nh_wsi_setMouseCursor(
     nh_wsi_Window *Window_p, NH_WSI_CURSOR_E type)
 {
 NH_WSI_BEGIN()
 
-    if (Window_p->cursor == type) {NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)}
+    if (Window_p->cursor == type) {NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)}
     Window_p->cursor = type;
 
     switch (Window_p->type)
@@ -111,12 +111,12 @@ NH_WSI_BEGIN()
         case NH_WSI_TYPE_X11 : NH_WSI_CHECK(nh_x11_setMouseCursor(&Window_p->X11, type)) break;
     }
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // CONFIGURE =======================================================================================
 
-NH_WSI_RESULT_E nh_wsi_configureWindow(
+NH_API_RESULT nh_wsi_configureWindow(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -124,10 +124,10 @@ NH_WSI_BEGIN()
     NH_WSI_CHECK(nh_wsi_setWindowTitle(Window_p))
     NH_WSI_CHECK(nh_wsi_setWindowDecorated(Window_p))
 
-NH_WSI_END(NH_WSI_SUCCESS)
+NH_WSI_END(NH_API_SUCCESS)
 }
 
-NH_WSI_RESULT_E nh_wsi_toggleWindowSize(
+NH_API_RESULT nh_wsi_toggleWindowSize(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -140,6 +140,6 @@ NH_WSI_BEGIN()
     // Update window.
     NH_WSI_CHECK(nh_wsi_setWindowState(Window_p))
 
-NH_WSI_END(NH_WSI_SUCCESS)
+NH_WSI_END(NH_API_SUCCESS)
 }
 

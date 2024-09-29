@@ -50,7 +50,7 @@ NH_ENCODING_BEGIN()
 NH_ENCODING_END(String)
 }
 
-NH_ENCODING_RESULT nh_encoding_append(
+NH_API_RESULT nh_encoding_append(
     nh_encoding_String *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length)
 {
 NH_ENCODING_BEGIN()
@@ -58,10 +58,10 @@ NH_ENCODING_BEGIN()
 
     switch (String_p->encoding) {
         case NH_ENCODING_NAME_UTF_8 : NH_ENCODING_END(nh_encoding_appendUTF8(&String_p->Bytes, codepoints_p, length))
-        default : NH_ENCODING_END(NH_ENCODING_ERROR_BAD_STATE)
+        default : NH_ENCODING_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_ENCODING_END(NH_ENCODING_SUCCESS)
+NH_ENCODING_END(NH_API_SUCCESS)
 }
 
 void nh_encoding_freeString(

@@ -11,8 +11,8 @@
 
 #include "Data.h"
 #include "API.h"
-
 #include "../Common/Includes.h"
+#include "../../nh-core/Util/List.h"
 
 #endif
 
@@ -24,7 +24,7 @@
         NH_GFX_OPENGL_COMMAND_E type;
         nh_opengl_Data Result;
 	nh_List Arguments;
-        NH_BOOL autoFree;
+        bool autoFree;
     } nh_opengl_Command;
     
     typedef struct nh_opengl_CommandBuffer {
@@ -41,7 +41,7 @@
     );
 
     nh_opengl_Command *nh_opengl_addCommand(
-        nh_opengl_CommandBuffer *CommandBuffer_p, NH_BYTE *name_p, ... 
+        nh_opengl_CommandBuffer *CommandBuffer_p, char *name_p, ... 
     );
 
     void nh_opengl_freeCommand(
@@ -52,15 +52,15 @@
         nh_opengl_Command *Command_p
     );
 
-    NH_GFX_RESULT nh_opengl_executeCommandBuffer(
+    NH_API_RESULT nh_opengl_executeCommandBuffer(
         nh_opengl_CommandBuffer *CommandBuffer_p
     );
 
-    NH_GFX_RESULT nh_opengl_freeCommandBuffer(
+    NH_API_RESULT nh_opengl_freeCommandBuffer(
         nh_opengl_CommandBuffer *CommandBuffer_p
     );
 
-    NH_GFX_RESULT nh_opengl_appendCommandBuffer(
+    NH_API_RESULT nh_opengl_appendCommandBuffer(
         nh_opengl_CommandBuffer *CommandBuffer_p, nh_opengl_CommandBuffer *ToBeAppended_p
     );
 

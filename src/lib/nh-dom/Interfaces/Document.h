@@ -27,17 +27,17 @@
  *  @{
  */
 
-    NH_DOM_RESULT nh_dom_initDocumentModes(
+    NH_API_RESULT nh_dom_initDocumentModes(
     );
     
-    NH_DOM_RESULT nh_dom_freeDocumentModes(
+    NH_API_RESULT nh_dom_freeDocumentModes(
     );
 
-    NH_DOM_RESULT nh_dom_setDocumentMode(
+    NH_API_RESULT nh_dom_setDocumentMode(
         nh_webidl_Object *Document_p, nh_webidl_DOMString *Mode_p
     );
 
-    NH_DOM_RESULT nh_dom_setDocumentType(
+    NH_API_RESULT nh_dom_setDocumentType(
         nh_webidl_Object *Document_p, nh_webidl_Object *DocumentType_p
     );
 

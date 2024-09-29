@@ -17,7 +17,7 @@
 
 // BUFFER ==========================================================================================
 
-NH_GFX_RESULT nh_vk_createBuffer(
+NH_API_RESULT nh_vk_createBuffer(
     nh_vk_Driver *Driver_p, nh_vk_BufferInfo *BufferInfo_p, nh_vk_Buffer *Buffer_p)
 {
 NH_GFX_BEGIN()
@@ -48,10 +48,10 @@ NH_GFX_BEGIN()
         Buffer_p->DescriptorBufferInfo.range  = VK_WHOLE_SIZE;
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_vk_destroyBuffer(
+NH_API_RESULT nh_vk_destroyBuffer(
     nh_vk_Driver *Driver_p, nh_vk_Buffer *Buffer_p)
 {
 NH_GFX_BEGIN();
@@ -59,12 +59,12 @@ NH_GFX_BEGIN();
     Driver_p->Functions.vkDestroyBuffer(Driver_p->Device, Buffer_p->Buffer, VK_NULL_HANDLE);
     Driver_p->Functions.vkFreeMemory(Driver_p->Device, Buffer_p->DeviceMemory, VK_NULL_HANDLE); 
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
 // DESCRIPTOR SET ==================================================================================
 
-NH_GFX_RESULT nh_vk_createDescriptorSet(
+NH_API_RESULT nh_vk_createDescriptorSet(
     nh_vk_Driver *Driver_p, VkDescriptorSetAllocateInfo *DescriptorSetAllocateInfo_p, VkDescriptorSetLayoutCreateInfo *DescriptorSetLayoutInfo_p, 
     nh_vk_DescriptorSet *DescriptorSet_p)
 {
@@ -77,10 +77,10 @@ NH_GFX_BEGIN()
 
     NH_GFX_CHECK_VULKAN(Driver_p->Functions.vkAllocateDescriptorSets(Driver_p->Device, DescriptorSetAllocateInfo_p, &DescriptorSet_p->DescriptorSet))
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_vk_destroyDescriptorSet(
+NH_API_RESULT nh_vk_destroyDescriptorSet(
     nh_vk_Driver *Driver_p, nh_vk_DescriptorSet *DescriptorSet_p, VkDescriptorPool *DescriptorPool_p)
 {
 NH_GFX_BEGIN()
@@ -92,12 +92,12 @@ NH_GFX_BEGIN()
         Driver_p->Device, *DescriptorPool_p, 1, &DescriptorSet_p->DescriptorSet
     );
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // MEMORY ==========================================================================================
 
-NH_GFX_RESULT nh_vk_createDeviceMemory(
+NH_API_RESULT nh_vk_createDeviceMemory(
     nh_vk_Driver *Driver_p, nh_vk_DeviceMemoryInfo *Info_p, VkDeviceMemory *DeviceMemory_p)
 {
 NH_GFX_BEGIN()
@@ -121,7 +121,7 @@ NH_GFX_BEGIN()
             &memoryRequirements
          );
     }
-    else {NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)}
+    else {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
     
     int i;
     nh_vk_findMemoryType(Driver_p, memoryRequirements.memoryTypeBits, Info_p->memoryProperties, &i);
@@ -136,13 +136,13 @@ NH_GFX_BEGIN()
    
 #define CREATION_FAILED Driver_p->Functions.vkAllocateMemory(Driver_p->Device, &memoryInfo, VK_NULL_HANDLE, DeviceMemory_p) != VK_SUCCESS 
     if (CREATION_FAILED) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
-NH_GFX_RESULT nh_vk_bindDeviceMemory(
+NH_API_RESULT nh_vk_bindDeviceMemory(
     nh_vk_Driver *Driver_p, VkDeviceMemory *DeviceMemory_p, nh_vk_DeviceMemoryInfo *Info_p)
 {
 NH_GFX_BEGIN()
@@ -170,26 +170,26 @@ NH_GFX_BEGIN()
         ); 
     }
     
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_vk_mapDeviceMemory(
+NH_API_RESULT nh_vk_mapDeviceMemory(
     nh_vk_Driver *Driver_p, VkDeviceMemory *DeviceMemory_p, const void *data_p, size_t bufferSize, 
     size_t offset)
 {
 NH_GFX_BEGIN();
     
-    if (bufferSize <= 0) {NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)}
+    if (bufferSize <= 0) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     void *memory_p;
     Driver_p->Functions.vkMapMemory(Driver_p->Device, *DeviceMemory_p, offset, bufferSize, 0, &memory_p); 
     memcpy(memory_p, data_p, bufferSize);
     Driver_p->Functions.vkUnmapMemory(Driver_p->Device, *DeviceMemory_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
-NH_GFX_RESULT nh_vk_findMemoryType(
+NH_API_RESULT nh_vk_findMemoryType(
     nh_vk_Driver *Driver_p, int typeFilter, VkMemoryPropertyFlags properties, uint32_t *result_p) 
 {
 NH_GFX_BEGIN();
@@ -206,12 +206,12 @@ NH_GFX_BEGIN();
         }
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
 // SHADER MODULE ===================================================================================
 
-NH_GFX_RESULT nh_vk_createShaderModule(
+NH_API_RESULT nh_vk_createShaderModule(
     nh_vk_Driver *Driver_p, const uint32_t *code, size_t size, VkShaderModule *ShaderModule_p)
 {
 NH_GFX_BEGIN()
@@ -226,19 +226,19 @@ NH_GFX_BEGIN()
     };
     Driver_p->Functions.vkCreateShaderModule(Driver_p->Device, &shaderCreateInfo, VK_NULL_HANDLE, ShaderModule_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // PIPELINE ========================================================================================
 
-NH_GFX_RESULT nh_vk_createPipeline(
+NH_API_RESULT nh_vk_createPipeline(
     nh_vk_Driver *Driver_p, NH_VK_PIPELINE type, VkPipelineLayoutCreateInfo *PipelineLayoutCreateInfo_p, 
     void *pipelineInfo_p, nh_vk_Pipeline *Pipeline_p)
 {
 NH_GFX_BEGIN()
 
     if (Driver_p->Functions.vkCreatePipelineLayout(Driver_p->Device, PipelineLayoutCreateInfo_p, VK_NULL_HANDLE, &Pipeline_p->PipelineLayout) != VK_SUCCESS) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
    
     if (type == NH_VK_PIPELINE_GRAPHICS) 
@@ -248,7 +248,7 @@ NH_GFX_BEGIN()
         if (Driver_p->Functions.vkCreateGraphicsPipelines(Driver_p->Device, VK_NULL_HANDLE, 1, info_p, 
             VK_NULL_HANDLE, &Pipeline_p->Pipeline) != VK_SUCCESS) 
         {
-            NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+            NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
     }
 
@@ -259,11 +259,11 @@ NH_GFX_BEGIN()
         if (Driver_p->Functions.vkCreateComputePipelines(Driver_p->Device, VK_NULL_HANDLE, 1, info_p, 
             VK_NULL_HANDLE, &Pipeline_p->Pipeline) != VK_SUCCESS) 
         {
-            NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+            NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_vk_destroyPipeline(

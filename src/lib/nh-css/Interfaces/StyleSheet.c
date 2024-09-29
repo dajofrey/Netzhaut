@@ -30,7 +30,7 @@
 
 // INITIALIZE ======================================================================================
 
-NH_CSS_RESULT nh_css_initializeCSSStyleSheet(
+NH_API_RESULT nh_css_initializeCSSStyleSheet(
     nh_webidl_Object *StyleSheet_p)
 {
 NH_CSS_BEGIN()
@@ -41,7 +41,7 @@ NH_CSS_BEGIN()
     StyleSheet_p->Attributes.pp[1] = nh_webidl_createObject("CSS", "CSSRuleList");
     NH_CSS_CHECK_NULL(StyleSheet_p->Attributes.pp[1])
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================
@@ -72,12 +72,12 @@ NH_CSS_SILENT_END()
 
 // AT RULES ========================================================================================
 
-static NH_BOOL nh_css_compareCounterStyleRuleName(
-    nh_Array *Prelude_p, NH_BYTE *name_p)
+static bool nh_css_compareCounterStyleRuleName(
+    nh_Array *Prelude_p, char *name_p)
 {
 NH_CSS_BEGIN()
 
-    NH_BOOL match = NH_FALSE;
+    bool match = false;
 
     for (int i = 0; i < Prelude_p->length; ++i) {
         nh_css_ComponentValue *ComponentValue_p = ((nh_css_ComponentValue*)Prelude_p->p)+i;
@@ -96,7 +96,7 @@ NH_CSS_END(match)
 }
 
 nh_webidl_Object *nh_css_findCounterStyleRule(
-    nh_css_StyleSheetObject *StyleSheet_p, NH_BYTE *name_p)
+    nh_css_StyleSheetObject *StyleSheet_p, char *name_p)
 {
 NH_CSS_BEGIN()
 

@@ -20,13 +20,13 @@
 
 // DEBUG ===========================================================================================
 
-NH_URL_RESULT nh_url_initialize()
+NH_API_RESULT nh_url_initialize()
 {
 NH_URL_BEGIN()
 
     NH_URL_CHECK(nh_url_parseIDNAMappingTable())
     NH_URL_CHECK(nh_url_logIDNAMappingTable(&NH_URL_IDNA_MAPPING_TABLE))
 
-NH_URL_DIAGNOSTIC_END(NH_URL_SUCCESS)
+NH_URL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

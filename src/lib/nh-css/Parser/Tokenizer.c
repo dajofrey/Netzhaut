@@ -24,12 +24,12 @@
 
 // TOKEN NAMES =====================================================================================
 
-const NH_BYTE *nh_css_getTokenName(
+const char *nh_css_getTokenName(
     NH_CSS_TOKEN token)
 {
 NH_CSS_BEGIN()
 
-    static const NH_BYTE *tokenNames_pp[] =
+    static const char *tokenNames_pp[] =
     {
         "<ident-token>", 
         "<function-token>", 
@@ -95,94 +95,94 @@ NH_CSS_BEGIN()
 NH_CSS_SILENT_END()
 }
 
-static NH_BOOL nh_css_isWhitespace(
+static bool nh_css_isWhitespace(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_CSS_BEGIN()
 
     if (codepoint == 0x0A || codepoint == 0x09 || codepoint == 0x20) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
-static NH_BOOL nh_css_isNameStart(
+static bool nh_css_isNameStart(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_CSS_BEGIN()
 
     if (nh_encoding_isASCIIAlpha(codepoint) || codepoint >= 0x80 || codepoint == 0x5F) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
-static NH_BOOL nh_css_isName(
+static bool nh_css_isName(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_CSS_BEGIN()
 
     if (nh_css_isNameStart(codepoint) || nh_encoding_isASCIIDigit(codepoint) || codepoint == 0x2D) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
-static NH_BOOL nh_css_isValidEscape(
+static bool nh_css_isValidEscape(
     NH_ENCODING_UTF32 *codepoints_p)
 {
 NH_CSS_BEGIN()
 
-    if (codepoints_p[0] != 0x5C) {NH_CSS_END(NH_FALSE)}
-    if (codepoints_p[1] == 0x0A) {NH_CSS_END(NH_FALSE)}
+    if (codepoints_p[0] != 0x5C) {NH_CSS_END(false)}
+    if (codepoints_p[1] == 0x0A) {NH_CSS_END(false)}
 
-NH_CSS_END(NH_TRUE)
+NH_CSS_END(true)
 }
 
-static NH_BOOL nh_css_startsWithIdentifier(
+static bool nh_css_startsWithIdentifier(
     NH_ENCODING_UTF32 *codepoints_p)
 {
 NH_CSS_BEGIN()
 
     if (codepoints_p[0] == 0x2D) {
         if (nh_css_isNameStart(codepoints_p[1]) || codepoints_p[0] == 0x2D || nh_css_isValidEscape(&codepoints_p[1])) {
-            NH_CSS_END(NH_TRUE)
+            NH_CSS_END(true)
         }
     }
     else if (nh_css_isNameStart(codepoints_p[0])) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
     else if (codepoints_p[0] == 0x5C) {
-        if (nh_css_isValidEscape(codepoints_p)) {NH_CSS_END(NH_TRUE)}
+        if (nh_css_isValidEscape(codepoints_p)) {NH_CSS_END(true)}
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
-static NH_BOOL nh_css_startsWithNumber(
+static bool nh_css_startsWithNumber(
     NH_ENCODING_UTF32 *codepoints_p)
 {
 NH_CSS_BEGIN()
 
     if (codepoints_p[0] == 0x2B || codepoints_p[0] == 0x2D) {
         if (nh_encoding_isASCIIDigit(codepoints_p[1])) {
-            NH_CSS_END(NH_TRUE)
+            NH_CSS_END(true)
         }
         else if (codepoints_p[1] == 0x2E && nh_encoding_isASCIIDigit(codepoints_p[2])) {
-            NH_CSS_END(NH_TRUE)
+            NH_CSS_END(true)
         }
     }
     else if (codepoints_p[0] == 0x2E && nh_encoding_isASCIIDigit(codepoints_p[1])) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
     else if (nh_encoding_isASCIIDigit(codepoints_p[0])) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
 static NH_WEBIDL_DOUBLE nh_css_convertToNumber(
@@ -197,7 +197,7 @@ NH_CSS_BEGIN()
     else if (String_p->p[index] == 0x2B) {index++;}
 
     NH_WEBIDL_DOUBLE i = 0;
-    NH_BYTE num_p[255] = {0};
+    char num_p[255] = {0};
     memset(num_p, 0, 255);
     int tmp = 0;
     while (index < String_p->length && nh_encoding_isASCIIDigit(String_p->p[index])) {
@@ -239,11 +239,11 @@ static nh_css_Token *nh_css_reconsumeToken(
     nh_css_Tokenizer *Tokenizer_p, nh_css_Token *Token_p
 ); 
 
-static NH_CSS_RESULT nh_css_consumeToken(
+static NH_API_RESULT nh_css_consumeToken(
     nh_css_Tokenizer *Tokenizer_p
 ); 
 
-static NH_CSS_RESULT nh_css_consumeComments(
+static NH_API_RESULT nh_css_consumeComments(
     nh_css_Tokenizer *Tokenizer_p)
 {
 NH_CSS_BEGIN()
@@ -259,7 +259,7 @@ NH_CSS_BEGIN()
         nh_css_advanceTokenizer(Tokenizer_p, 2);
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static nh_css_Token *nh_css_consumeString(
@@ -305,14 +305,14 @@ NH_CSS_BEGIN()
         // TODO parse error
     }
     else if (nh_encoding_isASCIIHexDigit(Tokenizer_p->codepoints_p[0])) {
-        NH_BYTE hexDigits_p[7];
+        char hexDigits_p[7];
         memset(hexDigits_p, 0, 7);
         int i;
         for (i = 0; i < 6 && nh_encoding_isASCIIHexDigit(Tokenizer_p->codepoints_p[0]); ++i) {
             hexDigits_p[i] = Tokenizer_p->codepoints_p[0];
             nh_css_advanceTokenizer(Tokenizer_p, 1);
         }
-        NH_BYTE *end_p;
+        char *end_p;
         codepoint = strtol(hexDigits_p, &end_p, 16);
         if (codepoint == 0 || nh_encoding_isSurrogate(codepoint) || codepoint > 0x10FFFF) {
             codepoint = 0xFFFD;
@@ -353,11 +353,11 @@ NH_CSS_END(String)
 }
 
 static NH_WEBIDL_DOUBLE nh_css_consumeNumber(
-    nh_css_Tokenizer *Tokenizer_p, NH_BOOL *isInteger_p)
+    nh_css_Tokenizer *Tokenizer_p, bool *isInteger_p)
 {
 NH_CSS_BEGIN()
 
-    *isInteger_p = NH_TRUE;
+    *isInteger_p = true;
     nh_encoding_UTF32String Representation = nh_encoding_initUTF32(8);
 
     if (Tokenizer_p->codepoints_p[0] == 0x2B || Tokenizer_p->codepoints_p[0] == 0x2D) {
@@ -374,7 +374,7 @@ NH_CSS_BEGIN()
     {
         nh_encoding_appendUTF32(&Representation, Tokenizer_p->codepoints_p, 2);
         nh_css_advanceTokenizer(Tokenizer_p, 2);
-        *isInteger_p = NH_FALSE;
+        *isInteger_p = false;
 
         while (nh_encoding_isASCIIDigit(Tokenizer_p->codepoints_p[0])) {
             nh_encoding_appendUTF32(&Representation, Tokenizer_p->codepoints_p, 1);
@@ -384,20 +384,20 @@ NH_CSS_BEGIN()
 
     if (Tokenizer_p->codepoints_p[0] == 0x45 || Tokenizer_p->codepoints_p[0] == 0x65)
     {
-        NH_BOOL match = NH_FALSE;
+        bool match = false;
         if ((Tokenizer_p->codepoints_p[1] == 0x2D || Tokenizer_p->codepoints_p[1] == 0x2B) && nh_encoding_isASCIIDigit(Tokenizer_p->codepoints_p[2])) {
             nh_encoding_appendUTF32(&Representation, Tokenizer_p->codepoints_p, 3);
             nh_css_advanceTokenizer(Tokenizer_p, 1);
-            match = NH_TRUE;
+            match = true;
         }
         else if (nh_encoding_isASCIIDigit(Tokenizer_p->codepoints_p[1])) {
             nh_encoding_appendUTF32(&Representation, Tokenizer_p->codepoints_p, 2);
             nh_css_advanceTokenizer(Tokenizer_p, 1);
-            match = NH_TRUE;
+            match = true;
         }
         if (match)
         {
-            *isInteger_p = NH_FALSE;
+            *isInteger_p = false;
             while (nh_encoding_isASCIIDigit(Tokenizer_p->codepoints_p[0])) {
                 nh_encoding_appendUTF32(&Representation, Tokenizer_p->codepoints_p, 1);
                 nh_css_advanceTokenizer(Tokenizer_p, 1);
@@ -417,7 +417,7 @@ static nh_css_Token *nh_css_consumeNumericToken(
 {
 NH_CSS_BEGIN()
 
-    NH_BOOL isInteger;
+    bool isInteger;
     NH_WEBIDL_DOUBLE number = nh_css_consumeNumber(Tokenizer_p, &isInteger);
 
     if (nh_css_startsWithIdentifier(Tokenizer_p->codepoints_p)) {
@@ -551,9 +551,9 @@ NH_CSS_BEGIN()
         case 0x23 :
             if (nh_css_isName(Tokenizer_p->codepoints_p[1]) || (Tokenizer_p->length > 2 && nh_css_isValidEscape(&Tokenizer_p->codepoints_p[1]))) {
                 Token_p->type = NH_CSS_TOKEN_HASH;
-                Token_p->Hash.unrestricted = NH_TRUE;
+                Token_p->Hash.unrestricted = true;
                 if (nh_css_startsWithIdentifier(&Tokenizer_p->codepoints_p[1])) {
-                    Token_p->Hash.unrestricted = NH_FALSE;
+                    Token_p->Hash.unrestricted = false;
                 }
                 nh_css_advanceTokenizer(Tokenizer_p, 1);
                 Token_p->Hash.Value = nh_css_consumeName(Tokenizer_p);
@@ -689,7 +689,7 @@ exit(0);
 NH_CSS_END(Token_p)
 }
 
-static NH_CSS_RESULT nh_css_consumeToken(
+static NH_API_RESULT nh_css_consumeToken(
     nh_css_Tokenizer *Tokenizer_p) 
 {
 NH_CSS_BEGIN()
@@ -699,7 +699,7 @@ NH_CSS_BEGIN()
 
     NH_CSS_CHECK_NULL(nh_css_getToken(Tokenizer_p, Token_p))
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static nh_css_Token *nh_css_reconsumeToken(
@@ -757,7 +757,7 @@ NH_CSS_BEGIN()
     nh_encoding_UTF32String String = nh_css_preprocessInputStream(String_p->p, String_p->length);
     nh_css_Tokenizer Tokenizer = nh_css_initTokenizer(String);
 
-    while (nh_css_consumeToken(&Tokenizer) == NH_CSS_SUCCESS) {
+    while (nh_css_consumeToken(&Tokenizer) == NH_API_SUCCESS) {
         if (((nh_css_Token*)Tokenizer.Tokens.p)[Tokenizer.Tokens.length - 1].type == NH_CSS_TOKEN_EOF) {
             break;
         }

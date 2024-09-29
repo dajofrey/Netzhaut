@@ -25,7 +25,7 @@
 
 // DECLARE =========================================================================================
 
-static NH_NETWORK_RESULT nh_network_createSSLContext(
+static NH_API_RESULT nh_network_createSSLContext(
 );
 
 // EXTENSIONS ======================================================================================
@@ -101,7 +101,7 @@ NH_NETWORK_END(Connection_p)
 
 // CONTEXT =========================================================================================
 
-static NH_NETWORK_RESULT nh_network_createSSLContext()
+static NH_API_RESULT nh_network_createSSLContext()
 {
 NH_NETWORK_BEGIN()
 
@@ -114,6 +114,6 @@ NH_NETWORK_BEGIN()
 //        NULL, nh_network_parseExtension, NULL
 //    );
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

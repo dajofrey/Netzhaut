@@ -30,14 +30,14 @@
 
 // INIT ============================================================================================
 
-static NH_CORE_RESULT nh_core_startWorkloads()
+static NH_API_RESULT nh_core_startWorkloads()
 {
 NH_CORE_BEGIN()
 
-    nh_core_activateWorkload(nh_core_initSystemUpdater, nh_core_runSystemUpdater, NULL, NULL, NULL, NH_FALSE);
+    nh_core_activateWorkload(nh_core_initSystemUpdater, nh_core_runSystemUpdater, NULL, NULL, NULL, false);
     NH_CORE_CHECK(nh_core_startConfigUpdater())
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_Loader *nh_core_initialize(
@@ -46,7 +46,7 @@ nh_Loader *nh_core_initialize(
     nh_core_initGlobalConfig();
 
     if (config_p != NULL && length > 0) {
-        nh_core_appendConfig(config_p, length, NH_TRUE);
+        nh_core_appendConfig(config_p, length, true);
     }
 
     nh_core_initLogger();

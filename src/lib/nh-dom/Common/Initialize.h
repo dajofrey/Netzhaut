@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_DOM_RESULT nh_dom_initialize(
+    NH_API_RESULT nh_dom_initialize(
     );
     
 /** @} */

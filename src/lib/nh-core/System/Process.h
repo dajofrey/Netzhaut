@@ -85,10 +85,10 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_initProcessPool(
+    NH_API_RESULT nh_core_initProcessPool(
     );
 
-    NH_CORE_RESULT nh_core_freeProcessPool(
+    NH_API_RESULT nh_core_freeProcessPool(
     );
 
     /**
@@ -120,23 +120,23 @@
     /**
      * @param write_p Must have prefix "NH_IPC_ID", "NH_IPC_UPDATE" or "NH_IPC_LOG".
      */
-    NH_BYTE *nh_core_writeToProcess(
-        nh_Process *Proc_p, NH_BYTE *write_p, int writeLen, NH_BOOL getResponse
+    char *nh_core_writeToProcess(
+        nh_Process *Proc_p, char *write_p, int writeLen, bool getResponse
     );
 
     /**
      * @param write_p Must have prefix "NH_IPC_ID", "NH_IPC_UPDATE" or "NH_IPC_LOG".
      */
-    NH_BYTE *_nh_core_writeToProcess(
-        nh_Process *Proc_p, NH_BYTE *write_p, int writeLen, NH_BOOL getResponse
+    char *_nh_core_writeToProcess(
+        nh_Process *Proc_p, char *write_p, int writeLen, bool getResponse
     );
 
     NH_SIGNAL nh_core_runIPCHandler(
         void *args_p
     );
 
-    NH_CORE_RESULT nh_handleIPCReceive(
-        NH_BYTE *bytes_p
+    NH_API_RESULT nh_handleIPCReceive(
+        char *bytes_p
     );
 
 /** @} */

@@ -53,7 +53,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_ECMASCRIPT_INPUT_ELEMENTS_PP[];
+    extern const char *NH_ECMASCRIPT_INPUT_ELEMENTS_PP[];
 
 /** @} */
 
@@ -69,7 +69,7 @@
         nh_Array DirtyInputElements
     );
 
-    NH_BOOL nh_ecmascript_isNumericToken(
+    bool nh_ecmascript_isNumericToken(
         nh_ecmascript_InputElement *InputElement_p
     );
 

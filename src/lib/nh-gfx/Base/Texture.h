@@ -27,11 +27,11 @@ typedef struct nh_vk_Texture nh_vk_Texture;
  */
 
     typedef struct nh_Texture {
-        NH_BYTE *id_p;
+        char *id_p;
         nh_vk_Texture *Vulkan_p; 
         stbi_uc *pixels_p;         
-        NH_PIXEL width;                 
-        NH_PIXEL height;                
+        int width;                 
+        int height;                
         int compression;           
         float gamma;
         void *data_p;               
@@ -43,7 +43,7 @@ typedef struct nh_vk_Texture nh_vk_Texture;
 // *  @{
 // */
 //
-//    NH_CORE_RESULT nh_core_initDefaultTextures(
+//    NH_API_RESULT nh_core_initDefaultTextures(
 //        nh_Content *Content_p
 //    );
 //
@@ -51,19 +51,19 @@ typedef struct nh_vk_Texture nh_vk_Texture;
 //        nh_Content *Content_p, nh_URI *URI_p, char *chars_p
 //    );
 //  
-//    NH_CORE_RESULT nh_deleteTextures(
+//    NH_API_RESULT nh_deleteTextures(
 //       nh_Content *Content_p
 //    );
 //   
-//    NH_CORE_RESULT nh_deleteTexture(
+//    NH_API_RESULT nh_deleteTexture(
 //        nh_Content *Content_p, nh_Texture *Texture_p
 //    );
 //   
-//    NH_CORE_RESULT nh_core_updateTexture(
+//    NH_API_RESULT nh_core_updateTexture(
 //        nh_Content *Content_p, nh_Texture *Texture_p
 //    );
 //
-//    NH_BOOL nh_textureLoaded(
+//    bool nh_textureLoaded(
 //        nh_Content *Content_p, char *location_p, char *base_p
 //    );
 //

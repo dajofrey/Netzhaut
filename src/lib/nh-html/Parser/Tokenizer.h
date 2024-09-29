@@ -12,6 +12,7 @@
 #include "../Common/Includes.h"
 
 #include "../../nh-webidl/Runtime/String.h"
+#include "../../nh-core/Util/ArrayList.h"
 
 #endif
 
@@ -122,7 +123,7 @@
         nh_webidl_DOMString *Name_p;
         nh_webidl_DOMString *PublicIdentifier_p;
         nh_webidl_DOMString *SystemIdentifier_p;
-        NH_BOOL forceQuirks;
+        bool forceQuirks;
     } nh_html_DOCTYPEToken;
 
     typedef struct nh_html_Attribute {
@@ -133,7 +134,7 @@
     typedef struct nh_html_StartOrEndTagToken {
         NH_HTML_TOKEN type;
         nh_webidl_DOMString TagName;
-        NH_BOOL selfClosing;
+        bool selfClosing;
         nh_Array Attributes;
         int tag;
     } nh_html_StartOrEndTagToken;
@@ -173,7 +174,7 @@
         void *Parser_p, nh_webidl_USVString InputStream
     );
 
-    NH_HTML_RESULT nh_html_consumeNext(
+    NH_API_RESULT nh_html_consumeNext(
         nh_html_Tokenizer *Tokenizer_p
     );
 

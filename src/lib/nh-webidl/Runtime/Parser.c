@@ -22,7 +22,7 @@
 
 // DATA ============================================================================================
 
-const NH_BYTE *NH_WEBIDL_PARSE_NODE_NAMES_PP[] = {
+const char *NH_WEBIDL_PARSE_NODE_NAMES_PP[] = {
     "Definitions",
     "Definition",
     "ArgumentNameKeyword",
@@ -175,11 +175,11 @@ NH_WEBIDL_END(Result)
 }
 
 static nh_webidl_ParseNode *nh_webidl_allocateNonTerminalParseNode(
-    const NH_BYTE *name_p, int chunkSize)
+    const char *name_p, int chunkSize)
 {
 NH_WEBIDL_BEGIN()
 
-    unsigned int *index_p = nh_core_getFromHashMap(&NH_WEBIDL_INDEXMAP.ParseNodeNames, (NH_BYTE*)name_p);
+    unsigned int *index_p = nh_core_getFromHashMap(&NH_WEBIDL_INDEXMAP.ParseNodeNames, (char*)name_p);
     if (index_p == NULL) {NH_WEBIDL_END(NULL)}
 
     nh_webidl_ParseNode *Node_p = nh_core_allocate(sizeof(nh_webidl_ParseNode));
@@ -280,8 +280,8 @@ static nh_webidl_ParseResult nh_webidl_parseExtendedAttributeInner(
 {
 NH_WEBIDL_BEGIN()
 
-    NH_BYTE openBrackets_p[3] = "([{";
-    NH_BYTE closeBrackets_p[3] = ")]}";
+    char openBrackets_p[3] = "([{";
+    char closeBrackets_p[3] = ")]}";
 
     for (int i = 0; i < 3; ++i) 
     {
@@ -337,8 +337,8 @@ static nh_webidl_ParseResult nh_webidl_parseExtendedAttribute(
 {
 NH_WEBIDL_BEGIN()
 
-    NH_BYTE openBrackets_p[3] = "([{";
-    NH_BYTE closeBrackets_p[3] = ")]}";
+    char openBrackets_p[3] = "([{";
+    char closeBrackets_p[3] = ")]}";
 
     for (int i = 0; i < 3; ++i) 
     {
@@ -3276,7 +3276,7 @@ NH_WEBIDL_END(nh_webidl_initParseResult(Definitions_p))
 // PARSE ===========================================================================================
 
 nh_webidl_FragmentParseResult nh_webidl_parse(
-    NH_BYTE *logName_p, NH_BYTE *fragment_p)
+    char *logName_p, char *fragment_p)
 {
 NH_WEBIDL_BEGIN()
 
@@ -3309,7 +3309,7 @@ NH_WEBIDL_BEGIN()
         nh_webidl_unparseParseNode(Node_p->Children.pp[i]);
     }
 
-    nh_core_freeList(&Node_p->Children, NH_FALSE);
+    nh_core_freeList(&Node_p->Children, false);
     nh_core_free(Node_p);
 
 NH_WEBIDL_SILENT_END()
@@ -3342,7 +3342,7 @@ NH_WEBIDL_END(Result)
 
 // GET =============================================================================================
 
-NH_WEBIDL_RESULT nh_webidl_getParseNodes(
+NH_API_RESULT nh_webidl_getParseNodes(
     nh_webidl_ParseNode *Node_p, NH_WEBIDL_PARSE_NODE type, nh_List *Nodes_p)
 {
 NH_WEBIDL_BEGIN()
@@ -3355,6 +3355,6 @@ NH_WEBIDL_BEGIN()
         nh_webidl_getParseNodes(Node_p->Children.pp[i], type, Nodes_p);
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

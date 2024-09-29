@@ -24,7 +24,7 @@
 
 // TO ASCII ========================================================================================
 
-static NH_URL_RESULT nh_url_mapNewCodepoints(
+static NH_API_RESULT nh_url_mapNewCodepoints(
     nh_encoding_UTF32String *Input_p, int i, nh_encoding_UTF32String ToBeMapped)
 {
 NH_URL_BEGIN()
@@ -35,12 +35,12 @@ NH_URL_BEGIN()
         nh_encoding_insertUTF32(Input_p, i, ToBeMapped.p, ToBeMapped.length);
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // https://www.unicode.org/reports/tr46/#ToASCII
-NH_URL_RESULT nh_url_unicodeToASCII(
-    nh_encoding_UTF32String *DomainName_p, NH_BOOL transitionalProcessing)
+NH_API_RESULT nh_url_unicodeToASCII(
+    nh_encoding_UTF32String *DomainName_p, bool transitionalProcessing)
 {
 NH_URL_BEGIN()
 
@@ -51,7 +51,7 @@ NH_URL_BEGIN()
 
         switch (Entry_p->status)
         {
-            case NH_URL_IDNA_STATUS_UNDEFINED  : NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            case NH_URL_IDNA_STATUS_UNDEFINED  : NH_URL_END(NH_API_ERROR_BAD_STATE)
             case NH_URL_IDNA_STATUS_VALID : break;
             case NH_URL_IDNA_STATUS_DISALLOWED : break; // error 
             case NH_URL_IDNA_STATUS_DISALLOWED_STD3_VALID : break;
@@ -75,6 +75,6 @@ NH_URL_BEGIN()
     // TODO break 
     // TODO convert/validate
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 

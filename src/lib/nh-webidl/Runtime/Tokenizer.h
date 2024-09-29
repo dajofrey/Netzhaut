@@ -48,7 +48,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_WEBIDL_TOKENS_PP[];
+    extern const char *NH_WEBIDL_TOKENS_PP[];
 
 /** @} */
 
@@ -57,14 +57,14 @@
  */
 
     nh_Array nh_webidl_tokenizeFragment(
-        NH_BYTE *logName_p, NH_BYTE *fragment_p
+        char *logName_p, char *fragment_p
     );
     
     void nh_webidl_freeTokens(
         nh_Array Tokens
     );
 
-    NH_BOOL nh_webidl_isNumericToken(
+    bool nh_webidl_isNumericToken(
         nh_webidl_Token *Token_p
     );
 

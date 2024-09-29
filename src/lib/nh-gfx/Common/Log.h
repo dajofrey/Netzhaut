@@ -20,16 +20,16 @@
  *  @{
  */
 
-    NH_GFX_RESULT _nh_gfx_logBegin(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_gfx_logBegin(
+        const char *file_p, const char *function_p
     );
     
-    NH_GFX_RESULT _nh_gfx_logEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_gfx_logEnd(
+        const char *file_p, const char *function_p
     );
     
-    NH_GFX_RESULT _nh_gfx_logDiagnosticEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p, NH_GFX_RESULT result, int line
+    NH_API_RESULT _nh_gfx_logDiagnosticEnd(
+        const char *file_p, const char *function_p, NH_API_RESULT result, int line
     );
 
     void nh_gfx_logFont(
@@ -37,11 +37,11 @@
     );
 
     void nh_gfx_logVulkanValidation(
-        NH_BYTE *message_p
+        char *message_p
     );
 
     void nh_gfx_logOpenGLCommand(
-        NH_BYTE *format_p, ...
+        char *format_p, ...
     );
 
 /** @} */

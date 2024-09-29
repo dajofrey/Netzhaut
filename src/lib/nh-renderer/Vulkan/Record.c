@@ -23,7 +23,7 @@
 
 //// TEXTURE =========================================================================================
 //
-//static NH_BOOL nh_vk_recordImage(
+//static bool nh_vk_recordImage(
 //    nh_Content *Content_p, nh_html_Node *Node_p, nh_vk_Pipeline *Pipelines_p, nh_vk_Driver *Driver_p,
 //    VkCommandBuffer *CommandBuffer_p)
 //{
@@ -53,10 +53,10 @@
 //        
 //        Driver_p->Functions.vkCmdDraw(*CommandBuffer_p, nh_vk_getBuffer(Node_p, NH_VK_BUFFER_TEXTURE)->size / 3, 1, 0, 0);
 //
-//        NH_CORE_END(NH_TRUE)
+//        NH_CORE_END(true)
 //    }
 //
-//NH_CORE_END(NH_FALSE)
+//NH_CORE_END(false)
 //}
 
 // BACKGROUND ======================================================================================

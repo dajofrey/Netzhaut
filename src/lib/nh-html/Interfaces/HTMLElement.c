@@ -22,24 +22,24 @@
 
 // INITIALIZE ======================================================================================
 
-//NH_HTML_RESULT nh_html_initializeDocument(
+//NH_API_RESULT nh_html_initializeDocument(
 //    nh_webidl_Object *Document_p)
 //{
 //NH_HTML_BEGIN()
-//NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+//NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
 
 // API =============================================================================================
 
-nh_html_HTMLElement *nh_html_getHTMLElement(
+void *nh_html_getHTMLElement(
     nh_webidl_Object *Object_p)
 {
 NH_HTML_BEGIN()
-NH_HTML_END((nh_html_HTMLElement*)nh_webidl_getObject(Object_p, "HTML", "HTMLElement"))
+NH_HTML_END(nh_webidl_getObject(Object_p, "HTML", "HTMLElement"))
 }
 
 void nh_html_setToken(
-    nh_html_HTMLElement *HTMLElement_p, nh_html_Token *Token_p)
+    void *HTMLElement_p, nh_html_Token *Token_p)
 {
 NH_HTML_BEGIN()
 
@@ -49,7 +49,7 @@ NH_HTML_SILENT_END()
 }
 
 nh_html_Token *nh_html_getToken(
-    nh_html_HTMLElement *HTMLElement_p)
+    void *HTMLElement_p)
 {
 NH_HTML_BEGIN()
 NH_HTML_END(((nh_webidl_Object*)HTMLElement_p)->internal_p)

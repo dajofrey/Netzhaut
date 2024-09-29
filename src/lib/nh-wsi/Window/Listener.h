@@ -9,8 +9,10 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "Window.h"
 #include "../Common/Includes.h"
 #include "../../nh-core/System/Thread.h"
+#include "../../nh-core/Util/LinkedList.h"
 
 #endif
 
@@ -19,12 +21,12 @@
  */
 
     typedef struct nh_wsi_Clipboard {
-        NH_BOOL updated;
-        NH_BYTE *data_p; 
+        bool updated;
+        char *data_p; 
     } nh_wsi_Clipboard;
 
     typedef struct nh_wsi_Listener {
-        NH_BOOL running;
+        bool running;
         nh_LinkedList Windows;
         nh_wsi_Clipboard Clipboard;
     } nh_wsi_Listener;
@@ -35,11 +37,11 @@
  *  @{
  */
 
-    typedef NH_WSI_RESULT_E (*nh_wsi_setClipboard_f)(
-        NH_BYTE *utf8_p, int size, NH_BOOL selfOwned
+    typedef NH_API_RESULT (*nh_wsi_setClipboard_f)(
+        char *utf8_p, int size, bool selfOwned
     );
 
-    typedef NH_BYTE *(*nh_wsi_getClipboard_f)(
+    typedef char *(*nh_wsi_getClipboard_f)(
     );
 
 /** @} */
@@ -48,25 +50,25 @@
  *  @{
  */
     
-    NH_WSI_RESULT_E nh_wsi_normalizeListener(
+    NH_API_RESULT nh_wsi_normalizeListener(
     );
 
-    NH_WSI_RESULT_E nh_wsi_enableWindowListener(
+    NH_API_RESULT nh_wsi_enableWindowListener(
         nh_wsi_Window *Window_p
     );
 
-    NH_WSI_RESULT_E nh_wsi_disableWindowListener(
+    NH_API_RESULT nh_wsi_disableWindowListener(
         nh_wsi_Window *Window_p
     );
 
     void nh_wsi_freeClipboard(
     );
 
-    NH_WSI_RESULT_E nh_wsi_setClipboard(
-        NH_BYTE *utf8_p, int size, NH_BOOL selfOwned
+    NH_API_RESULT nh_wsi_setClipboard(
+        char *utf8_p, int size, bool selfOwned
     );
 
-    NH_BYTE *nh_wsi_getClipboard(
+    char *nh_wsi_getClipboard(
     );
 
 /** @} */

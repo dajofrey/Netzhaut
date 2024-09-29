@@ -177,7 +177,7 @@ typedef struct nh_network_HTTPHeader {
     char *value_p;
 } nh_network_HTTPHeader;
 
-static NH_NETWORK_RESULT nh_network_getHTTPHeader(
+static NH_API_RESULT nh_network_getHTTPHeader(
     nh_network_HTTPHeader *Header_p, char *set_p
 );
 
@@ -195,7 +195,7 @@ NH_NETWORK_BEGIN()
 NH_NETWORK_END(Request)
 }
 
-static NH_NETWORK_RESULT nh_network_getHTTPRequest(
+static NH_API_RESULT nh_network_getHTTPRequest(
     nh_network_HTTPRequest Request, char *path_p, char *set_p)
 {
 NH_NETWORK_BEGIN()
@@ -213,12 +213,12 @@ NH_NETWORK_BEGIN()
    
     strcpy(set_p + index, "\r\n\r\n");
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_NETWORK_RESULT nh_network_sendHTTPRequest(
+static NH_API_RESULT nh_network_sendHTTPRequest(
     nh_network_ClientSocket *ClientSocket_p, nh_network_HTTPRequest Request, char *path_p, 
-    NH_BOOL secure)
+    bool secure)
 {
 NH_NETWORK_BEGIN()
 
@@ -226,7 +226,7 @@ NH_NETWORK_BEGIN()
     NH_NETWORK_CHECK(nh_network_getHTTPRequest(Request, path_p == NULL ? "/" : path_p, request_p))
     NH_NETWORK_CHECK(nh_network_send(ClientSocket_p, request_p, sizeof(char) * strlen(request_p), secure))
  
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // RESPONSE ========================================================================================
@@ -244,7 +244,7 @@ NH_NETWORK_END(code)
 
 // HEADER ==========================================================================================
 
-NH_NETWORK_RESULT nh_network_appendHTTPHeader(
+NH_API_RESULT nh_network_appendHTTPHeader(
     nh_network_HTTPRequest *Request_p, NH_NETWORK_HTTP_HEADER type, char *value_p)
 {
 NH_NETWORK_BEGIN()
@@ -255,12 +255,12 @@ NH_NETWORK_BEGIN()
     Header_p->type = type;
     Header_p->value_p = nh_core_allocateBytes(value_p);
     
-    NH_CHECK(NH_NETWORK_ERROR_BAD_STATE, nh_core_appendToLinkedList(&Request_p->Headers, Header_p))
+    NH_CHECK(NH_API_ERROR_BAD_STATE, nh_core_appendToLinkedList(&Request_p->Headers, Header_p))
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_NETWORK_RESULT nh_network_getHTTPHeaderValue(
+NH_API_RESULT nh_network_getHTTPHeaderValue(
     char *response_p, char *set_p, NH_NETWORK_HTTP_HEADER type)
 {
 NH_NETWORK_BEGIN()
@@ -271,7 +271,7 @@ NH_NETWORK_BEGIN()
     if (p != NULL) 
     {
         p = p + strlen(header_p);
-        if (*p != ':') {NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)}
+        if (*p != ':') {NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
         p = p + 1;
         while (*p == ' ') {p = p + 1;}
         char *value_p = p;
@@ -280,26 +280,26 @@ NH_NETWORK_BEGIN()
         strcpy(set_p, value_p);
         *p = '\r';
     }
-    else {NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)}
+    else {NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_NETWORK_RESULT nh_network_getHTTPHeader(
+static NH_API_RESULT nh_network_getHTTPHeader(
     nh_network_HTTPHeader *Header_p, char *set_p)
 {
 NH_NETWORK_BEGIN()
 
     nh_String String = nh_core_initString(128); 
 
-    NH_CHECK(NH_NETWORK_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, "\r\n"))
-    NH_CHECK(NH_NETWORK_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, (char*)headerNames_pp[Header_p->type]))
-    NH_CHECK(NH_NETWORK_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, ": %s", Header_p->value_p))
+    NH_CHECK(NH_API_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, "\r\n"))
+    NH_CHECK(NH_API_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, (char*)headerNames_pp[Header_p->type]))
+    NH_CHECK(NH_API_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, ": %s", Header_p->value_p))
 
     strcpy(set_p, String.bytes_p);
     nh_core_freeString(&String);
    
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_network_HTTPPayload nh_network_convertToHTTPPayload(
@@ -333,8 +333,8 @@ NH_NETWORK_END(Payload)
 
 // GET =============================================================================================
 
-NH_NETWORK_RESULT nh_network_sendDataRequestViaHTTP(
-    nh_network_ClientSocket *Socket_p, char *host_p, char *path_p, NH_BOOL secure)
+NH_API_RESULT nh_network_sendDataRequestViaHTTP(
+    nh_network_ClientSocket *Socket_p, char *host_p, char *path_p, bool secure)
 {
 NH_NETWORK_BEGIN()
 
@@ -346,7 +346,7 @@ NH_NETWORK_BEGIN()
     NH_NETWORK_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_ACCEPT_LANGUAGE, "*"))
     NH_NETWORK_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_ACCEPT, "*/*"))
  
-    NH_NETWORK_RESULT result = nh_network_sendHTTPRequest(Socket_p, Request, path_p, secure);
+    NH_API_RESULT result = nh_network_sendHTTPRequest(Socket_p, Request, path_p, secure);
 
 NH_NETWORK_END(result)
 }

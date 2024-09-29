@@ -14,6 +14,8 @@
 #include "../../Common/Config.h"
 #include "../../Common/Includes.h"
 
+#include "../../../nh-gfx/Base/SurfaceRequirements.h"
+
 #ifdef __unix__
     #include <X11/Xlib.h>
     #include <X11/Xatom.h>
@@ -48,27 +50,27 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
  *  @{
  */
 
-    NH_WSI_RESULT_E nh_x11_getInput(
-        nh_wsi_Window *Window_p, NH_BOOL *idle_p
+    NH_API_RESULT nh_x11_getInput(
+        nh_wsi_Window *Window_p, bool *idle_p
     ); 
 
-    NH_WSI_RESULT_E nh_x11_createWindow(
+    NH_API_RESULT nh_x11_createWindow(
         nh_x11_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p
     );
 
-    NH_WSI_RESULT_E nh_x11_destroyWindow(
+    NH_API_RESULT nh_x11_destroyWindow(
         nh_x11_Window *Window_p
     );
 
-    NH_WSI_RESULT_E nh_x11_setClipboardOwner(
+    NH_API_RESULT nh_x11_setClipboardOwner(
         nh_x11_Window *Window_p
     );
 
-    NH_BOOL nh_x11_isClipboardOwner(
+    bool nh_x11_isClipboardOwner(
         nh_x11_Window *Window_p
     );
 
-    NH_WSI_RESULT_E nh_x11_requestClipboardConversion(
+    NH_API_RESULT nh_x11_requestClipboardConversion(
         nh_x11_Window *Window_p
     );
 
@@ -76,7 +78,7 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
         nh_x11_Window *Window_p, int* width_p, int* height_p
     );
 
-    NH_WSI_RESULT_E nh_x11_moveWindow(
+    NH_API_RESULT nh_x11_moveWindow(
         nh_x11_Window *Window_p
     );
 

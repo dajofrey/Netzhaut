@@ -19,12 +19,12 @@
 
 // DEBUG ===========================================================================================
 
-NH_DOM_RESULT nh_dom_terminate()
+NH_API_RESULT nh_dom_terminate()
 {
 NH_DOM_BEGIN()
 
     NH_DOM_CHECK(nh_dom_freeDocumentModes())
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

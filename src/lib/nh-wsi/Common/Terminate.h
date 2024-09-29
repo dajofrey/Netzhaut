@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_WSI_RESULT_E nh_wsi_terminate(
+    NH_API_RESULT nh_wsi_terminate(
     );
     
 /** @} */

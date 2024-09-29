@@ -17,20 +17,20 @@
  *  @{
  */
 
-    NH_HTML_RESULT _nh_html_logBegin(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_html_logBegin(
+        const char *file_p, const char *function_p
     );
     
-    NH_HTML_RESULT _nh_html_logEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_html_logEnd(
+        const char *file_p, const char *function_p
     );
     
-    NH_HTML_RESULT _nh_html_logDiagnosticEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p, NH_HTML_RESULT result, int line
+    NH_API_RESULT _nh_html_logDiagnosticEnd(
+        const char *file_p, const char *function_p, NH_API_RESULT result, int line
     );
 
-    NH_HTML_RESULT nh_html_logDocument(
-        NH_BYTE *logId_p, nh_webidl_Object *Document_p
+    NH_API_RESULT nh_html_logDocument(
+        char *logId_p, nh_webidl_Object *Document_p
     );
 
 /** @} */

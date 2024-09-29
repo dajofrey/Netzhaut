@@ -18,12 +18,12 @@
 
 // LOG IDNA MAPPING TABLE ==========================================================================
 
-NH_URL_RESULT nh_url_logIDNAMappingTable(
+NH_API_RESULT nh_url_logIDNAMappingTable(
     nh_url_IDNAMappingTable *MappingTable_p)
 {
 NH_URL_BEGIN()
 
-    NH_BYTE message_p[1024] = {0};
+    char message_p[1024] = {0};
     memset(message_p, 0, 1024);
 
     for (int i = 0; i < MappingTable_p->Entries.length; ++i)
@@ -68,27 +68,27 @@ NH_URL_BEGIN()
         memset(message_p, 0, 1024);
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // LOG FLOW ========================================================================================
 
-NH_URL_RESULT _nh_url_logBegin(
+NH_API_RESULT _nh_url_logBegin(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_begin(file_p, function_p);
 }
 
-NH_URL_RESULT _nh_url_logEnd(
+NH_API_RESULT _nh_url_logEnd(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_end(file_p, function_p);
 }
 
-NH_URL_RESULT _nh_url_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_URL_RESULT result, int line)
+NH_API_RESULT _nh_url_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
 //    _nh_diagnosticEnd(file_p, function_p, result, line);

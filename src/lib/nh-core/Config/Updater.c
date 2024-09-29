@@ -29,7 +29,7 @@
 #define NH_MAX_CONFIG_PATH 255
 
 typedef struct nh_ConfigUpdaterFile {
-    NH_BYTE path_p[NH_MAX_CONFIG_PATH];
+    char path_p[NH_MAX_CONFIG_PATH];
     time_t lastModification;
 } nh_ConfigUpdaterFile;
 
@@ -47,8 +47,8 @@ static void *nh_core_initConfigUpdater(
 {
 NH_CORE_BEGIN()
 
-    static NH_BYTE *name_p = "Config Updater";
-    static NH_BYTE *path_p = "nh-core/Config/Updater.c";
+    static char *name_p = "Config Updater";
+    static char *path_p = "nh-core/Config/Updater.c";
 
     Workload_p->name_p = name_p;
     Workload_p->path_p = path_p;
@@ -57,7 +57,7 @@ NH_CORE_BEGIN()
     // Normalize global config.
     nh_RawConfig *Config_p = nh_core_getGlobalConfig();
     for (int i = 0; i < Config_p->Settings.size; ++i) {
-        ((nh_RawConfigSetting*)Config_p->Settings.pp[i])->mark = NH_FALSE;
+        ((nh_RawConfigSetting*)Config_p->Settings.pp[i])->mark = false;
     }
 
     NH_CONFIG_UPDATER.Files = nh_core_initList(4);
@@ -70,7 +70,7 @@ static void nh_core_freeConfigUpdater(
 {
 NH_CORE_BEGIN()
 
-    nh_core_freeList(&NH_CONFIG_UPDATER.Files, NH_TRUE);
+    nh_core_freeList(&NH_CONFIG_UPDATER.Files, true);
 
 NH_CORE_SILENT_END()
 }
@@ -93,7 +93,7 @@ NH_CORE_BEGIN()
 //        }
 //        if (File_p->lastModification != statbuf.st_mtime) {
 //            long length = 0;
-//            NH_BYTE *data_p = nh_core_getFileData(File_p->path_p, &length);
+//            char *data_p = nh_core_getFileData(File_p->path_p, &length);
 //            nh_overwriteGlobalConfig(data_p, length);
 //            nh_core_free(data_p);
 //            File_p->lastModification = statbuf.st_mtime;
@@ -111,7 +111,7 @@ NH_CORE_BEGIN()
 //            }
 //        }
 //
-//        Setting_p->mark = NH_FALSE;
+//        Setting_p->mark = false;
     }
 
 NH_CORE_END(signal)
@@ -152,8 +152,8 @@ NH_CORE_BEGIN()
             File_p->lastModification = statbuf.st_mtime;
             nh_core_appendToList(&NH_CONFIG_UPDATER.Files, File_p);
             long length = 0;
-            NH_BYTE *data_p = nh_core_getFileData(File_p->path_p, &length);
-            nh_core_appendConfig(data_p, length, NH_TRUE);
+            char *data_p = nh_core_getFileData(File_p->path_p, &length);
+            nh_core_appendConfig(data_p, length, true);
             nh_core_free(data_p);
             break;
         }
@@ -169,36 +169,36 @@ NH_CORE_END(NH_SIGNAL_OK)
 // API =============================================================================================
 // The next functions are called by lib/netzhaut/nhterminal.h functions.
 
-NH_CORE_RESULT nh_core_startConfigUpdater()
+NH_API_RESULT nh_core_startConfigUpdater()
 {
 NH_CORE_BEGIN()
 
     NH_CORE_CHECK_NULL(nh_core_activateWorkload(
         nh_core_initConfigUpdater, nh_core_runConfigUpdater, nh_core_freeConfigUpdater,
-        nh_core_runConfigUpdaterCommand, NULL, NH_FALSE))
+        nh_core_runConfigUpdaterCommand, NULL, false))
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_registerConfig(
-    NH_BYTE *absolutePath_p, int length)
+NH_API_RESULT nh_core_registerConfig(
+    char *absolutePath_p, int length)
 {
 NH_CORE_BEGIN()
 
     nh_core_executeWorkloadCommand(&NH_CONFIG_UPDATER, 
         NH_CONFIG_UPDATER_COMMAND_REGISTER_CONFIG, absolutePath_p, length);
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_loadConfig(
-    NH_BYTE *data_p, int length)
+NH_API_RESULT nh_core_loadConfig(
+    char *data_p, int length)
 {
 NH_CORE_BEGIN()
 
     nh_core_executeWorkloadCommand(&NH_CONFIG_UPDATER, 
         NH_CONFIG_UPDATER_COMMAND_LOAD_CONFIG, data_p, length);
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 

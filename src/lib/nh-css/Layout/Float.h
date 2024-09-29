@@ -21,15 +21,15 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_shiftLineBoxDownward(
+    NH_API_RESULT nh_css_shiftLineBoxDownward(
         nh_css_Canvas *Canvas_p, nh_css_LineBox *LineBox_p
     );
 
-    NH_CSS_RESULT nh_css_offsetLineBoxFromFloats(
+    NH_API_RESULT nh_css_offsetLineBoxFromFloats(
         nh_css_Canvas *Canvas_p, nh_css_LineBox *LineBox_p
     );
 
-    NH_CSS_RESULT nh_css_arrangeFloat(
+    NH_API_RESULT nh_css_arrangeFloat(
         nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p
     );
 

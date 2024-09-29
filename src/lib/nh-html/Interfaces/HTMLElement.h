@@ -18,16 +18,16 @@
  *  @{
  */
 
-    nh_html_HTMLElement *nh_html_getHTMLElement(
+    void *nh_html_getHTMLElement(
         nh_webidl_Object *Object_p
     );
     
     void nh_html_setToken(
-        nh_html_HTMLElement *HTMLElement_p, nh_html_Token *Token_p
+        void *HTMLElement_p, nh_html_Token *Token_p
     );
     
     nh_html_Token *nh_html_getToken(
-        nh_html_HTMLElement *HTMLElement_p
+        void *HTMLElement_p
     );
 
 /** @} */

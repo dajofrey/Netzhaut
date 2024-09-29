@@ -93,7 +93,7 @@ NH_NETWORK_END(Socket)
 
 // SERVER ==========================================================================================
 
-NH_NETWORK_RESULT nh_network_getSockets(
+NH_API_RESULT nh_network_getSockets(
     char *hostNameIn_p, char *hostNameOut_p, NH_NETWORK_PORT port, nh_LinkedList *List_p)
 {
 NH_NETWORK_BEGIN()
@@ -112,7 +112,7 @@ NH_NETWORK_BEGIN()
 
     struct addrinfo *Info_p = NULL;
     int s = getaddrinfo(hostNameIn_p, service_p, &hints, &Info_p);    
-    if (s != 0) {NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)}
+    if (s != 0) {NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     for (int i = 0; Info_p != NULL; Info_p = Info_p->ai_next, ++i)
     {
@@ -166,14 +166,14 @@ NH_NETWORK_BEGIN()
                 break;
             }
         }
-        NH_CHECK(NH_NETWORK_ERROR_BAD_STATE, nh_core_appendToLinkedList(List_p, Socket_p))
+        NH_CHECK(NH_API_ERROR_BAD_STATE, nh_core_appendToLinkedList(List_p, Socket_p))
     } 
 
     freeaddrinfo(Info_p);
 
 #endif
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // CLIENT ==========================================================================================
@@ -236,13 +236,13 @@ NH_NETWORK_END(Socket_p)
 
 // FREE / CLOSE ====================================================================================
 
-NH_NETWORK_RESULT nh_network_closeClientSocket(
+NH_API_RESULT nh_network_closeClientSocket(
     nh_network_ClientSocket *Socket_p)
 {
 NH_NETWORK_BEGIN()
 
 //    Socket_p->count--;
-//    if (Socket_p->count > 0) {NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)} // socket is still in use
+//    if (Socket_p->count > 0) {NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)} // socket is still in use
 //
 //    nh_core_free(Socket_p->Socket.protocolName_p);
 //    nh_core_free(Socket_p->Socket.hostName_p);
@@ -250,16 +250,16 @@ NH_NETWORK_BEGIN()
 //#ifdef __unix__
 //
 //    int result = close(Socket_p->fd);
-//    if (result != 0) {NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)}
+//    if (result != 0) {NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 //
 //#endif
 //
 //    nh_core_removeFromLinkedList2(&nh_network_getNetwork()->Sockets, Socket_p, true);
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_NETWORK_RESULT nh_network_freeSockets(
+NH_API_RESULT nh_network_freeSockets(
     nh_LinkedList *Sockets_p)
 {
 NH_NETWORK_BEGIN()
@@ -272,18 +272,18 @@ NH_NETWORK_BEGIN()
 
     nh_core_destroyLinkedList(Sockets_p, true);
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // CONNECT =========================================================================================
 
-NH_NETWORK_RESULT nh_network_connect(
+NH_API_RESULT nh_network_connect(
     char *hostName_p, nh_network_ClientSocket *ClientSocket_p, nh_network_Socket Socket)
 {
 NH_NETWORK_BEGIN()
 
     if (ClientSocket_p == NULL || ClientSocket_p->Socket.family != Socket.family || ClientSocket_p->Socket.type != Socket.type) {
-        NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)
+        NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
 #ifdef __unix__
@@ -302,10 +302,10 @@ NH_NETWORK_BEGIN()
             Reset.sa_family = AF_UNSPEC;
 
             if (connect(ClientSocket_p->fd, (const struct sockaddr*) &Reset, sizeof(struct sockaddr)) != 0) {
-                NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)
+                NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
             }
             if (connect(ClientSocket_p->fd, (const struct sockaddr*) &Addr, sizeof(struct sockaddr_in)) != 0) {
-                NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)
+                NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
             }
 
             break;
@@ -313,7 +313,7 @@ NH_NETWORK_BEGIN()
         case NH_NETWORK_PROTOCOL_FAMILY_IPV6 :
         {
         }
-        default : NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)
+        default : NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     // get client port    
@@ -327,16 +327,16 @@ NH_NETWORK_BEGIN()
 
     if (Socket.type == NH_NETWORK_SOCKET_TCP && Socket.port == NH_NETWORK_PORT_HTTPS) {
         ClientSocket_p->SSL_p = nh_network_connectViaSSL(hostName_p, ClientSocket_p->fd);
-        if (ClientSocket_p->SSL_p == NULL) {NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_ERROR_BAD_STATE)}
+        if (ClientSocket_p->SSL_p == NULL) {NH_NETWORK_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
     }
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // SEND / RECEIVE ==================================================================================
 
-NH_NETWORK_RESULT nh_network_send(
-    nh_network_ClientSocket *ClientSocket_p, char *message_p, size_t messageSize, NH_BOOL secure)
+NH_API_RESULT nh_network_send(
+    nh_network_ClientSocket *ClientSocket_p, char *message_p, size_t messageSize, bool secure)
 {
 NH_NETWORK_BEGIN()
 
@@ -344,7 +344,7 @@ NH_NETWORK_BEGIN()
 
     if (messageSize > 0) {nh_network_logSend(message_p);}
 
-    if (secure == NH_FALSE) {
+    if (secure == false) {
 #ifdef __unix__
         result = write(ClientSocket_p->fd, message_p, messageSize);
 #endif
@@ -353,17 +353,17 @@ NH_NETWORK_BEGIN()
         result = nh_network_writeViaSSL(ClientSocket_p->SSL_p, message_p, messageSize); 
     }
 
-NH_NETWORK_END(messageSize == result ? NH_NETWORK_SUCCESS : NH_NETWORK_ERROR_BAD_STATE)
+NH_NETWORK_END(messageSize == result ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE)
 }
 
 ssize_t nh_network_receive(
-    nh_network_ClientSocket *ClientSocket_p, char *set_p, ssize_t count, NH_BOOL secure)
+    nh_network_ClientSocket *ClientSocket_p, char *set_p, ssize_t count, bool secure)
 {
 NH_NETWORK_BEGIN()
 
     ssize_t size = 0;
 
-    if (secure == NH_FALSE) {
+    if (secure == false) {
 #ifdef __unix__
         size = read(ClientSocket_p->fd, set_p, count);
 #endif
@@ -389,8 +389,8 @@ NH_NETWORK_BEGIN()
     Data.data_p = NULL;
     Data.size = 0;
 
-    NH_BOOL secure = NH_FALSE;
-    if (port == NH_NETWORK_PORT_HTTPS) {secure = NH_TRUE;}
+    bool secure = false;
+    if (port == NH_NETWORK_PORT_HTTPS) {secure = true;}
 
     switch (port)
     {

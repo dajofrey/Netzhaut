@@ -37,13 +37,13 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_gfx_createText(
-        nh_gfx_Text *Text_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length, NH_PIXEL fontSize, 
+    NH_API_RESULT nh_gfx_createText(
+        nh_gfx_Text *Text_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length, int fontSize, 
         nh_Array *FontFamilies_p, nh_gfx_FontStyle FontStyle
     );
 
-    NH_GFX_RESULT nh_gfx_createTextFromFont(
-        nh_gfx_Text *Text_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length, NH_PIXEL fontSize, 
+    NH_API_RESULT nh_gfx_createTextFromFont(
+        nh_gfx_Text *Text_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length, int fontSize, 
         nh_gfx_Font *Font_p
     );
 
@@ -51,16 +51,16 @@
         nh_gfx_Text *Text_p
     );
 
-    NH_PIXEL nh_gfx_getTextWidth(
+    int nh_gfx_getTextWidth(
         nh_gfx_Text *Text_p
     );
     
-    NH_PIXEL nh_gfx_getTextHeight(
+    int nh_gfx_getTextHeight(
         nh_gfx_Text *Text_p
     );
 
     unsigned int nh_gfx_getFittingTextLength(
-        nh_gfx_Text *Text_p, NH_PIXEL maxWidth
+        nh_gfx_Text *Text_p, int maxWidth
     );
 
 /** @} */

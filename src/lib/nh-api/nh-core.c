@@ -42,11 +42,11 @@ typedef void  *(*nh_core_initialize_f)(
 // HELPER ==========================================================================================
 
 static void *nh_api_openCoreLibrary(
-    NH_BYTE *path_p)
+    char *path_p)
 {
 #ifdef __unix__
 
-    NH_BYTE *error_p;
+    char *error_p;
     dlerror();
 
     void *dl_p = dlopen(path_p, RTLD_NOW | RTLD_GLOBAL);
@@ -70,31 +70,31 @@ static void *nh_api_closeCoreLibrary()
 #endif
 }
 
-static NH_CORE_RESULT nh_api_getExeDir(
-    NH_BYTE *buffer_p, size_t size)
+static NH_API_RESULT nh_api_getExeDir(
+    char *buffer_p, size_t size)
 {
 #ifdef __unix__
 
     if (readlink("/proc/self/exe", buffer_p, 1024) == -1 
     &&  readlink("/proc/curproc/file", buffer_p, 1024) == -1
-    &&  readlink("/proc/self/path/a.out", buffer_p, 1024) == -1) {return NH_CORE_ERROR_BAD_STATE;}
+    &&  readlink("/proc/self/path/a.out", buffer_p, 1024) == -1) {return NH_API_ERROR_BAD_STATE;}
 
     int i;
     for (i = strlen(buffer_p); i > -1 && buffer_p[i] != '/'; --i) {}
-    if (i == -1) {return NH_CORE_ERROR_BAD_STATE;}
+    if (i == -1) {return NH_API_ERROR_BAD_STATE;}
 
     buffer_p[i] = '\0'; // remove exe name
-    return NH_CORE_SUCCESS;
+    return NH_API_SUCCESS;
 
 #endif
 }
 
 static void *nh_api_loadCoreFunction(
-    const NH_BYTE *functionName_p)
+    const char *functionName_p)
 {
 #ifdef __unix__
 
-    NH_BYTE *error_p;
+    char *error_p;
     dlerror(); // clear any existing error
 
     void *function_p = dlsym(core_p, functionName_p); 
@@ -110,27 +110,27 @@ static void *nh_api_loadCoreFunction(
 
 // INITIALIZE/TERMINATE ============================================================================
 
-NH_CORE_RESULT nh_api_initialize(
+NH_API_RESULT nh_api_initialize(
     char *path_p, char *config_p, int length)
 {
-    if (core_p != NULL || NH_LOADER_P != NULL) {return NH_CORE_ERROR_BAD_STATE;}
+    if (core_p != NULL || NH_LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
 
     core_p = nh_api_openCoreLibrary("libnh-core.so");
 
-    NH_BOOL fallback = !core_p && path_p != NULL;
+    bool fallback = !core_p && path_p != NULL;
     if (fallback) {core_p = nh_api_openCoreLibrary(path_p);}
 
-    if (!core_p) {return NH_CORE_ERROR_BAD_STATE;}
+    if (!core_p) {return NH_API_ERROR_BAD_STATE;}
 
     nh_core_initialize_f initialize_f = nh_api_loadCoreFunction("nh_core_initialize");
     NH_LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
 
-    return NH_LOADER_P ? NH_CORE_SUCCESS : NH_CORE_ERROR_BAD_STATE;
+    return NH_LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
 }
  
-NH_CORE_RESULT nh_api_terminate()
+NH_API_RESULT nh_api_terminate()
 {
-    if (core_p == NULL || NH_LOADER_P == NULL) {return NH_CORE_ERROR_BAD_STATE;}
+    if (core_p == NULL || NH_LOADER_P == NULL) {return NH_API_ERROR_BAD_STATE;}
 
     nh_core_terminate_f terminate_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_terminate");
     if (terminate_f) {terminate_f(NH_LOADER_P);}
@@ -140,7 +140,7 @@ NH_CORE_RESULT nh_api_terminate()
     NH_LOADER_P = NULL;
     core_p = NULL;
 
-    return NH_CORE_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 // OTHER ===========================================================================================
@@ -151,20 +151,20 @@ unsigned int nh_api_run()
     return runThreadWorkloads_f ? runThreadWorkloads_f() : 0;
 }
 
-NH_BOOL nh_api_keepRunning()
+bool nh_api_keepRunning()
 {
     nh_core_keepRunning_f keepRunning_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_keepRunning");
-    return keepRunning_f ? keepRunning_f() : NH_FALSE;
+    return keepRunning_f ? keepRunning_f() : false;
 }
 
-NH_CORE_RESULT nh_api_addLogCallback(
-    nh_core_logCallback_f logCallback_f)
+NH_API_RESULT nh_api_addLogCallback(
+    nh_api_logCallback_f logCallback_f)
 {
-    nh_core_addLogCallback_f addLogCallback_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_addLogCallback");
-    return addLogCallback_f ? addLogCallback_f(logCallback_f) : NH_CORE_ERROR_BAD_STATE;
+    nh_api_addLogCallback_f addLogCallback_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_addLogCallback");
+    return addLogCallback_f ? addLogCallback_f(logCallback_f) : NH_API_ERROR_BAD_STATE;
 }
 
-nh_core_Workload *nh_api_getWorkload(
+nh_api_Workload *nh_api_getWorkload(
     void *args_p)
 {
     nh_core_getWorkload_f getWorkload_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getWorkload");
@@ -173,35 +173,35 @@ nh_core_Workload *nh_api_getWorkload(
 
 // FILE FUNCTIONS ==================================================================================
 
-NH_BYTE *nh_api_getFileData(
-    const NH_BYTE* path_p, long *size_p)
+char *nh_api_getFileData(
+    const char* path_p, long *size_p)
 {
     nh_core_getFileData_f getFileData_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getFileData");
     return getFileData_f ? getFileData_f(path_p, size_p) : NULL;
 }
 
-NH_CORE_RESULT nh_api_writeBytesToFile(
-    NH_BYTE *filePath_p, NH_BYTE *bytes_p)
+NH_API_RESULT nh_api_writeBytesToFile(
+    char *filePath_p, char *bytes_p)
 {
     nh_core_writeBytesToFile_f writeBytesToFile_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_writeBytesToFile");
-    return writeBytesToFile_f ? writeBytesToFile_f(filePath_p, bytes_p) : NH_CORE_ERROR_BAD_STATE;
+    return writeBytesToFile_f ? writeBytesToFile_f(filePath_p, bytes_p) : NH_API_ERROR_BAD_STATE;
 }
 
 // CONFIG FUNCTIONS ================================================================================
 
-NH_CORE_RESULT nh_api_registerConfig(
-    NH_BYTE *absolutePath_p, int length)
+NH_API_RESULT nh_api_registerConfig(
+    char *absolutePath_p, int length)
 {
     nh_core_registerConfig_f registerConfig_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_registerConfig");
-    return registerConfig_f ? registerConfig_f(absolutePath_p, length) : NH_CORE_ERROR_BAD_STATE;
+    return registerConfig_f ? registerConfig_f(absolutePath_p, length) : NH_API_ERROR_BAD_STATE;
 }
 
 
-NH_CORE_RESULT nh_api_loadConfig(
-    NH_BYTE *data_p, int length)
+NH_API_RESULT nh_api_loadConfig(
+    char *data_p, int length)
 {
     nh_core_loadConfig_f loadConfig_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_loadConfig");
-    return loadConfig_f ? loadConfig_f(data_p, length) : NH_CORE_ERROR_BAD_STATE;
+    return loadConfig_f ? loadConfig_f(data_p, length) : NH_API_ERROR_BAD_STATE;
 }
 
 // INTERFACE FUNCTIONS =============================================================================

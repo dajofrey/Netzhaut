@@ -31,8 +31,8 @@ static unsigned int *indices_pp[NH_GFX_INDEXMAP_COUNT] = {NULL};
 
 // CREATE/DESTROY ==================================================================================
 
-static NH_GFX_RESULT nh_gfx_getNames(
-    NH_GFX_INDEXMAP_E type, NH_BYTE ***array_ppp, int *count_p)
+static NH_API_RESULT nh_gfx_getNames(
+    NH_GFX_INDEXMAP_E type, char ***array_ppp, int *count_p)
 {
 NH_GFX_BEGIN()
 
@@ -40,24 +40,24 @@ NH_GFX_BEGIN()
     {
         case NH_GFX_INDEXMAP_OPENGL_COMMAND_NAMES :
         {
-            *array_ppp = (NH_BYTE**) NH_GFX_OPENGL_COMMAND_NAMES_PP; 
+            *array_ppp = (char**) NH_GFX_OPENGL_COMMAND_NAMES_PP; 
             *count_p = NH_GFX_OPENGL_COMMAND_NAMES_PP_COUNT; 
             break;
         }
-        default : NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        default : NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-    if (*array_ppp == NULL) {NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)}
+    if (*array_ppp == NULL) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_gfx_createSingleIndexMap(
+static NH_API_RESULT nh_gfx_createSingleIndexMap(
     NH_GFX_INDEXMAP_E type, nh_HashMap *map_p)
 {
 NH_GFX_BEGIN()
 
-    int count = 0; NH_BYTE **names_pp = NULL;
+    int count = 0; char **names_pp = NULL;
     NH_GFX_CHECK(nh_gfx_getNames(type, &names_pp, &count))
 
     *map_p = nh_core_createHashMap();
@@ -66,19 +66,19 @@ NH_GFX_BEGIN()
         NH_GFX_CHECK(nh_core_addToHashMap(map_p, names_pp[i], &indices_pp[type][i]))
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_gfx_createIndexMap()
+NH_API_RESULT nh_gfx_createIndexMap()
 {
 NH_GFX_BEGIN()
 
     for (int type = 0; type < NH_GFX_INDEXMAP_COUNT; ++type)  
     {
         int count = 0;
-        const NH_BYTE **names_pp = NULL;
-        if (nh_gfx_getNames(type, (NH_BYTE***)&names_pp, &count) != NH_GFX_SUCCESS) {
-            NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        const char **names_pp = NULL;
+        if (nh_gfx_getNames(type, (char***)&names_pp, &count) != NH_API_SUCCESS) {
+            NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
 
         indices_pp[type] = nh_core_allocate(sizeof(unsigned int) * count);
@@ -91,7 +91,7 @@ NH_GFX_BEGIN()
 
     NH_GFX_CHECK(nh_gfx_createSingleIndexMap(NH_GFX_INDEXMAP_OPENGL_COMMAND_NAMES, &NH_GFX_INDEXMAP.OpenGLCommandNames))
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_gfx_freeIndexMap()

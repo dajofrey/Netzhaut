@@ -22,7 +22,7 @@
 // LABELS ==========================================================================================
 
 // https://encoding.spec.whatwg.org/#names-and-labels
-const NH_BYTE *NH_ENCODING_LABELS_PP[] = 
+const char *NH_ENCODING_LABELS_PP[] = 
 {
     "unicode-1-1-utf-8",
     "unicode11utf8",
@@ -260,11 +260,11 @@ int NH_ENCODING_LABELS_PP_COUNT = sizeof(NH_ENCODING_LABELS_PP)/sizeof(NH_ENCODI
 
 // https://encoding.spec.whatwg.org/#concept-encoding-get
 NH_ENCODING_NAME nh_encoding_getEncoding(
-    NH_BYTE *label_p)
+    char *label_p)
 {
 NH_ENCODING_BEGIN()
 
-    NH_BYTE lowerlabel_p[255] = {'\0'};
+    char lowerlabel_p[255] = {'\0'};
     strcpy(lowerlabel_p, label_p);
 
     for (int i = 0; i < strlen(lowerlabel_p); ++i) {

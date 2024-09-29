@@ -18,20 +18,20 @@
  *  @{
  */
 
-    NH_URL_RESULT nh_url_logIDNAMappingTable(
+    NH_API_RESULT nh_url_logIDNAMappingTable(
         nh_url_IDNAMappingTable *MappingTable_p
     );
 
-    NH_URL_RESULT _nh_url_logBegin(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_url_logBegin(
+        const char *file_p, const char *function_p
     );
     
-    NH_URL_RESULT _nh_url_logEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_url_logEnd(
+        const char *file_p, const char *function_p
     );
     
-    NH_URL_RESULT _nh_url_logDiagnosticEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p, NH_URL_RESULT result, int line
+    NH_API_RESULT _nh_url_logDiagnosticEnd(
+        const char *file_p, const char *function_p, NH_API_RESULT result, int line
     );
 
 /** @} */

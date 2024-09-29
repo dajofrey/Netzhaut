@@ -34,12 +34,12 @@ typedef struct nh_dom_NodeInternal {
     nh_List RegisteredObservers;
     nh_Array SpecifiedPropertyValues;
     nh_List ComputedPropertyValues;
-    NH_BOOL updateAnnotations;
+    bool updateAnnotations;
 } nh_dom_NodeInternal;
 
 // INITIALIZE ======================================================================================
 
-static NH_DOM_RESULT nh_dom_setNodeType(
+static NH_API_RESULT nh_dom_setNodeType(
     nh_webidl_Object *Node_p)
 {
 NH_DOM_BEGIN()
@@ -82,16 +82,16 @@ NH_DOM_BEGIN()
             NODE_TYPE = (void*)11;
         }
 
-        if (NODE_TYPE) {NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)}
+        if (NODE_TYPE) {NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
         Parent_p = Parent_p->Parent_p;
     }
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_ERROR_BAD_STATE)
+NH_DOM_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
 // NOTE Keep public otherwise can't be loaded.
-NH_DOM_RESULT nh_dom_initializeNode(
+NH_API_RESULT nh_dom_initializeNode(
     nh_webidl_Object *Node_p)
 {
 NH_DOM_BEGIN()
@@ -109,9 +109,9 @@ NH_DOM_BEGIN()
 
     ((nh_dom_NodeInternal*)Node_p->internal_p)->SpecifiedPropertyValues = nh_core_initArray(0, 0);
     ((nh_dom_NodeInternal*)Node_p->internal_p)->ComputedPropertyValues  = nh_core_initList(0);
-    ((nh_dom_NodeInternal*)Node_p->internal_p)->updateAnnotations       = NH_TRUE;
+    ((nh_dom_NodeInternal*)Node_p->internal_p)->updateAnnotations       = true;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================
@@ -123,24 +123,24 @@ NH_DOM_BEGIN()
 NH_DOM_END((nh_dom_Node*)nh_webidl_getObject(Object_p, "DOM", "Node"))
 }
 
-NH_DOM_RESULT nh_dom_appendToNode(
+NH_API_RESULT nh_dom_appendToNode(
     nh_dom_Node *Node_p, nh_webidl_Object *Child_p)
 {
 NH_DOM_BEGIN()
 
     NH_DOM_CHECK(nh_dom_appendToNodeList(((nh_webidl_Object*)Node_p)->Attributes.pp[7], Child_p))
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_DOM_RESULT nh_dom_insertIntoNode(
+NH_API_RESULT nh_dom_insertIntoNode(
     nh_dom_Node *Node_p, nh_webidl_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index)
 {
 NH_DOM_BEGIN()
 
     NH_DOM_CHECK(nh_dom_insertIntoNodeList(((nh_webidl_Object*)Node_p)->Attributes.pp[7], Child_p, index))
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_List *nh_dom_getNodeChildren(
@@ -150,14 +150,14 @@ NH_DOM_BEGIN()
 NH_DOM_END(nh_dom_getNodeList(((nh_webidl_Object*)Node_p)->Attributes.pp[7]))
 }
 
-NH_DOM_RESULT nh_dom_setNodeDocument(
+NH_API_RESULT nh_dom_setNodeDocument(
     nh_dom_Node *Node_p, nh_webidl_Object *NodeDocument_p)
 {
 NH_DOM_BEGIN()
 
     ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->Document_p = NodeDocument_p;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_webidl_Object *nh_dom_getNodeDocument(
@@ -167,7 +167,7 @@ NH_DOM_BEGIN()
 NH_DOM_END(((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->Document_p)
 }
 
-NH_DOM_RESULT nh_dom_setSpecifiedPropertyValues(
+NH_API_RESULT nh_dom_setSpecifiedPropertyValues(
     nh_dom_Node *Node_p, nh_Array SpecifiedPropertyValues)
 {
 NH_DOM_BEGIN()
@@ -175,10 +175,10 @@ NH_DOM_BEGIN()
     ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->SpecifiedPropertyValues
         = SpecifiedPropertyValues;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_DOM_RESULT nh_dom_setComputedPropertyValues(
+NH_API_RESULT nh_dom_setComputedPropertyValues(
     nh_dom_Node *Node_p, nh_List ComputedPropertyValues)
 {
 NH_DOM_BEGIN()
@@ -186,7 +186,7 @@ NH_DOM_BEGIN()
     ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->ComputedPropertyValues
         = ComputedPropertyValues;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_Array *nh_dom_getSpecifiedPropertyValues(
@@ -203,21 +203,21 @@ NH_DOM_BEGIN()
 NH_DOM_END(&((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->ComputedPropertyValues)
 }
 
-NH_BOOL nh_dom_getUpdateAnnotationsFlag(
+bool nh_dom_getUpdateAnnotationsFlag(
     nh_dom_Node *Node_p)
 {
 NH_DOM_BEGIN()
 NH_DOM_END(((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->updateAnnotations)
 }
 
-NH_DOM_RESULT nh_dom_setUpdateAnnotationsFlag(
-    nh_dom_Node *Node_p, NH_BOOL update)
+NH_API_RESULT nh_dom_setUpdateAnnotationsFlag(
+    nh_dom_Node *Node_p, bool update)
 {
 NH_DOM_BEGIN()
 
     ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->updateAnnotations = update;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_dom_setParentNode(

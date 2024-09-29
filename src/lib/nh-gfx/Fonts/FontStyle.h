@@ -43,10 +43,10 @@ typedef struct nh_gfx_Font nh_gfx_Font;
  */
 
     typedef struct nh_gfx_FontStyle {
-        NH_BYTE *name_p;
+        char *name_p;
         NH_GFX_FONT_WEIGHT weight;
-        NH_BOOL oblique;
-        NH_BOOL italic;
+        bool oblique;
+        bool italic;
     } nh_gfx_FontStyle;
 
 /** @} */
@@ -63,8 +63,8 @@ typedef struct nh_gfx_Font nh_gfx_Font;
         nh_gfx_Font *Font_p
     );
 
-    NH_GFX_RESULT nh_gfx_parseFontStyle(
-        nh_gfx_FontStyle *Style_p, NH_BYTE *name_p
+    NH_API_RESULT nh_gfx_parseFontStyle(
+        nh_gfx_FontStyle *Style_p, char *name_p
     );
 
     void nh_gfx_freeFontStyle(

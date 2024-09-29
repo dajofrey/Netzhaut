@@ -45,7 +45,7 @@
     /**
      * The API version is used for backwards-incompatible API changes. 
      */
-    #define NH_GFX_API_VERSION 0
+    #define NH_API_GRAPHICS_BACKEND_VERSION 0
 
     /**
      * The major version is used for the completion of big functionalities. 

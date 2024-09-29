@@ -32,12 +32,12 @@
  */
 
     typedef struct nh_ecmascript_CompletionValue {
-        NH_BOOL empty;
+        bool empty;
         nh_ecmascript_Any Payload;
     } nh_ecmascript_CompletionValue;
 
     typedef struct nh_ecmascript_CompletionTarget {
-        NH_BOOL empty;
+        bool empty;
         nh_encoding_UTF8String String;
     } nh_ecmascript_CompletionTarget;
 

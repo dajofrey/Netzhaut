@@ -13,11 +13,24 @@
 
 #endif
 
+typedef struct nh_RingBufferMarker { 
+    int index; 
+    int overflow; 
+} nh_RingBufferMarker; 
+
+typedef struct nh_RingBuffer { 
+    nh_RingBufferMarker Marker; /**<For convenience.*/ 
+    int itemCount, itemByteSize; 
+    int index; 
+    int overflow; 
+    void *data_p; 
+} nh_RingBuffer; 
+ 
 /** @addtogroup lib_nh-core_functions
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_initRingBuffer(
+    NH_API_RESULT nh_core_initRingBuffer(
         nh_RingBuffer *Buffer_p, int itemCount, int itemByteSize, void init_f(nh_RingBuffer *Buffer_p, int itemCount)
     );
 

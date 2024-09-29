@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_ENCODING_RESULT nh_encoding_initialize(
+    NH_API_RESULT nh_encoding_initialize(
     );
     
 /** @} */

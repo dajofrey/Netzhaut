@@ -75,7 +75,7 @@ NH_ECMASCRIPT_BEGIN()
         }
     }
 
-    nh_core_freeList(&Tmp, NH_FALSE);
+    nh_core_freeList(&Tmp, false);
 
 NH_ECMASCRIPT_END(Events)
 }
@@ -101,8 +101,8 @@ NH_ECMASCRIPT_BEGIN()
         }
     }
 
-    nh_core_freeList(&Tmp1, NH_FALSE);
-    nh_core_freeList(&Tmp2, NH_FALSE);
+    nh_core_freeList(&Tmp1, false);
+    nh_core_freeList(&Tmp2, false);
 
 NH_ECMASCRIPT_END(Events)
 }

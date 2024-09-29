@@ -11,6 +11,7 @@
 
 #include "../Common/Includes.h"
 #include "../../nh-css/Main/FragmentTree.h"
+#include "../../nh-gfx/Base/Viewport.h"
 
 #endif
 

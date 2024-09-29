@@ -22,7 +22,7 @@
  *  @{
  */
 
-    typedef NH_NETWORK_RESULT (*nh_network_createNetwork_f)(
+    typedef NH_API_RESULT (*nh_network_createNetwork_f)(
     );
 
 /** @} */
@@ -43,7 +43,7 @@
  *  @{
  */
 
-    NH_NETWORK_RESULT nh_network_createNetwork(
+    NH_API_RESULT nh_network_createNetwork(
     );
     
     nh_network_Network *nh_network_getNetwork(

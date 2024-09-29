@@ -21,15 +21,15 @@
 
 // LOG THREAD ======================================================================================
 
-NH_CORE_RESULT nh_core_logThread(
+NH_API_RESULT nh_core_logThread(
     nh_ThreadPool *ThreadPool_p, nh_Thread *Thread_p)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE message_p[255] = {'\0'};
-    NH_BYTE option_p[255] = {'\0'};
+    char message_p[255] = {'\0'};
+    char option_p[255] = {'\0'};
 
-    NH_BYTE id_p[127] = {'\0'};
+    char id_p[127] = {'\0'};
     sprintf(id_p, "nh-core:Threads:%p", Thread_p);
 
     for (int i = 0, count = 0; i < NH_MAX_WORKLOADS; ++i) 
@@ -59,18 +59,18 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 // LOG MODULES =====================================================================================
 
-NH_CORE_RESULT nh_core_logModules()
+NH_API_RESULT nh_core_logModules()
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE message_p[255];
-    NH_BYTE option_p[255] = {'\0'};
-    NH_BYTE indent_p[64] = {'\0'};
+    char message_p[255];
+    char option_p[255] = {'\0'};
+    char indent_p[64] = {'\0'};
 
     int maxLength = 0;
     for (int i = 0; i < NH_MODULE_E_COUNT; ++i) {
@@ -125,7 +125,7 @@ NH_CORE_BEGIN()
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_URL_VERSION_P");
                     break;
             }
-            if (!ver_p) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
+            if (!ver_p) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
             sprintf(message_p, "%s%s : ver.%d.%d.%d.%d", NH_MODULE_NAMES_PP[i], indent_p, ver_p[0], ver_p[1], ver_p[2], ver_p[3]);
         }
 
@@ -137,15 +137,15 @@ NH_CORE_BEGIN()
         memset(indent_p, 0, 64);
     }
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 void nh_core_logSystemInfo(
-    NH_BYTE *info_p, int line)
+    char *info_p, int line)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE option_p[64] = {'\0'};
+    char option_p[64] = {'\0'};
     sprintf(option_p, "replace=%d", line);
     nh_core_sendLogMessage("nh-core:System", option_p, info_p);
 
@@ -154,25 +154,25 @@ NH_CORE_SILENT_END()
 
 // FLOW LOGGING ====================================================================================
 
-NH_CORE_RESULT _nh_core_logBegin(
-    const NH_BYTE *file_p, const NH_BYTE *function_p)
+NH_API_RESULT _nh_core_logBegin(
+    const char *file_p, const char *function_p)
 {
-//    if (!NH_CONFIG.Flags.Log.Flow.core) {return NH_CORE_SUCCESS;}
+//    if (!NH_CONFIG.Flags.Log.Flow.core) {return NH_API_SUCCESS;}
 //    return _nh_begin(file_p, function_p);
 }
 
-NH_CORE_RESULT _nh_core_logEnd(
-    const NH_BYTE *file_p, const NH_BYTE *function_p)
+NH_API_RESULT _nh_core_logEnd(
+    const char *file_p, const char *function_p)
 {
-//    if (!NH_CONFIG.Flags.Log.Flow.core) {return NH_CORE_SUCCESS;}
+//    if (!NH_CONFIG.Flags.Log.Flow.core) {return NH_API_SUCCESS;}
 //    return _nh_end(file_p, function_p);
 }
 
-NH_CORE_RESULT _nh_core_logDiagnosticEnd(
-    const NH_BYTE *file_p, const NH_BYTE *function_p, NH_CORE_RESULT result, int line)
+NH_API_RESULT _nh_core_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.core) {return result;}
-//    _nh_diagnosticEnd(file_p, function_p, NH_CORE_RESULTS_PP[result], line, result == NH_CORE_SUCCESS);
+//    _nh_diagnosticEnd(file_p, function_p, NH_API_RESULTS_PP[result], line, result == NH_API_SUCCESS);
     return result;
 }
 

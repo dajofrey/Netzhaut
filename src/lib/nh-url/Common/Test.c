@@ -25,7 +25,7 @@
 // TEST =============================================================================================
 
 static void nh_url_printHost(
-    nh_url_Host *Host_p, NH_BYTE *output_p)
+    nh_url_Host *Host_p, char *output_p)
 {
     sprintf(output_p+strlen(output_p), "HOST("); 
 
@@ -54,12 +54,12 @@ static void nh_url_printHost(
 }
 
 //int nh_url_testHostParser(
-//    int arguments, nh_make_TestArgument *Arguments_p, NH_BYTE *output_p, int maxOutputLength)
+//    int arguments, nh_make_TestArgument *Arguments_p, char *output_p, int maxOutputLength)
 //{
 //    nh_encoding_UTF32String String = nh_encoding_decodeUTF8(Arguments_p->p, strlen(Arguments_p->p), NULL);
 //
 //    nh_url_Host Host;
-//    nh_url_parseHost(String, !strcmp(Arguments_p[1].p, "isNotSpecial") ? NH_TRUE : NH_FALSE, &Host);
+//    nh_url_parseHost(String, !strcmp(Arguments_p[1].p, "isNotSpecial") ? true : false, &Host);
 //
 //    nh_url_printHost(&Host, output_p);
 //
@@ -67,7 +67,7 @@ static void nh_url_printHost(
 //}
 //
 //int nh_url_testURLParser(
-//    int arguments, nh_make_TestArgument *Arguments_p, NH_BYTE *output_p, int maxOutputLength)
+//    int arguments, nh_make_TestArgument *Arguments_p, char *output_p, int maxOutputLength)
 //{
 //    nh_encoding_UTF32String String = nh_encoding_decodeUTF8(Arguments_p->p, strlen(Arguments_p->p), NULL);
 //

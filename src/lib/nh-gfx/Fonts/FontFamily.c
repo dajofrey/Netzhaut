@@ -30,7 +30,7 @@
 
 // GENERIC FAMILY NAMES ============================================================================
 
-NH_BYTE *NH_GFX_GENERIC_FONT_FAMILY_NAMES_PP[] = {
+char *NH_GFX_GENERIC_FONT_FAMILY_NAMES_PP[] = {
     "SERIF",
     "SANS_SERIF",
     "CURSIVE",
@@ -48,7 +48,7 @@ NH_BYTE *NH_GFX_GENERIC_FONT_FAMILY_NAMES_PP[] = {
 
 // GENERIC FAMILIES ================================================================================
 
-static NH_BYTE *sansSerif_pp[] = {
+static char *sansSerif_pp[] = {
     "agency fb",
     "akzidenz-grotesk",
     "amplitude",
@@ -156,7 +156,7 @@ static NH_BYTE *sansSerif_pp[] = {
     "verdana",
 };
 
-static NH_BYTE *serif_pp[] = {
+static char *serif_pp[] = {
     "adobe jenson",
     "albertus",
     "aldus",
@@ -245,11 +245,11 @@ static NH_BYTE *serif_pp[] = {
     "zilla slab",
 };
   
-static NH_BYTE *emoji_pp[] = {
+static char *emoji_pp[] = {
     "noto color emoji",
 };
 
-static NH_BYTE *monospace_pp[] = {
+static char *monospace_pp[] = {
     "andalé mono",
     "cascadia code",
     "consolas",
@@ -293,8 +293,8 @@ static NH_BYTE *monospace_pp[] = {
 
 // PARSE ===========================================================================================
 
-NH_GFX_RESULT nh_gfx_parseFontFamily(
-    nh_gfx_FontFamily *FontFamily_p, NH_BYTE *name_p)
+NH_API_RESULT nh_gfx_parseFontFamily(
+    nh_gfx_FontFamily *FontFamily_p, char *name_p)
 {
 NH_GFX_BEGIN()
 
@@ -304,37 +304,37 @@ NH_GFX_BEGIN()
         FontFamily_p->name_p[i] = tolower(FontFamily_p->name_p[i]);
     }
    
-    memset(FontFamily_p->generic_p, NH_FALSE, sizeof(NH_BOOL)*NH_GFX_GENERIC_FONT_FAMILY_COUNT);
+    memset(FontFamily_p->generic_p, false, sizeof(bool)*NH_GFX_GENERIC_FONT_FAMILY_COUNT);
 
     for (int i = 0; i < sizeof(serif_pp)/sizeof(serif_pp[0]); ++i) {
         if (strstr(FontFamily_p->name_p, serif_pp[i])) {
-            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_SERIF] = NH_TRUE;
+            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_SERIF] = true;
             break;
         }
     }
 
     for (int i = 0; i < sizeof(sansSerif_pp)/sizeof(sansSerif_pp[0]); ++i) {
         if (strstr(FontFamily_p->name_p, sansSerif_pp[i])) {
-            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_SANS_SERIF] = NH_TRUE;
+            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_SANS_SERIF] = true;
             break;
         }
     }
 
     for (int i = 0; i < sizeof(emoji_pp)/sizeof(emoji_pp[0]); ++i) {
         if (strstr(FontFamily_p->name_p, emoji_pp[i])) {
-            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_EMOJI] = NH_TRUE;
+            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_EMOJI] = true;
             break;
         }
     }
 
     for (int i = 0; i < sizeof(monospace_pp)/sizeof(monospace_pp[0]); ++i) {
         if (strstr(FontFamily_p->name_p, monospace_pp[i])) {
-            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_MONOSPACE] = NH_TRUE;
+            FontFamily_p->generic_p[NH_GFX_GENERIC_FONT_FAMILY_MONOSPACE] = true;
             break;
         }
     }
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 void nh_gfx_freeFontFamily(
@@ -350,13 +350,13 @@ NH_GFX_SILENT_END()
 // INIT ============================================================================================
 
 nh_gfx_FontFamily nh_gfx_initFontFamily(
-    NH_BYTE *name_p)
+    char *name_p)
 {
 NH_GFX_BEGIN()
 
     nh_gfx_FontFamily Family;
     Family.name_p = name_p;
-    memset(Family.generic_p, NH_FALSE, sizeof(NH_BOOL)*NH_GFX_GENERIC_FONT_FAMILY_COUNT);
+    memset(Family.generic_p, false, sizeof(bool)*NH_GFX_GENERIC_FONT_FAMILY_COUNT);
 
 NH_GFX_END(Family)
 }

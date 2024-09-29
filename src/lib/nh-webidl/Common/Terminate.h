@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_WEBIDL_RESULT nh_webidl_terminate(
+    NH_API_RESULT nh_webidl_terminate(
     );
     
 /** @} */

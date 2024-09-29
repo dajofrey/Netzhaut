@@ -11,6 +11,7 @@
 
 #include "../Common/Includes.h"
 #include "../../nh-css/Main/FragmentTree.h"
+#include "../../nh-gfx/Base/Viewport.h"
 
 #endif
 
@@ -40,12 +41,12 @@
     );
 
     int nh_renderer_getBorderVertices(
-        nh_gfx_Viewport *Viewport_p, nh_css_Fragment *Fragment_p, float *vertices_p, NH_BYTE *side_p, 
+        nh_gfx_Viewport *Viewport_p, nh_css_Fragment *Fragment_p, float *vertices_p, char *side_p, 
         int cornerTriangleCount
     );
 
-    NH_RENDERER_RESULT nh_renderer_getTextVertices(
-        nh_gfx_Viewport *Viewport_p, nh_gfx_TextSegment *Segment_p, NH_PIXEL *x_p, NH_PIXEL y, float *z_p,
+    NH_API_RESULT nh_renderer_getTextVertices(
+        nh_gfx_Viewport *Viewport_p, nh_gfx_TextSegment *Segment_p, int *x_p, int y, float *z_p,
         float **vertices_pp, uint32_t **indices_pp
     );
 

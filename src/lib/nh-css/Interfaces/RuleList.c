@@ -23,7 +23,7 @@
 
 // INITIALIZE ======================================================================================
 
-NH_CSS_RESULT nh_css_initializeCSSRuleList(
+NH_API_RESULT nh_css_initializeCSSRuleList(
     nh_webidl_Object *RuleList_p)
 {
 NH_CSS_BEGIN()
@@ -33,23 +33,23 @@ NH_CSS_BEGIN()
 
     *((nh_List*)RuleList_p->internal_p) = nh_core_initList(16);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================
 
-NH_CSS_RESULT nh_css_appendToRuleList(
+NH_API_RESULT nh_css_appendToRuleList(
     nh_css_RuleListObject *RuleList_p, nh_webidl_Object *Object_p)
 {
 NH_CSS_BEGIN()
 
     if (nh_webidl_getObject(Object_p, "CSS", "CSSRule") == NULL) {
-        NH_CSS_END(NH_CSS_ERROR_BAD_STATE)
+        NH_CSS_END(NH_API_ERROR_BAD_STATE)
     }
 
     nh_core_appendToList(((nh_webidl_Object*)RuleList_p)->internal_p, Object_p);
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 nh_List *nh_css_getRuleListData(

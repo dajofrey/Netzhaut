@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_BYTE *nh_core_lastModified(
+    char *nh_core_lastModified(
         void *lib_p
     );
     

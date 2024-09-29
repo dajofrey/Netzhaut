@@ -13,7 +13,7 @@
 // VERSION =========================================================================================
 
 int NH_GFX_VERSION_P[4] = {
-    NH_GFX_API_VERSION, 
+    NH_API_GRAPHICS_BACKEND_VERSION, 
     NH_GFX_MAJOR_VERSION, 
     NH_GFX_MINOR_VERSION,
     NH_GFX_PATCH_VERSION,

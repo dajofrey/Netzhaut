@@ -30,7 +30,7 @@
     );
 
     nh_webidl_Object *nh_css_findCounterStyleRule(
-        nh_css_StyleSheetObject *StyleSheet_p, NH_BYTE *name_p
+        nh_css_StyleSheetObject *StyleSheet_p, char *name_p
     );
 
 /** @} */

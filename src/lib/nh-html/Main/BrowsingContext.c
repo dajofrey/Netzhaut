@@ -33,8 +33,8 @@ NH_HTML_BEGIN()
     nh_html_BrowsingContext BrowsingContext;
     BrowsingContext.WindowProxy_p = NULL;
     BrowsingContext.OpenerBrowsingContext_p = NULL;
-    BrowsingContext.disowned = NH_FALSE;
-    BrowsingContext.isClosing = NH_FALSE;
+    BrowsingContext.disowned = false;
+    BrowsingContext.isClosing = false;
     BrowsingContext.SessionHistory = nh_core_initList(16);
     BrowsingContext.virtualBrowsingContextGroupID = 0;
     BrowsingContext.InitialURL_p = NULL;

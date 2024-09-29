@@ -34,7 +34,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_CSS_DECLARATION_ORIGIN_NAMES_PP[];
+    extern const char *NH_CSS_DECLARATION_ORIGIN_NAMES_PP[];
 
 /** @} */
 
@@ -49,7 +49,7 @@
     } nh_css_Filter;
 
     typedef struct nh_css_DeclaredValue {
-        NH_BOOL direct;
+        bool direct;
         NH_CSS_DECLARATION_ORIGIN origin;
         nh_css_Declaration *Declaration_p;
     } nh_css_DeclaredValue;

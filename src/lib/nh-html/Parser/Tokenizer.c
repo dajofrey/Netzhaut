@@ -26,11 +26,11 @@
 
 // DECLARE =========================================================================================
 
-static NH_HTML_RESULT nh_html_consume(
+static NH_API_RESULT nh_html_consume(
     nh_html_Tokenizer *Tokenizer_p
 );
 
-static NH_HTML_RESULT nh_html_reconsume(
+static NH_API_RESULT nh_html_reconsume(
     nh_html_Tokenizer *Tokenizer_p, NH_HTML_TOKENIZATION_STATE newState
 );
 
@@ -58,7 +58,7 @@ NH_HTML_END(Tokenizer)
 
 // HELPER ==========================================================================================
 
-static NH_BOOL nh_html_isAppropriateEndTagToken(
+static bool nh_html_isAppropriateEndTagToken(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -68,16 +68,16 @@ NH_HTML_BEGIN()
         nh_html_Token *Emit_p = Tokenizer_p->Emits.pp[i];
         if (Emit_p->type == NH_HTML_TOKEN_START_TAG) {
             if (!strcmp(Tokenizer_p->Token_p->StartOrEndTag.TagName.p, Emit_p->StartOrEndTag.TagName.p)) {
-                NH_HTML_END(NH_TRUE)
+                NH_HTML_END(true)
             }
             break;
         }
     } 
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-static NH_HTML_RESULT nh_html_resetTemporaryBuffer(
+static NH_API_RESULT nh_html_resetTemporaryBuffer(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -85,10 +85,10 @@ NH_HTML_BEGIN()
     nh_webidl_freeUSVString(&Tokenizer_p->TemporaryBuffer);
     Tokenizer_p->TemporaryBuffer = nh_webidl_initUSVString(64);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_newTokenizerError(
+static NH_API_RESULT nh_html_newTokenizerError(
     nh_html_Tokenizer *Tokenizer_p, NH_HTML_PARSE_ERROR type)
 {
 NH_HTML_BEGIN()
@@ -116,7 +116,7 @@ NH_HTML_BEGIN()
 NH_HTML_END(&((nh_html_Attribute*)Tokenizer_p->Token_p->StartOrEndTag.Attributes.p)[Tokenizer_p->Token_p->StartOrEndTag.Attributes.length - 1])
 }
 
-static NH_HTML_RESULT nh_html_emit(
+static NH_API_RESULT nh_html_emit(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -125,7 +125,7 @@ NH_HTML_BEGIN()
     ((nh_html_Parser*)Tokenizer_p->Parser_p)->Token_p = Tokenizer_p->Token_p;
     NH_HTML_CHECK(nh_html_dispatchTreeConstruction(Tokenizer_p->Parser_p))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static nh_html_Token *nh_html_newToken(
@@ -166,8 +166,8 @@ NH_HTML_BEGIN()
 NH_HTML_END(Token_p)
 }
 
-static NH_HTML_RESULT nh_html_newDOCTYPEToken(
-    nh_html_Tokenizer *Tokenizer_p, NH_BOOL forceQuirks)
+static NH_API_RESULT nh_html_newDOCTYPEToken(
+    nh_html_Tokenizer *Tokenizer_p, bool forceQuirks)
 {
 NH_HTML_BEGIN()
 
@@ -175,10 +175,10 @@ NH_HTML_BEGIN()
     NH_HTML_CHECK_MEM(Token_p)
     Token_p->DOCTYPE.forceQuirks = forceQuirks;
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_newCommentToken(
+static NH_API_RESULT nh_html_newCommentToken(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -186,10 +186,10 @@ NH_HTML_BEGIN()
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_COMMENT);
     NH_HTML_CHECK_MEM(Token_p)
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_newStartTagToken(
+static NH_API_RESULT nh_html_newStartTagToken(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -197,10 +197,10 @@ NH_HTML_BEGIN()
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_START_TAG);
     NH_HTML_CHECK_MEM(Token_p)
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_newEndTagToken(
+static NH_API_RESULT nh_html_newEndTagToken(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -208,10 +208,10 @@ NH_HTML_BEGIN()
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_END_TAG);
     NH_HTML_CHECK_MEM(Token_p)
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_emitCharacterToken(
+static NH_API_RESULT nh_html_emitCharacterToken(
     nh_html_Tokenizer *Tokenizer_p, NH_ENCODING_UTF32 codepoint)
 {
 NH_HTML_BEGIN()
@@ -221,10 +221,10 @@ NH_HTML_BEGIN()
     nh_webidl_appendUnicodeToDOMString(&Token_p->CommentOrCharacter.Data, &codepoint, 1);
     nh_html_emit(Tokenizer_p);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_emitEOFToken(
+static NH_API_RESULT nh_html_emitEOFToken(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -232,10 +232,10 @@ NH_HTML_BEGIN()
     NH_HTML_CHECK_MEM(nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_END_OF_FILE))
     nh_html_emit(Tokenizer_p);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_allocateDOCTYPEName(
+static NH_API_RESULT nh_html_allocateDOCTYPEName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -244,10 +244,10 @@ NH_HTML_BEGIN()
     NH_HTML_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.Name_p)
     *Tokenizer_p->Token_p->DOCTYPE.Name_p = nh_webidl_initDOMString(16);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_allocateDOCTYPEPublicIdentifier(
+static NH_API_RESULT nh_html_allocateDOCTYPEPublicIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -256,10 +256,10 @@ NH_HTML_BEGIN()
     NH_HTML_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p)
     *Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = nh_webidl_initDOMString(16);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_allocateDOCTYPESystemIdentifier(
+static NH_API_RESULT nh_html_allocateDOCTYPESystemIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -271,12 +271,12 @@ NH_HTML_BEGIN()
         *Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = nh_webidl_initDOMString(16);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // CONSUME =========================================================================================
 
-static NH_HTML_RESULT nh_html_consumeData(
+static NH_API_RESULT nh_html_consumeData(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -296,10 +296,10 @@ NH_HTML_BEGIN()
             NH_HTML_DIAGNOSTIC_END(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRCDATA(
+static NH_API_RESULT nh_html_consumeRCDATA(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -320,10 +320,10 @@ NH_HTML_BEGIN()
             NH_HTML_DIAGNOSTIC_END(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRAWTEXT(
+static NH_API_RESULT nh_html_consumeRAWTEXT(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -340,10 +340,10 @@ NH_HTML_BEGIN()
             NH_HTML_DIAGNOSTIC_END(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptData(
+static NH_API_RESULT nh_html_consumeScriptData(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -360,10 +360,10 @@ NH_HTML_BEGIN()
             NH_HTML_DIAGNOSTIC_END(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumePLAINTEXT(
+static NH_API_RESULT nh_html_consumePLAINTEXT(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -377,10 +377,10 @@ NH_HTML_BEGIN()
             NH_HTML_DIAGNOSTIC_END(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeTagOpen(
+static NH_API_RESULT nh_html_consumeTagOpen(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -408,10 +408,10 @@ NH_HTML_BEGIN()
             NH_HTML_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_DATA))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeEndTagOpen(
+static NH_API_RESULT nh_html_consumeEndTagOpen(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -433,10 +433,10 @@ NH_HTML_BEGIN()
             NH_HTML_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_COMMENT))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeTagName(
+static NH_API_RESULT nh_html_consumeTagName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -444,7 +444,7 @@ NH_HTML_BEGIN()
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -466,10 +466,10 @@ NH_HTML_BEGIN()
             nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRCDATALessThanSign(
+static NH_API_RESULT nh_html_consumeRCDATALessThanSign(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -483,10 +483,10 @@ NH_HTML_BEGIN()
         NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RCDATA))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRCDATAEndTagOpen(
+static NH_API_RESULT nh_html_consumeRCDATAEndTagOpen(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -502,10 +502,10 @@ NH_HTML_BEGIN()
         NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RCDATA))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRCDATAEndTagName(
+static NH_API_RESULT nh_html_consumeRCDATAEndTagName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -514,13 +514,13 @@ NH_HTML_BEGIN()
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -531,13 +531,13 @@ NH_HTML_BEGIN()
         case 0x20 :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_BEFORE_ATTRIBUTE_NAME;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x2F :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SELF_CLOSING_START_TAG;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x3E:
@@ -557,10 +557,10 @@ NH_HTML_BEGIN()
 
     NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RCDATA))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRAWTEXTLessThanSign(
+static NH_API_RESULT nh_html_consumeRAWTEXTLessThanSign(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -574,10 +574,10 @@ NH_HTML_BEGIN()
         NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RAWTEXT))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRAWTEXTEndTagOpen(
+static NH_API_RESULT nh_html_consumeRAWTEXTEndTagOpen(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -592,10 +592,10 @@ NH_HTML_BEGIN()
         NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RAWTEXT))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeRAWTEXTEndTagName(
+static NH_API_RESULT nh_html_consumeRAWTEXTEndTagName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -604,13 +604,13 @@ NH_HTML_BEGIN()
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -621,13 +621,13 @@ NH_HTML_BEGIN()
         case 0x20 :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_BEFORE_ATTRIBUTE_NAME;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x2F :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SELF_CLOSING_START_TAG;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x3E:
@@ -647,10 +647,10 @@ NH_HTML_BEGIN()
 
     NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RAWTEXT))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataLessThanSign(
+static NH_API_RESULT nh_html_consumeScriptDataLessThanSign(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -671,10 +671,10 @@ NH_HTML_BEGIN()
             NH_HTML_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEndTagOpen(
+static NH_API_RESULT nh_html_consumeScriptDataEndTagOpen(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -690,10 +690,10 @@ NH_HTML_BEGIN()
         NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEndTagName(
+static NH_API_RESULT nh_html_consumeScriptDataEndTagName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -702,13 +702,13 @@ NH_HTML_BEGIN()
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -719,13 +719,13 @@ NH_HTML_BEGIN()
         case 0x20 :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_BEFORE_ATTRIBUTE_NAME;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x2F :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SELF_CLOSING_START_TAG;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x3E:
@@ -745,10 +745,10 @@ NH_HTML_BEGIN()
 
     NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscapeStart(
+static NH_API_RESULT nh_html_consumeScriptDataEscapeStart(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -761,10 +761,10 @@ NH_HTML_BEGIN()
         NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscapeStartDash(
+static NH_API_RESULT nh_html_consumeScriptDataEscapeStartDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -777,10 +777,10 @@ NH_HTML_BEGIN()
         NH_HTML_DIAGNOSTIC_END(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscaped(
+static NH_API_RESULT nh_html_consumeScriptDataEscaped(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -803,10 +803,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscapedDash(
+static NH_API_RESULT nh_html_consumeScriptDataEscapedDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -831,10 +831,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscapedDashDash(
+static NH_API_RESULT nh_html_consumeScriptDataEscapedDashDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -862,10 +862,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscapedLessThanSign(
+static NH_API_RESULT nh_html_consumeScriptDataEscapedLessThanSign(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -888,10 +888,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscapedEndTagOpen(
+static NH_API_RESULT nh_html_consumeScriptDataEscapedEndTagOpen(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -906,10 +906,10 @@ NH_HTML_BEGIN()
         NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_ESCAPED))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataEscapedEndTagName(
+static NH_API_RESULT nh_html_consumeScriptDataEscapedEndTagName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -918,13 +918,13 @@ NH_HTML_BEGIN()
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
         nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -935,13 +935,13 @@ NH_HTML_BEGIN()
         case 0x20 :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_BEFORE_ATTRIBUTE_NAME;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x2F :
             if (nh_html_isAppropriateEndTagToken(Tokenizer_p)) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SELF_CLOSING_START_TAG;
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             break;
         case 0x3E:
@@ -961,10 +961,10 @@ NH_HTML_BEGIN()
 
     NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_ESCAPED))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataDoubleEscapeStart(
+static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeStart(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -973,13 +973,13 @@ NH_HTML_BEGIN()
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &lower, 1);
         NH_HTML_CHECK(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         NH_HTML_CHECK(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -1005,10 +1005,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataDoubleEscaped(
+static NH_API_RESULT nh_html_consumeScriptDataDoubleEscaped(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1032,10 +1032,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataDoubleEscapedDash(
+static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1060,10 +1060,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataDoubleEscapedDashDash(
+static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedDashDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1091,10 +1091,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataDoubleEscapedLessThanSign(
+static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedLessThanSign(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1111,10 +1111,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeScriptDataDoubleEscapeEnd(
+static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeEnd(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1123,13 +1123,13 @@ NH_HTML_BEGIN()
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &lower, 1);
         NH_HTML_CHECK(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         NH_HTML_CHECK(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -1155,10 +1155,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBeforeAttributeName(
+static NH_API_RESULT nh_html_consumeBeforeAttributeName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1187,11 +1187,11 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // TODO 13.2.5.33 When the user agent leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name, then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
-static NH_HTML_RESULT nh_html_consumeAttributeName(
+static NH_API_RESULT nh_html_consumeAttributeName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1199,7 +1199,7 @@ NH_HTML_BEGIN()
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Name, &lower, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
  
     switch (Tokenizer_p->codepoint)
@@ -1229,10 +1229,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAfterAttributeName(
+static NH_API_RESULT nh_html_consumeAfterAttributeName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1260,10 +1260,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBeforeAttributeValue(
+static NH_API_RESULT nh_html_consumeBeforeAttributeValue(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1291,10 +1291,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAttributeValueDoubleQuoted(
+static NH_API_RESULT nh_html_consumeAttributeValueDoubleQuoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1318,10 +1318,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAttributeValueSingleQuoted(
+static NH_API_RESULT nh_html_consumeAttributeValueSingleQuoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1345,10 +1345,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAttributeValueUnquoted(
+static NH_API_RESULT nh_html_consumeAttributeValueUnquoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1386,10 +1386,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAfterAttributeValueQuoted(
+static NH_API_RESULT nh_html_consumeAfterAttributeValueQuoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1415,10 +1415,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeSelfClosingStartTag(
+static NH_API_RESULT nh_html_consumeSelfClosingStartTag(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1426,7 +1426,7 @@ NH_HTML_BEGIN()
     switch (Tokenizer_p->codepoint)
     {
         case 0x3E :
-            Tokenizer_p->Token_p->StartOrEndTag.selfClosing = NH_TRUE;
+            Tokenizer_p->Token_p->StartOrEndTag.selfClosing = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
@@ -1436,10 +1436,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBogusComment(
+static NH_API_RESULT nh_html_consumeBogusComment(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1460,10 +1460,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeMarkupDeclarationOpen(
+static NH_API_RESULT nh_html_consumeMarkupDeclarationOpen(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1476,7 +1476,7 @@ NH_HTML_BEGIN()
             Tokenizer_p->index += 2;
             NH_HTML_CHECK(nh_html_newCommentToken(Tokenizer_p))
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_COMMENT_START;
-            NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+            NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
         }
     }
 
@@ -1502,7 +1502,7 @@ NH_HTML_BEGIN()
             Tokenizer_p->index += 7;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DOCTYPE;
             nh_webidl_freeDOMString(&Temporary);
-            NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+            NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
         }
 
         nh_webidl_freeDOMString(&Temporary);
@@ -1512,10 +1512,10 @@ NH_HTML_BEGIN()
     NH_HTML_CHECK(nh_html_newCommentToken(Tokenizer_p))
     Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_BOGUS_COMMENT;
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentStart(
+static NH_API_RESULT nh_html_consumeCommentStart(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1535,10 +1535,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentStartDash(
+static NH_API_RESULT nh_html_consumeCommentStartDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1562,10 +1562,10 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeComment(
+static NH_API_RESULT nh_html_consumeComment(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1589,10 +1589,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentLessThanSign(
+static NH_API_RESULT nh_html_consumeCommentLessThanSign(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1611,10 +1611,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentLessThanSignBang(
+static NH_API_RESULT nh_html_consumeCommentLessThanSignBang(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1629,10 +1629,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentLessThanSignBangDash(
+static NH_API_RESULT nh_html_consumeCommentLessThanSignBangDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1647,10 +1647,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentLessThanSignBangDashDash(
+static NH_API_RESULT nh_html_consumeCommentLessThanSignBangDashDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1666,10 +1666,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentEndDash(
+static NH_API_RESULT nh_html_consumeCommentEndDash(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1688,10 +1688,10 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentEnd(
+static NH_API_RESULT nh_html_consumeCommentEnd(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1717,10 +1717,10 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCommentEndBang(
+static NH_API_RESULT nh_html_consumeCommentEndBang(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1750,10 +1750,10 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeDOCTYPE(
+static NH_API_RESULT nh_html_consumeDOCTYPE(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1775,10 +1775,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBeforeDOCTYPEName(
+static NH_API_RESULT nh_html_consumeBeforeDOCTYPEName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1786,11 +1786,11 @@ NH_HTML_BEGIN()
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) 
     {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, NH_FALSE))
+        NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, false))
         NH_HTML_CHECK(nh_html_allocateDOCTYPEName(Tokenizer_p))
         nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &lower, 1);
         Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DOCTYPE_NAME;
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -1802,7 +1802,7 @@ NH_HTML_BEGIN()
             break; // ignore character
         case 0x00 :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
-            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, NH_FALSE))
+            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, false))
             NH_HTML_CHECK(nh_html_allocateDOCTYPEName(Tokenizer_p))
             NH_ENCODING_UTF32 replace = 0xFFFD;
             nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &replace, 1);
@@ -1810,22 +1810,22 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_DOCTYPE_NAME))
-            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, NH_TRUE))
+            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, true))
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
-            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, NH_FALSE))
+            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, false))
             NH_HTML_CHECK(nh_html_allocateDOCTYPEName(Tokenizer_p))
             nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &Tokenizer_p->codepoint, 1);
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DOCTYPE_NAME;
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeDOCTYPEName(
+static NH_API_RESULT nh_html_consumeDOCTYPEName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1833,7 +1833,7 @@ NH_HTML_BEGIN()
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &lower, 1);
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     switch (Tokenizer_p->codepoint)
@@ -1858,10 +1858,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAfterDOCTYPEName(
+static NH_API_RESULT nh_html_consumeAfterDOCTYPEName(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1883,34 +1883,34 @@ NH_HTML_BEGIN()
                 nh_webidl_DOMString Temporary = nh_webidl_initDOMString(6);
                 nh_webidl_appendUnicodeToDOMString(&Temporary, &Tokenizer_p->InputStream.p[Tokenizer_p->index], 6);
 
-                NH_BOOL isPublic = nh_encoding_isASCIICaseInsensitiveMatch(Temporary.p, "PUBLIC");
-                NH_BOOL isSystem = nh_encoding_isASCIICaseInsensitiveMatch(Temporary.p, "SYSTEM");
+                bool isPublic = nh_encoding_isASCIICaseInsensitiveMatch(Temporary.p, "PUBLIC");
+                bool isSystem = nh_encoding_isASCIICaseInsensitiveMatch(Temporary.p, "SYSTEM");
 
                 nh_webidl_freeDOMString(&Temporary);
  
                 if (isPublic) {
                     Tokenizer_p->index += 6;
                     Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_AFTER_DOCTYPE_PUBLIC_KEYWORD;
-                    NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                    NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
                 }
                 if (isSystem) {
                     Tokenizer_p->index += 6;
                     Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_AFTER_DOCTYPE_SYSTEM_KEYWORD;
-                    NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                    NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
                 }
             }
  
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_INVALID_CHARACTER_SEQUENCE_AFTER_DOCTYPE_NAME))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_DOCTYPE))
 
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAfterDOCTYPEPublicKeyword(
+static NH_API_RESULT nh_html_consumeAfterDOCTYPEPublicKeyword(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1933,21 +1933,21 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_DOCTYPE_PUBLIC_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_QUOTE_BEFORE_DOCTYPE_PUBLIC_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_DOCTYPE))
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBeforeDOCTYPEPublicIdentifier(
+static NH_API_RESULT nh_html_consumeBeforeDOCTYPEPublicIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -1969,21 +1969,21 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_DOCTYPE_PUBLIC_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_QUOTE_BEFORE_DOCTYPE_PUBLIC_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_DOCTYPE))
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeDOCTYPEPublicIdentifierDoubleQuoted(
+static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierDoubleQuoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2000,7 +2000,7 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_PUBLIC_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
@@ -2009,10 +2009,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeDOCTYPEPublicIdentifierSingleQuoted(
+static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierSingleQuoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2029,7 +2029,7 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_PUBLIC_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
@@ -2038,10 +2038,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAfterDOCTYPEPublicIdentifier(
+static NH_API_RESULT nh_html_consumeAfterDOCTYPEPublicIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2070,15 +2070,15 @@ NH_HTML_BEGIN()
             break;
         default :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_QUOTE_BEFORE_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_DOCTYPE))
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBetweenDOCTYPEPublicAndSystemIdentifiers(
+static NH_API_RESULT nh_html_consumeBetweenDOCTYPEPublicAndSystemIdentifiers(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2104,15 +2104,15 @@ NH_HTML_BEGIN()
             break;
         default :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_QUOTE_BEFORE_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_DOCTYPE))
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAfterDOCTYPESystemKeyword(
+static NH_API_RESULT nh_html_consumeAfterDOCTYPESystemKeyword(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2137,21 +2137,21 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_QUOTE_BEFORE_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_DOCTYPE))
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBeforeDOCTYPESystemIdentifier(
+static NH_API_RESULT nh_html_consumeBeforeDOCTYPESystemIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2173,21 +2173,21 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_MISSING_QUOTE_BEFORE_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_DOCTYPE))
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeDOCTYPESystemIdentifierDoubleQuoted(
+static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierDoubleQuoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2204,7 +2204,7 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
@@ -2213,10 +2213,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeDOCTYPESystemIdentifierSingleQuoted(
+static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierSingleQuoted(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2233,7 +2233,7 @@ NH_HTML_BEGIN()
             break;
         case 0x3E :
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_SYSTEM_IDENTIFIER))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DATA;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             break;
@@ -2242,10 +2242,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeAfterDOCTYPESystemIdentifier(
+static NH_API_RESULT nh_html_consumeAfterDOCTYPESystemIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2267,10 +2267,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeBogusDOCTYPE(
+static NH_API_RESULT nh_html_consumeBogusDOCTYPE(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2288,10 +2288,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCDATASection(
+static NH_API_RESULT nh_html_consumeCDATASection(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2306,10 +2306,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCDATASectionBracket(
+static NH_API_RESULT nh_html_consumeCDATASectionBracket(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2325,10 +2325,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCDATASectionEnd(
+static NH_API_RESULT nh_html_consumeCDATASectionEnd(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2348,10 +2348,10 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_flushCharacterReference(
+static NH_API_RESULT nh_html_flushCharacterReference(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2368,10 +2368,10 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeCharacterReference(
+static NH_API_RESULT nh_html_consumeCharacterReference(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2387,28 +2387,28 @@ NH_HTML_BEGIN()
     if (Tokenizer_p->codepoint == 0x23) {
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1); 
         Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_NUMERIC_CHARACTER_REFERENCE;
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     NH_HTML_CHECK(nh_html_flushCharacterReference(Tokenizer_p))
     NH_HTML_CHECK(nh_html_reconsume(Tokenizer_p, Tokenizer_p->returnState))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_consumeNamedCharacterReference(
+static NH_API_RESULT nh_html_consumeNamedCharacterReference(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // 13.2.5.74
 
 // HANDLE EOF ======================================================================================
 
-static NH_HTML_RESULT nh_html_handleEOF(
+static NH_API_RESULT nh_html_handleEOF(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2650,7 +2650,7 @@ NH_HTML_BEGIN()
         case NH_HTML_TOKENIZATION_STATE_BEFORE_DOCTYPE_NAME :
 
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_EOF_IN_DOCTYPE))
-            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, NH_TRUE))
+            NH_HTML_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, true))
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             NH_HTML_CHECK(nh_html_emitEOFToken(Tokenizer_p))
             break;
@@ -2670,7 +2670,7 @@ NH_HTML_BEGIN()
         case NH_HTML_TOKENIZATION_STATE_AFTER_DOCTYPE_SYSTEM_IDENTIFIER :
 
             NH_HTML_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_EOF_IN_DOCTYPE))
-            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = NH_TRUE;
+            Tokenizer_p->Token_p->DOCTYPE.forceQuirks = true;
             NH_HTML_CHECK(nh_html_emit(Tokenizer_p))
             NH_HTML_CHECK(nh_html_emitEOFToken(Tokenizer_p))
             break;
@@ -2707,12 +2707,12 @@ NH_HTML_BEGIN()
             break;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // CONSUME NEXT ====================================================================================
 
-static NH_HTML_RESULT nh_html_reconsume(
+static NH_API_RESULT nh_html_reconsume(
     nh_html_Tokenizer *Tokenizer_p, NH_HTML_TOKENIZATION_STATE newState)
 {
 NH_HTML_BEGIN()
@@ -2722,7 +2722,7 @@ NH_HTML_BEGIN()
 NH_HTML_DIAGNOSTIC_END(nh_html_consume(Tokenizer_p))
 }
 
-static NH_HTML_RESULT nh_html_consume(
+static NH_API_RESULT nh_html_consume(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()
@@ -2816,10 +2816,10 @@ NH_HTML_BEGIN()
 
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_ERROR_BAD_STATE)
+NH_HTML_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-NH_HTML_RESULT nh_html_consumeNext(
+NH_API_RESULT nh_html_consumeNext(
     nh_html_Tokenizer *Tokenizer_p)
 {
 NH_HTML_BEGIN()

@@ -12,15 +12,15 @@
 
 // RESULTS =========================================================================================
 
-const char *NH_CSS_RESULTS_PP[] = 
+const char *NH_API_RESULTS_PP[] = 
 {
-    "NH_CSS_SUCCESS",                    
-    "NH_CSS_ERROR_NULL_POINTER",         
-    "NH_CSS_ERROR_BAD_STATE", 
-    "NH_CSS_ERROR_MEMORY_ALLOCATION",
-    "NH_CSS_SIGNAL_SPLIT_INLINE_BOX",
+    "NH_API_SUCCESS",                    
+    "NH_API_ERROR_NULL_POINTER",         
+    "NH_API_ERROR_BAD_STATE", 
+    "NH_API_ERROR_MEMORY_ALLOCATION",
+    "NH_API_SIGNAL_SPLIT_INLINE_BOX",
 
 };
 
-unsigned int NH_CSS_RESULTS_PP_COUNT = sizeof(NH_CSS_RESULTS_PP) / sizeof(NH_CSS_RESULTS_PP[0]);
+unsigned int NH_API_RESULTS_PP_COUNT = sizeof(NH_API_RESULTS_PP) / sizeof(NH_API_RESULTS_PP[0]);
 

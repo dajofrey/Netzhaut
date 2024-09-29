@@ -62,7 +62,7 @@
  *  @{
  */
 
-    const NH_BYTE *nh_css_getSelectorParseNodeName(
+    const char *nh_css_getSelectorParseNodeName(
         nh_css_SelectorParseNode *Node_p
     );
 

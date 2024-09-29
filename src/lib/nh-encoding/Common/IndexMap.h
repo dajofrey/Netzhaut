@@ -36,7 +36,7 @@
  *  @{
  */
 
-    NH_ENCODING_RESULT nh_encoding_createIndexMap(
+    NH_API_RESULT nh_encoding_createIndexMap(
     );
 
     void nh_encoding_freeIndexMap(

@@ -64,7 +64,7 @@ NH_CSS_END(NULL)
 
 // COLOR ===========================================================================================
 
-static NH_CSS_RESULT nh_css_computeColorUnit(
+static NH_API_RESULT nh_css_computeColorUnit(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -73,9 +73,9 @@ NH_CSS_BEGIN()
 
     if (ColorUnit_p->Common.type == NH_CSS_VALUE_KEYWORD) 
     {
-        NH_BYTE color_p[6] = {0};
+        char color_p[6] = {0};
 
-        if (nh_css_getColorFromName(ColorUnit_p->String.p, color_p) == NH_CSS_SUCCESS) 
+        if (nh_css_getColorFromName(ColorUnit_p->String.p, color_p) == NH_API_SUCCESS) 
         {
             nh_css_Value *NewValue_p = nh_core_allocate(sizeof(nh_css_Value));
             NH_CSS_CHECK_MEM(NewValue_p)
@@ -98,7 +98,7 @@ NH_CSS_BEGIN()
             *Variables_p->ComputedValue_pp = ColorUnit_p;
         }
         else {
-            NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+            NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
     }
     else 
@@ -107,22 +107,22 @@ NH_CSS_BEGIN()
         *Variables_p->ComputedValue_pp = ColorUnit_p;
     }
     else {
-        NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // LENGTH ==========================================================================================
 
-static NH_CSS_RESULT nh_css_computeLength(
+static NH_API_RESULT nh_css_computeLength(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
 
     if (Variables_p->SpecifiedValue_p->Common.type == NH_CSS_VALUE_NUMBER) {
         *Variables_p->ComputedValue_pp = Variables_p->SpecifiedValue_p;
-        NH_CSS_END(NH_CSS_SUCCESS)
+        NH_CSS_END(NH_API_SUCCESS)
     }
 
     switch (Variables_p->SpecifiedValue_p->Common.type)
@@ -182,15 +182,15 @@ NH_CSS_BEGIN()
         case NH_CSS_VALUE_RAD  : break;
         case NH_CSS_VALUE_TURN : break;
 
-        default : NH_CSS_END(NH_CSS_ERROR_BAD_STATE)
+        default : NH_CSS_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // MARGIN ==========================================================================================
 
-static NH_CSS_RESULT nh_css_computeMarginValue(
+static NH_API_RESULT nh_css_computeMarginValue(
     nh_css_ComputeVariables *Variables_p, nh_css_Value *Value_p, NH_CSS_PROPERTY property)
 {
 NH_CSS_BEGIN()
@@ -208,12 +208,12 @@ NH_CSS_BEGIN()
     else if (Value_p->Common.type == NH_CSS_VALUE_PERCENTAGE) {
         *(Variables_p->ComputedValue_pp) = Value_p;
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computeMargin(
+static NH_API_RESULT nh_css_computeMargin(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -224,15 +224,15 @@ NH_CSS_BEGIN()
     nh_css_Value *Compare_p = 
         nh_css_compareSpecifiedValues(ShorthandValue_p, Variables_p->SpecifiedValue_p);
 
-    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)}
+    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
-    NH_CSS_RESULT result = 
+    NH_API_RESULT result = 
         nh_css_computeMarginValue(Variables_p, Variables_p->SpecifiedValue_p, Variables_p->property);
 
 NH_CSS_DIAGNOSTIC_END(result)
 }
 
-static NH_CSS_RESULT nh_css_computeMarginShorthand(
+static NH_API_RESULT nh_css_computeMarginShorthand(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -252,16 +252,16 @@ NH_CSS_BEGIN()
         FourthValue_p = ThirdValue_p->Common.Next_p;
     }
 
-    NH_BOOL setTop = Value_p == nh_css_compareSpecifiedValues(
+    bool setTop = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_MARGIN_TOP], Value_p
     );
-    NH_BOOL setRight = Value_p == nh_css_compareSpecifiedValues(
+    bool setRight = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_MARGIN_RIGHT], Value_p
     );
-    NH_BOOL setBottom = Value_p == nh_css_compareSpecifiedValues(
+    bool setBottom = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_MARGIN_BOTTOM], Value_p
     );
-    NH_BOOL setLeft = Value_p == nh_css_compareSpecifiedValues(
+    bool setLeft = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_MARGIN_LEFT], Value_p
     );
 
@@ -290,12 +290,12 @@ NH_CSS_BEGIN()
         if (setLeft)   {NH_CSS_CHECK(nh_css_computeMarginValue(Variables_p, Value_p, NH_CSS_PROPERTY_MARGIN_LEFT))}
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // MARGIN BLOCK/INLINE =============================================================================
 
-static NH_CSS_RESULT nh_css_computeMarginBlockOrMarginInline(
+static NH_API_RESULT nh_css_computeMarginBlockOrMarginInline(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -330,10 +330,10 @@ NH_CSS_BEGIN()
 //            break;
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computeMarginBlockShorthandOrMarginInlineShorthand(
+static NH_API_RESULT nh_css_computeMarginBlockShorthandOrMarginInlineShorthand(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -357,13 +357,13 @@ NH_CSS_BEGIN()
 //        }
 //    }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // FONT SIZE =======================================================================================
 
 static nh_css_Value *nh_css_computeAbsoluteSize(
-    NH_BYTE *value_p)
+    char *value_p)
 {
 NH_CSS_BEGIN()
 
@@ -399,7 +399,7 @@ NH_CSS_BEGIN()
 NH_CSS_END(NewValue_p)
 }
 
-static NH_CSS_RESULT nh_css_computeFontSize(
+static NH_API_RESULT nh_css_computeFontSize(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -415,12 +415,12 @@ NH_CSS_BEGIN()
         *(Variables_p->ComputedValue_pp) = Variables_p->SpecifiedValue_p;
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // FONT WEIGHT =====================================================================================
 
-static NH_CSS_RESULT nh_css_computeFontWeightAbsolute(
+static NH_API_RESULT nh_css_computeFontWeightAbsolute(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -443,17 +443,17 @@ NH_CSS_BEGIN()
             *(*ComputedValue_pp) = nh_css_initValue(NH_CSS_VALUE_SCOPE_COMPUTED, NH_CSS_VALUE_NUMBER);
             (*ComputedValue_pp)->number = 700; 
         }
-        else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+        else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
     }
     else if (Variables_p->SpecifiedValue_p->Common.type == NH_CSS_VALUE_NUMBER) {
         *ComputedValue_pp = Variables_p->SpecifiedValue_p;
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computeFontWeight(
+static NH_API_RESULT nh_css_computeFontWeight(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -521,14 +521,14 @@ NH_CSS_BEGIN()
     else if (Variables_p->SpecifiedValue_p->Common.type == NH_CSS_VALUE_NUMBER) {
         NH_CSS_CHECK(nh_css_computeFontWeightAbsolute(Variables_p))
     }
-    else {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // FONT STYLE ======================================================================================
 
-static NH_CSS_RESULT nh_css_computeFontStyle(
+static NH_API_RESULT nh_css_computeFontStyle(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -543,16 +543,16 @@ NH_CSS_BEGIN()
         else if (!strcmp(Variables_p->SpecifiedValue_p->String.p, "oblique")) {
             *(Variables_p->ComputedValue_pp) = Variables_p->SpecifiedValue_p;
         }
-        else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+        else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // FONT FAMILY =====================================================================================
 
-static NH_CSS_RESULT nh_css_computeFontFamily(
+static NH_API_RESULT nh_css_computeFontFamily(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -562,17 +562,17 @@ NH_CSS_BEGIN()
     while (Variables_p->SpecifiedValue_p) {
         if (Variables_p->SpecifiedValue_p->Common.type != NH_CSS_VALUE_KEYWORD 
         &&  Variables_p->SpecifiedValue_p->Common.type != NH_CSS_VALUE_STRING) {
-            NH_CSS_END(NH_CSS_ERROR_BAD_STATE)
+            NH_CSS_END(NH_API_ERROR_BAD_STATE)
         }
         Variables_p->SpecifiedValue_p = Variables_p->SpecifiedValue_p->Common.Next_p;
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // BORDER STYLE ====================================================================================
 
-static NH_CSS_RESULT nh_css_computeBorderStyle(
+static NH_API_RESULT nh_css_computeBorderStyle(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -589,10 +589,10 @@ NH_CSS_BEGIN()
         Variables_p->ComputedValues_p->pp[Variables_p->property] = Value_p;
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computeBorderStyleShorthand(
+static NH_API_RESULT nh_css_computeBorderStyleShorthand(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -615,16 +615,16 @@ NH_CSS_BEGIN()
         FourthValue_p = ThirdValue_p->Common.Next_p;
     }
 
-    NH_BOOL setTop = Value_p == nh_css_compareSpecifiedValues(
+    bool setTop = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_TOP_STYLE], Value_p
     );
-    NH_BOOL setRight = Value_p == nh_css_compareSpecifiedValues(
+    bool setRight = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_RIGHT_STYLE], Value_p
     );
-    NH_BOOL setBottom = Value_p == nh_css_compareSpecifiedValues(
+    bool setBottom = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_BOTTOM_STYLE], Value_p
     );
-    NH_BOOL setLeft = Value_p == nh_css_compareSpecifiedValues(
+    bool setLeft = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_LEFT_STYLE], Value_p
     );
 
@@ -653,12 +653,12 @@ NH_CSS_BEGIN()
         if (setLeft)   {ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_LEFT_STYLE] = Value_p;}
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // LINE WIDTH ======================================================================================
 
-static NH_CSS_RESULT nh_css_computeLineWidth(
+static NH_API_RESULT nh_css_computeLineWidth(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -686,19 +686,19 @@ NH_CSS_BEGIN()
             NewValue_p->number = 5;
             *Variables_p->ComputedValue_pp = NewValue_p;
         }
-        else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+        else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
     }
     else if (nh_css_isLengthValue(Variables_p->SpecifiedValue_p)) {
         NH_CSS_CHECK(nh_css_computeLength(Variables_p))
     } 
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // BORDER WIDTH ====================================================================================
 
-static NH_CSS_RESULT nh_css_computeBorderWidthValue(
+static NH_API_RESULT nh_css_computeBorderWidthValue(
     nh_css_ComputeVariables *Variables_p, nh_css_Value *SpecifiedValue_p, NH_CSS_PROPERTY property)
 {
 NH_CSS_BEGIN()
@@ -764,10 +764,10 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computeBorderWidth(
+static NH_API_RESULT nh_css_computeBorderWidth(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -779,14 +779,14 @@ NH_CSS_BEGIN()
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_WIDTH];
 
     nh_css_Value *Compare_p = nh_css_compareSpecifiedValues(ShorthandValue_p, Value_p);
-    if (Compare_p == ShorthandValue_p) {NH_CSS_END(NH_CSS_SUCCESS)}
+    if (Compare_p == ShorthandValue_p) {NH_CSS_END(NH_API_SUCCESS)}
 
-    NH_CSS_RESULT result = nh_css_computeBorderWidthValue(Variables_p, Value_p, Variables_p->property);
+    NH_API_RESULT result = nh_css_computeBorderWidthValue(Variables_p, Value_p, Variables_p->property);
 
 NH_CSS_DIAGNOSTIC_END(result)
 }
 
-static NH_CSS_RESULT nh_css_computeBorderWidthShorthand(
+static NH_API_RESULT nh_css_computeBorderWidthShorthand(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -809,16 +809,16 @@ NH_CSS_BEGIN()
         FourthValue_p = ThirdValue_p->Common.Next_p;
     }
 
-    NH_BOOL setTop = Value_p == nh_css_compareSpecifiedValues(
+    bool setTop = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_TOP_WIDTH], Value_p
     );
-    NH_BOOL setRight = Value_p == nh_css_compareSpecifiedValues(
+    bool setRight = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_RIGHT_WIDTH], Value_p
     );
-    NH_BOOL setBottom = Value_p == nh_css_compareSpecifiedValues(
+    bool setBottom = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_BOTTOM_WIDTH], Value_p
     );
-    NH_BOOL setLeft = Value_p == nh_css_compareSpecifiedValues(
+    bool setLeft = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_LEFT_WIDTH], Value_p
     );
 
@@ -847,12 +847,12 @@ NH_CSS_BEGIN()
         if (setLeft)   {NH_CSS_CHECK(nh_css_computeBorderWidthValue(Variables_p, Value_p, NH_CSS_PROPERTY_BORDER_LEFT_WIDTH))}
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // BORDER RADIUS ===================================================================================
 
-static NH_CSS_RESULT nh_css_computeBorderRadiusValue(
+static NH_API_RESULT nh_css_computeBorderRadiusValue(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -863,12 +863,12 @@ NH_CSS_BEGIN()
     else if (Variables_p->SpecifiedValue_p->Common.type == NH_CSS_VALUE_PERCENTAGE) {
         *(Variables_p->ComputedValue_pp) = Variables_p->SpecifiedValue_p;
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computeBorderRadius(
+static NH_API_RESULT nh_css_computeBorderRadius(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -879,24 +879,24 @@ NH_CSS_BEGIN()
     nh_css_Value *Compare_p = 
         nh_css_compareSpecifiedValues(ShorthandValue_p, Variables_p->SpecifiedValue_p);
 
-    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)}
+    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
 NH_CSS_DIAGNOSTIC_END(nh_css_computeBorderRadiusValue(Variables_p))
 }
 
 // BORDER ==========================================================================================
 
-static NH_CSS_RESULT nh_css_computeBorderShorthand(
+static NH_API_RESULT nh_css_computeBorderShorthand(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // PADDING =========================================================================================
 
-static NH_CSS_RESULT nh_css_computePaddingValue(
+static NH_API_RESULT nh_css_computePaddingValue(
     nh_css_ComputeVariables *Variables_p, nh_css_Value *Value_p, NH_CSS_PROPERTY property)
 {
 NH_CSS_BEGIN()
@@ -911,12 +911,12 @@ NH_CSS_BEGIN()
     else if (Value_p->Common.type == NH_CSS_VALUE_PERCENTAGE) {
         *(Variables_p->ComputedValue_pp) = Value_p;
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computePadding(
+static NH_API_RESULT nh_css_computePadding(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -927,15 +927,15 @@ NH_CSS_BEGIN()
     nh_css_Value *Compare_p = 
         nh_css_compareSpecifiedValues(ShorthandValue_p, Variables_p->SpecifiedValue_p);
 
-    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)}
+    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
-    NH_CSS_RESULT result = 
+    NH_API_RESULT result = 
         nh_css_computePaddingValue(Variables_p, Variables_p->SpecifiedValue_p, Variables_p->property);
 
 NH_CSS_END(result)
 }
 
-static NH_CSS_RESULT nh_css_computePaddingShorthand(
+static NH_API_RESULT nh_css_computePaddingShorthand(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -955,16 +955,16 @@ NH_CSS_BEGIN()
         FourthValue_p = ThirdValue_p->Common.Next_p;
     }
 
-    NH_BOOL setTop = Value_p == nh_css_compareSpecifiedValues(
+    bool setTop = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_PADDING_TOP], Value_p
     );
-    NH_BOOL setRight = Value_p == nh_css_compareSpecifiedValues(
+    bool setRight = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_PADDING_RIGHT], Value_p
     );
-    NH_BOOL setBottom = Value_p == nh_css_compareSpecifiedValues(
+    bool setBottom = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_PADDING_BOTTOM], Value_p
     );
-    NH_BOOL setLeft = Value_p == nh_css_compareSpecifiedValues(
+    bool setLeft = Value_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_PADDING_LEFT], Value_p
     );
 
@@ -993,12 +993,12 @@ NH_CSS_BEGIN()
         if (setLeft)   {NH_CSS_CHECK(nh_css_computePaddingValue(Variables_p, Value_p, NH_CSS_PROPERTY_PADDING_LEFT))}
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // TEXT ALIGN ======================================================================================
 
-static NH_CSS_RESULT nh_css_computeTextAlign(
+static NH_API_RESULT nh_css_computeTextAlign(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -1009,14 +1009,14 @@ NH_CSS_BEGIN()
     nh_css_Value *Compare_p = 
         nh_css_compareSpecifiedValues(ShorthandValue_p, Variables_p->SpecifiedValue_p);
 
-    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)}
+    if (Compare_p == ShorthandValue_p) {NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     Variables_p->ComputedValues_p->pp[Variables_p->property] = Variables_p->SpecifiedValue_p;
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_computeTextAlignShorthand(
+static NH_API_RESULT nh_css_computeTextAlignShorthand(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -1026,10 +1026,10 @@ NH_CSS_BEGIN()
 
     Variables_p->ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN] = ShorthandValue_p;
 
-    NH_BOOL setAll = ShorthandValue_p == nh_css_compareSpecifiedValues(
+    bool setAll = ShorthandValue_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_TEXT_ALIGN_ALL], ShorthandValue_p
     );
-    NH_BOOL setLast = ShorthandValue_p == nh_css_compareSpecifiedValues(
+    bool setLast = ShorthandValue_p == nh_css_compareSpecifiedValues(
         &((nh_css_Value*)Variables_p->SpecifiedValues_p->p)[NH_CSS_PROPERTY_TEXT_ALIGN_LAST], ShorthandValue_p
     );
 
@@ -1041,12 +1041,12 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // SIZE ============================================================================================
 
-static NH_CSS_RESULT nh_css_computeSize(
+static NH_API_RESULT nh_css_computeSize(
     nh_css_ComputeVariables *Variables_p)
 {
 NH_CSS_BEGIN()
@@ -1062,29 +1062,29 @@ NH_CSS_BEGIN()
         if (Variables_p->property == NH_CSS_PROPERTY_MAX_WIDTH || Variables_p->property == NH_CSS_PROPERTY_MAX_HEIGHT) {
             if (!strcmp(Variables_p->SpecifiedValue_p->String.p, "none")) {
                 *Variables_p->ComputedValue_pp = Variables_p->SpecifiedValue_p;
-                NH_CSS_END(NH_CSS_SUCCESS)
+                NH_CSS_END(NH_API_SUCCESS)
             }
         }
         else {
             if (!strcmp(Variables_p->SpecifiedValue_p->String.p, "auto")) {
                 *Variables_p->ComputedValue_pp = Variables_p->SpecifiedValue_p;
-                NH_CSS_END(NH_CSS_SUCCESS)
+                NH_CSS_END(NH_API_SUCCESS)
             }
         }
         if (!strcmp(Variables_p->SpecifiedValue_p->String.p, "min-content")
         ||  !strcmp(Variables_p->SpecifiedValue_p->String.p, "max-content")) {
             *Variables_p->ComputedValue_pp = Variables_p->SpecifiedValue_p;
         }
-        else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+        else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
     }
-    else {NH_CSS_END(NH_CSS_ERROR_BAD_STATE)}
+    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // BLOCKIFY ========================================================================================
 
-static NH_CSS_RESULT nh_css_blockify(
+static NH_API_RESULT nh_css_blockify(
     nh_dom_Node *Node_p, nh_List *ComputedValues_p)
 {
 NH_CSS_BEGIN()
@@ -1103,10 +1103,10 @@ NH_CSS_BEGIN()
         ComputedValues_p->pp[NH_CSS_PROPERTY_DISPLAY] = NewValue_p;
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_blockifyNode(
+static NH_API_RESULT nh_css_blockifyNode(
     nh_dom_Node *Node_p, nh_List *ComputedValues_p)
 {
 NH_CSS_BEGIN()
@@ -1123,12 +1123,12 @@ NH_CSS_BEGIN()
         nh_css_blockify(Node_p, ComputedValues_p);
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // COMPUTE =========================================================================================
 
-static NH_CSS_RESULT nh_css_computeSpecifiedValue(
+static NH_API_RESULT nh_css_computeSpecifiedValue(
     nh_css_ComputeVariables *Variables_p, NH_CSS_PROPERTY property)
 {
 NH_CSS_BEGIN()
@@ -1288,10 +1288,10 @@ NH_CSS_BEGIN()
 
     *(Variables_p->ComputedValue_pp) = Variables_p->SpecifiedValue_p;
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CSS_RESULT nh_css_computeSpecifiedValues(
+NH_API_RESULT nh_css_computeSpecifiedValues(
     nh_css_LogContext *LogContext_p, nh_dom_Node *Node_p)
 {
 NH_CSS_BEGIN()
@@ -1446,12 +1446,12 @@ NH_CSS_BEGIN()
 
     if (LogContext_p) {nh_css_logComputedValues(LogContext_p, &ComputedValues);}
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // FREE ============================================================================================
 
-NH_CSS_RESULT nh_css_freeComputedValues(
+NH_API_RESULT nh_css_freeComputedValues(
     nh_dom_Node *Node_p)
 {
 NH_CSS_BEGIN()
@@ -1468,8 +1468,8 @@ NH_CSS_BEGIN()
         }
     }
 
-    nh_core_freeList(ComputedValues_p, NH_FALSE);
+    nh_core_freeList(ComputedValues_p, false);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

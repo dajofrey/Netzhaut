@@ -26,7 +26,7 @@
 
 // MODIFIED ========================================================================================
 
-NH_BYTE *nh_core_lastModified(
+char *nh_core_lastModified(
     void *lib_p)
 {
 NH_CORE_BEGIN()
@@ -40,14 +40,14 @@ NH_CORE_BEGIN()
     stat(info_p->l_name, &attrib);
     
     struct tm *tm;
-    NH_BYTE *time_p = malloc(sizeof(NH_BYTE) * 127);
+    char *time_p = malloc(sizeof(char) * 127);
     if (time_p == NULL) {NH_CORE_END(NULL)}
     memset(time_p, '\0', 127);
 
     /* convert time_t to broken-down time representation */
     tm = localtime(&attrib.st_mtime);
     /* format time days.month.year hour:minute:seconds */
-    strftime(time_p, sizeof(NH_BYTE) * 127, "%d.%m.%Y %H:%M:%S", tm);
+    strftime(time_p, sizeof(char) * 127, "%d.%m.%Y %H:%M:%S", tm);
 
 #endif
 
@@ -59,7 +59,7 @@ NH_CORE_END(time_p)
 //typedef struct nh_core_loader_ModuleUpdater {
 //    double intervalInSeconds;
 //    nh_SystemTime LastUpdate;
-//    NH_BOOL offline;
+//    bool offline;
 //} nh_core_loader_ModuleUpdater;
 //
 //void *nh_core_initModuleUpdater(
@@ -70,7 +70,7 @@ NH_CORE_END(time_p)
 //    nh_core_loader_ModuleUpdater *Updater_p = nh_core_allocate(sizeof(nh_core_loader_ModuleUpdater));
 //    Updater_p->intervalInSeconds = 2.0;
 //    Updater_p->LastUpdate = nh_core_getSystemTime();
-//    Updater_p->offline = NH_TRUE;
+//    Updater_p->offline = true;
 //
 //NH_CORE_END(Updater_p)
 //NH_CORE_END(NULL)
@@ -78,13 +78,13 @@ NH_CORE_END(time_p)
 //
 //// RUN UPDATER =====================================================================================
 //
-//typedef NH_CORE_RESULT (*nh_core_startProcess_f)(
-//    int argc, NH_BYTE **argv_pp
+//typedef NH_API_RESULT (*nh_core_startProcess_f)(
+//    int argc, char **argv_pp
 //); 
 //
 //// TODO multithreading
 //static nh_List nh_killLibDependentForks(
-//    NH_BYTE *libName_p)
+//    char *libName_p)
 //{
 //NH_CORE_BEGIN()
 //
@@ -95,9 +95,9 @@ NH_CORE_END(time_p)
 //        nh_Process *Proc_p = &NH_PROCESS_POOL.Forks_p[i];
 //        if (Proc_p->id != 0) 
 //        {
-//            NH_BYTE *libName2_p = nh_core_writeToProcess(Proc_p, "NH_IPC_ID", 10, NH_TRUE);
+//            char *libName2_p = nh_core_writeToProcess(Proc_p, "NH_IPC_ID", 10, true);
 //            if (libName2_p != NULL && !strcmp(libName_p, libName2_p)) {
-//                NH_BYTE *funcName_p = nh_core_writeToProcess(Proc_p, "NH_IPC_UPDATE", 14, NH_TRUE);
+//                char *funcName_p = nh_core_writeToProcess(Proc_p, "NH_IPC_UPDATE", 14, true);
 //                if (funcName_p != NULL) {
 //                    nh_core_appendToList(&Functions, funcName_p);
 //                    // wait until fork has terminated
@@ -123,18 +123,18 @@ NH_CORE_END(time_p)
 //        NH_CORE_END(NH_SIGNAL_OK)
 //    }
 //
-//    for (NH_BYTE *libName_p; libName_p = nh_core_getModifiedLib();)
+//    for (char *libName_p; libName_p = nh_core_getModifiedLib();)
 //    {
 //        nh_List Functions = nh_killLibDependentForks(libName_p);
 //
 //        NH_LOADER_CHECK(nh_unload(libName_p))
-//        NH_LOADER_CHECK(nh_core_load(libName_p, NH_FALSE))
+//        NH_LOADER_CHECK(nh_core_load(libName_p, false))
 //
 //        for (int i = 0; i < Functions.size; ++i) {
 //            NH_LOADER_CHECK(((nh_core_startProcess_f)nh_core_loadSymbol(libName_p, Functions.pp[i]))(0, NULL))
 //        }
 //    
-//        nh_core_freeList(&Functions, NH_TRUE);
+//        nh_core_freeList(&Functions, true);
 //        nh_core_free(libName_p);
 //    }
 //

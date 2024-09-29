@@ -12,13 +12,13 @@
 
 // RESULTS =========================================================================================
 
-const char *NH_WEBIDL_RESULTS_PP[] = 
+const char *NH_API_RESULTS_PP[] = 
 {
-    "NH_WEBIDL_SUCCESS",                    
-    "NH_WEBIDL_ERROR_NULL_POINTER",         
-    "NH_WEBIDL_ERROR_BAD_STATE", 
-    "NH_WEBIDL_ERROR_MEMORY_ALLOCATION",
+    "NH_API_SUCCESS",                    
+    "NH_API_ERROR_NULL_POINTER",         
+    "NH_API_ERROR_BAD_STATE", 
+    "NH_API_ERROR_MEMORY_ALLOCATION",
 };
 
-unsigned int NH_WEBIDL_RESULTS_PP_COUNT = sizeof(NH_WEBIDL_RESULTS_PP) / sizeof(NH_WEBIDL_RESULTS_PP[0]);
+unsigned int NH_API_RESULTS_PP_COUNT = sizeof(NH_API_RESULTS_PP) / sizeof(NH_API_RESULTS_PP[0]);
 

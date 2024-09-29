@@ -36,7 +36,7 @@ typedef struct nh_dom_Element {
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeElement(
+NH_API_RESULT nh_dom_initializeElement(
     nh_webidl_Object *Element_p)
 {
 NH_DOM_BEGIN()
@@ -47,7 +47,7 @@ NH_DOM_BEGIN()
     Element_p->Attributes.pp[9] = nh_dom_createNamedNodeMap((nh_dom_Element*)Element_p);
     NH_DOM_CHECK_MEM(Element_p->Attributes.pp[9])
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================
@@ -76,7 +76,7 @@ NH_DOM_BEGIN()
         nh_webidl_appendToDOMString(QualifiedName_p, LocalName_p->p, LocalName_p->length);
     }
     else {
-        NH_BYTE qualifiedName_p[255] = {'\0'};
+        char qualifiedName_p[255] = {'\0'};
         sprintf(qualifiedName_p, "%s:%s", NamespacePrefix_p->p, LocalName_p->p);
         nh_webidl_appendToDOMString(QualifiedName_p, qualifiedName_p, strlen(qualifiedName_p));
     }
@@ -105,7 +105,7 @@ NH_DOM_END(QualifiedName_p)
 // https://dom.spec.whatwg.org/#concept-create-element
 nh_webidl_Object *nh_dom_createElement(
     nh_webidl_Object *Document_p, nh_webidl_DOMString *LocalName_p, nh_webidl_DOMString *Namespace_p, nh_webidl_DOMString *NamespacePrefix_p,
-    nh_webidl_DOMString *Is_p, NH_BOOL synchronousCustomElements, nh_webidl_Interface *Interface_p)
+    nh_webidl_DOMString *Is_p, bool synchronousCustomElements, nh_webidl_Interface *Interface_p)
 {
 NH_DOM_BEGIN()
 
@@ -190,7 +190,7 @@ NH_DOM_END(NULL)
 }
 
 nh_dom_Attr *nh_dom_getAttrByLocalName(
-    nh_dom_Element *Element_p, NH_BYTE *localName_p)
+    nh_dom_Element *Element_p, char *localName_p)
 {
 NH_DOM_BEGIN()
 
@@ -209,7 +209,7 @@ NH_DOM_BEGIN()
 NH_DOM_END(NULL)
 }
 
-NH_DOM_RESULT nh_dom_replaceAttr(
+NH_API_RESULT nh_dom_replaceAttr(
     nh_dom_Element *Element_p, nh_dom_Attr *OldAttr_p, nh_dom_Attr *NewAttr_p)
 {
 NH_DOM_BEGIN()
@@ -226,10 +226,10 @@ NH_DOM_BEGIN()
 
     // TODO set element
 
-NH_DOM_END(NH_DOM_SUCCESS)
+NH_DOM_END(NH_API_SUCCESS)
 }
 
-NH_DOM_RESULT nh_dom_appendAttr(
+NH_API_RESULT nh_dom_appendAttr(
     nh_dom_Element *Element_p, nh_dom_Attr *Attr_p)
 {
 NH_DOM_BEGIN()
@@ -240,7 +240,7 @@ NH_DOM_BEGIN()
     nh_core_appendToList(AttrList_p, Attr_p);
     nh_dom_setAttrElement(Attr_p, Element_p);
 
-NH_DOM_END(NH_DOM_SUCCESS)
+NH_DOM_END(NH_API_SUCCESS)
 }
 
 nh_dom_Attr *nh_dom_setAttr(

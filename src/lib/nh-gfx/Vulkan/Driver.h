@@ -48,8 +48,8 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_vk_createDriver(
-        nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, NH_BYTE *name_p
+    NH_API_RESULT nh_vk_createDriver(
+        nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, char *name_p
     );
 
     void nh_vk_destroyDriver(

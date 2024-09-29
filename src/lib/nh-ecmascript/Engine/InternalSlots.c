@@ -74,17 +74,17 @@ NH_ECMASCRIPT_END(InternalSlots_p->values_pp[InternalSlots_p->lookup_p[slot]])
 
 // SET =============================================================================================
 
-NH_ECMASCRIPT_RESULT nh_ecmascript_setInternalSlot(
+NH_API_RESULT nh_ecmascript_setInternalSlot(
     nh_ecmascript_InternalSlots *InternalSlots_p, NH_ECMASCRIPT_INTERNAL_SLOT slot, void *value_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
     if (slot >= InternalSlots_p->maxLookup || slot < 0 || InternalSlots_p->lookup_p[slot] == -1) {
-        NH_ECMASCRIPT_END(NH_ECMASCRIPT_ERROR_BAD_STATE)
+        NH_ECMASCRIPT_END(NH_API_ERROR_BAD_STATE)
     }
 
     InternalSlots_p->values_pp[InternalSlots_p->lookup_p[slot]] = value_p;
 
-NH_ECMASCRIPT_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_END(NH_API_SUCCESS)
 }
 

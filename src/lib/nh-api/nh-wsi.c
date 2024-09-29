@@ -21,16 +21,16 @@
 
 // CREATE ==========================================================================================
 
-nh_wsi_Window *nh_api_createWindow(
-    NH_BYTE *namespace_p, nh_gfx_SurfaceRequirements *Requirements_p)
+nh_api_Window *nh_api_createWindow(
+    char *namespace_p, nh_api_SurfaceRequirements *Requirements_p)
 {
     nh_wsi_createWindow_f createWindow_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_createWindow");
     return createWindow_f ? createWindow_f(namespace_p, Requirements_p) : NULL;
 }
 
-NH_WSI_RESULT_E nh_api_setWindowEventListener(
-    nh_wsi_Window *Window_p, nh_wsi_callback_f callback_f)
+NH_API_RESULT nh_api_setWindowEventListener(
+    nh_api_Window *Window_p, nh_api_windowCallback_f callback_f)
 {
     nh_wsi_setEventListener_f setEventListener_f = !NH_LOADER_P || !Window_p ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEventListener");
-    return setEventListener_f ? setEventListener_f(Window_p, callback_f) : NH_WSI_ERROR_BAD_STATE;
+    return setEventListener_f ? setEventListener_f(Window_p, callback_f) : NH_API_ERROR_BAD_STATE;
 }

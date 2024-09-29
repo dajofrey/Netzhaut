@@ -21,7 +21,7 @@
  */
 
     typedef struct nh_core_LoggerNode {
-        NH_BYTE *name_p;
+        char *name_p;
         nh_List Children;
         nh_List Messages;
         struct nh_core_LoggerNode *Parent_p;
@@ -45,38 +45,38 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_initLogger(
+    NH_API_RESULT nh_core_initLogger(
     );
 
-    NH_CORE_RESULT nh_core_freeLogger(
+    NH_API_RESULT nh_core_freeLogger(
     );
 
-    NH_CORE_RESULT nh_core_addLogCallback(
-        nh_core_logCallback_f logCallback_f
+    NH_API_RESULT nh_core_addLogCallback(
+        nh_api_logCallback_f logCallback_f
     );
     
-    NH_CORE_RESULT _nh_core_sendLogMessage(
-        NH_BYTE *node_p, NH_BYTE *options_p, NH_BYTE *message_p
+    NH_API_RESULT _nh_core_sendLogMessage(
+        char *node_p, char *options_p, char *message_p
     );
     
-    NH_CORE_RESULT nh_core_sendLogMessage(
-        NH_BYTE *node_p, NH_BYTE *options_p, NH_BYTE *message_p
+    NH_API_RESULT nh_core_sendLogMessage(
+        char *node_p, char *options_p, char *message_p
     );
 
-    NH_CORE_RESULT _nh_begin(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_begin(
+        const char *file_p, const char *function_p
     );
 
-    NH_CORE_RESULT _nh_end(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_end(
+        const char *file_p, const char *function_p
     );
     
-    NH_CORE_RESULT _nh_diagnosticEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p, const NH_BYTE *result_p, int line, NH_BOOL success
+    NH_API_RESULT _nh_diagnosticEnd(
+        const char *file_p, const char *function_p, const char *result_p, int line, bool success
     );
 
     void nh_core_getUniqueLogId(
-        NH_BYTE *logId_p
+        char *logId_p
     );
 
 /** @} */

@@ -185,7 +185,7 @@
 //NH_NETWORK_END(URL_p)
 //}
 //
-//NH_NETWORK_RESULT nh_network_createURL(
+//NH_API_RESULT nh_network_createURL(
 //    nh_URI *URI_p)
 //{
 //NH_NETWORK_BEGIN()
@@ -195,7 +195,7 @@
 //    URI_p->data_p = nh_network_createURLFromLocation(URI_p->location_p, &URI_p->scheme);
 //    NH_NETWORK_CHECK_MEM(URI_p->data_p)
 //
-//NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+//NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
 //
 //// FREE ============================================================================================
@@ -274,7 +274,7 @@
 //        nh_network_Socket *Socket_p = nh_core_getFromLinkedList(&URL_p->Sockets, i);
 //        nh_network_ClientSocket *ClientSocket_p = nh_network_getClientSocket(*Socket_p);
 //
-//        if (ClientSocket_p != NULL && nh_network_connect(URL_p->hostName_p, ClientSocket_p, *Socket_p) == NH_NETWORK_SUCCESS) 
+//        if (ClientSocket_p != NULL && nh_network_connect(URL_p->hostName_p, ClientSocket_p, *Socket_p) == NH_API_SUCCESS) 
 //        {
 //            Data = nh_network_getDataFromSocket(
 //                ClientSocket_p, URL_p->hostName_p, URL_p->pathName_p, Socket_p->port

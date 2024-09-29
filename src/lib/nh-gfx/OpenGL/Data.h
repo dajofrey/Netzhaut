@@ -54,7 +54,7 @@
 	void *p;
         void *pp;
         int size;
-        NH_BOOL autoFree;
+        bool autoFree;
     } nh_opengl_Data;
 
 /** @} */

@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_BOOL nh_ecmascript_isAnonymousFunctionDefinition(
+    bool nh_ecmascript_isAnonymousFunctionDefinition(
         nh_ecmascript_ParseNode *Node_p
     );
 
@@ -25,7 +25,7 @@
         nh_ecmascript_ParseNode *Node_p
     );
 
-    NH_BOOL nh_ecmascript_isConstantDeclaration(
+    bool nh_ecmascript_isConstantDeclaration(
         nh_ecmascript_ParseNode *Node_p
     );
 

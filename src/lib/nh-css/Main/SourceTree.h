@@ -36,9 +36,9 @@
 
     typedef struct nh_css_LogContext {
         int *nr_p;
-        NH_BYTE topLevelId_p[256];
-        NH_BYTE nodeId_p[1024];
-        NH_BYTE indent_p[1024];
+        char topLevelId_p[256];
+        char nodeId_p[1024];
+        char indent_p[1024];
     } nh_css_LogContext;
 
     typedef struct nh_css_TextNode {
@@ -51,8 +51,8 @@
 
     typedef struct nh_css_Source {
         NH_CSS_SOURCE type;
-        NH_BOOL pseudo;
-        NH_BOOL mark;
+        bool pseudo;
+        bool mark;
         nh_css_Element Element;
         nh_css_TextNode TextNode;
         nh_List *ComputedValues_p;
@@ -70,7 +70,7 @@
  */
 
     nh_css_SourceTree nh_css_createSourceTree(
-        nh_webidl_Object *HTML_p, nh_css_StyleSheetListObject *StyleSheets_p, NH_BOOL updateAll,
+        nh_webidl_Object *HTML_p, nh_css_StyleSheetListObject *StyleSheets_p, bool updateAll,
         void *canvas_p
     );
 

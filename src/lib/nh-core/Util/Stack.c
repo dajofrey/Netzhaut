@@ -27,7 +27,7 @@ NH_CORE_BEGIN()
 NH_CORE_END(nh_core_initList(chunkSize))
 }
  
-NH_CORE_RESULT nh_pushStack(
+NH_API_RESULT nh_pushStack(
     nh_Stack *Stack_p, void *handle_p)
 {
 NH_CORE_BEGIN()
@@ -49,7 +49,7 @@ NH_CORE_BEGIN()
     if (Stack_p->size == 0) {NH_CORE_END(NULL)}
 
     void *handle_p = Stack_p->pp[Stack_p->size - 1];
-    nh_core_removeFromList(Stack_p, NH_FALSE, Stack_p->size - 1);    
+    nh_core_removeFromList(Stack_p, false, Stack_p->size - 1);    
 
 NH_CORE_END(handle_p)
 }

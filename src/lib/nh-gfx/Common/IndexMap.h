@@ -36,7 +36,7 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_gfx_createIndexMap(
+    NH_API_RESULT nh_gfx_createIndexMap(
     );
 
     void nh_gfx_freeIndexMap(

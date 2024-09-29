@@ -26,7 +26,7 @@
 // INTRINSICS ======================================================================================
 
 // corresponds to https://tc39.es/ecma262/#sec-createintrinsics
-static NH_ECMASCRIPT_RESULT nh_ecmascript_createIntrinsics(
+static NH_API_RESULT nh_ecmascript_createIntrinsics(
     nh_ecmascript_Realm *Realm_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -34,7 +34,7 @@ NH_ECMASCRIPT_BEGIN()
     NH_ECMASCRIPT_CHECK(nh_ecmascript_createIntrinsicObject(&Realm_p->Intrinsics.Object, Realm_p))
 //    NH_ECMASCRIPT_CHECK(nh_ecmascript_createIntrinsicFunction(&Realm_p->Intrinsics.Function, Realm_p))
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static void nh_ecmascript_freeIntrinsics(
@@ -84,7 +84,7 @@ NH_ECMASCRIPT_END(Realm_p)
 }
 
 // corresponds to https://www.262.ecma-international.org/11.0/index.html#sec-initializehostdefinedrealm
-NH_ECMASCRIPT_RESULT nh_ecmascript_initializeHostDefinedRealm(
+NH_API_RESULT nh_ecmascript_initializeHostDefinedRealm(
     nh_ecmascript_Agent *Agent_p, nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -108,6 +108,6 @@ NH_ECMASCRIPT_BEGIN()
 
 // TODO Create any host-defined global object properties on globalObj.
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

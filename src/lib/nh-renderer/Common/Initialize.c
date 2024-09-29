@@ -25,7 +25,7 @@
 
 // DEBUG ===========================================================================================
 
-NH_RENDERER_RESULT nh_renderer_initialize()
+NH_API_RESULT nh_renderer_initialize()
 {
 NH_RENDERER_BEGIN()
 
@@ -39,6 +39,6 @@ NH_RENDERER_BEGIN()
         NH_RENDERER_CHECK(nh_renderer_vk_createPipelines(&GPU_p->Driver, GPU_p->Renderer.Pipelines_p))
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

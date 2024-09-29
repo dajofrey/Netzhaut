@@ -31,8 +31,8 @@
     nh_HashMap nh_core_createHashMap(
     );
     
-    NH_CORE_RESULT nh_core_addToHashMap(
-        nh_HashMap *Map_p, NH_BYTE *key_p, void *value_p
+    NH_API_RESULT nh_core_addToHashMap(
+        nh_HashMap *Map_p, char *key_p, void *value_p
     );
     
     void nh_core_freeHashMap(
@@ -40,7 +40,7 @@
     );
 
     void *nh_core_getFromHashMap(
-        nh_HashMap *Map_p, NH_BYTE *key_p
+        nh_HashMap *Map_p, char *key_p
     );
 
 /** @} */

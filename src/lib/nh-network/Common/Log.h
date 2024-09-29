@@ -9,6 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "Includes.h"
 #include "Result.h"
 
 #endif
@@ -25,16 +26,16 @@
         char *data_p
     );
 
-    NH_NETWORK_RESULT _nh_network_logBegin(
+    NH_API_RESULT _nh_network_logBegin(
         const char *file_p, const char *function_p
     );
     
-    NH_NETWORK_RESULT _nh_network_logEnd(
+    NH_API_RESULT _nh_network_logEnd(
         const char *file_p, const char *function_p
     );
     
-    NH_NETWORK_RESULT _nh_network_logDiagnosticEnd(
-        const char *file_p, const char *function_p, NH_NETWORK_RESULT result, int line
+    NH_API_RESULT _nh_network_logDiagnosticEnd(
+        const char *file_p, const char *function_p, NH_API_RESULT result, int line
     );
 
 /** @} */

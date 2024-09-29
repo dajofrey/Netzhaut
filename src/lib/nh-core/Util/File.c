@@ -32,31 +32,31 @@
 
 // DECLARE =========================================================================================
 
-static NH_CORE_RESULT nh_core_getAbsolutePath(
-    NH_BYTE *relPath_p, NH_BYTE *absPath_p
+static NH_API_RESULT nh_core_getAbsolutePath(
+    char *relPath_p, char *absPath_p
 );
-static NH_CORE_RESULT nh_core_getCustomAbsolutePath(
-    NH_BYTE *relPath_p, NH_BYTE *base_p, NH_BYTE *absPath_p
+static NH_API_RESULT nh_core_getCustomAbsolutePath(
+    char *relPath_p, char *base_p, char *absPath_p
 ); 
 
 // DIRECTORY =======================================================================================
 
-NH_CORE_RESULT nh_core_getCurrentDir(
-    NH_BYTE *set_p, int size)
+NH_API_RESULT nh_core_getCurrentDir(
+    char *set_p, int size)
 {
 NH_CORE_BEGIN()
 
 #ifdef __unix__
 
-   if (getcwd(set_p, size) == NULL) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)}
+   if (getcwd(set_p, size) == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
 #endif
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_List nh_core_getDirContentPaths(
-    NH_BYTE *dirPath_p)
+    char *dirPath_p)
 {
 NH_CORE_BEGIN()
 
@@ -65,7 +65,7 @@ NH_CORE_BEGIN()
 #ifdef __unix__
 
     struct dirent *entry_p = NULL;
-    NH_BYTE fullPath_p[1024] = {'\0'};
+    char fullPath_p[1024] = {'\0'};
 
     DIR *dir_p = opendir(dirPath_p); 
     NH_CORE_CHECK_NULL_2(List, dir_p)
@@ -78,7 +78,7 @@ NH_CORE_BEGIN()
             sprintf(fullPath_p, "%s%s", dirPath_p, entry_p->d_name);
         }
 
-        NH_BYTE *path_p = nh_core_allocateBytes(fullPath_p);
+        char *path_p = nh_core_allocateBytes(fullPath_p);
         NH_CORE_CHECK_2(List, nh_core_appendToList(&List, path_p))
     }
   
@@ -93,36 +93,36 @@ NH_CORE_END(List)
 
 // PATH ============================================================================================
 
-NH_CORE_RESULT nh_core_getFilePath(
-    NH_BYTE *filename_p, NH_BYTE *base_p, NH_BYTE *out_p)
+NH_API_RESULT nh_core_getFilePath(
+    char *filename_p, char *base_p, char *out_p)
 {
 NH_CORE_BEGIN()
 
     struct stat buffer;   
     if (stat(filename_p, &buffer) == 0) {
         strcpy(out_p, filename_p);
-        NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+        NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
-    NH_BYTE absolute_p[2048] = {'\0'};
+    char absolute_p[2048] = {'\0'};
     nh_core_getAbsolutePath(filename_p, absolute_p);
     if (stat(absolute_p, &buffer) == 0) {
         strcpy(out_p, absolute_p);
-        NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+        NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
-    memset(absolute_p, '\0', sizeof(NH_BYTE) * 2048);
+    memset(absolute_p, '\0', sizeof(char) * 2048);
     nh_core_getCustomAbsolutePath(filename_p, base_p, absolute_p);
     if (stat(absolute_p, &buffer) == 0) {
         strcpy(out_p, absolute_p);
-        NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+        NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)
+NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-static NH_CORE_RESULT nh_core_getAbsolutePath(
-    NH_BYTE *relPath_p, NH_BYTE *absPath_p) 
+static NH_API_RESULT nh_core_getAbsolutePath(
+    char *relPath_p, char *absPath_p) 
 {
 NH_CORE_BEGIN()
 
@@ -132,17 +132,17 @@ NH_CORE_BEGIN()
 
 #endif
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_getCustomAbsolutePath(
-    NH_BYTE *relPath_p, NH_BYTE *base_p, NH_BYTE *absPath_p) 
+static NH_API_RESULT nh_core_getCustomAbsolutePath(
+    char *relPath_p, char *base_p, char *absPath_p) 
 {
 NH_CORE_BEGIN()
 
-    if (base_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)}
+    if (base_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
-    NH_BYTE basePath_p[PATH_MAX] = {'\0'};
+    char basePath_p[PATH_MAX] = {'\0'};
     strcpy(basePath_p, base_p);
 
 #ifdef __unix__ 	
@@ -151,7 +151,7 @@ NH_CORE_BEGIN()
 
 #endif
 
-    NH_BYTE relPath2_p[PATH_MAX] = {'\0'};
+    char relPath2_p[PATH_MAX] = {'\0'};
     strcpy(relPath2_p, relPath_p);
 
 #ifdef __unix__ 	
@@ -171,13 +171,13 @@ NH_CORE_BEGIN()
 #endif
 
     strcpy(absPath_p, basePath_p);
-    memcpy(absPath_p + strlen(basePath_p), relPath2_p + off, sizeof(NH_BYTE) * strlen(relPath2_p));
+    memcpy(absPath_p + strlen(basePath_p), relPath2_p + off, sizeof(char) * strlen(relPath2_p));
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_BOOL nh_core_isRegularFile(
-    const NH_BYTE *path_p)
+bool nh_core_isRegularFile(
+    const char *path_p)
 {
 NH_CORE_BEGIN()
 
@@ -185,7 +185,7 @@ NH_CORE_BEGIN()
     struct stat path_stat;
     stat(path_p, &path_stat);
 
-NH_CORE_END(S_ISREG(path_stat.st_mode) != 0 ? NH_TRUE : NH_FALSE)
+NH_CORE_END(S_ISREG(path_stat.st_mode) != 0 ? true : false)
 #elif defined(_WIN32) || defined(WIN32)
 
 #endif
@@ -193,8 +193,8 @@ NH_CORE_END(S_ISREG(path_stat.st_mode) != 0 ? NH_TRUE : NH_FALSE)
 
 // DATA ============================================================================================
 
-NH_BYTE *nh_core_getFileData(
-    const NH_BYTE* path_p, long *size_p)
+char *nh_core_getFileData(
+    const char* path_p, long *size_p)
 {
 NH_CORE_BEGIN()
 
@@ -212,7 +212,7 @@ NH_CORE_BEGIN()
         NH_CORE_END(NULL)
     }
 
-    NH_BYTE *data_p = (NH_BYTE*)nh_core_allocate(((size_t)size) + 1); 
+    char *data_p = (char*)nh_core_allocate(((size_t)size) + 1); 
     if (data_p == NULL) {NH_CORE_END(NULL)}
     
     fread(data_p, 1, size, fh);
@@ -224,8 +224,8 @@ NH_CORE_BEGIN()
 NH_CORE_END(data_p)
 }
 
-NH_CORE_RESULT nh_core_writeBytesToFile(
-    NH_BYTE *filePath_p, NH_BYTE *bytes_p)
+NH_API_RESULT nh_core_writeBytesToFile(
+    char *filePath_p, char *bytes_p)
 {
 NH_CORE_BEGIN()
 
@@ -238,25 +238,25 @@ NH_CORE_BEGIN()
 
     fclose(f);
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_BOOL nh_fileExistsOnMachine(
-    NH_BYTE *filename_p, NH_BYTE *base_p) 
+bool nh_fileExistsOnMachine(
+    char *filename_p, char *base_p) 
 {
 NH_CORE_BEGIN()
 
     struct stat buffer;   
-    if (stat(filename_p, &buffer) == 0) {NH_CORE_END(NH_TRUE)}
+    if (stat(filename_p, &buffer) == 0) {NH_CORE_END(true)}
 
-    NH_BYTE absolute_p[2048] = {'\0'};
+    char absolute_p[2048] = {'\0'};
     nh_core_getAbsolutePath(filename_p, absolute_p);
-    if (stat(absolute_p, &buffer) == 0) {NH_CORE_END(NH_TRUE)}
+    if (stat(absolute_p, &buffer) == 0) {NH_CORE_END(true)}
 
-    memset(absolute_p, '\0', sizeof(NH_BYTE) * 2048);
+    memset(absolute_p, '\0', sizeof(char) * 2048);
     nh_core_getCustomAbsolutePath(filename_p, base_p, absolute_p);
-    if (stat(absolute_p, &buffer) == 0) {NH_CORE_END(NH_TRUE)}
+    if (stat(absolute_p, &buffer) == 0) {NH_CORE_END(true)}
 
-NH_CORE_END(NH_FALSE)
+NH_CORE_END(false)
 }
 

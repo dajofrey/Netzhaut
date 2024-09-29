@@ -19,7 +19,7 @@
 
 // RESOURCES =======================================================================================
 
-NH_GFX_RESULT nh_vk_createViewport(
+NH_API_RESULT nh_vk_createViewport(
     nh_gfx_Viewport *Viewport_p)
 {
 NH_GFX_BEGIN()
@@ -37,7 +37,7 @@ NH_GFX_BEGIN()
         Driver_p->Device, &AllocateInfo, Viewport_p->Vulkan.CommandBuffers_p
     ))
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_vk_destroyViewport(
@@ -60,7 +60,7 @@ NH_GFX_SILENT_END()
 // RECORD ==========================================================================================
 
 static VkRect2D nh_vk_getDefaultScissor(
-    nh_PixelSize Size)
+    nh_api_PixelSize Size)
 {
 NH_GFX_BEGIN()
 
@@ -81,7 +81,7 @@ NH_GFX_BEGIN()
 NH_GFX_END(Scissor)
 }
 
-NH_GFX_RESULT nh_vk_beginRecording(
+NH_API_RESULT nh_vk_beginRecording(
     nh_gfx_Viewport *Viewport_p)
 {
 NH_GFX_BEGIN()
@@ -162,10 +162,10 @@ NH_GFX_BEGIN()
         Driver_p->Functions.vkCmdClearAttachments(*CommandBuffer_p, 1, &ClearAttachment, 1, &ClearRect);
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_vk_endRecording(
+NH_API_RESULT nh_vk_endRecording(
     nh_gfx_Viewport *Viewport_p)
 {
 NH_GFX_BEGIN()
@@ -175,6 +175,6 @@ NH_GFX_BEGIN()
         Viewport_p->Surface_p->Vulkan.GPU_p->Driver.Functions.vkEndCommandBuffer(*Viewport_p->Vulkan.CommandBuffers_pp[i]);
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

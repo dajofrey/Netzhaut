@@ -35,7 +35,7 @@
     typedef struct nh_CPU {
         char name_p[255];
         int cores;       
-        NH_BOOL ht;         
+        bool ht;         
     } nh_CPU;
     
     typedef struct nh_RAM {
@@ -55,10 +55,10 @@
 
     typedef struct nh_System {
         nh_SystemUpdater Updater;
-        NH_BYTE hostname_p[NH_HOSTNAME_LENGTH];
+        char hostname_p[NH_HOSTNAME_LENGTH];
         long uptime;
         nh_LocalTime LocalTime;
-        NH_BOOL littleEndian;
+        bool littleEndian;
         nh_RAM RAM;                     
         nh_CPU CPU; 
     } nh_System;
@@ -77,10 +77,10 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_initSystem(
+    NH_API_RESULT nh_core_initSystem(
     );
     
-    NH_CORE_RESULT nh_core_freeSystem(
+    NH_API_RESULT nh_core_freeSystem(
     );
 
     void *nh_core_initSystemUpdater(

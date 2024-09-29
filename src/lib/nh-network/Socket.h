@@ -85,7 +85,7 @@
     nh_network_Data nh_network_initData(
     );
 
-    NH_NETWORK_RESULT nh_network_getSockets(
+    NH_API_RESULT nh_network_getSockets(
         char *hostNameIn_p, char *hostNameOut_p, NH_NETWORK_PORT port, nh_LinkedList *List_p
     );
 
@@ -93,24 +93,24 @@
         nh_network_Socket Socket
     );
 
-    NH_NETWORK_RESULT nh_network_closeClientSocket(
+    NH_API_RESULT nh_network_closeClientSocket(
         nh_network_ClientSocket *Socket_p
     );
 
-    NH_NETWORK_RESULT nh_network_freeSockets(
+    NH_API_RESULT nh_network_freeSockets(
         nh_LinkedList *Sockets_p
     );
 
-    NH_NETWORK_RESULT nh_network_connect(
+    NH_API_RESULT nh_network_connect(
         char *hostName_p, nh_network_ClientSocket *ClientSocket_p, nh_network_Socket Socket
     );
 
-    NH_NETWORK_RESULT nh_network_send(
-        nh_network_ClientSocket *ClientSocket_p, char *message_p, size_t messageSize, NH_BOOL secure
+    NH_API_RESULT nh_network_send(
+        nh_network_ClientSocket *ClientSocket_p, char *message_p, size_t messageSize, bool secure
     );
 
     ssize_t nh_network_receive(
-        nh_network_ClientSocket *ClientSocket_p, char *set_p, ssize_t count, NH_BOOL secure
+        nh_network_ClientSocket *ClientSocket_p, char *set_p, ssize_t count, bool secure
     );
 
     nh_network_Data nh_network_getDataFromSocket(

@@ -29,7 +29,7 @@
         nh_Array *ComponentValues_p
     );
 
-    NH_CSS_RESULT nh_css_parseRules(
+    NH_API_RESULT nh_css_parseRules(
         nh_Array *Rules_p, nh_css_RuleListObject *StyleRules_p
     );
 

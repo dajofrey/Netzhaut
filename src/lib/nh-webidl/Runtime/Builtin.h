@@ -18,10 +18,10 @@
  *  @{
  */
 
-    extern NH_BYTE *NH_WEBIDL_FRAGMENT_NAMES_PP[];
+    extern char *NH_WEBIDL_FRAGMENT_NAMES_PP[];
     extern size_t NH_WEBIDL_FRAGMENT_NAMES_PP_COUNT;
 
-    extern NH_UNSIGNED_BYTE *NH_WEBIDL_FRAGMENTS_PP[];
+    extern unsigned char *NH_WEBIDL_FRAGMENTS_PP[];
     extern size_t NH_WEBIDL_FRAGMENTS_PP_COUNT;
 
     extern const unsigned int NH_WEBIDL_FRAGMENT_LENGTHS_P[];

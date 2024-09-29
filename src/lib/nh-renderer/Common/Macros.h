@@ -45,20 +45,20 @@
 
 #define NH_RENDERER_CHECK(checkable)                                             \
 {                                                                           \
-    NH_RENDERER_RESULT checkResult = checkable;                                  \
-    if (checkResult != NH_RENDERER_SUCCESS) {NH_RENDERER_DIAGNOSTIC_END(checkResult)} \
+    NH_API_RESULT checkResult = checkable;                                  \
+    if (checkResult != NH_API_SUCCESS) {NH_RENDERER_DIAGNOSTIC_END(checkResult)} \
 }
 
 #define NH_RENDERER_CHECK_2(checkReturn, checkable)                   \
 {                                                                \
-    NH_RENDERER_RESULT checkResult = checkable;                       \
-    if (checkResult != NH_RENDERER_SUCCESS) {NH_RENDERER_END(checkReturn)} \
+    NH_API_RESULT checkResult = checkable;                       \
+    if (checkResult != NH_API_SUCCESS) {NH_RENDERER_END(checkReturn)} \
 }
 
 #define NH_RENDERER_CHECK_NULL(checkable)                                              \
 {                                                                                 \
     void *checkResult_p = checkable;                                              \
-    if (checkResult_p == NULL) {NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_ERROR_NULL_POINTER)} \
+    if (checkResult_p == NULL) {NH_RENDERER_DIAGNOSTIC_END(NH_API_ERROR_NULL_POINTER)} \
 }
 
 #define NH_RENDERER_CHECK_NULL_2(checkReturn, checkable)      \
@@ -70,7 +70,7 @@
 #define NH_RENDERER_CHECK_MEM(checkable)                                                    \
 {                                                                                      \
     void *checkResult_p = checkable;                                                   \
-    if (checkResult_p == NULL) {NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_ERROR_MEMORY_ALLOCATION)} \
+    if (checkResult_p == NULL) {NH_RENDERER_DIAGNOSTIC_END(NH_API_ERROR_MEMORY_ALLOCATION)} \
 }
 
 #define NH_RENDERER_CHECK_MEM_2(checkReturn, checkable)       \

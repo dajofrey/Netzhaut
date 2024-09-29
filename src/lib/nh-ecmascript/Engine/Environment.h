@@ -37,10 +37,10 @@
     } nh_ecmascript_Environment;
 
     typedef struct nh_ecmascript_Binding {
-        NH_BOOL _mutable;
-        NH_BOOL deletable;
-        NH_BOOL strict;
-        NH_BOOL initialized;
+        bool _mutable;
+        bool deletable;
+        bool strict;
+        bool initialized;
         nh_encoding_UTF8String *Name_p;
         nh_ecmascript_Any Value;
     } nh_ecmascript_Binding;
@@ -83,7 +83,7 @@
 
 // MISC
 
-    NH_BOOL nh_ecmascript_canDeclareGlobalVar(
+    bool nh_ecmascript_canDeclareGlobalVar(
         nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *String_p
     );
 
@@ -91,7 +91,7 @@
         nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p, NH_ECMASCRIPT_BOOLEAN deletable
     );
 
-    NH_BOOL nh_ecmascript_canDeclareGlobalFunction(
+    bool nh_ecmascript_canDeclareGlobalFunction(
         nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *String_p
     );
 
@@ -99,30 +99,30 @@
         nh_encoding_UTF8String *Name_p, nh_ecmascript_Any V, NH_ECMASCRIPT_BOOLEAN configurable
     );
 
-    NH_BOOL nh_ecmascript_hasVarDeclaration(
+    bool nh_ecmascript_hasVarDeclaration(
         nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p
     );
     
-    NH_BOOL nh_ecmascript_hasLexicalDeclaration(
+    bool nh_ecmascript_hasLexicalDeclaration(
         nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p
     );
     
-    NH_BOOL nh_ecmascript_hasRestrictedGlobalProperty(
+    bool nh_ecmascript_hasRestrictedGlobalProperty(
         nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p
     );
 
 // ABSTRACT
 
-    NH_BOOL nh_ecmascript_hasBinding(
+    bool nh_ecmascript_hasBinding(
         nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p
     );
 
     nh_ecmascript_Completion nh_ecmascript_createMutableBinding(
-        nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, NH_BOOL deletable
+        nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, bool deletable
     );
     
     nh_ecmascript_Completion nh_ecmascript_createImmutableBinding(
-        nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, NH_BOOL strict
+        nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, bool strict
     );
     
     nh_ecmascript_Completion nh_ecmascript_initializeBinding(
@@ -130,7 +130,7 @@
     );
 
     nh_ecmascript_Completion nh_ecmascript_setMutableBinding(
-        nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, nh_ecmascript_Any Value, NH_BOOL _throw
+        nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, nh_ecmascript_Any Value, bool _throw
     );
 
 /** @} */

@@ -21,7 +21,7 @@
 // DATA ============================================================================================
 
 // mostly from https://www.iana.org/assignments/media-types/media-types.xhtml
-const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
+const char *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/1d-interleaved-parityfec",                                            
     "application/3gpdash-qoe-report+xml",                                              
     "application/3gpp-ims+xml",                                                        
@@ -476,7 +476,7 @@ const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/vnd.aether.imp",                                                           
     "application/vnd.afpc.afplinedata",                                                     
     "application/vnd.afpc.afplinedata-pagedef",                                             
-    "application/vnd.afpc.foca-NH_BYTEset",                                                    
+    "application/vnd.afpc.foca-charset",                                                    
     "application/vnd.afpc.foca-codedfont",                                                  
     "application/vnd.afpc.foca-codepage",                                                   
     "application/vnd.afpc.modca",                                                           
@@ -641,7 +641,7 @@ const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/vnd.easykaraoke.cdgdownload",                                         
     "application/vnd.ecip.rlp",                                                        
     "application/vnd.ecdis-update",                                                    
-    "application/vnd.ecowin.NH_BYTEt",                                                    
+    "application/vnd.ecowin.chart",                                                    
     "application/vnd.ecowin.filerequest",                                              
     "application/vnd.ecowin.fileupdate",                                               
     "application/vnd.ecowin.series",                                                   
@@ -834,7 +834,7 @@ const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/vnd.jsk.isdn-ngn",                                                    
     "application/vnd.kahootz",                                                         
     "application/vnd.kde.karbon",                                                      
-    "application/vnd.kde.kNH_BYTEt",                                                      
+    "application/vnd.kde.kchart",                                                      
     "application/vnd.kde.kformula",                                                    
     "application/vnd.kde.kivio",                                                       
     "application/vnd.kde.kontour",                                                     
@@ -989,8 +989,8 @@ const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/vnd.ntt-local.ogw_remote-access",                                     
     "application/vnd.ntt-local.sip-ta_remote",                                         
     "application/vnd.ntt-local.sip-ta_tcp_stream",                                     
-    "application/vnd.oasis.opendocument.NH_BYTEt",                                        
-    "application/vnd.oasis.opendocument.NH_BYTEt-template",                               
+    "application/vnd.oasis.opendocument.chart",                                        
+    "application/vnd.oasis.opendocument.chart-template",                               
     "application/vnd.oasis.opendocument.database",                                     
     "application/vnd.oasis.opendocument.formula",                                      
     "application/vnd.oasis.opendocument.formula-template",                             
@@ -1077,8 +1077,8 @@ const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/vnd.openxmlformats-officedocument.custom-properties+xml",                  
     "application/vnd.openxmlformats-officedocument.customXmlProperties+xml",                
     "application/vnd.openxmlformats-officedocument.drawing+xml",                            
-    "application/vnd.openxmlformats-officedocument.drawingml.NH_BYTEt+xml",                    
-    "application/vnd.openxmlformats-officedocument.drawingml.NH_BYTEtshapes+xml",              
+    "application/vnd.openxmlformats-officedocument.drawingml.chart+xml",                    
+    "application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml",              
     "application/vnd.openxmlformats-officedocument.drawingml.diagramColors+xml",            
     "application/vnd.openxmlformats-officedocument.drawingml.diagramData+xml",              
     "application/vnd.openxmlformats-officedocument.drawingml.diagramLayout+xml",            
@@ -1105,7 +1105,7 @@ const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/vnd.openxmlformats-officedocument.presentationml.template.main+xml",       
     "application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml",           
     "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml",            
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.NH_BYTEtsheet+xml",           
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml",           
     "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml",             
     "application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml",          
     "application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml",          
@@ -1264,7 +1264,7 @@ const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[] = {
     "application/vnd.sss-dtf",                                                            
     "application/vnd.sss-ntf",                                                            
     "application/vnd.stepmania.package",                                                  
-    "application/vnd.stepmania.stepNH_BYTEt",                                                
+    "application/vnd.stepmania.stepchart",                                                
     "application/vnd.street-stream",                                                      
     "application/vnd.sun.wadl+xml",                                                       
     "application/vnd.sus-calendar",                                                       
@@ -1870,7 +1870,7 @@ size_t NH_MEDIA_TYPE_TEMPLATES_PP_COUNT = sizeof(NH_MEDIA_TYPE_TEMPLATES_PP) / s
 // GET =============================================================================================
 
 NH_MEDIA nh_core_getMediaTypeFromTemplate(
-    NH_BYTE *template_p)
+    char *template_p)
 {
 NH_CORE_BEGIN()
 
@@ -1884,7 +1884,7 @@ NH_CORE_END(*index_p)
 }
 
 NH_MEDIA nh_core_getMediaTypeFromPath(
-    NH_BYTE *path_p)
+    char *path_p)
 {
 NH_CORE_BEGIN()
 

@@ -61,7 +61,7 @@
     typedef struct nh_css_HashToken {
         NH_CSS_TOKEN type;
         nh_encoding_UTF32String Value;
-        NH_BOOL unrestricted;
+        bool unrestricted;
     } nh_css_HashToken;
 
     typedef struct nh_css_DelimToken {
@@ -77,13 +77,13 @@
     typedef struct nh_css_NumberToken {
         NH_CSS_TOKEN type;
         NH_WEBIDL_DOUBLE value;
-        NH_BOOL isInteger;
+        bool isInteger;
     } nh_css_NumberToken;
 
     typedef struct nh_css_DimensionToken {
         NH_CSS_TOKEN type;
         NH_WEBIDL_DOUBLE value;
-        NH_BOOL isInteger;
+        bool isInteger;
         nh_encoding_UTF32String Unit;
     } nh_css_DimensionToken;
 
@@ -103,7 +103,7 @@
  *  @{
  */
 
-    const NH_BYTE *nh_css_getTokenName(
+    const char *nh_css_getTokenName(
         NH_CSS_TOKEN token
     );
 

@@ -23,7 +23,7 @@
 
 // RENDER ==========================================================================================
 
-NH_GFX_RESULT nh_opengl_render(
+NH_API_RESULT nh_opengl_render(
     nh_gfx_Surface *Surface_p, nh_List *SortedViewports_p)
 {
 NH_GFX_BEGIN()
@@ -39,6 +39,6 @@ NH_GFX_BEGIN()
 
     glXSwapBuffers(Surface_p->Window_p->X11.Common_p->Display_p, Surface_p->Window_p->X11.Handle);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

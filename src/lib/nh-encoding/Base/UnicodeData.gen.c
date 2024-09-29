@@ -12,7 +12,7 @@
 
 // LOOKUP ==========================================================================================
 
-const NH_BYTE NH_ENCODING_UNICODE_DATA_PP[34278][255] = {
+const char NH_ENCODING_UNICODE_DATA_PP[34278][255] = {
     "0000;<control>;Cc;0;BN;;;;;N;NULL;;;;",
     "0001;<control>;Cc;0;BN;;;;;N;START OF HEADING;;;;",
     "0002;<control>;Cc;0;BN;;;;;N;START OF TEXT;;;;",

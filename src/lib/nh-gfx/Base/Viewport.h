@@ -45,20 +45,20 @@
 	nh_vk_Viewport Vulkan;
 	nh_opengl_Viewport OpenGL;
         struct {
-            nh_PixelSize Size;
-            nh_PixelPosition Position;    
+            nh_api_PixelSize Size;
+            nh_api_PixelPosition Position;    
             nh_Color ClearColor;
             nh_Color BorderColor;
-            NH_BOOL border;
+            bool border;
             int borderWidth;
             unsigned int priority;     /**<Defines rendering order. 0 is highest priority aka frontmost viewport. Lesser priorities ascend to +infinity.*/
         } Settings;
         struct {
             int newestBuffers_p[3];    
             int submittedBuffers_p[3]; 
-            NH_BOOL atomicRecording;      
-            NH_BOOL render;              
-            NH_BOOL atomic;
+            bool atomicRecording;      
+            bool render;              
+            bool atomic;
         } Sync;
     } nh_gfx_Viewport;
 
@@ -69,11 +69,11 @@
  */
 
     typedef nh_gfx_Viewport *(*nh_gfx_createViewport_f)(
-        nh_gfx_Surface *Surface_p, nh_PixelPosition Position, nh_PixelSize Size
+        nh_gfx_Surface *Surface_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
     );
 
-    typedef NH_GFX_RESULT (*nh_gfx_configureViewport_f)(
-        nh_gfx_Viewport *Viewport_p, nh_PixelPosition Position, nh_PixelSize Size
+    typedef NH_API_RESULT (*nh_gfx_configureViewport_f)(
+        nh_gfx_Viewport *Viewport_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
     );
 
 /** @} */
@@ -82,15 +82,15 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_gfx_beginRecording(
+    NH_API_RESULT nh_gfx_beginRecording(
         nh_gfx_Viewport *Viewport_p
     );
     
-    NH_GFX_RESULT nh_gfx_endRecording(
-        nh_gfx_Viewport *Viewport_p, NH_BOOL blockUntilRender
+    NH_API_RESULT nh_gfx_endRecording(
+        nh_gfx_Viewport *Viewport_p, bool blockUntilRender
     );
 
-    NH_GFX_RESULT nh_gfx_claimViewport(
+    NH_API_RESULT nh_gfx_claimViewport(
         nh_gfx_Viewport *Viewport_p, NH_GFX_VIEWPORT_OWNER owner, void *owner_p
     );
 

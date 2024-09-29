@@ -94,7 +94,7 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_REALM, Realm_p);
     nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE, Prototype_p);
-    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*)NH_TRUE);
+    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*)true);
     nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_INITIAL_NAME, NULL);
     nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_BUILTIN, call_f);
 

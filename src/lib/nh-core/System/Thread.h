@@ -43,8 +43,8 @@
     typedef struct nh_Thread nh_Thread;
 
     typedef struct nh_core_WorkloadCommand {
-        NH_BOOL done;
-        NH_BOOL dummy;
+        bool done;
+        bool dummy;
         int type;
         void *p;
         int length;
@@ -61,10 +61,10 @@
         nh_RingBuffer Commands;
         nh_RingBufferMarker Marker;
         NH_SIGNAL signal;
-        NH_BOOL crucial;
+        bool crucial;
         NH_MODULE_E module;
-        NH_BYTE *name_p;
-        NH_BYTE *path_p;
+        char *name_p;
+        char *path_p;
         void *args_p;
         void *(*init_f)(struct nh_core_Workload*);
         NH_SIGNAL (*run_f)(void*);
@@ -111,7 +111,7 @@
     typedef unsigned int (*nh_core_runThreadWorkloads_f)(
     );
 
-    typedef NH_BOOL (*nh_core_keepRunning_f)(
+    typedef bool (*nh_core_keepRunning_f)(
     );
 
     typedef nh_core_Workload *(*nh_core_getWorkload_f)(
@@ -127,38 +127,38 @@
     nh_ThreadPool nh_core_initThreadPool(
     );
     
-    NH_CORE_RESULT nh_core_freeThreadPool(
+    NH_API_RESULT nh_core_freeThreadPool(
         nh_ThreadPool *ThreadPool_p
     );
  
     unsigned int nh_core_runThreadWorkloads(
     );
     
-    NH_BOOL nh_core_keepRunning(
+    bool nh_core_keepRunning(
     );
 
     void *nh_core_activateWorkload(
         void *(*init_f)(nh_core_Workload*), NH_SIGNAL (*run_f)(void*), void (*free_f)(void*), 
-        NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, NH_BOOL crucial
+        NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, bool crucial
     );
     
-    NH_CORE_RESULT nh_core_deactivateWorkload(
+    NH_API_RESULT nh_core_deactivateWorkload(
         nh_core_Workload *Workload_p 
     );
 
     /**
      * @param byteSize Specify 0 for no allocation.
      */
-    NH_CORE_RESULT nh_core_executeWorkloadCommand(
+    NH_API_RESULT nh_core_executeWorkloadCommand(
         void *handle_p, int type, void *p, int byteSize
     );
 
-    NH_CORE_RESULT nh_core_executeWorkload(
+    NH_API_RESULT nh_core_executeWorkload(
         void *handle_p
     );
 
     int nh_core_activeWorkloads(
-        NH_BOOL onlyCrucial
+        bool onlyCrucial
     );
     
     void *nh_core_getWorkloadArg(
@@ -184,7 +184,7 @@
     int nh_core_getThreadIndex(
     );
 
-    NH_CORE_RESULT nh_sleepMs(
+    NH_API_RESULT nh_sleepMs(
         int milliseconds
     );
 

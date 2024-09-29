@@ -57,7 +57,7 @@ NH_CSS_BEGIN()
 NH_CSS_END(NH_CSS_POSITION_STATIC)
 }
 
-static NH_PIXEL nh_css_getLengthPercentage(
+static int nh_css_getLengthPercentage(
     nh_css_Fragment *Fragment_p, nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -69,7 +69,7 @@ NH_CSS_BEGIN()
         // TODO
     }
     else if (Value_p->Common.type == NH_CSS_VALUE_PX) {
-        NH_CSS_END((NH_PIXEL)Value_p->number)
+        NH_CSS_END((int)Value_p->number)
     }
 
 NH_CSS_END(0)
@@ -146,7 +146,7 @@ NH_CSS_BEGIN()
 NH_CSS_END(-1)
 }
 
-static NH_CSS_RESULT nh_css_getFontFamilies(
+static NH_API_RESULT nh_css_getFontFamilies(
     nh_css_Value *Value_p, nh_Array *Families_p)
 {
 NH_CSS_BEGIN()
@@ -161,13 +161,13 @@ NH_CSS_BEGIN()
         *Family_p = nh_gfx_initFontFamily(NULL);
         int generic = nh_css_getGenericFontFamily(Value_p);
 
-        if (generic >= 0) {Family_p->generic_p[generic] = NH_TRUE;}
+        if (generic >= 0) {Family_p->generic_p[generic] = true;}
         else {Family_p->name_p = Value_p->String.p;}
 
         Value_p = Value_p->Common.Next_p;
     }
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 static nh_gfx_FontStyle nh_css_getFontStyle(
@@ -178,8 +178,8 @@ NH_CSS_BEGIN()
     nh_gfx_FontStyle Style;
 
     Style.weight = Weight_p->number;
-    Style.oblique = strstr(Style_p->String.p, "oblique") ? NH_TRUE : NH_FALSE;
-    Style.italic = strstr(Style_p->String.p, "italic") ? NH_TRUE : NH_FALSE;
+    Style.oblique = strstr(Style_p->String.p, "oblique") ? true : false;
+    Style.italic = strstr(Style_p->String.p, "italic") ? true : false;
 
 NH_CSS_END(Style)
 }
@@ -218,7 +218,7 @@ NH_CSS_BEGIN()
     }
     else if (nh_css_isLengthValue(Value_p)) {
         Sizing.type = NH_CSS_BOX_SIZING_LENGTH;
-        Sizing.value = (NH_PIXEL)Value_p->number;
+        Sizing.value = (int)Value_p->number;
     }
 
 NH_CSS_END(Sizing)
@@ -305,7 +305,7 @@ NH_CSS_END(NH_CSS_WORD_BREAK_NORMAL)
 
 // TEXT VALUES =====================================================================================
 
-NH_CSS_RESULT nh_css_computeTextValues(
+NH_API_RESULT nh_css_computeTextValues(
     nh_css_Fragment *Fragment_p)
 {
 NH_CSS_BEGIN()
@@ -324,7 +324,7 @@ NH_CSS_BEGIN()
         ComputedValues_p->pp[NH_CSS_PROPERTY_FONT_WEIGHT], ComputedValues_p->pp[NH_CSS_PROPERTY_FONT_STYLE]
     );
 
-    NH_GFX_CHECK_2(NH_CSS_ERROR_BAD_STATE, nh_gfx_createText(
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createText(
         &Fragment_p->Text.Values.Text, Fragment_p->Text.text_p, Fragment_p->Text.length, Fragment_p->Text.Values.fontSize, 
         &Fragment_p->Text.Values.FontFamilies, Fragment_p->Text.Values.FontStyle
     ))
@@ -334,7 +334,7 @@ NH_CSS_BEGIN()
 
     Fragment_p->Text.Values.wordBreak = nh_css_getWordBreak(ComputedValues_p->pp[NH_CSS_PROPERTY_WORD_BREAK]);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_css_freeTextValues(
@@ -350,7 +350,7 @@ NH_CSS_SILENT_END()
 
 // BOX VALUES ======================================================================================
 
-static NH_CSS_RESULT nh_css_computeAnonymousBoxValues(
+static NH_API_RESULT nh_css_computeAnonymousBoxValues(
     nh_css_Fragment *Fragment_p)
 {
 NH_CSS_BEGIN()
@@ -387,10 +387,10 @@ NH_CSS_BEGIN()
     Values_p->textAlignAll  = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_ALL]);
     Values_p->textAlignLast = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_LAST]);
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-NH_CSS_RESULT nh_css_computeBoxValues(
+NH_API_RESULT nh_css_computeBoxValues(
     nh_css_Fragment *Fragment_p)
 {
 NH_CSS_BEGIN()
@@ -445,6 +445,6 @@ NH_CSS_BEGIN()
     Values_p->textAlignAll  = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_ALL]);
     Values_p->textAlignLast = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_LAST]);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

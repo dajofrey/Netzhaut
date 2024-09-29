@@ -19,7 +19,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_MEDIA_TYPE_TEMPLATES_PP[];
+    extern const char *NH_MEDIA_TYPE_TEMPLATES_PP[];
     extern size_t NH_MEDIA_TYPE_TEMPLATES_PP_COUNT;
 
 /** @} */
@@ -1879,11 +1879,11 @@
  */
 
     NH_MEDIA nh_core_getMediaTypeFromTemplate(
-        NH_BYTE *template_p
+        char *template_p
     );
 
     NH_MEDIA nh_core_getMediaTypeFromPath(
-        NH_BYTE *path_p
+        char *path_p
     );
 
 /** @} */

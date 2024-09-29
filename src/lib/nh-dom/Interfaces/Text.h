@@ -16,7 +16,6 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-
     nh_dom_Text *nh_dom_getText(
         nh_webidl_Object *Object_p
     );
@@ -25,7 +24,7 @@
         nh_webidl_DOMString Data, nh_webidl_Object *NodeDocument_p
     );
 
-    NH_DOM_RESULT nh_dom_appendToText(
+    NH_API_RESULT nh_dom_appendToText(
         nh_dom_Text *Text_p, nh_webidl_DOMString DOMString
     );
 

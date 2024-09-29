@@ -21,43 +21,43 @@
 
 // HELPER ==========================================================================================
 
-static NH_BOOL nh_core_isASCIIUpperAlpha(
-    NH_BYTE codepoint)
+static bool nh_core_isASCIIUpperAlpha(
+    char codepoint)
 {
 NH_CORE_BEGIN()
 NH_CORE_END(codepoint >= 0x41 && codepoint <= 0x5A)
 }
 
-static NH_BOOL nh_core_isASCIILowerAlpha(
-    NH_BYTE codepoint)
+static bool nh_core_isASCIILowerAlpha(
+    char codepoint)
 {
 NH_CORE_BEGIN()
 NH_CORE_END(codepoint >= 0x61 && codepoint <= 0x7A)
 }
 
-static NH_BOOL nh_core_isASCIINumber(
-    NH_BYTE codepoint)
+static bool nh_core_isASCIINumber(
+    char codepoint)
 {
 NH_CORE_BEGIN()
 NH_CORE_END(codepoint >= 0x30 && codepoint <= 0x39)
 }
 
-static NH_BOOL nh_core_isASCIIAlpha(
-    NH_BYTE codepoint)
+static bool nh_core_isASCIIAlpha(
+    char codepoint)
 {
 NH_CORE_BEGIN()
 NH_CORE_END(nh_core_isASCIIUpperAlpha(codepoint) || nh_core_isASCIILowerAlpha(codepoint))
 }
 
-static NH_BOOL nh_core_isBracket(
-    NH_BYTE codepoint)
+static bool nh_core_isBracket(
+    char codepoint)
 {
 NH_CORE_BEGIN()
 NH_CORE_END(codepoint == '(' || codepoint == ')' || codepoint == '{' || codepoint == '}' || codepoint == '[' || codepoint == ']')
 }
 
-static NH_BOOL nh_core_isTokenBegin(
-    NH_BYTE codepoint)
+static bool nh_core_isTokenBegin(
+    char codepoint)
 {
 NH_CORE_BEGIN()
 
@@ -67,26 +67,26 @@ NH_CORE_BEGIN()
     || codepoint == ':' 
     || codepoint == ';') 
 
-    {NH_CORE_END(NH_TRUE)}
+    {NH_CORE_END(true)}
 
-NH_CORE_END(NH_FALSE)
+NH_CORE_END(false)
 }
 
 // TOKENIZE ========================================================================================
 
-static NH_BYTE *nh_core_tokenizeString(
-    nh_ConfigToken *Token_p, NH_BYTE *bytes_p)
+static char *nh_core_tokenizeString(
+    nh_ConfigToken *Token_p, char *bytes_p)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE *string_p = malloc(1);
+    char *string_p = malloc(1);
     unsigned int stringLength = 0;
 
-    NH_BYTE *stringBegin_p = bytes_p;
+    char *stringBegin_p = bytes_p;
 
-    NH_BOOL escape = NH_FALSE;
+    bool escape = false;
     while (*bytes_p && (*bytes_p != '"' || escape)) {
-        escape = escape ? NH_FALSE : *bytes_p == 0x5C;
+        escape = escape ? false : *bytes_p == 0x5C;
         if (!escape && *bytes_p != '\n') {
             string_p = realloc(string_p, stringLength + 1);
             string_p[stringLength++] = *bytes_p;
@@ -107,8 +107,8 @@ NH_CORE_BEGIN()
 NH_CORE_END(&bytes_p[1])
 }
 
-static NH_BYTE *nh_core_getConfigToken(
-    nh_ConfigToken *Token_p, NH_BYTE *bytes_p) 
+static char *nh_core_getConfigToken(
+    nh_ConfigToken *Token_p, char *bytes_p) 
 {
 NH_CORE_BEGIN()
 
@@ -125,7 +125,7 @@ NH_CORE_BEGIN()
     }
     if (!*bytes_p) {NH_CORE_END(NULL)}
 
-    NH_BYTE *tokenBegin_p = bytes_p;
+    char *tokenBegin_p = bytes_p;
 
     switch (*tokenBegin_p) 
     {
@@ -152,7 +152,7 @@ NH_CORE_BEGIN()
         || *bytes_p == '_' || *bytes_p == '.' || *bytes_p == '-')) {bytes_p++;}
     if (!*bytes_p) {NH_CORE_END(NULL)}
 
-    NH_BYTE tmp = *bytes_p;
+    char tmp = *bytes_p;
     *bytes_p = 0;    
 
     Token_p->type = NH_CONFIG_TOKEN_IDENTIFIER;
@@ -165,7 +165,7 @@ NH_CORE_END(bytes_p)
 }
 
 static void nh_core_getConfigTokens(
-    nh_ConfigToken *Tokens_p, NH_BYTE *bytes_p, unsigned int *tokens_p) 
+    nh_ConfigToken *Tokens_p, char *bytes_p, unsigned int *tokens_p) 
 {
 NH_CORE_BEGIN()
 
@@ -192,8 +192,8 @@ NH_CORE_BEGIN()
 NH_CORE_SILENT_END()
 }
 
-NH_CORE_RESULT nh_core_tokenizeConfig(
-    nh_ConfigTokenizer *Tokenizer_p, NH_BYTE *data_p, int length) 
+NH_API_RESULT nh_core_tokenizeConfig(
+    nh_ConfigTokenizer *Tokenizer_p, char *data_p, int length) 
 {
 NH_CORE_BEGIN()
 
@@ -202,7 +202,7 @@ NH_CORE_BEGIN()
     Tokenizer_p->tokens = 0;
     Tokenizer_p->Tokens_p = NULL;
 
-    NH_BYTE *bytes_p = nh_core_allocate(length + 1);
+    char *bytes_p = nh_core_allocate(length + 1);
     NH_CORE_CHECK_NULL(bytes_p)
     memset(bytes_p, 0, length + 1);
     memcpy(bytes_p, data_p, length);
@@ -221,7 +221,7 @@ NH_CORE_BEGIN()
     Tokenizer_p->tokens   = tokens;
     Tokenizer_p->Tokens_p = Tokens_p;
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 void nh_core_freeConfigTokenizer(

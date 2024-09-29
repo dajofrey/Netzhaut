@@ -31,10 +31,10 @@
         void *ptr
     );
     
-    NH_CORE_RESULT nh_core_initMemory(
+    NH_API_RESULT nh_core_initMemory(
     );
     
-    NH_CORE_RESULT nh_core_initThreadMemory(
+    NH_API_RESULT nh_core_initThreadMemory(
     );
 
 /** @} */

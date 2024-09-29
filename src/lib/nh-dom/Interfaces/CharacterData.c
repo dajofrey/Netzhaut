@@ -28,7 +28,7 @@
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeCharacterData(
+NH_API_RESULT nh_dom_initializeCharacterData(
     nh_webidl_Object *CharacterData_p)
 {
 NH_DOM_BEGIN()
@@ -39,21 +39,21 @@ NH_DOM_BEGIN()
     *((nh_webidl_DOMString*)CharacterData_p->Attributes.pp[DATA]) = nh_webidl_initDOMString(64);
     CharacterData_p->Attributes.pp[LENGTH] = &((nh_webidl_DOMString*)CharacterData_p->Attributes.pp[DATA])->length;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================
 
-NH_DOM_RESULT nh_dom_appendToCharacterData(
+NH_API_RESULT nh_dom_appendToCharacterData(
     nh_dom_CharacterData *CharacterData_p, nh_webidl_DOMString DOMString)
 {
 NH_DOM_BEGIN()
 
-    NH_WEBIDL_CHECK_2(NH_DOM_ERROR_BAD_STATE, nh_webidl_appendToDOMString(
+    NH_WEBIDL_CHECK_2(NH_API_ERROR_BAD_STATE, nh_webidl_appendToDOMString(
         ((nh_webidl_Object*)CharacterData_p)->Attributes.pp[DATA], DOMString.p, DOMString.length
     ))
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_webidl_DOMString *nh_dom_getCharacterDataString(

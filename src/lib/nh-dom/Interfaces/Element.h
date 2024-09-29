@@ -23,7 +23,7 @@
 
     nh_webidl_Object *nh_dom_createElement(
         nh_webidl_Object *Document_p, nh_webidl_DOMString *LocalName_p, nh_webidl_DOMString *Namespace_p, 
-        nh_webidl_DOMString *NamespacePrefix_p, nh_webidl_DOMString *Is_p, NH_BOOL synchronousCustomElements, 
+        nh_webidl_DOMString *NamespacePrefix_p, nh_webidl_DOMString *Is_p, bool synchronousCustomElements, 
         nh_webidl_Interface *Interface_p
     );
 
@@ -48,14 +48,14 @@
     );
     
     nh_dom_Attr *nh_dom_getAttrByLocalName(
-        nh_dom_Element *Element_p, NH_BYTE *localName_p
+        nh_dom_Element *Element_p, char *localName_p
     );
 
-    NH_DOM_RESULT nh_dom_replaceAttr(
+    NH_API_RESULT nh_dom_replaceAttr(
         nh_dom_Element *Element_p, nh_dom_Attr *OldAttr_p, nh_dom_Attr *NewAttr_p
     );
     
-    NH_DOM_RESULT nh_dom_appendAttr(
+    NH_API_RESULT nh_dom_appendAttr(
         nh_dom_Element *Element_p, nh_dom_Attr *Attr_p
     );
     

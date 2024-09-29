@@ -12,13 +12,13 @@
 
 // RESULTS =========================================================================================
 
-const char *NH_NETWORK_RESULTS_PP[] = 
+const char *NH_API_RESULTS_PP[] = 
 {
-    "NH_NETWORK_SUCCESS",                    
-    "NH_NETWORK_ERROR_NULL_POINTER",         
-    "NH_NETWORK_ERROR_BAD_STATE", 
-    "NH_NETWORK_ERROR_MEMORY_ALLOCATION",
+    "NH_API_SUCCESS",                    
+    "NH_API_ERROR_NULL_POINTER",         
+    "NH_API_ERROR_BAD_STATE", 
+    "NH_API_ERROR_MEMORY_ALLOCATION",
 };
 
-unsigned int NH_NETWORK_RESULTS_PP_COUNT = sizeof(NH_NETWORK_RESULTS_PP) / sizeof(NH_NETWORK_RESULTS_PP[0]);
+unsigned int NH_API_RESULTS_PP_COUNT = sizeof(NH_API_RESULTS_PP) / sizeof(NH_API_RESULTS_PP[0]);
 

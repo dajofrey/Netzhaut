@@ -117,11 +117,11 @@
     typedef struct nh_html_Parser {
         NH_HTML_INSERTION_MODE insertionMode;
         NH_HTML_INSERTION_MODE originalInsertionMode;
-        NH_BOOL framesetOk;
-        NH_BOOL pause;
-        NH_BOOL stop;
-        NH_BOOL scripting;
-        NH_BOOL fosterParenting;
+        bool framesetOk;
+        bool pause;
+        bool stop;
+        bool scripting;
+        bool fosterParenting;
         unsigned int scriptNestingLevel;
         nh_Stack OpenElements;
         nh_Stack TemplateInsertionModes;
@@ -141,7 +141,7 @@
  */
 
     typedef nh_webidl_Object *(*nh_html_parseDocument_f)(
-        NH_BYTE *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p
+        char *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p
     );
 
 /** @} */
@@ -150,12 +150,12 @@
  *  @{
  */
 
-    NH_HTML_RESULT nh_html_newParseError(
+    NH_API_RESULT nh_html_newParseError(
         nh_html_Parser *Parser_p, unsigned long index, NH_HTML_PARSE_ERROR type
     );
 
-    NH_HTML_RESULT nh_html_parseDocument(
-        NH_BYTE *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p
+    NH_API_RESULT nh_html_parseDocument(
+        char *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p
     );
 
 /** @} */

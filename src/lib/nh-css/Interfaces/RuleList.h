@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_appendToRuleList(
+    NH_API_RESULT nh_css_appendToRuleList(
         nh_css_RuleListObject *RuleList_p, nh_webidl_Object *Object_p
     );
 

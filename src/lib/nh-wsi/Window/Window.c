@@ -47,7 +47,7 @@ NH_WSI_END(type)
 }
 
 nh_wsi_Window *nh_wsi_createWindow(
-    NH_BYTE *namespace_p, nh_gfx_SurfaceRequirements *Requirements_p)
+    char *namespace_p, nh_gfx_SurfaceRequirements *Requirements_p)
 {
 NH_WSI_BEGIN();
 
@@ -63,7 +63,7 @@ NH_WSI_BEGIN();
         sprintf(Window_p->namespace_p, "%p", Window_p);
     }
 
-    nh_core_initRingBuffer(&Window_p->Events, 1024, sizeof(nh_wsi_Event), NULL);
+    nh_core_initRingBuffer(&Window_p->Events, 1024, sizeof(nh_api_WSIEvent), NULL);
 
     if (Window_p->type < 0) {
         nh_core_free(Window_p);
@@ -79,7 +79,7 @@ NH_WSI_BEGIN();
         default : NH_WSI_END(NULL)
     }
 
-    if (nh_wsi_enableWindowListener(Window_p) != NH_WSI_SUCCESS) {
+    if (nh_wsi_enableWindowListener(Window_p) != NH_API_SUCCESS) {
         nh_core_free(Window_p);
         NH_WSI_END(NULL)
     }
@@ -91,7 +91,7 @@ NH_WSI_END(Window_p);
 
 // DESTROY =========================================================================================
 
-NH_WSI_RESULT_E nh_wsi_destroyWindow(
+NH_API_RESULT nh_wsi_destroyWindow(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -101,28 +101,28 @@ NH_WSI_BEGIN()
     switch (Window_p->type)
     {
         case NH_WSI_TYPE_X11 : NH_WSI_CHECK(nh_x11_destroyWindow(&Window_p->X11)) break;
-        default              : NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+        default              : NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     nh_core_freeRingBuffer(&Window_p->Events);
     nh_core_free(Window_p);
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // SET =============================================================================================
 
-NH_WSI_RESULT_E nh_wsi_setEventListener(
-    nh_wsi_Window *Window_p, nh_wsi_callback_f callback_f)
+NH_API_RESULT nh_wsi_setEventListener(
+    nh_wsi_Window *Window_p, nh_api_windowCallback_f callback_f)
 {
 NH_WSI_BEGIN()
 
     Window_p->callback_f = callback_f;
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_WSI_RESULT_E nh_wsi_moveWindow(
+NH_API_RESULT nh_wsi_moveWindow(
     nh_wsi_Window *Window_p)
 {
 NH_WSI_BEGIN()
@@ -130,10 +130,10 @@ NH_WSI_BEGIN()
     switch (Window_p->type)
     {
         case NH_WSI_TYPE_X11 : NH_WSI_CHECK(nh_x11_moveWindow(&Window_p->X11)) break;
-        default              : NH_WSI_DIAGNOSTIC_END(NH_WSI_ERROR_BAD_STATE)
+        default              : NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 

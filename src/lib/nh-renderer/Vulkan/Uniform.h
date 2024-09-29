@@ -42,7 +42,7 @@
  *  @{
  */
 
-    NH_RENDERER_RESULT nh_renderer_vk_createColorUniform(
+    NH_API_RESULT nh_renderer_vk_createColorUniform(
         nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p, NH_RENDERER_VK_UNIFORM type
     );
     

@@ -27,7 +27,7 @@ NH_HTML_BEGIN()
     nh_ecmascript_initializeHostDefinedRealm(Agent_p, GlobalObject_p, ThisValue_p);
 
     nh_ecmascript_ExecutionContext *ExecutionContext_p = Agent_p->ExecutionContextStack.pp[0];
-    nh_popStack(&Agent_p->ExecutionContextStack, NH_FALSE);
+    nh_popStack(&Agent_p->ExecutionContextStack, false);
 
     nh_ecmascript_Realm *Realm_p = ExecutionContext_p->Realm_p;
 

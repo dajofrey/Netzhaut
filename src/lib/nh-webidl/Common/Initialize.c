@@ -21,7 +21,7 @@
 
 // DEBUG ===========================================================================================
 
-NH_WEBIDL_RESULT nh_webidl_initialize()
+NH_API_RESULT nh_webidl_initialize()
 {
 NH_WEBIDL_BEGIN()
 
@@ -29,6 +29,6 @@ NH_WEBIDL_BEGIN()
     NH_WEBIDL_CHECK(nh_webidl_initRuntime())
     NH_WEBIDL_CHECK(nh_webidl_initNamespaces())
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

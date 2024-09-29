@@ -24,7 +24,7 @@
 
 // HELPER ==========================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createUniform(
+static NH_API_RESULT nh_renderer_vk_createUniform(
     nh_vk_Driver *Driver_p, void *data_p, size_t size, nh_vk_Buffer *Buffer_p)
 {
 NH_RENDERER_BEGIN()
@@ -41,19 +41,19 @@ NH_RENDERER_BEGIN()
     {
         .Info_p           = &CreateInfo,
         .data_p           = data_p,
-        .mapMemory        = NH_TRUE,
+        .mapMemory        = true,
         .memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        .createInfo       = NH_FALSE,
+        .createInfo       = false,
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createBuffer(Driver_p, &BufferInfo, Buffer_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createBuffer(Driver_p, &BufferInfo, Buffer_p))
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // COLOR ===========================================================================================
 
-NH_RENDERER_RESULT nh_renderer_vk_createColorUniform(
+NH_API_RESULT nh_renderer_vk_createColorUniform(
     nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p, NH_RENDERER_VK_UNIFORM type)
 {
 NH_RENDERER_BEGIN()
@@ -70,7 +70,7 @@ NH_RENDERER_BEGIN()
         case NH_RENDERER_VK_UNIFORM_BOTTOM_BORDER : nh_css_colorToArray(Fragment_p->Box.Values.BorderBottomColor, color_p); break;
         case NH_RENDERER_VK_UNIFORM_LEFT_BORDER   : nh_css_colorToArray(Fragment_p->Box.Values.BorderLeftColor, color_p); break;
         case NH_RENDERER_VK_UNIFORM_BACKGROUND    : nh_css_colorToArray(Fragment_p->Box.Values.BackgroundColor, color_p); break;
-        default : NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_ERROR_BAD_STATE)
+        default : NH_RENDERER_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     data_p[16] = color_p[0];
@@ -85,12 +85,12 @@ NH_RENDERER_BEGIN()
 
     NH_RENDERER_CHECK(nh_renderer_vk_createUniform(Driver_p, data_p, sizeof(float) * 20, Buffer_p))
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 //// IMAGE ===========================================================================================
 //
-//NH_RENDERER_RESULT nh_vk_createImageUniform(
+//NH_API_RESULT nh_vk_createImageUniform(
 //    nh_vk_Driver *Driver_p, nh_html_Node *Node_p, nh_Texture *Texture_p)
 //{
 //NH_RENDERER_BEGIN()
@@ -113,7 +113,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //
 //// BACKGROUND IMAGE ================================================================================
 //
-//NH_RENDERER_RESULT nh_vk_createBackgroundImageUniform(
+//NH_API_RESULT nh_vk_createBackgroundImageUniform(
 //    nh_Content *Content_p, nh_vk_Driver *Driver_p, nh_html_Node *Node_p, NH_RENDERER_Image *Image_p)
 //{
 //NH_RENDERER_BEGIN()
@@ -159,7 +159,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 
 // CANVAS RENDERING CONTEXT 2D ARC =================================================================
 
-//NH_RENDERER_RESULT nh_vk_createCanvasRenderingContext2DArcUniform(
+//NH_API_RESULT nh_vk_createCanvasRenderingContext2DArcUniform(
 //    nh_Tab *Tab_p, nh_vk_Driver *Driver_p, nh_html_Node *Node_p, NH_JS_CanvasRenderingContext2D *Context_p, 
 //    NH_JS_Path2DArc *Arc_p)
 //{

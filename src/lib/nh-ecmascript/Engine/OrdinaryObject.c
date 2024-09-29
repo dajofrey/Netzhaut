@@ -31,14 +31,14 @@ NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinarySetPrototypeOf(
 {
 NH_ECMASCRIPT_BEGIN()
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinaryIsExtensible(
     nh_ecmascript_Object *This_p)
 {
 NH_ECMASCRIPT_BEGIN()
-NH_ECMASCRIPT_END((NH_BOOL)This_p->InternalSlots.values_pp[This_p->InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE]])
+NH_ECMASCRIPT_END((bool)This_p->InternalSlots.values_pp[This_p->InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE]])
 }
 
 NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinaryPreventExtensions(
@@ -46,7 +46,7 @@ NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinaryPreventExtensions(
 {
 NH_ECMASCRIPT_BEGIN()
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 // https://tc39.es/ecma262/#sec-ordinarygetownproperty
@@ -97,31 +97,31 @@ NH_ECMASCRIPT_BEGIN()
 
     if (Current.type == -1) 
     {
-        if (extensible == NH_FALSE) {NH_ECMASCRIPT_END(NH_FALSE)}
+        if (extensible == false) {NH_ECMASCRIPT_END(false)}
         if (nh_ecmascript_isGenericDescriptor(Desc) || nh_ecmascript_isDataDescriptor(Desc)) {
             if (O_p != NULL) {
                 if (nh_ecmascript_newProperty(&O_p->Properties, P, Desc) == NULL) {
-                    NH_ECMASCRIPT_END(NH_FALSE)
+                    NH_ECMASCRIPT_END(false)
                 }
             }
         } 
         else {
             if (O_p != NULL) {
                 if (nh_ecmascript_newProperty(&O_p->Properties, P, Desc) == NULL) {
-                    NH_ECMASCRIPT_END(NH_FALSE)
+                    NH_ECMASCRIPT_END(false)
                 }
             }
         }
-        NH_ECMASCRIPT_END(NH_TRUE)
+        NH_ECMASCRIPT_END(true)
     }
 
-    if (Current.configurable == NH_FALSE) {
+    if (Current.configurable == false) {
 
     }
 
     // TODO validation
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinaryDefineOwnProperty(
@@ -141,14 +141,14 @@ NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinaryHasProperty(
 NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_PropertyDescriptor Descriptor = This_p->InternalMethods_p->getOwnProperty_f(This_p, PropertyKey);
-    if (Descriptor.type != -1) {NH_ECMASCRIPT_END(NH_TRUE)}
+    if (Descriptor.type != -1) {NH_ECMASCRIPT_END(true)}
 
     nh_ecmascript_Object *Parent_p = This_p->InternalMethods_p->getPrototypeOf_f(This_p);
     if (Parent_p != NULL) {
         NH_ECMASCRIPT_END(Parent_p->InternalMethods_p->hasProperty_f(Parent_p, PropertyKey))
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 nh_ecmascript_Any nh_ecmascript_ordinaryGet(
@@ -172,25 +172,25 @@ NH_ECMASCRIPT_BEGIN()
         }
         else {
             OwnDescriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
-            OwnDescriptor.enumerable = NH_TRUE;
-            OwnDescriptor.configurable = NH_TRUE;
-            OwnDescriptor.Fields.Data.writable = NH_TRUE;
+            OwnDescriptor.enumerable = true;
+            OwnDescriptor.configurable = true;
+            OwnDescriptor.Fields.Data.writable = true;
             OwnDescriptor.Fields.Data.Value = nh_ecmascript_wrapUndefined();
         }
     }
 
     if (nh_ecmascript_isDataDescriptor(OwnDescriptor)) 
     {
-        if (!OwnDescriptor.Fields.Data.writable) {NH_ECMASCRIPT_END(NH_FALSE)}
-        if (Receiver.type != NH_ECMASCRIPT_TYPE_OBJECT) {NH_ECMASCRIPT_END(NH_FALSE)}
+        if (!OwnDescriptor.Fields.Data.writable) {NH_ECMASCRIPT_END(false)}
+        if (Receiver.type != NH_ECMASCRIPT_TYPE_OBJECT) {NH_ECMASCRIPT_END(false)}
 
         nh_ecmascript_PropertyDescriptor ExistingDescriptor = 
             ((nh_ecmascript_Object*)Receiver.handle_p)->InternalMethods_p->getOwnProperty_f(Receiver.handle_p, PropertyKey);
 
         if (ExistingDescriptor.type != -1) 
         {
-            if (nh_ecmascript_isAccessorDescriptor(ExistingDescriptor)) {NH_ECMASCRIPT_END(NH_FALSE)}
-            if (!ExistingDescriptor.Fields.Data.writable) {NH_ECMASCRIPT_END(NH_FALSE)}
+            if (nh_ecmascript_isAccessorDescriptor(ExistingDescriptor)) {NH_ECMASCRIPT_END(false)}
+            if (!ExistingDescriptor.Fields.Data.writable) {NH_ECMASCRIPT_END(false)}
 
             nh_ecmascript_PropertyDescriptor ValueDescriptor;
             ValueDescriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
@@ -204,16 +204,16 @@ NH_ECMASCRIPT_BEGIN()
     }
 
     nh_ecmascript_Any Setter = OwnDescriptor.Fields.Accessor.Set;
-    if (Setter.type == NH_ECMASCRIPT_TYPE_UNDEFINED) {NH_ECMASCRIPT_END(NH_FALSE)}
+    if (Setter.type == NH_ECMASCRIPT_TYPE_UNDEFINED) {NH_ECMASCRIPT_END(false)}
 
     nh_List Arguments = nh_core_initList(1);
     nh_core_appendToList(&Arguments, &Value);
 
     nh_ecmascript_abstractCall(Setter, Receiver, Arguments);
 
-    nh_core_freeList(&Arguments, NH_FALSE);
+    nh_core_freeList(&Arguments, false);
 
-NH_ECMASCRIPT_END(NH_TRUE)
+NH_ECMASCRIPT_END(true)
 }
 
 NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinarySet(
@@ -231,7 +231,7 @@ NH_ECMASCRIPT_BOOLEAN nh_ecmascript_ordinaryDelete(
 {
 NH_ECMASCRIPT_BEGIN()
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 nh_List nh_ecmascript_ordinaryOwnPropertyKeys(

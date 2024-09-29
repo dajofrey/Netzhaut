@@ -107,7 +107,7 @@ NH_GFX_SILENT_END()
 
 // SURFACE =========================================================================================
 
-static NH_GFX_RESULT nh_vk_chooseSurfaceFormat(
+static NH_API_RESULT nh_vk_chooseSurfaceFormat(
     VkSurfaceFormatKHR availableFormats[], VkSurfaceFormatKHR *format_p) 
 {
 NH_GFX_BEGIN();
@@ -126,7 +126,7 @@ NH_GFX_BEGIN();
 
     *format_p = availableFormats[0];
     
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
 static VkPresentModeKHR nh_vk_choosePresentMode(
@@ -141,7 +141,7 @@ NH_GFX_BEGIN();
 NH_GFX_END(-1);
 }
 
-static NH_GFX_RESULT nh_vk_createSwapchain(
+static NH_API_RESULT nh_vk_createSwapchain(
     nh_vk_Driver *Driver_p, VkSurfaceKHR *SurfaceKHR_p, nh_vk_Surface *Surface_p, 
     uint32_t graphicsQueueFamily)
 {
@@ -177,7 +177,7 @@ NH_GFX_BEGIN()
         *Device_p, *SurfaceKHR_p, &presentModeCount, presentModes_p
     ); 
     VkPresentModeKHR presentMode = nh_vk_choosePresentMode(presentModes_p, presentModeCount);
-    if (presentMode == -1) {NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)}
+    if (presentMode == -1) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     // choose swapchain extent
     VkSurfaceCapabilitiesKHR surfaceCapabilities;
@@ -216,7 +216,7 @@ NH_GFX_BEGIN()
     int imageCount = 0;
     Driver_p->Functions.vkGetSwapchainImagesKHR(Driver_p->Device, *VkSwapchainKHR_p, &imageCount, VK_NULL_HANDLE); 
    
-    if (imageCount != Surface_p->imageCount) {NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE);}
+    if (imageCount != Surface_p->imageCount) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE);}
 
     VkImage *Images_p = nh_core_allocate(sizeof(VkImage) * imageCount);
     NH_GFX_CHECK_MEM(Images_p)
@@ -252,10 +252,10 @@ NH_GFX_BEGIN()
     nh_core_free(presentModes_p);
     nh_core_free(Images_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)      
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)      
 }
 
-static NH_GFX_RESULT nh_vk_createDepthStencil(
+static NH_API_RESULT nh_vk_createDepthStencil(
     nh_vk_Driver *Driver_p, nh_vk_Surface *Surface_p) 
 {
 NH_GFX_BEGIN();
@@ -368,10 +368,10 @@ NH_GFX_BEGIN();
 
     Driver_p->Functions.vkFreeCommandBuffers(Driver_p->Device, Driver_p->GraphicsCommandPools_p[0], 1, &CommandBuffer);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
-static NH_GFX_RESULT nh_vk_createFramebuffer(
+static NH_API_RESULT nh_vk_createFramebuffer(
     nh_vk_Driver *Driver_p, nh_vk_Surface *Surface_p)
 {  
 NH_GFX_BEGIN();
@@ -398,11 +398,11 @@ NH_GFX_BEGIN();
         NH_GFX_CHECK_VULKAN(Driver_p->Functions.vkCreateFramebuffer(Driver_p->Device, &FramebufferInfo, VK_NULL_HANDLE, &Surface_p->Framebuffer_p[i]))
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
-NH_GFX_RESULT nh_vk_createSurface(
-    nh_vk_Surface *Surface_p, nh_wsi_Window *Window_p, nh_vk_GPU *GPU_p)
+NH_API_RESULT nh_vk_createSurface(
+    nh_vk_Surface *Surface_p, nh_api_Window *Window_p, nh_vk_GPU *GPU_p)
 {
 NH_GFX_BEGIN()
 
@@ -421,7 +421,7 @@ NH_GFX_BEGIN()
         GPU_p->Driver.PhysicalDevice, 0, *Surface_p->SurfaceKHR_p, &surfaceSupported
     ); 
     
-    if (!surfaceSupported) {NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE);}
+    if (!surfaceSupported) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE);}
 
     VkSurfaceCapabilitiesKHR SurfaceCapabilities;
     NH_VULKAN.Host.Functions.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
@@ -466,13 +466,13 @@ NH_GFX_BEGIN()
 
     NH_GFX_CHECK_VULKAN(GPU_p->Driver.Functions.vkAllocateCommandBuffers(GPU_p->Driver.Device, &AllocateInfo, Surface_p->CommandBuffers_p))
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // DESTROY =========================================================================================
 
-NH_GFX_RESULT nh_vk_destroySurface(
-    nh_vk_Surface *Surface_p, NH_BOOL destroySurfaceKHR)
+NH_API_RESULT nh_vk_destroySurface(
+    nh_vk_Surface *Surface_p, bool destroySurfaceKHR)
 {
 NH_GFX_BEGIN()
 
@@ -502,19 +502,19 @@ NH_GFX_BEGIN()
         nh_vk_destroySurfaceKHR(Surface_p);
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // RESIZE ==========================================================================================
 
-NH_GFX_RESULT nh_vk_resize(
-    nh_vk_Surface *Surface_p, nh_wsi_Window *Window_p)
+NH_API_RESULT nh_vk_resize(
+    nh_vk_Surface *Surface_p, nh_api_Window *Window_p)
 {
 NH_GFX_BEGIN()
 
-    NH_GFX_CHECK(nh_vk_destroySurface(Surface_p, NH_FALSE))
+    NH_GFX_CHECK(nh_vk_destroySurface(Surface_p, false))
     NH_GFX_CHECK(nh_vk_createSurface(Surface_p, Window_p, Surface_p->GPU_p))
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

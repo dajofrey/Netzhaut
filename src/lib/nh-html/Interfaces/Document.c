@@ -22,11 +22,11 @@
 
 // INITIALIZE ======================================================================================
 
-NH_HTML_RESULT nh_html_initializeDocument(
+NH_API_RESULT nh_html_initializeDocument(
     nh_webidl_Object *Document_p)
 {
 NH_HTML_BEGIN()
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================

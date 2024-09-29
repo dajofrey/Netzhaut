@@ -66,7 +66,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List StatementDeclarations = nh_ecmascript_getLexicallyScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &StatementDeclarations);
-                nh_core_freeList(&StatementDeclarations, NH_FALSE);
+                nh_core_freeList(&StatementDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }
@@ -96,13 +96,13 @@ NH_ECMASCRIPT_BEGIN()
 //                    for (int i = 0; i < DefaultClauseDeclarations.size; ++i) {
 //                        nh_core_appendToList(&Declarations, DefaultClauseDeclarations.pp[i]);
 //                    }
-//                    nh_core_freeList(&DefaultClauseDeclarations, NH_FALSE);
+//                    nh_core_freeList(&DefaultClauseDeclarations, false);
 //                    if (Node_p->Children.size > 2) {
 //                        nh_List CaseClausesDeclarations = nh_ecmascript_getLexicallyScopedDeclarations(Node_p->Children.pp[1]);
 //                        for (int i = 0; i < CaseClausesDeclarations.size; ++i) {
 //                            nh_core_appendToList(&Declarations, CaseClausesDeclarations.pp[i]);
 //                        }
-//                        nh_core_freeList(&CaseClausesDeclarations, NH_FALSE);
+//                        nh_core_freeList(&CaseClausesDeclarations, false);
 //                    }
 //                }
 //                else {
@@ -112,7 +112,7 @@ NH_ECMASCRIPT_BEGIN()
 //                        for (int i = 0; i < CaseClausesDeclarations.size; ++i) {
 //                            nh_core_appendToList(&Declarations, CaseClausesDeclarations.pp[i]);
 //                        }
-//                        nh_core_freeList(&CaseClausesDeclarations, NH_FALSE);
+//                        nh_core_freeList(&CaseClausesDeclarations, false);
 //                    }
 //                }
 //                NH_ECMASCRIPT_END(Declarations)
@@ -125,7 +125,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List CaseDeclarations = nh_ecmascript_getLexicallyScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &CaseDeclarations);
-                nh_core_freeList(&CaseDeclarations, NH_FALSE);
+                nh_core_freeList(&CaseDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }
@@ -189,7 +189,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List ModuleDeclarations = nh_ecmascript_getLexicallyScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &ModuleDeclarations);
-                nh_core_freeList(&ModuleDeclarations, NH_FALSE);
+                nh_core_freeList(&ModuleDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }
@@ -250,7 +250,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List StatementDeclarations = nh_ecmascript_getTopLevelLexicallyScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &StatementDeclarations);
-                nh_core_freeList(&StatementDeclarations, NH_FALSE);
+                nh_core_freeList(&StatementDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }
@@ -308,7 +308,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List StatementDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &StatementDeclarations);
-                nh_core_freeList(&StatementDeclarations, NH_FALSE);
+                nh_core_freeList(&StatementDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }
@@ -336,7 +336,7 @@ NH_ECMASCRIPT_BEGIN()
                 nh_List Declarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[1]);
                 nh_List Tmp = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[2]);
                 nh_core_appendItemsToList(&Declarations, &Tmp);
-                nh_core_freeList(&Tmp, NH_FALSE);
+                nh_core_freeList(&Tmp, false);
                 NH_ECMASCRIPT_END(Declarations)
             }
             else {
@@ -355,7 +355,7 @@ NH_ECMASCRIPT_BEGIN()
                 nh_List Declarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[0]);
                 nh_List StatementDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[Node_p->Children.size - 1]);
                 nh_core_appendItemsToList(&Declarations, &StatementDeclarations);
-                nh_core_freeList(&StatementDeclarations, NH_FALSE);
+                nh_core_freeList(&StatementDeclarations, false);
                 NH_ECMASCRIPT_END(Declarations)
             }
             else {
@@ -368,7 +368,7 @@ NH_ECMASCRIPT_BEGIN()
                 nh_core_appendToList(&Declarations, Node_p->Children.pp[0]);
                 nh_List StatementDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[Node_p->Children.size - 1]);
                 nh_core_appendItemsToList(&Declarations, &StatementDeclarations);
-                nh_core_freeList(&StatementDeclarations, NH_FALSE);
+                nh_core_freeList(&StatementDeclarations, false);
                 NH_ECMASCRIPT_END(Declarations)
             }
             else {
@@ -395,13 +395,13 @@ NH_ECMASCRIPT_BEGIN()
 //                    for (int i = 0; i < DefaultClauseDeclarations.size; ++i) {
 //                        nh_core_appendToList(&Declarations, DefaultClauseDeclarations.pp[i]);
 //                    }
-//                    nh_core_freeList(&DefaultClauseDeclarations, NH_FALSE);
+//                    nh_core_freeList(&DefaultClauseDeclarations, false);
 //                    if (Node_p->Children.size > 2) {
 //                        nh_List CaseClausesDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[1]);
 //                        for (int i = 0; i < CaseClausesDeclarations.size; ++i) {
 //                            nh_core_appendToList(&Declarations, CaseClausesDeclarations.pp[i]);
 //                        }
-//                        nh_core_freeList(&CaseClausesDeclarations, NH_FALSE);
+//                        nh_core_freeList(&CaseClausesDeclarations, false);
 //                    }
 //                }
 //                else {
@@ -411,7 +411,7 @@ NH_ECMASCRIPT_BEGIN()
 //                        for (int i = 0; i < CaseClausesDeclarations.size; ++i) {
 //                            nh_core_appendToList(&Declarations, CaseClausesDeclarations.pp[i]);
 //                        }
-//                        nh_core_freeList(&CaseClausesDeclarations, NH_FALSE);
+//                        nh_core_freeList(&CaseClausesDeclarations, false);
 //                    }
 //                }
 //                NH_ECMASCRIPT_END(Declarations)
@@ -424,7 +424,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List CaseDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &CaseDeclarations);
-                nh_core_freeList(&CaseDeclarations, NH_FALSE);
+                nh_core_freeList(&CaseDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }
@@ -455,7 +455,7 @@ NH_ECMASCRIPT_BEGIN()
                 nh_List Declarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[0]);
                 nh_List CatchDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &CatchDeclarations);
-                nh_core_freeList(&CatchDeclarations, NH_FALSE);
+                nh_core_freeList(&CatchDeclarations, false);
                 NH_ECMASCRIPT_END(Declarations)
             }
             else if (Node_p->Children.size == 3) {
@@ -464,8 +464,8 @@ NH_ECMASCRIPT_BEGIN()
                 nh_List FinallyDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[2]);
                 nh_core_appendItemsToList(&Declarations, &CatchDeclarations);
                 nh_core_appendItemsToList(&Declarations, &FinallyDeclarations);
-                nh_core_freeList(&CatchDeclarations, NH_FALSE);
-                nh_core_freeList(&FinallyDeclarations, NH_FALSE);
+                nh_core_freeList(&CatchDeclarations, false);
+                nh_core_freeList(&FinallyDeclarations, false);
                 NH_ECMASCRIPT_END(Declarations)
             }
             break;
@@ -511,7 +511,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List ModuleDeclarations = nh_ecmascript_getVarScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &ModuleDeclarations);
-                nh_core_freeList(&ModuleDeclarations, NH_FALSE);
+                nh_core_freeList(&ModuleDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }
@@ -554,7 +554,7 @@ NH_ECMASCRIPT_BEGIN()
             if (Node_p->Children.size == 2) {
                 nh_List StatementDeclarations = nh_ecmascript_getTopLevelVarScopedDeclarations(Node_p->Children.pp[1]);
                 nh_core_appendItemsToList(&Declarations, &StatementDeclarations);
-                nh_core_freeList(&StatementDeclarations, NH_FALSE);
+                nh_core_freeList(&StatementDeclarations, false);
             }
             NH_ECMASCRIPT_END(Declarations)
         }

@@ -74,7 +74,7 @@
  *  @{
  */
 
-    const NH_BYTE *nh_css_getBoxTreeNodeName(
+    const char *nh_css_getBoxTreeNodeName(
         NH_CSS_BOX_TREE_NODE type
     );
 

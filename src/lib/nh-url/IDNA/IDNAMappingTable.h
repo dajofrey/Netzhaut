@@ -65,7 +65,7 @@
  *  @{
  */
 
-    NH_URL_RESULT nh_url_parseIDNAMappingTable(
+    NH_API_RESULT nh_url_parseIDNAMappingTable(
     );
 
     nh_url_IDNAMappingTableEntry *nh_url_getIDNAMappingTableEntry(

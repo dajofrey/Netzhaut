@@ -10,6 +10,8 @@
  */
 
 #include "../Common/Includes.h"
+#include "../Util/Array.h"
+
 #include <stddef.h>
 
 #endif
@@ -44,27 +46,27 @@
  */
 
     typedef nh_Loader *(*nh_core_initLoader_f)(
-        NH_BOOL fallback, NH_BOOL install
+        bool fallback, bool install
     );
 
-    typedef NH_CORE_RESULT (*nh_core_load_f)(
+    typedef NH_API_RESULT (*nh_core_load_f)(
         NH_MODULE_E _module, char *path_p
     );
     
-    typedef NH_CORE_RESULT (*nh_unload_f)(
+    typedef NH_API_RESULT (*nh_unload_f)(
         NH_MODULE_E _module
     );
 
     typedef void *(*nh_core_loadSymbol_f)(
-        NH_MODULE_E _module, int major, const NH_BYTE *functionName_p
+        NH_MODULE_E _module, int major, const char *functionName_p
     );
 
     typedef void *(*nh_core_loadExternalSymbol_f)(
-        NH_BYTE *name_p, const NH_BYTE *functionName_p
+        char *name_p, const char *functionName_p
     );
 
-    typedef NH_CORE_RESULT (*nh_core_addModule_f)(
-        const NH_BYTE *name_p, const char *path_p, const NH_BYTE **dependencies_pp, size_t dependencies
+    typedef NH_API_RESULT (*nh_core_addModule_f)(
+        const char *name_p, const char *path_p, const char **dependencies_pp, size_t dependencies
     );
 
 /** @} */
@@ -77,21 +79,21 @@
         NH_MODULE_E type;
         int major;
         void *lib_p;
-        NH_BYTE *lastModified_p;
-        NH_BOOL loaded;
+        char *lastModified_p;
+        bool loaded;
     } nh_Module;
 
     typedef struct nh_core_ExternalModule {
         nh_Module Data;
-        NH_BYTE *name_p;
-        NH_BYTE **dependencies_pp;
+        char *name_p;
+        char **dependencies_pp;
         size_t dependencies;
         char path_p[255];
     } nh_core_ExternalModule;
 
     typedef struct nh_Loader {
-        NH_BOOL install;
-        NH_BOOL unload;
+        bool install;
+        bool unload;
         nh_core_load_f load_f;
         nh_unload_f unload_f;
         nh_core_loadSymbol_f loadSymbol_f;
@@ -108,7 +110,7 @@
  */
 
     extern nh_Loader NH_LOADER;
-    extern const NH_BYTE *NH_MODULE_NAMES_PP[];
+    extern const char *NH_MODULE_NAMES_PP[];
 
 /** @} */
 
@@ -117,22 +119,22 @@
  */
 
     void *nh_core_loadExistingSymbol(
-        NH_MODULE_E _module, int major, const NH_BYTE *functionName_p
+        NH_MODULE_E _module, int major, const char *functionName_p
     );
 
     void *nh_core_loadSymbolUsingModuleName(
-        NH_BYTE *moduleName_p, NH_BYTE *symbolName_p
+        char *moduleName_p, char *symbolName_p
     );
 
     nh_Loader *nh_core_initLoader(
-        NH_BOOL fallback, NH_BOOL install
+        bool fallback, bool install
     );
 
-    NH_CORE_RESULT nh_core_freeLoader(
+    NH_API_RESULT nh_core_freeLoader(
     );
 
     int nh_core_getModuleIndex(
-        NH_BYTE *name_p
+        char *name_p
     );
 
 /** @} */

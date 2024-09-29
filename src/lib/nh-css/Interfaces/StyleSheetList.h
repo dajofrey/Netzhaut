@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_appendToStyleSheetList(
+    NH_API_RESULT nh_css_appendToStyleSheetList(
         nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_StyleSheetObject *StyleSheet_p
     );
 

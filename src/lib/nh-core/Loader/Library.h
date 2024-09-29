@@ -19,7 +19,7 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_installLibrary(
+    NH_API_RESULT nh_installLibrary(
         NH_MODULE_E type 
     );
     
@@ -28,14 +28,14 @@
     );
     
     void *nh_core_loadExternalLibrary(
-        NH_BYTE *name_p, char *path_p
+        char *name_p, char *path_p
     );
 
     void *nh_core_loadSymbolFromLibrary(
-        void *lib_p, const NH_BYTE *name_p
+        void *lib_p, const char *name_p
     );
 
-    NH_CORE_RESULT nh_unloadLibrary(
+    NH_API_RESULT nh_unloadLibrary(
         void *lib_p
     );
 

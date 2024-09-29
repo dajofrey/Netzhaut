@@ -23,7 +23,7 @@
 
     int nh_renderer_triangulateBox(
         nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, float radii_p[4], int cornerTriangleCount, 
-        NH_BYTE *side_p, nh_Triangle *Triangles_p, NH_BOOL enclosedPoint, int offset, float z
+        char *side_p, nh_Triangle *Triangles_p, bool enclosedPoint, int offset, float z
     );
 
 /** @} */

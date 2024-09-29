@@ -9,6 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "Window.h"
 #include "../Common/Includes.h"
 
 #endif
@@ -17,7 +18,7 @@
  *  @{
  */
 
-    typedef NH_WSI_RESULT_E (*nh_wsi_toggleWindowSize_f)(
+    typedef NH_API_RESULT (*nh_wsi_toggleWindowSize_f)(
         nh_wsi_Window *Window_p
     );
 
@@ -27,15 +28,15 @@
  *  @{
  */
     
-    NH_WSI_RESULT_E nh_wsi_configureWindow(
+    NH_API_RESULT nh_wsi_configureWindow(
         nh_wsi_Window *Window_p
     );
 
-    NH_WSI_RESULT_E nh_wsi_toggleWindowSize(
+    NH_API_RESULT nh_wsi_toggleWindowSize(
         nh_wsi_Window *Window_p
     );
 
-    NH_WSI_RESULT_E nh_wsi_setMouseCursor(
+    NH_API_RESULT nh_wsi_setMouseCursor(
         nh_wsi_Window *Window_p, NH_WSI_CURSOR_E cursor
     );
 

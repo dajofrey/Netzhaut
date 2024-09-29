@@ -25,37 +25,9 @@
 #include <string.h>
 #include <limits.h>
 
-// REQUIREMENTS ====================================================================================
-
-static nh_gfx_SurfaceRequirements Requirements;
-
-nh_gfx_SurfaceRequirements *nh_gfx_getSurfaceRequirements()
-{
-NH_GFX_BEGIN()
-NH_GFX_END(&Requirements)
-}
-
-NH_GFX_RESULT nh_gfx_createSurfaceRequirements()
-{
-NH_GFX_BEGIN()
-
-    NH_GFX_CHECK(nh_opengl_createSurfaceRequirements(&Requirements.OpenGL))
-
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
-}
-
-NH_GFX_RESULT nh_gfx_freeSurfaceRequirements()
-{
-NH_GFX_BEGIN()
-
-    NH_GFX_CHECK(nh_opengl_freeSurfaceRequirements(&Requirements.OpenGL))
-
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
-}
-
 //// RESIZE ==========================================================================================
 //
-//static NH_CORE_RESULT nh_resize(
+//static NH_API_RESULT nh_resize(
 //    nh_Window *Window_p)
 //{
 //NH_GFX_BEGIN()
@@ -80,7 +52,7 @@ NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
 
 typedef struct nh_gfx_SurfaceArgs {
     nh_wsi_Window *Window_p;
-    NH_GFX_API_E api;
+    NH_API_GRAPHICS_BACKEND_E api;
 } nh_gfx_SurfaceArgs;
 
 static void *nh_gfx_initSurface(
@@ -88,8 +60,8 @@ static void *nh_gfx_initSurface(
 {
 NH_GFX_BEGIN()
 
-    static NH_BYTE *name_p = "Graphics Surface";
-    static NH_BYTE *path_p = "nh-gfx/Main/Surface.c";
+    static char *name_p = "Graphics Surface";
+    static char *path_p = "nh-gfx/Main/Surface.c";
     Workload_p->name_p = name_p;
     Workload_p->path_p = path_p;
     Workload_p->module = NH_MODULE_GFX;
@@ -111,15 +83,15 @@ NH_GFX_BEGIN()
 
     Surface_p->Viewports = nh_core_initList(8);
 
-    Surface_p->Internal.atomic       = NH_FALSE;
-    Surface_p->Internal.skipRender   = NH_FALSE;
-    Surface_p->Internal.getNextImage = NH_TRUE;
+    Surface_p->Internal.atomic       = false;
+    Surface_p->Internal.skipRender   = false;
+    Surface_p->Internal.getNextImage = true;
 
-    Surface_p->Sync.halt         = NH_FALSE;
-    Surface_p->Sync.ready        = NH_FALSE;
-    Surface_p->Sync.resize       = NH_FALSE;
-    Surface_p->Sync.rendering    = NH_FALSE;
-    Surface_p->Sync.atomicRender = NH_FALSE;
+    Surface_p->Sync.halt         = false;
+    Surface_p->Sync.ready        = false;
+    Surface_p->Sync.resize       = false;
+    Surface_p->Sync.rendering    = false;
+    Surface_p->Sync.atomicRender = false;
 
     Surface_p->Settings.BackgroundColor.r = 0.0f;
     Surface_p->Settings.BackgroundColor.g = 0.0f;
@@ -131,18 +103,18 @@ NH_GFX_BEGIN()
 
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
             if (NH_VULKAN.GPUs.size <= 0) {NH_GFX_END(NULL)}
             NH_GFX_CHECK_2(NULL, 
                 nh_vk_createSurface(&Surface_p->Vulkan, Surface_p->Window_p, NH_VULKAN.GPUs.pp[0]))
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_GFX_CHECK_2(NULL, nh_opengl_createSurface(&Surface_p->OpenGL, Surface_p->Window_p)) 
             break;
         default : NH_GFX_END(NULL)
     }
 
-    Surface_p->Sync.ready = NH_TRUE;
+    Surface_p->Sync.ready = true;
 
 NH_GFX_END(Surface_p)
 }
@@ -157,14 +129,14 @@ NH_GFX_BEGIN()
     for (int i = 0; i < Surface_p->Viewports.size; ++i) {
         nh_gfx_destroyViewport(Surface_p, Surface_p->Viewports.pp[i]);
     }
-    nh_core_freeList(&Surface_p->Viewports, NH_FALSE);
+    nh_core_freeList(&Surface_p->Viewports, false);
  
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
-            nh_vk_destroySurface(&Surface_p->Vulkan, NH_TRUE);
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
+            nh_vk_destroySurface(&Surface_p->Vulkan, true);
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
             nh_opengl_destroySurface(&Surface_p->OpenGL, Surface_p->Window_p);
             break;
     }
@@ -176,7 +148,7 @@ NH_GFX_SILENT_END()
 
 // RUN =============================================================================================
 
-static NH_GFX_RESULT nh_gfx_getSortedViewports(
+static NH_API_RESULT nh_gfx_getSortedViewports(
     nh_gfx_Surface *Surface_p, nh_List *SortedViewports_p)
 {
 NH_GFX_BEGIN()
@@ -220,32 +192,32 @@ NH_GFX_BEGIN()
     }
 
     nh_core_free(sortedIndices_p);
-    nh_core_freeList(&Viewports, NH_FALSE);
+    nh_core_freeList(&Viewports, false);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_gfx_prepareRendering(
+static NH_API_RESULT nh_gfx_prepareRendering(
     nh_gfx_Surface *Surface_p)
 {
 NH_GFX_BEGIN()
 
-    NH_GFX_RESULT result = NH_GFX_ERROR_BAD_STATE;
+    NH_API_RESULT result = NH_API_ERROR_BAD_STATE;
 
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : result = nh_vk_prepareRendering(&Surface_p->Vulkan); break;
-        case NH_GFX_API_OPENGL : result = NH_GFX_SUCCESS; break;
+        case NH_API_GRAPHICS_BACKEND_VULKAN : result = nh_vk_prepareRendering(&Surface_p->Vulkan); break;
+        case NH_API_GRAPHICS_BACKEND_OPENGL : result = NH_API_SUCCESS; break;
     }
 
-    if (result == NH_GFX_VULKAN_ERROR_OUT_OF_DATE_KHR) {
-        result = NH_GFX_ERROR_RESIZE_NEEDED;
+    if (result == NH_API_VULKAN_ERROR_OUT_OF_DATE_KHR) {
+        result = NH_API_ERROR_RESIZE_NEEDED;
     }
 
 NH_GFX_END(result)
 }
 
-static NH_GFX_RESULT nh_gfx_render(
+static NH_API_RESULT nh_gfx_render(
     nh_gfx_Surface *Surface_p)
 {
 NH_GFX_BEGIN()
@@ -255,22 +227,22 @@ NH_GFX_BEGIN()
 
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
 
             NH_GFX_CHECK(nh_vk_render(Surface_p, &SortedViewports))
             break;
 
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
 
             NH_GFX_CHECK(nh_opengl_render(Surface_p, &SortedViewports))
             break;
 
-        default : NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        default : NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-    nh_core_freeList(&SortedViewports, NH_FALSE);
+    nh_core_freeList(&SortedViewports, false);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static NH_SIGNAL nh_gfx_runSurface(
@@ -280,7 +252,7 @@ NH_GFX_BEGIN()
 
     NH_GFX_CHECK_NULL_2(NH_SIGNAL_ERROR, args_p)
     nh_gfx_Surface *Surface_p = args_p;
-    NH_BOOL idle = NH_TRUE;
+    bool idle = true;
 
     switch (Surface_p->signal)
     {
@@ -290,24 +262,24 @@ NH_GFX_BEGIN()
             {
                 if (Surface_p->Internal.getNextImage)
                 {
-                    NH_GFX_RESULT prepareResult = nh_gfx_prepareRendering(Surface_p);
+                    NH_API_RESULT prepareResult = nh_gfx_prepareRendering(Surface_p);
 
-                    if (prepareResult == NH_GFX_ERROR_RESIZE_NEEDED) {
+                    if (prepareResult == NH_API_ERROR_RESIZE_NEEDED) {
                         // TODO handle resize
                     }
-                    else if (prepareResult != NH_GFX_SUCCESS) {
+                    else if (prepareResult != NH_API_SUCCESS) {
                         NH_GFX_END(NH_SIGNAL_ERROR)
                     }
                     else {
-                        Surface_p->Internal.getNextImage = NH_FALSE;
+                        Surface_p->Internal.getNextImage = false;
                     }
                 }
                 if (Surface_p->renderRequests)
                 {
                     nh_gfx_render(Surface_p);
-                    Surface_p->Internal.getNextImage = NH_TRUE;
+                    Surface_p->Internal.getNextImage = true;
                     Surface_p->renderRequests--;
-                    idle = NH_FALSE;
+                    idle = false;
                 }
             } 
 
@@ -321,7 +293,7 @@ NH_GFX_END(idle ? NH_SIGNAL_IDLE : NH_SIGNAL_OK)
 // CREATE ==========================================================================================
 
 nh_gfx_Surface *nh_gfx_createSurface(
-    nh_wsi_Window *Window_p, NH_GFX_API_E api)
+    nh_wsi_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api)
 {
 NH_GFX_BEGIN()
 
@@ -333,7 +305,7 @@ NH_GFX_BEGIN()
     Args.Window_p = Window_p;
     Args.api = api;
 
-    nh_gfx_Surface *Surface_p = nh_core_activateWorkload(nh_gfx_initSurface, nh_gfx_runSurface, nh_gfx_freeSurface, NULL, &Args, NH_TRUE);
+    nh_gfx_Surface *Surface_p = nh_core_activateWorkload(nh_gfx_initSurface, nh_gfx_runSurface, nh_gfx_freeSurface, NULL, &Args, true);
 
     Window_p->surface_p = Surface_p;
 
@@ -342,7 +314,7 @@ NH_GFX_END(Surface_p)
 
 //// CONFIGURE SIGNALS ===============================================================================
 //
-//static NH_CORE_RESULT nh_core_sendWindowSignal(
+//static NH_API_RESULT nh_core_sendWindowSignal(
 //    nh_Window *Window_p, void *args_p, NH_SIGNAL signal)
 //{
 //NH_GFX_BEGIN()
@@ -366,7 +338,7 @@ NH_GFX_END(Surface_p)
 //NH_DIAGNOSTIC_END(NH_SUCCESS)
 //}
 //
-//NH_CORE_RESULT nh_setWindowBackgroundColor(
+//NH_API_RESULT nh_setWindowBackgroundColor(
 //    nh_Window *Window_p, nh_Color Color)
 //{
 //NH_GFX_BEGIN()
@@ -376,7 +348,7 @@ NH_GFX_END(Surface_p)
 //NH_DIAGNOSTIC_END(nh_core_sendWindowSignal(Window_p, &Color, NH_SIGNAL_SET_BACKGROUND_COLOR))
 //}
 //
-//NH_CORE_RESULT nh_setWindowTitle(
+//NH_API_RESULT nh_setWindowTitle(
 //    nh_Window *Window_p, char *title_p)
 //{
 //NH_GFX_BEGIN()
@@ -392,10 +364,10 @@ NH_GFX_END(Surface_p)
 //nh_Window *nh_openWindow()
 //{
 //NH_GFX_BEGIN()
-//NH_GFX_END(nh_core_activateWorkload(nh_core_initSurface, nh_core_runSurface, NULL, NH_FALSE))
+//NH_GFX_END(nh_core_activateWorkload(nh_core_initSurface, nh_core_runSurface, NULL, false))
 //}
 //
-//static NH_CORE_RESULT nh_core_waitForWindowClosure(
+//static NH_API_RESULT nh_core_waitForWindowClosure(
 //    nh_Window *Window_p)
 //{
 //NH_GFX_BEGIN()
@@ -410,7 +382,7 @@ NH_GFX_END(Surface_p)
 //NH_DIAGNOSTIC_END(NH_SUCCESS)
 //}
 //
-//NH_CORE_RESULT nh_closeWindow(
+//NH_API_RESULT nh_closeWindow(
 //    nh_Window *Window_p)
 //{
 //NH_GFX_BEGIN()

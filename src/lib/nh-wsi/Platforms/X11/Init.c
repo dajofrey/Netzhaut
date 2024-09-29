@@ -137,7 +137,7 @@ NH_WSI_SILENT_END()
 
 // Look for and initialize supported X11 extensions
 //
-static NH_WSI_RESULT_E nh_x11_initAtoms()
+static NH_API_RESULT nh_x11_initAtoms()
 {
 NH_WSI_BEGIN()
 
@@ -203,10 +203,10 @@ NH_WSI_BEGIN()
     // Detect whether an EWMH-conformant window manager is running
     nh_x11_detectEWMH();
 
-NH_WSI_END(NH_WSI_SUCCESS)
+NH_WSI_END(NH_API_SUCCESS)
 }
 
-static NH_WSI_RESULT_E nh_x11_initExtensions()
+static NH_API_RESULT nh_x11_initExtensions()
 {
 NH_WSI_BEGIN()
 
@@ -231,15 +231,15 @@ NH_WSI_BEGIN()
         NH_WSI_X11.XKB.Keymap_p, NH_WSI_X11.XKB.Connection_p, NH_WSI_X11.XKB.keyboardDeviceID
     );
 
-NH_WSI_END(NH_WSI_SUCCESS)
+NH_WSI_END(NH_API_SUCCESS)
 }
 
-NH_WSI_RESULT_E nh_x11_initialize()
+NH_API_RESULT nh_x11_initialize()
 {
 NH_WSI_BEGIN()
 
     NH_WSI_X11.Display_p = XOpenDisplay(NULL);
-    if (!NH_WSI_X11.Display_p) {NH_WSI_END(NH_WSI_ERROR_BAD_STATE)}
+    if (!NH_WSI_X11.Display_p) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
 
     NH_WSI_X11.screen = DefaultScreen(NH_WSI_X11.Display_p);
     NH_WSI_X11.root   = RootWindow(NH_WSI_X11.Display_p, NH_WSI_X11.screen);
@@ -247,10 +247,10 @@ NH_WSI_BEGIN()
     NH_WSI_CHECK(nh_x11_initExtensions())
     NH_WSI_CHECK(nh_x11_initAtoms())
 
-NH_WSI_END(NH_WSI_SUCCESS)
+NH_WSI_END(NH_API_SUCCESS)
 }
 
-NH_WSI_RESULT_E nh_x11_close()
+NH_API_RESULT nh_x11_close()
 {
 NH_WSI_BEGIN()
 
@@ -260,6 +260,6 @@ NH_WSI_BEGIN()
 
     XCloseDisplay(NH_WSI_X11.Display_p);
  
-NH_WSI_DIAGNOSTIC_END(NH_WSI_SUCCESS)
+NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

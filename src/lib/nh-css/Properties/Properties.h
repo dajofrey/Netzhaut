@@ -160,8 +160,8 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_CSS_PROPERTY_NAMES_PP[];
-    extern const NH_BOOL NH_CSS_PROPERTY_INHERITED_P[];
+    extern const char *NH_CSS_PROPERTY_NAMES_PP[];
+    extern const bool NH_CSS_PROPERTY_INHERITED_P[];
 
 /** @} */
 
@@ -169,7 +169,7 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_createInitialPropertyValues(
+    NH_API_RESULT nh_css_createInitialPropertyValues(
     );
 
     nh_css_ComponentValueData *nh_css_getInitialComponentValueData(

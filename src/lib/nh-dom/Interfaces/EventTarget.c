@@ -25,7 +25,7 @@
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeEventTarget(
+NH_API_RESULT nh_dom_initializeEventTarget(
     nh_webidl_Object *EventTarget_p)
 {
 NH_DOM_BEGIN()
@@ -35,7 +35,7 @@ NH_DOM_BEGIN()
 
     *((nh_List*)EVENT_LISTENERS) = nh_core_initList(16);
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================

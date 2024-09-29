@@ -33,7 +33,7 @@ nh_System NH_SYSTEM;
 
 // CPU =============================================================================================
 
-static NH_CORE_RESULT getCPUAttr(
+static NH_API_RESULT getCPUAttr(
     char *src, char *dest) 
 {
 NH_CORE_BEGIN()
@@ -46,18 +46,18 @@ NH_CORE_BEGIN()
         char *src3 = strtok(src2, delim2); 
         strcpy(dest, src3 + 1);
     }
-    else {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)}
+    else {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_getCPUInfo()
+static NH_API_RESULT nh_core_getCPUInfo()
 {
 NH_CORE_BEGIN()
 
     char name_p[255];
     int cores = 0;
-    NH_BOOL ht   = NH_FALSE;
+    bool ht   = false;
 
 #ifdef __unix__
 
@@ -99,12 +99,12 @@ NH_CORE_BEGIN()
     NH_SYSTEM.CPU.ht    = ht;
     strcpy(NH_SYSTEM.CPU.name_p, name_p);
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // OTHER ===========================================================================================
 
-static NH_BOOL nh_littleEndian()
+static bool nh_littleEndian()
 {
 NH_CORE_BEGIN()
 
@@ -113,7 +113,7 @@ NH_CORE_BEGIN()
 NH_CORE_END((int)(((char *)&x)[0] == 1))
 }
 
-static NH_CORE_RESULT nh_core_getOtherInfo()
+static NH_API_RESULT nh_core_getOtherInfo()
 {
 NH_CORE_BEGIN()
 
@@ -139,7 +139,7 @@ NH_CORE_BEGIN()
     NH_SYSTEM.RAM.total    = total;
     NH_SYSTEM.RAM.free     = free;
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // SYSTEM ==========================================================================================
@@ -173,7 +173,7 @@ NH_CORE_BEGIN()
 NH_CORE_SILENT_END()
 }
 
-static NH_CORE_RESULT nh_core_updateSystem()
+static NH_API_RESULT nh_core_updateSystem()
 {
 NH_CORE_BEGIN()
 
@@ -182,10 +182,10 @@ NH_CORE_BEGIN()
 
     nh_core_logSystem();
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_initSystem()
+NH_API_RESULT nh_core_initSystem()
 {
 NH_CORE_BEGIN()
 
@@ -207,14 +207,14 @@ NH_CORE_BEGIN()
     sprintf(log_p, NH_SYSTEM.littleEndian ? "ENDIANNESS Little-Endian (LE)" : "ENDIANNESS Big-Endian (BE)");
     nh_core_logSystemInfo(log_p, 1);
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_freeSystem()
+NH_API_RESULT nh_core_freeSystem()
 {
 NH_CORE_BEGIN()
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // UPDATER =========================================================================================
@@ -224,8 +224,8 @@ void *nh_core_initSystemUpdater(
 {
 NH_CORE_BEGIN()
 
-    static NH_BYTE *name_p = "System Updater";
-    static NH_BYTE *path_p = "nh-core/System/System.c";
+    static char *name_p = "System Updater";
+    static char *path_p = "nh-core/System/System.c";
 
     Workload_p->name_p = name_p;
     Workload_p->path_p = path_p;

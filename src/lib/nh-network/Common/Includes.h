@@ -10,8 +10,8 @@
  */
 
 // Include public API.
-#include "../../nh-api/nh-network.h"
 #include "../../nh-api/nh-core.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
+
 #endif // NH_NETWORK_COMMON_INCLUDES_H

@@ -29,7 +29,10 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_vk_createViewport(
+    // hack
+    typedef struct nh_gfx_Viewport nh_gfx_Viewport;
+
+    NH_API_RESULT nh_vk_createViewport(
         nh_gfx_Viewport *Viewport_p
     );
     
@@ -37,11 +40,11 @@
         nh_gfx_Viewport *Viewport_p
     );
     
-    NH_GFX_RESULT nh_vk_beginRecording(
+    NH_API_RESULT nh_vk_beginRecording(
         nh_gfx_Viewport *Viewport_p
     );
     
-    NH_GFX_RESULT nh_vk_endRecording(
+    NH_API_RESULT nh_vk_endRecording(
         nh_gfx_Viewport *Viewport_p
     );
 

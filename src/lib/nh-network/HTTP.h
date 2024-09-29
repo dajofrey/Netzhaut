@@ -260,11 +260,11 @@
         NH_NETWORK_HTTP_REQUEST type
     );
 
-    NH_NETWORK_RESULT nh_network_appendHTTPHeader(
+    NH_API_RESULT nh_network_appendHTTPHeader(
         nh_network_HTTPRequest *Request_p, NH_NETWORK_HTTP_HEADER type, char *value_p
     );
 
-    NH_NETWORK_RESULT nh_network_getHTTPHeaderValue(
+    NH_API_RESULT nh_network_getHTTPHeaderValue(
         char *response_p, char *set_p, NH_NETWORK_HTTP_HEADER type
     );
 
@@ -272,8 +272,8 @@
         char *response_p
     );
 
-    NH_NETWORK_RESULT nh_network_sendDataRequestViaHTTP(
-        nh_network_ClientSocket *Socket_p, char *host_p, char *path_p, NH_BOOL secure
+    NH_API_RESULT nh_network_sendDataRequestViaHTTP(
+        nh_network_ClientSocket *Socket_p, char *host_p, char *path_p, bool secure
     );
 
     nh_network_HTTPPayload nh_network_convertToHTTPPayload(

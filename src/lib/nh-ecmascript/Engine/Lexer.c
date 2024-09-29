@@ -32,7 +32,7 @@ typedef enum NH_ECMASCRIPT_GOAL_SYMBOL {
 
 // DATA ============================================================================================
 
-const NH_BYTE *NH_ECMASCRIPT_INPUT_ELEMENTS_PP[] = {
+const char *NH_ECMASCRIPT_INPUT_ELEMENTS_PP[] = {
     "Whitespace",
     "LineTerminator",
     "Comment",
@@ -53,8 +53,8 @@ const NH_BYTE *NH_ECMASCRIPT_INPUT_ELEMENTS_PP[] = {
 
 // LEXER ===========================================================================================
 
-static NH_BOOL nh_ecmascript_isDigit(
-    NH_ENCODING_UTF32 codepoint, NH_BOOL zero)
+static bool nh_ecmascript_isDigit(
+    NH_ENCODING_UTF32 codepoint, bool zero)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -68,12 +68,12 @@ NH_ECMASCRIPT_BEGIN()
     ||  codepoint == '8'
     ||  codepoint == '9')
     {
-        NH_ECMASCRIPT_END(NH_TRUE)
+        NH_ECMASCRIPT_END(true)
     }
 
-    if (zero && codepoint == '0') {NH_ECMASCRIPT_END(NH_TRUE)}
+    if (zero && codepoint == '0') {NH_ECMASCRIPT_END(true)}
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 static unsigned int nh_ecmascript_isDigits(
@@ -81,9 +81,9 @@ static unsigned int nh_ecmascript_isDigits(
 {
 NH_ECMASCRIPT_BEGIN()
 
-    if (nh_ecmascript_isDigit(codepoints_p[0], NH_TRUE)) {
+    if (nh_ecmascript_isDigit(codepoints_p[0], true)) {
         unsigned int i = 1;
-        while (i < length && (nh_ecmascript_isDigit(codepoints_p[i], NH_TRUE) || codepoints_p[i] == '_')) {
+        while (i < length && (nh_ecmascript_isDigit(codepoints_p[i], true) || codepoints_p[i] == '_')) {
             i++;
         }
         NH_ECMASCRIPT_END(i)
@@ -101,7 +101,7 @@ NH_ECMASCRIPT_BEGIN()
     if (codepoints_p[0] == '+' || codepoints_p[0] == '-') {
         offset++;
     }
-    int digits = nh_ecmascript_isDigits(offset == 0 ? codepoints_p : &codepoints_p[1], NH_TRUE);
+    int digits = nh_ecmascript_isDigits(offset == 0 ? codepoints_p : &codepoints_p[1], true);
     if (digits == 0) {NH_ECMASCRIPT_END(0)}
 
 NH_ECMASCRIPT_END(offset + digits)
@@ -115,7 +115,7 @@ NH_ECMASCRIPT_BEGIN()
     if (codepoints_p[0] != 'e' && codepoints_p[0] != 'E') {
         NH_ECMASCRIPT_END(0)
     }
-    int digits = nh_ecmascript_isSignedInteger(&codepoints_p[1], NH_TRUE);
+    int digits = nh_ecmascript_isSignedInteger(&codepoints_p[1], true);
 
 NH_ECMASCRIPT_END(digits)
 }
@@ -127,7 +127,7 @@ NH_ECMASCRIPT_BEGIN()
 
     if (codepoints_p[0] == '0') {NH_ECMASCRIPT_END(1)}
 
-    if (nh_ecmascript_isDigit(codepoints_p[0], NH_FALSE)) 
+    if (nh_ecmascript_isDigit(codepoints_p[0], false)) 
     {
         int offset = 1;
         if (length > 1 && codepoints_p[1] == '_') {
@@ -261,7 +261,7 @@ NH_ECMASCRIPT_BEGIN()
         }
         if (codepoints_p[0] == '?' && codepoints_p[1] == '.')
         { 
-            if (length > 2 && nh_ecmascript_isDigit(codepoints_p[2], NH_TRUE)) {}
+            if (length > 2 && nh_ecmascript_isDigit(codepoints_p[2], true)) {}
             else {NH_ECMASCRIPT_END(2)}
         }
     }
@@ -295,7 +295,7 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(0)
 }
 
-static NH_BOOL nh_ecmascript_isHexDigit(
+static bool nh_ecmascript_isHexDigit(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -321,9 +321,9 @@ NH_ECMASCRIPT_BEGIN()
     ||  codepoint == 'C'
     ||  codepoint == 'D'
     ||  codepoint == 'E'
-    ||  codepoint == 'F') {NH_ECMASCRIPT_END(NH_TRUE)}
+    ||  codepoint == 'F') {NH_ECMASCRIPT_END(true)}
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 static unsigned int nh_ecmascript_isHexDigits(
@@ -377,7 +377,7 @@ NH_ECMASCRIPT_BEGIN()
         NH_ECMASCRIPT_END(2)
     }
 
-    if (nh_ecmascript_isDigit(codepoints_p[0], NH_FALSE) && length > 1) 
+    if (nh_ecmascript_isDigit(codepoints_p[0], false) && length > 1) 
     {
         if (codepoints_p[1] == '_') {
             digits = nh_ecmascript_isDigits(&codepoints_p[2], length - 2);
@@ -454,13 +454,13 @@ static unsigned int nh_ecmascript_isIdentifierStart(
 {
 NH_ECMASCRIPT_BEGIN()
 
-    if (codepoint == '$' || codepoint == '_') {NH_ECMASCRIPT_END(NH_TRUE)}
-    if (nh_encoding_inIDSTART(codepoint)) {NH_ECMASCRIPT_END(NH_TRUE)}
+    if (codepoint == '$' || codepoint == '_') {NH_ECMASCRIPT_END(true)}
+    if (nh_encoding_inIDSTART(codepoint)) {NH_ECMASCRIPT_END(true)}
     if (codepoint == 92) { // 92 == \
         // unicode esc seq
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 } 
 
 static unsigned int nh_ecmascript_isIdentifierPart(
@@ -468,13 +468,13 @@ static unsigned int nh_ecmascript_isIdentifierPart(
 {
 NH_ECMASCRIPT_BEGIN()
 
-    if (codepoint == '$') {NH_ECMASCRIPT_END(NH_TRUE)}
-    if (nh_encoding_inIDCONTINUE(codepoint)) {NH_ECMASCRIPT_END(NH_TRUE)}
+    if (codepoint == '$') {NH_ECMASCRIPT_END(true)}
+    if (nh_encoding_inIDCONTINUE(codepoint)) {NH_ECMASCRIPT_END(true)}
     if (codepoint == 92) {
         // unicode esc seq
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 } 
 
 // https://tc39.es/ecma262/#sec-names-and-keywords
@@ -623,16 +623,16 @@ NH_ECMASCRIPT_END(CleanInputElements)
 
 // IS NUMERIC LITERAL ==============================================================================
 
-NH_BOOL nh_ecmascript_isNumericToken(
+bool nh_ecmascript_isNumericToken(
     nh_ecmascript_InputElement *InputElement_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
     if (InputElement_p->type >= NH_ECMASCRIPT_INPUT_ELEMENT_TOKEN_DECIMAL_LITERAL && InputElement_p->type <= NH_ECMASCRIPT_INPUT_ELEMENT_TOKEN_NON_DECIMAL_HEX_INTEGER_LITERAL) {
-        NH_ECMASCRIPT_END(NH_TRUE)
+        NH_ECMASCRIPT_END(true)
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 

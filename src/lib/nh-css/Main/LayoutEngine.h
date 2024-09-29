@@ -10,8 +10,8 @@
  */
 
 #include "BoxTree.h"
-
 #include "../Common/Includes.h"
+#include "../../nh-html/Main/DocumentContext.h"
 
 #endif
 
@@ -20,7 +20,7 @@
  */
 
     typedef struct nh_css_Layout {
-        NH_BOOL initialized;
+        bool initialized;
         nh_List Canvases;
     } nh_css_Layout;
 

@@ -16,7 +16,6 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-
     nh_dom_NamedNodeMap *nh_dom_createNamedNodeMap(
         nh_dom_Element *Element_p
     );

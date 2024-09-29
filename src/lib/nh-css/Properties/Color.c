@@ -22,7 +22,7 @@
 
 // COLOR KEYWORDS ==================================================================================
 
-const NH_BYTE *NH_CSS_COLORS_PP[] = 
+const char *NH_CSS_COLORS_PP[] = 
 {
     "aliceblue",  	
     "antiquewhite",  	
@@ -38,7 +38,7 @@ const NH_BYTE *NH_CSS_COLORS_PP[] =
     "brown",	
     "burlywood",  	
     "cadetblue",	
-    "NH_BYTEtreuse", 	
+    "chartreuse", 	
     "chocolate",	
     "coral",	
     "cornflowerblue", 
@@ -178,14 +178,14 @@ unsigned int NH_CSS_COLORS_PP_COUNT = sizeof(NH_CSS_COLORS_PP)/sizeof(NH_CSS_COL
 
 // GET =============================================================================================
 
-NH_CSS_RESULT nh_css_getColorFromName(
-    NH_BYTE *name_p, NH_BYTE *hex_p)
+NH_API_RESULT nh_css_getColorFromName(
+    char *name_p, char *hex_p)
 {
 NH_CSS_BEGIN()
 
-    if (name_p == NULL || strlen(name_p) > 255) {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)}
+    if (name_p == NULL || strlen(name_p) > 255) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
-    NH_BYTE nameCpy_p[255] = {'\0'};
+    char nameCpy_p[255] = {'\0'};
     strcpy(nameCpy_p, name_p);
     for (int i = 0; i < strlen(nameCpy_p); ++i) {nameCpy_p[i] = tolower(nameCpy_p[i]);}
 
@@ -344,7 +344,7 @@ NH_CSS_BEGIN()
         case NH_CSS_COLOR_YELLOW_GREEN        : strcpy(hex_p, "9ACD32"); break;	
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 /**
@@ -362,24 +362,24 @@ NH_CSS_BEGIN()
 NH_CSS_SILENT_END()
 }
 
-static NH_CSS_RESULT nh_css_rgba(
-    NH_BYTE *str_p, float rgba_p[4])
+static NH_API_RESULT nh_css_rgba(
+    char *str_p, float rgba_p[4])
 {
 NH_CSS_BEGIN()
 
     int rgb_p[3] = {0};
     int alpha_p[3] = {0};
-    NH_BOOL percentage_p[3] = {NH_FALSE, NH_FALSE, NH_FALSE};
+    bool percentage_p[3] = {false, false, false};
 
     int count = 0;
-    NH_BYTE *c_p = str_p;
+    char *c_p = str_p;
     for (int i = 0; i < strlen(c_p);) 
     {
-        NH_BYTE c = c_p[i];
-        if (c == '%' && count <= 3) {percentage_p[count-1] = NH_TRUE;}
+        char c = c_p[i];
+        if (c == '%' && count <= 3) {percentage_p[count-1] = true;}
         if (isdigit(c_p[i])) 
         {
-            NH_BYTE *val_p = c_p+i;
+            char *val_p = c_p+i;
             long val;
             if (count >= 3) { // alpha
                 if (count >= 6) {break;}
@@ -411,21 +411,21 @@ NH_CSS_BEGIN()
         rgba_p[3] = alpha;
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_hsla(
-    NH_BYTE *str_p, float rgba_p[4])
+static NH_API_RESULT nh_css_hsla(
+    char *str_p, float rgba_p[4])
 {
 NH_CSS_BEGIN()
 
     // TODO
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-static NH_CSS_RESULT nh_css_parseHexColor(
-    NH_BYTE *str_p, float rgba_p[4])
+static NH_API_RESULT nh_css_parseHexColor(
+    char *str_p, float rgba_p[4])
 {
 NH_CSS_BEGIN()
 
@@ -433,7 +433,7 @@ NH_CSS_BEGIN()
 
     if (strlen(str_p) == 3) 
     {
-        NH_BYTE tmp_p[6];
+        char tmp_p[6];
         tmp_p[0] = str_p[0];
         tmp_p[1] = str_p[0];
         tmp_p[2] = str_p[1];
@@ -456,10 +456,10 @@ NH_CSS_BEGIN()
         rgba_p[3] = 1.0f;
     }
     else {
-        NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
     
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_Color nh_css_getColor(

@@ -33,7 +33,7 @@ NH_CORE_END(&NH_GLOBAL_CONFIG)
 }
 
 nh_List *nh_core_getGlobalConfigSetting(
-    NH_BYTE *namespace_p, int _module, const NH_BYTE *name_p)
+    char *namespace_p, int _module, const char *name_p)
 {
 NH_CORE_BEGIN()
 
@@ -83,20 +83,20 @@ NH_CORE_BEGIN()
 NH_CORE_END(Config)
 }
 
-static NH_BOOL nh_core_matchConfigValues(
+static bool nh_core_matchConfigValues(
     nh_List *Values1_p, nh_List *Values2_p)
 {
 NH_CORE_BEGIN()
 
-    if (Values1_p->size != Values2_p->size) {NH_CORE_END(NH_FALSE)}
+    if (Values1_p->size != Values2_p->size) {NH_CORE_END(false)}
 
     for (int i = 0; i < Values1_p->size; ++i) {
         if (strcmp(Values1_p->pp[i], Values2_p->pp[i])) {
-            NH_CORE_END(NH_FALSE)
+            NH_CORE_END(false)
         }
     }
 
-NH_CORE_END(NH_TRUE)
+NH_CORE_END(true)
 }
 
 static nh_List nh_core_copyConfigValues(
@@ -107,7 +107,7 @@ NH_CORE_BEGIN()
     nh_List Values = nh_core_initList(Values_p->size);
 
     for (int i = 0; i < Values_p->size; ++i) {
-        NH_BYTE *p = malloc(sizeof(NH_BYTE)*(strlen(Values_p->pp[i])+1));
+        char *p = malloc(sizeof(char)*(strlen(Values_p->pp[i])+1));
         strcpy(p, Values_p->pp[i]);
         nh_core_appendToList(&Values, p);
     }
@@ -115,8 +115,8 @@ NH_CORE_BEGIN()
 NH_CORE_END(Values)
 }
 
-NH_CORE_RESULT nh_core_appendConfig(
-    NH_BYTE *data_p, int length, NH_BOOL overwrite)
+NH_API_RESULT nh_core_appendConfig(
+    char *data_p, int length, bool overwrite)
 {
 NH_CORE_BEGIN()
 
@@ -126,23 +126,23 @@ NH_CORE_BEGIN()
     for (int i = 0; i < Config.Settings.size; ++i) {
         nh_RawConfigSetting *NewSetting_p = Config.Settings.pp[i];
 
-        NH_BOOL found = NH_FALSE;
+        bool found = false;
 
         // Overwrite default setting if no namespace.
         for (int j = 0; j < NH_GLOBAL_CONFIG.Settings.size && strlen(NewSetting_p->namespace_p) == 0; ++j) {
             nh_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
             if (Setting_p == NewSetting_p->Default_p) {
 
-                found = NH_TRUE;
+                found = true;
                 if (!overwrite) {break;}
 
                 // If the setting values match, nothing needs to be overwritten.
                 if (nh_core_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
                     break;
                 } else {
-                    nh_core_freeList(&Setting_p->Values, NH_TRUE);
+                    nh_core_freeList(&Setting_p->Values, true);
                     Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
-                    Setting_p->mark = NH_TRUE;
+                    Setting_p->mark = true;
                     break;
                 }
             }
@@ -154,15 +154,15 @@ NH_CORE_BEGIN()
             if (strlen(Setting_p->namespace_p) == 0) {continue;}
             if (!strcmp(Setting_p->namespace_p, NewSetting_p->namespace_p) && Setting_p->Default_p == NewSetting_p->Default_p) {
 
-                found = NH_TRUE;
+                found = true;
                 if (!overwrite) {break;}
 
                 if (nh_core_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
                     break;
                 } else {
-                    nh_core_freeList(&Setting_p->Values, NH_TRUE);
+                    nh_core_freeList(&Setting_p->Values, true);
                     Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
-                    Setting_p->mark = NH_TRUE;
+                    Setting_p->mark = true;
                     break;
                 }
             }
@@ -190,15 +190,15 @@ NH_CORE_BEGIN()
 
     nh_core_freeRawConfig(&Config);
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_overwriteGlobalConfigSetting(
-    NH_BYTE *namespace_p, NH_MODULE_E module, const NH_BYTE *setting_p, NH_BYTE *value_p)
+NH_API_RESULT nh_core_overwriteGlobalConfigSetting(
+    char *namespace_p, NH_MODULE_E module, const char *setting_p, char *value_p)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE config_p[255];
+    char config_p[255];
 
     if (namespace_p) {
         sprintf(config_p, "%s_%s.%s:%s;", namespace_p, NH_MODULE_NAMES_PP[module], setting_p, value_p);
@@ -206,17 +206,17 @@ NH_CORE_BEGIN()
         sprintf(config_p, "%s.%s:%s;", NH_MODULE_NAMES_PP[module], setting_p, value_p);
     }
 
-    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), NH_TRUE))
+    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), true))
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_overwriteGlobalConfigSettingInt(
-    NH_BYTE *namespace_p, int _module, const NH_BYTE *setting_p, int value)
+NH_API_RESULT nh_core_overwriteGlobalConfigSettingInt(
+    char *namespace_p, int _module, const char *setting_p, int value)
 {
 NH_CORE_BEGIN()
 
-    NH_BYTE config_p[255];
+    char config_p[255];
 
     if (namespace_p) {
         if (_module >= 0) {
@@ -232,21 +232,21 @@ NH_CORE_BEGIN()
         }
     }
 
-    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), NH_TRUE))
+    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), true))
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 // INIT/FREE =======================================================================================
 
-NH_CORE_RESULT nh_core_initGlobalConfig()
+NH_API_RESULT nh_core_initGlobalConfig()
 {
 NH_CORE_BEGIN()
 
     NH_GLOBAL_CONFIG = nh_core_initRawConfig();
     nh_core_parseRawConfig(&NH_GLOBAL_CONFIG, default_conf_inc, default_conf_inc_len, NULL);
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 void nh_core_freeGlobalConfig()

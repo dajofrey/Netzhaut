@@ -18,6 +18,16 @@
 
 #endif
 
+/** 
+  * A string is an array of char's. 
+  */ 
+ typedef nh_Array nh_String; 
+
+ /** 
+  * An ASCII string is a string. 
+  */ 
+ typedef nh_String nh_ASCIIString; 
+
 /** @addtogroup lib_nh-core_enums
  *  @{
  */
@@ -58,13 +68,13 @@
     );
 
 // BYTES
-    NH_BYTE *nh_core_allocateBytes(
-        NH_BYTE *bytes_p
+    char *nh_core_allocateBytes(
+        char *bytes_p
     );
 
 // LEVENSHTEIN
     int nh_levenshteinDistance(
-        NH_BYTE *s1_p, NH_BYTE *s2_p, NH_BOOL caseSensitive
+        char *s1_p, char *s2_p, bool caseSensitive
     );
 
 // STRING
@@ -72,27 +82,27 @@
         int chunkSize
     );
 
-    NH_CORE_RESULT nh_core_appendByteToString(
-        nh_String *String_p, NH_BYTE byte
+    NH_API_RESULT nh_core_appendByteToString(
+        nh_String *String_p, char byte
     );
 
-    NH_CORE_RESULT nh_core_appendByteToStringRepeatedly(
-        nh_String *String_p, NH_BYTE byte, int count
+    NH_API_RESULT nh_core_appendByteToStringRepeatedly(
+        nh_String *String_p, char byte, int count
     );
 
-    NH_CORE_RESULT nh_core_appendToString(
-        nh_String *String_p, NH_BYTE *bytes_p, int length
+    NH_API_RESULT nh_core_appendToString(
+        nh_String *String_p, char *bytes_p, int length
     );
 
-    NH_CORE_RESULT nh_core_appendFormatToString(
-        nh_String *String_p, NH_BYTE *format_p, ...
+    NH_API_RESULT nh_core_appendFormatToString(
+        nh_String *String_p, char *format_p, ...
     );
     
-    NH_CORE_RESULT nh_core_removeFromString(
+    NH_API_RESULT nh_core_removeFromString(
         nh_String *String_p, int index, unsigned int count
     );
 
-    NH_CORE_RESULT nh_core_removeTailFromString(
+    NH_API_RESULT nh_core_removeTailFromString(
         nh_String *String_p, unsigned int count
     );
 

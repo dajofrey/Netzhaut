@@ -34,7 +34,7 @@ typedef struct nh_css_Rule {
 
 // INITIALIZE ======================================================================================
 
-NH_CSS_RESULT nh_css_initializeCSSRule(
+NH_API_RESULT nh_css_initializeCSSRule(
     nh_webidl_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
@@ -42,7 +42,7 @@ NH_CSS_BEGIN()
     CSSRule_p->internal_p = nh_core_allocate(sizeof(nh_css_Rule));
     NH_CSS_CHECK_MEM(CSSRule_p->internal_p)
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================

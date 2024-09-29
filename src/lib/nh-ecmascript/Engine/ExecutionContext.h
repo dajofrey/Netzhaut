@@ -21,11 +21,11 @@
  */
 
 //    typedef struct nh_ecmascript_CodeEvaluation {
-//        NH_BOOL suspend;
+//        bool suspend;
 //    } nh_ecmascript_CodeEvaluation;
 
     typedef struct nh_ecmascript_ScriptOrModule {
-        NH_BOOL isScript;
+        bool isScript;
         void *handle_p;
     } nh_ecmascript_ScriptOrModule;
 

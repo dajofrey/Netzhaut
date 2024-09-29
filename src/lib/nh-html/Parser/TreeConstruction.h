@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_HTML_RESULT nh_html_dispatchTreeConstruction(
+    NH_API_RESULT nh_html_dispatchTreeConstruction(
         nh_html_Parser *Parser_p
     );
 

@@ -175,7 +175,7 @@
 
 // FRAGMENT_NAMES ==================================================================================
 
-NH_BYTE *NH_WEBIDL_FRAGMENT_NAMES_PP[] = {
+char *NH_WEBIDL_FRAGMENT_NAMES_PP[] = {
     "DOM_TreeWalker",
     "DOM_Text",
     "DOM_StaticRange",
@@ -341,7 +341,7 @@ size_t NH_WEBIDL_FRAGMENT_NAMES_PP_COUNT = sizeof(NH_WEBIDL_FRAGMENT_NAMES_PP) /
 
 // FRAGMENTS =======================================================================================
 
-NH_UNSIGNED_BYTE *NH_WEBIDL_FRAGMENTS_PP[] = {
+unsigned char *NH_WEBIDL_FRAGMENTS_PP[] = {
     nh_webidl_DOM_TreeWalker_p,
     nh_webidl_DOM_Text_p,
     nh_webidl_DOM_StaticRange_p,

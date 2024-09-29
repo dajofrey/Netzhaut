@@ -21,7 +21,7 @@
  */
 
     typedef struct nh_webidl_InterfaceMember {
-        const NH_BYTE *name_p;
+        const char *name_p;
         nh_webidl_ParseNode *Node_p;
     } nh_webidl_InterfaceMember;
 
@@ -31,12 +31,12 @@
  *  @{
  */
 
-    NH_WEBIDL_RESULT nh_webidl_createInterfaces(
+    NH_API_RESULT nh_webidl_createInterfaces(
         nh_webidl_Fragment *Fragment_p
     );
 
     nh_webidl_Interface *nh_webidl_getInterfaceFromFragment(
-        nh_webidl_Fragment *Fragment_p, NH_BYTE *className_p
+        nh_webidl_Fragment *Fragment_p, char *className_p
     );
 
 /** @} */

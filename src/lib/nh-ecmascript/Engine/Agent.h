@@ -20,18 +20,18 @@
 
 //    typedef struct nh_ecmascript_AgentArgs {
 //        NH_UNICODE_ENCODING encoding;
-//        NH_BYTE *p;
+//        char *p;
 //    } nh_ecmascript_AgentArgs;
 
     // https://tc39.es/ecma262/#sec-agents
     typedef struct nh_ecmascript_Agent {
         nh_Stack ExecutionContextStack;
-        NH_BOOL littleEndian;
-        NH_BOOL canBlock;
+        bool littleEndian;
+        bool canBlock;
         int signifier;
-        NH_BOOL isLockFree1;
-        NH_BOOL isLockFree2;
-        NH_BOOL isLockFree8;
+        bool isLockFree1;
+        bool isLockFree2;
+        bool isLockFree8;
 //        nh_ecmascript_CandidateExecution CandidateExecution;
         nh_List KeptAlive;
     } nh_ecmascript_Agent;

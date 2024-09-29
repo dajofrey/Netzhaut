@@ -19,28 +19,28 @@
  *  @{
  */
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_logDecoder(
+    NH_API_RESULT nh_ecmascript_logDecoder(
         void *handle_p, nh_encoding_UTF32String *Codepoints_p
     );
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_logLexer(
-        void *handle_p, nh_Array *InputElements_p, NH_BOOL dirty
+    NH_API_RESULT nh_ecmascript_logLexer(
+        void *handle_p, nh_Array *InputElements_p, bool dirty
     );
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_logParseTree(
-        void *handle_p, nh_ecmascript_ParseNode *ParseNode_p, nh_ecmascript_ParseNode *Parent_p, int depth, NH_BOOL *branch_p
+    NH_API_RESULT nh_ecmascript_logParseTree(
+        void *handle_p, nh_ecmascript_ParseNode *ParseNode_p, nh_ecmascript_ParseNode *Parent_p, int depth, bool *branch_p
     );
 
-    NH_ECMASCRIPT_RESULT _nh_ecmascript_logBegin(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_ecmascript_logBegin(
+        const char *file_p, const char *function_p
     );
     
-    NH_ECMASCRIPT_RESULT _nh_ecmascript_logEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_ecmascript_logEnd(
+        const char *file_p, const char *function_p
     );
     
-    NH_ECMASCRIPT_RESULT _nh_ecmascript_logDiagnosticEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p, NH_ECMASCRIPT_RESULT result, int line
+    NH_API_RESULT _nh_ecmascript_logDiagnosticEnd(
+        const char *file_p, const char *function_p, NH_API_RESULT result, int line
     );
 
 /** @} */

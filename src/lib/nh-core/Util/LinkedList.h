@@ -16,6 +16,18 @@
 
 #endif
 
+/** 
+ * Opaque structure holding the actual data of @ref nh_LinkedList. 
+ */ 
+typedef struct nh_LinkedListItem nh_LinkedListItem; 
+/** 
+ * Generic linked-list which holds data pointers. 
+ */ 
+typedef struct nh_LinkedList { 
+    int count;                 /**<Number of items.*/ 
+    nh_LinkedListItem *Head_p;
+} nh_LinkedList; 
+
 /** @addtogroup lib_nh-core_macros
  *  @{
  */
@@ -36,13 +48,13 @@
      *
      * @param  List_p A pointer to the list to which \p data_p will be added.
      * @param  data_p A pointer to data that you want to add. Must be allocated beforehand.
-     * @return        @ref NH_CORE_SUCCESS when \p data_p was added, various error codes if something went wrong. 
+     * @return        @ref NH_API_SUCCESS when \p data_p was added, various error codes if something went wrong. 
      */
-    NH_CORE_RESULT nh_core_appendToLinkedList(
+    NH_API_RESULT nh_core_appendToLinkedList(
         nh_LinkedList *List_p, void *data_p
     );
    
-    NH_CORE_RESULT _nh_core_appendToLinkedList(
+    NH_API_RESULT _nh_core_appendToLinkedList(
         nh_LinkedList *List_p, void *data_p
     );
 
@@ -51,17 +63,17 @@
      *
      * @param  List_p A pointer to the list to which \p data_p will be prepended.
      * @param  data_p A pointer to data that you want to prepend. Must be allocated beforehand.
-     * @return        @ref NH_CORE_SUCCESS when \p data_p was prepended, various error codes if something went wrong. 
+     * @return        @ref NH_API_SUCCESS when \p data_p was prepended, various error codes if something went wrong. 
      */
-    NH_CORE_RESULT nh_core_prependToLinkedList(
+    NH_API_RESULT nh_core_prependToLinkedList(
         nh_LinkedList *List_p, void *data_p
     );
 
-    NH_CORE_RESULT nh_replaceInLinkedList(
+    NH_API_RESULT nh_replaceInLinkedList(
         nh_LinkedList *List_p, void *replace_p, void *replacement_p
     );
 
-    NH_CORE_RESULT nh_core_insertIntoLinkedList(
+    NH_API_RESULT nh_core_insertIntoLinkedList(
         nh_LinkedList *List_p, void *data_p, int index
     );
 
@@ -80,7 +92,7 @@
         nh_LinkedList *List_p, int index
     );
 
-    NH_CORE_RESULT nh_core_setInLinkedList(
+    NH_API_RESULT nh_core_setInLinkedList(
         nh_LinkedList *List_p, int index, void *data_p
     );
 
@@ -100,14 +112,14 @@
     );
 
     void nh_core_removeFromLinkedList2(
-        nh_LinkedList *List_p, void *pointer, NH_BOOL freeData
+        nh_LinkedList *List_p, void *pointer, bool freeData
     );
 
     void _nh_core_removeFromLinkedList2( // TODO multithreading
-        nh_LinkedList *List_p, void *pointer, NH_BOOL freeData
+        nh_LinkedList *List_p, void *pointer, bool freeData
     );
 
-    NH_BOOL nh_inLinkedList(
+    bool nh_inLinkedList(
         nh_LinkedList *List_p, void *pointer
     );
 

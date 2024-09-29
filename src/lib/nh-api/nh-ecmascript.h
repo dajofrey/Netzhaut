@@ -1,7 +1,5 @@
-#ifndef NH_ECMASCRIPT_H
-#define NH_ECMASCRIPT_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_API_NH_ECMASCRIPT_H
+#define NH_API_NH_ECMASCRIPT_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -11,44 +9,18 @@
 
 #include "nh-core.h"
 
-#endif
-
-/** @defgroup api_nh-ecmascript nh-ecmascript
- *  @brief Parse scripts.
- */
-
-/** @addtogroup api_nh-ecmascript 
- *  @{
- */
-
 // TYPEDEFS ========================================================================================
 
-    typedef struct nh_ecmascript_Script nh_ecmascript_Script;
-    typedef struct nh_ecmascript_Realm nh_ecmascript_Realm;
+    typedef struct nh_api_Script nh_api_Script;
+    typedef struct nh_api_Realm nh_api_Realm;
 
-// ENUMS ===========================================================================================
-
-    /** 
-     * Return values for functions. 
-     */ 
-    typedef enum NH_ECMASCRIPT_RESULT 
-    { 
-        NH_ECMASCRIPT_SUCCESS, /**<Indicates that something worked as planned.*/ 
-        NH_ECMASCRIPT_ERROR_NULL_POINTER, 
-        NH_ECMASCRIPT_ERROR_BAD_STATE, 
-        NH_ECMASCRIPT_ERROR_MEMORY_ALLOCATION, 
- 
-    } NH_ECMASCRIPT_RESULT; 
- 
 // FUNCTIONS =======================================================================================
 
     /**
      * Todo.
      */
-    nh_ecmascript_Script *nh_api_parseScript(
-        NH_BYTE *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding
+    nh_api_Script *nh_api_parseScript(
+        char *sourceText_p, nh_api_Realm *Realm_p, int encoding
     );
 
-/** @} */
-
-#endif // NH_ECMASCRIPT_H
+#endif // NH_API_NH_ECMASCRIPT_H

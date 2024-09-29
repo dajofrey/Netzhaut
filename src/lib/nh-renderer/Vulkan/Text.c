@@ -30,7 +30,7 @@
 
 // HELPER ==========================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createTextVertices(
+static NH_API_RESULT nh_renderer_vk_createTextVertices(
     nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p, nh_gfx_TextSegment *Segment_p, 
     float *vertices_p, uint32_t *indices_p, int index)
 {
@@ -46,12 +46,12 @@ NH_RENDERER_BEGIN()
     nh_vk_BufferInfo bufferInfo = {
         .Info_p           = &bufferCreateInfo,
         .data_p           = vertices_p,
-        .mapMemory        = NH_TRUE,
+        .mapMemory        = true,
         .memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        .createInfo       = NH_FALSE,
+        .createInfo       = false,
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createBuffer(
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createBuffer(
         Driver_p, &bufferInfo, nh_renderer_vk_getBufferFromIndex(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_TEXT_SDF, index)
     ))
 
@@ -60,14 +60,14 @@ NH_RENDERER_BEGIN()
     bufferInfo.data_p = indices_p;
     bufferInfo.Info_p = &bufferCreateInfo;
    
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createBuffer(
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createBuffer(
         Driver_p, &bufferInfo, nh_renderer_vk_getBufferFromIndex(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_TEXT_SDF_INDEX, index)
     ))
  
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_RENDERER_RESULT nh_renderer_vk_createTextUniform(
+static NH_API_RESULT nh_renderer_vk_createTextUniform(
     nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p, int index)
 {
 NH_RENDERER_BEGIN()
@@ -89,12 +89,12 @@ NH_RENDERER_BEGIN()
     {
         .Info_p           = &vsInfo,
         .data_p           = vsData_p,
-        .mapMemory        = NH_TRUE,
+        .mapMemory        = true,
         .memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        .createInfo       = NH_FALSE,
+        .createInfo       = false,
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createBuffer(
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createBuffer(
         Driver_p, &bufferInfo, nh_renderer_vk_getUniformFromIndex(Fragment_p->data_p, NH_RENDERER_VK_UNIFORM_TEXT_SDF_VS, index)
     ))
 
@@ -120,14 +120,14 @@ NH_RENDERER_BEGIN()
     bufferInfo.data_p = fsData_p;
     bufferInfo.Info_p = &fsInfo;
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createBuffer(
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createBuffer(
         Driver_p, &bufferInfo, nh_renderer_vk_getUniformFromIndex(Fragment_p->data_p, NH_RENDERER_VK_UNIFORM_TEXT_SDF_FS, index)
     ))
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_RENDERER_RESULT nh_renderer_vk_createTextDescriptor(
+static NH_API_RESULT nh_renderer_vk_createTextDescriptor(
     nh_vk_GPU *GPU_p, nh_css_Fragment *Fragment_p, nh_vk_Texture *Texture_p, int index)
 {
 NH_RENDERER_BEGIN()
@@ -174,7 +174,7 @@ NH_RENDERER_BEGIN()
         .descriptorSetCount = 1,
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createDescriptorSet(Driver_p, &AllocateInfo, &LayoutInfo, nh_renderer_vk_getDescriptorFromIndex(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_TEXT_SDF, index)))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createDescriptorSet(Driver_p, &AllocateInfo, &LayoutInfo, nh_renderer_vk_getDescriptorFromIndex(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_TEXT_SDF, index)))
 
     // update
     VkDescriptorBufferInfo vsDescrBufferInfo = 
@@ -225,13 +225,13 @@ NH_RENDERER_BEGIN()
     VkWriteDescriptorSet Sets_p[3] = {vsUniformBufferDescriptorSet, fsTextureSamplerDescriptorSet, fsUniformBufferDescriptorSet};
     Driver_p->Functions.vkUpdateDescriptorSets(Driver_p->Device, 3, Sets_p, 0, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // CREATE AND UPDATE ===============================================================================
 
-NH_RENDERER_RESULT nh_renderer_vk_createText(
-    nh_vk_GPU *GPU_p, nh_css_Fragment *Fragment_p, nh_gfx_TextSegment *Segment_p, NH_BOOL allocate, 
+NH_API_RESULT nh_renderer_vk_createText(
+    nh_vk_GPU *GPU_p, nh_css_Fragment *Fragment_p, nh_gfx_TextSegment *Segment_p, bool allocate, 
     float *vertices_p, uint32_t *indices_p, int index)
 {
 NH_RENDERER_BEGIN()
@@ -265,10 +265,10 @@ NH_RENDERER_BEGIN()
     NH_RENDERER_CHECK(nh_renderer_vk_createTextUniform(&GPU_p->Driver, Fragment_p, index))
     NH_RENDERER_CHECK(nh_renderer_vk_createTextDescriptor(GPU_p, Fragment_p, Texture_p, index))
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-//NH_RENDERER_RESULT nh_vk_updateText(
+//NH_API_RESULT nh_vk_updateText(
 //    nh_Tab *Tab_p, nh_renderer_FormattingNodeFragment *Fragment_p)
 //{
 //NH_RENDERER_BEGIN()

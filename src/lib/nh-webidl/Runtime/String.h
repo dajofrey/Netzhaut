@@ -9,6 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "Type.h"
 #include "../Common/Includes.h"
 
 #include <stdint.h>
@@ -33,18 +34,18 @@
  *  @{
  */
 
-    NH_WEBIDL_RESULT nh_webidl_initNamespaces(
+    NH_API_RESULT nh_webidl_initNamespaces(
     );
 
     nh_webidl_DOMString nh_webidl_initDOMString(
         int chunkSize
     );
 
-    NH_WEBIDL_RESULT nh_webidl_appendToDOMString(
-        nh_webidl_DOMString *String_p, NH_BYTE *p, int length
+    NH_API_RESULT nh_webidl_appendToDOMString(
+        nh_webidl_DOMString *String_p, char *p, int length
     );
 
-    NH_WEBIDL_RESULT nh_webidl_appendUnicodeToDOMString(
+    NH_API_RESULT nh_webidl_appendUnicodeToDOMString(
         nh_webidl_DOMString *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length
     );
 
@@ -60,7 +61,7 @@
         int chunkSize
     );
     
-    NH_WEBIDL_RESULT nh_webidl_appendToUSVString(
+    NH_API_RESULT nh_webidl_appendToUSVString(
         nh_webidl_USVString *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length
     );
     

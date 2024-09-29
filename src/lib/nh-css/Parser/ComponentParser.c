@@ -39,7 +39,7 @@ typedef struct nh_css_ComponentParser {
     unsigned long long current;
     unsigned long long index;
     unsigned long long length;
-    NH_BOOL inBlockOrFunction;
+    bool inBlockOrFunction;
     nh_css_Token *Token_p;
 } nh_css_ComponentParser;
 
@@ -84,17 +84,17 @@ NH_CSS_BEGIN()
     {
         if (index == 0) {
             Token_p = Value_p->Block.Token_p;
-            Parser_p->inBlockOrFunction = NH_TRUE;
+            Parser_p->inBlockOrFunction = true;
         }
         else
         {
             nh_List Tokens = nh_css_getTokensFromComponentValues(&Value_p->Block.ComponentValues);
             Token_p = nh_core_getFromList(&Tokens, index - 1);
-            nh_core_freeList(&Tokens, NH_FALSE);
+            nh_core_freeList(&Tokens, false);
 
             if (!Token_p && Parser_p->inBlockOrFunction) {
                 Token_p = nh_css_getMirrorToken(Value_p->Block.Token_p);
-                Parser_p->inBlockOrFunction = NH_FALSE;
+                Parser_p->inBlockOrFunction = false;
             }
         }
     }
@@ -102,17 +102,17 @@ NH_CSS_BEGIN()
     {
         if (index == 0) {
             Token_p = Value_p->Function.Token_p;
-            Parser_p->inBlockOrFunction = NH_TRUE;
+            Parser_p->inBlockOrFunction = true;
         }
         else
         {
             nh_List Tokens = nh_css_getTokensFromComponentValues(&Value_p->Function.ComponentValues);
             Token_p = nh_core_getFromList(&Tokens, index - 1);
-            nh_core_freeList(&Tokens, NH_FALSE);
+            nh_core_freeList(&Tokens, false);
 
             if (!Token_p && Parser_p->inBlockOrFunction) {
                 Token_p = nh_css_getMirrorToken(Value_p->Function.Token_p);
-                Parser_p->inBlockOrFunction = NH_FALSE;
+                Parser_p->inBlockOrFunction = false;
             }
         }
     }
@@ -130,7 +130,7 @@ NH_CSS_BEGIN()
     Parser.current = 0;
     Parser.index = 0;
     Parser.length = length;
-    Parser.inBlockOrFunction = NH_FALSE;
+    Parser.inBlockOrFunction = false;
     Parser.Token_p = nh_css_getTokenFromComponentValue(&Parser, 0);
 
 NH_CSS_END(Parser)
@@ -191,12 +191,12 @@ NH_CSS_BEGIN()
 
     nh_Array Declarations = nh_css_parseDeclarations(&Parser);
 
-    nh_core_freeList(&Tokens, NH_FALSE);
+    nh_core_freeList(&Tokens, false);
 
 NH_CSS_END(Declarations)
 }
 
-static NH_CSS_RESULT nh_css_parseQualifiedRule(
+static NH_API_RESULT nh_css_parseQualifiedRule(
     nh_css_Rule *Rule_p, nh_css_RuleListObject *RuleList_p)
 {
 NH_CSS_BEGIN()
@@ -214,18 +214,18 @@ NH_CSS_BEGIN()
     nh_css_setRuleData(nh_css_getRule((nh_webidl_Object*)StyleRule_p), *Rule_p);
     nh_css_appendToRuleList(RuleList_p, (nh_webidl_Object*)StyleRule_p);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // AT RULES ========================================================================================
 
-static NH_CSS_RESULT nh_css_parseAtRule(
+static NH_API_RESULT nh_css_parseAtRule(
     nh_css_Rule *Rule_p, nh_css_RuleListObject *RuleList_p)
 {
 NH_CSS_BEGIN()
 
     if (Rule_p->Prelude.length <= 0) {
-        NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     nh_encoding_UTF8String Name = nh_encoding_encodeUTF8(Rule_p->Name_p->p, Rule_p->Name_p->length);
@@ -243,12 +243,12 @@ NH_CSS_BEGIN()
 
     nh_encoding_freeUTF8(&Name);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // PARSE ===========================================================================================
 
-NH_CSS_RESULT nh_css_parseRules(
+NH_API_RESULT nh_css_parseRules(
     nh_Array *Rules_p, nh_css_RuleListObject *RuleList_p)
 {
 NH_CSS_BEGIN()
@@ -267,6 +267,6 @@ NH_CSS_BEGIN()
         } 
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

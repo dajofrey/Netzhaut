@@ -38,7 +38,7 @@
  *  @{
  */
 
-    NH_WEBIDL_RESULT nh_webidl_createIndexMap(
+    NH_API_RESULT nh_webidl_createIndexMap(
     );
 
     void nh_webidl_freeIndexMap(

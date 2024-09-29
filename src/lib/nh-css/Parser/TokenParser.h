@@ -67,7 +67,7 @@
     typedef struct nh_css_Declaration {
         nh_encoding_UTF8String Name;
         nh_Array ComponentValues;
-        NH_BOOL important;
+        bool important;
     } nh_css_Declaration;
 
     typedef struct nh_css_Rule {
@@ -95,7 +95,7 @@
         nh_css_TokenParser *Parser_p
     );
     
-    NH_CSS_RESULT nh_css_parseComponentValue(
+    NH_API_RESULT nh_css_parseComponentValue(
         nh_css_TokenParser *Parser_p, nh_css_ComponentValue *Value_p
     );
     

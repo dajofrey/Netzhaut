@@ -43,21 +43,21 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(Environment_p)
 }
 
-static NH_BOOL nh_ecmascript_declarativeEnvironmentHasBinding(
+static bool nh_ecmascript_declarativeEnvironmentHasBinding(
     nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
     for (int i = 0; i < DeclarativeEnvironment_p->Bindings.size; ++i) {
         nh_ecmascript_Binding *Binding_p = DeclarativeEnvironment_p->Bindings.pp[i];
-        if (!strcmp(Binding_p->Name_p->p, Name_p->p)) {NH_ECMASCRIPT_END(NH_TRUE)}
+        if (!strcmp(Binding_p->Name_p->p, Name_p->p)) {NH_ECMASCRIPT_END(true)}
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 static nh_ecmascript_Completion nh_ecmascript_declarativeEnvironmentCreateMutableBinding(
-    nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p, nh_encoding_UTF8String *Name_p, NH_BOOL deletable)
+    nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p, nh_encoding_UTF8String *Name_p, bool deletable)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -66,9 +66,9 @@ NH_ECMASCRIPT_BEGIN()
     }
 
     nh_ecmascript_Binding *NewBinding_p = nh_core_allocate(sizeof(nh_ecmascript_Binding));
-    NewBinding_p->_mutable    = NH_TRUE;
+    NewBinding_p->_mutable    = true;
     NewBinding_p->deletable   = deletable;
-    NewBinding_p->initialized = NH_FALSE;
+    NewBinding_p->initialized = false;
     NewBinding_p->Name_p      = Name_p;
     NewBinding_p->Value       = nh_ecmascript_wrapUndefined();
 
@@ -78,7 +78,7 @@ NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
 }
 
 static nh_ecmascript_Completion nh_ecmascript_declarativeEnvironmentCreateImmutableBinding(
-    nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p, nh_encoding_UTF8String *Name_p, NH_BOOL strict)
+    nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p, nh_encoding_UTF8String *Name_p, bool strict)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -87,9 +87,9 @@ NH_ECMASCRIPT_BEGIN()
     }
 
     nh_ecmascript_Binding *NewBinding_p = nh_core_allocate(sizeof(nh_ecmascript_Binding));
-    NewBinding_p->_mutable    = NH_FALSE;
+    NewBinding_p->_mutable    = false;
     NewBinding_p->strict      = strict;
-    NewBinding_p->initialized = NH_FALSE;
+    NewBinding_p->initialized = false;
     NewBinding_p->Name_p      = Name_p;
     NewBinding_p->Value       = nh_ecmascript_wrapUndefined();
 
@@ -113,7 +113,7 @@ NH_ECMASCRIPT_BEGIN()
 
     if (!Binding_p->initialized) {
         Binding_p->Value = Value;
-        Binding_p->initialized = NH_TRUE;
+        Binding_p->initialized = true;
     }
 
 NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
@@ -133,7 +133,7 @@ NH_ECMASCRIPT_BEGIN()
     NH_ECMASCRIPT_CHECK_MEM_2(NULL, ObjectEnvironment_p)
 
     ObjectEnvironment_p->BindingObject_p = Object_p;
-    ObjectEnvironment_p->withEnvironment = NH_FALSE;
+    ObjectEnvironment_p->withEnvironment = false;
 
     Environment_p->Handle_p = ObjectEnvironment_p;
     Environment_p->Outer_p = Outer_p;
@@ -143,7 +143,7 @@ NH_ECMASCRIPT_END(Environment_p)
 }
 
 static nh_ecmascript_Completion nh_ecmascript_objectEnvironmentCreateMutableBinding(
-    nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p, nh_encoding_UTF8String *Name_p, NH_BOOL deletable)
+    nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p, nh_encoding_UTF8String *Name_p, bool deletable)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -151,21 +151,21 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_PropertyDescriptor Descriptor;
     Descriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
-    Descriptor.enumerable   = NH_TRUE;
+    Descriptor.enumerable   = true;
     Descriptor.configurable = deletable;
-    Descriptor.Fields.Data.writable = NH_TRUE;
+    Descriptor.Fields.Data.writable = true;
     Descriptor.Fields.Data.Value    = nh_ecmascript_wrapUndefined();
 
 NH_ECMASCRIPT_END(nh_ecmascript_abstractDefinePropertyOrThrow(Bindings_p, nh_ecmascript_wrapString(Name_p), Descriptor))
 }
 
 static nh_ecmascript_Completion nh_ecmascript_objectEnvironmentSetMutableBinding(
-    nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p, nh_encoding_UTF8String *Name_p, nh_ecmascript_Any Value, NH_BOOL _throw)
+    nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p, nh_encoding_UTF8String *Name_p, nh_ecmascript_Any Value, bool _throw)
 {
 NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_Object *Bindings_p = ObjectEnvironment_p->BindingObject_p;
-    NH_BOOL stillExists = nh_ecmascript_abstractHasProperty(Bindings_p, nh_ecmascript_wrapString(Name_p));
+    bool stillExists = nh_ecmascript_abstractHasProperty(Bindings_p, nh_ecmascript_wrapString(Name_p));
     if (!stillExists && _throw) {NH_ECMASCRIPT_END(nh_ecmascript_throwReferenceError())}
 
 NH_ECMASCRIPT_END(nh_ecmascript_abstractSet(Bindings_p, nh_ecmascript_wrapString(Name_p), Value, _throw))
@@ -175,18 +175,18 @@ static nh_ecmascript_Completion nh_ecmascript_objectEnvironmentInitializeBinding
     nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p, nh_encoding_UTF8String *Name_p, nh_ecmascript_Any Value)
 {
 NH_ECMASCRIPT_BEGIN()
-NH_ECMASCRIPT_END(nh_ecmascript_objectEnvironmentSetMutableBinding(ObjectEnvironment_p, Name_p, Value, NH_FALSE))
+NH_ECMASCRIPT_END(nh_ecmascript_objectEnvironmentSetMutableBinding(ObjectEnvironment_p, Name_p, Value, false))
 }
 
-static NH_BOOL nh_ecmascript_objectEnvironmentHasBinding(
+static bool nh_ecmascript_objectEnvironmentHasBinding(
     nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_Object *Bindings_p = ObjectEnvironment_p->BindingObject_p;
-    NH_BOOL foundBinding = nh_ecmascript_abstractHasProperty(Bindings_p, nh_ecmascript_wrapString(Name_p));
-    if (!foundBinding) {NH_ECMASCRIPT_END(NH_FALSE)}
-    if (!ObjectEnvironment_p->withEnvironment) {NH_ECMASCRIPT_END(NH_FALSE)}
+    bool foundBinding = nh_ecmascript_abstractHasProperty(Bindings_p, nh_ecmascript_wrapString(Name_p));
+    if (!foundBinding) {NH_ECMASCRIPT_END(false)}
+    if (!ObjectEnvironment_p->withEnvironment) {NH_ECMASCRIPT_END(false)}
 
 // Let unscopables be ? Get(bindings, @@unscopables).
 // If Type(unscopables) is Object, then
@@ -194,7 +194,7 @@ NH_ECMASCRIPT_BEGIN()
 //     Let blocked be ! ToBoolean(? Get(unscopables, N)).
 //     If blocked is true, return false.
 
-NH_ECMASCRIPT_END(NH_TRUE)
+NH_ECMASCRIPT_END(true)
 }
 
 // GLOBAL ENVIRONMENT ==============================================================================
@@ -228,7 +228,7 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(Abstract_p)
 }
 
-NH_BOOL nh_ecmascript_canDeclareGlobalFunction(
+bool nh_ecmascript_canDeclareGlobalFunction(
     nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -242,14 +242,14 @@ NH_ECMASCRIPT_BEGIN()
     if (Descriptor.type == -1) {
 
     }
-    if (Descriptor.configurable) {NH_ECMASCRIPT_END(NH_TRUE)}
+    if (Descriptor.configurable) {NH_ECMASCRIPT_END(true)}
     if (nh_ecmascript_isDataDescriptor(Descriptor)) {
         if (Descriptor.Fields.Data.writable && Descriptor.enumerable) {
-            NH_ECMASCRIPT_END(NH_TRUE)
+            NH_ECMASCRIPT_END(true)
         } 
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 nh_ecmascript_Completion nh_ecmascript_createGlobalFunctionBinding(
@@ -262,7 +262,7 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
 }
 
-NH_BOOL nh_ecmascript_canDeclareGlobalVar(
+bool nh_ecmascript_canDeclareGlobalVar(
     nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -270,11 +270,11 @@ NH_ECMASCRIPT_BEGIN()
     nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p = GlobalEnvironment_p->ObjectEnvironment_p->Handle_p;
     nh_ecmascript_Object *GlobalObject_p = ObjectEnvironment_p->BindingObject_p;
 
-    NH_BOOL hasProperty = nh_ecmascript_abstractHasOwnProperty(GlobalObject_p, nh_ecmascript_wrapString(Name_p));
+    bool hasProperty = nh_ecmascript_abstractHasOwnProperty(GlobalObject_p, nh_ecmascript_wrapString(Name_p));
 
-    if (hasProperty) {NH_ECMASCRIPT_END(NH_TRUE)}
+    if (hasProperty) {NH_ECMASCRIPT_END(true)}
 
-NH_ECMASCRIPT_END((NH_BOOL)nh_ecmascript_isExtensible(GlobalObject_p).Value.Payload.handle_p)
+NH_ECMASCRIPT_END((bool)nh_ecmascript_isExtensible(GlobalObject_p).Value.Payload.handle_p)
 }
 
 nh_ecmascript_Completion nh_ecmascript_createGlobalVarBinding(
@@ -285,8 +285,8 @@ NH_ECMASCRIPT_BEGIN()
     nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p = GlobalEnvironment_p->ObjectEnvironment_p->Handle_p;
     nh_ecmascript_Object *GlobalObject_p = ObjectEnvironment_p->BindingObject_p;
 
-    NH_BOOL hasProperty = nh_ecmascript_abstractHasOwnProperty(GlobalObject_p, nh_ecmascript_wrapString(Name_p));
-    NH_BOOL extensible = nh_ecmascript_abstractIsExtensible(GlobalObject_p);
+    bool hasProperty = nh_ecmascript_abstractHasOwnProperty(GlobalObject_p, nh_ecmascript_wrapString(Name_p));
+    bool extensible = nh_ecmascript_abstractIsExtensible(GlobalObject_p);
 
     if (!hasProperty && extensible) {
         nh_ecmascript_objectEnvironmentCreateMutableBinding(ObjectEnvironment_p, Name_p, deletable);
@@ -295,10 +295,10 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_List *VarDeclaredNames_p = &GlobalEnvironment_p->VarNames;
     
-    NH_BOOL containsName = NH_FALSE;
+    bool containsName = false;
     for (int i = 0; i < VarDeclaredNames_p->size; ++i) {
         if (!strcmp(Name_p->p, ((nh_encoding_UTF8String*)VarDeclaredNames_p->pp[i])->p)) {
-            containsName = NH_TRUE;
+            containsName = true;
             break;
         }
     } 
@@ -308,42 +308,42 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
 }
 
-NH_BOOL nh_ecmascript_hasVarDeclaration(
+bool nh_ecmascript_hasVarDeclaration(
     nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
     for (int i = 0; i < GlobalEnvironment_p->VarNames.size; ++i) {
         if (!strcmp(((nh_encoding_UTF8String*)GlobalEnvironment_p->VarNames.pp[i])->p, Name_p->p)) {
-            NH_ECMASCRIPT_END(NH_TRUE)
+            NH_ECMASCRIPT_END(true)
         }
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
-NH_BOOL nh_ecmascript_hasLexicalDeclaration(
+bool nh_ecmascript_hasLexicalDeclaration(
     nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
 // TODO 
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
-NH_BOOL nh_ecmascript_hasRestrictedGlobalProperty(
+bool nh_ecmascript_hasRestrictedGlobalProperty(
     nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
 // TODO 
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 static nh_ecmascript_Completion nh_ecmascript_globalEnvironmentCreateMutableBinding(
-    nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p, NH_BOOL deletable)
+    nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p, bool deletable)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -356,7 +356,7 @@ NH_ECMASCRIPT_END(nh_ecmascript_declarativeEnvironmentCreateMutableBinding(Decla
 }
 
 static nh_ecmascript_Completion nh_ecmascript_globalEnvironmentCreateImmutableBinding(
-    nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p, NH_BOOL strict)
+    nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p, bool strict)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -368,14 +368,14 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(nh_ecmascript_declarativeEnvironmentCreateImmutableBinding(DeclarativeEnvironment_p, Name_p, strict))
 }
 
-static NH_BOOL nh_ecmascript_globalEnvironmentHasBinding(
+static bool nh_ecmascript_globalEnvironmentHasBinding(
     nh_ecmascript_GlobalEnvironment *GlobalEnvironment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p = GlobalEnvironment_p->DeclarativeEnvironment_p->Handle_p;
     if (nh_ecmascript_declarativeEnvironmentHasBinding(DeclarativeEnvironment_p, Name_p)) {
-        NH_ECMASCRIPT_END(NH_TRUE)
+        NH_ECMASCRIPT_END(true)
     }
 
     nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p = GlobalEnvironment_p->ObjectEnvironment_p->Handle_p;
@@ -385,7 +385,7 @@ NH_ECMASCRIPT_END(nh_ecmascript_objectEnvironmentHasBinding(ObjectEnvironment_p,
 
 // ABSTRACT ========================================================================================
 
-NH_BOOL nh_ecmascript_hasBinding(
+bool nh_ecmascript_hasBinding(
     nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -406,11 +406,11 @@ NH_ECMASCRIPT_BEGIN()
             ))
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 nh_ecmascript_Completion nh_ecmascript_createMutableBinding(
-    nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, NH_BOOL deletable)
+    nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, bool deletable)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -430,7 +430,7 @@ NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())
 }
 
 nh_ecmascript_Completion nh_ecmascript_createImmutableBinding(
-    nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, NH_BOOL strict)
+    nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, bool strict)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -471,7 +471,7 @@ NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())
 }
 
 nh_ecmascript_Completion nh_ecmascript_setMutableBinding(
-    nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, nh_ecmascript_Any Value, NH_BOOL _throw)
+    nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, nh_ecmascript_Any Value, bool _throw)
 {
 NH_ECMASCRIPT_BEGIN()
 

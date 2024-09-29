@@ -109,7 +109,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_CSS_TYPE_NAMES_PP[];
+    extern const char *NH_CSS_TYPE_NAMES_PP[];
 
 /** @} */
 
@@ -121,24 +121,24 @@
         NH_CSS_VALUE_SCOPE scope, NH_CSS_VALUE type
     );
 
-    NH_CSS_RESULT nh_css_setSpecifiedValues(
+    NH_API_RESULT nh_css_setSpecifiedValues(
         nh_css_LogContext *LogContext_p, nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, 
         nh_List UserStyleSheets
     );
 
-    NH_CSS_RESULT nh_css_freeSpecifiedValues(
+    NH_API_RESULT nh_css_freeSpecifiedValues(
         nh_dom_Node *Node_p
     );
 
-    NH_BOOL nh_css_isStringValue(
+    bool nh_css_isStringValue(
         nh_css_Value *Value_p
     );
 
-    NH_BOOL nh_css_isLengthValue(
+    bool nh_css_isLengthValue(
         nh_css_Value *Value_p
     );
     
-    NH_BOOL nh_css_isLengthPercentageValue(
+    bool nh_css_isLengthPercentageValue(
         nh_css_Value *Value_p
     );
 

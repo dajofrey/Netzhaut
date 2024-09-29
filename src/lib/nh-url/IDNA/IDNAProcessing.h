@@ -17,8 +17,8 @@
  *  @{
  */
 
-    NH_URL_RESULT nh_url_unicodeToASCII(
-        nh_encoding_UTF32String *DomainName_p, NH_BOOL transitionalProcessing
+    NH_API_RESULT nh_url_unicodeToASCII(
+        nh_encoding_UTF32String *DomainName_p, bool transitionalProcessing
     );
 
 /** @} */

@@ -25,7 +25,7 @@
 
 // INITIALIZE ======================================================================================
 
-NH_CSS_RESULT nh_css_initializeDocument(
+NH_API_RESULT nh_css_initializeDocument(
     nh_css_DocumentObject *Document_p)
 {
 NH_CSS_BEGIN()
@@ -33,7 +33,7 @@ NH_CSS_BEGIN()
     ((nh_webidl_Object*)Document_p)->Attributes.pp[0] = nh_webidl_createObject("CSS", "StyleSheetList");
     NH_CSS_CHECK_NULL(((nh_webidl_Object*)Document_p)->Attributes.pp[0])
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================

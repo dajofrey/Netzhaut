@@ -14,21 +14,19 @@
 #include "../Vulkan/Surface.h"
 #include "../OpenGL/Surface.h"
 
+#include "../../nh-wsi/Window/Window.h"
+
 #endif
 
 /** @addtogroup lib_nh-gfx_structs
  *  @{
  */
 
-    typedef struct nh_gfx_SurfaceRequirements {
-        nh_opengl_SurfaceRequirements OpenGL;
-    } nh_gfx_SurfaceRequirements;
-
     typedef struct nh_gfx_Surface {
         void *args_p;
         NH_SIGNAL signal;
         int renderRequests;
-        NH_GFX_API_E api;
+        NH_API_GRAPHICS_BACKEND_E api;
         nh_wsi_Window *Window_p;
         nh_vk_Surface Vulkan;
 	nh_opengl_Surface OpenGL;
@@ -37,17 +35,17 @@
             nh_Color BackgroundColor;
         } Settings;
         struct {
-            NH_BOOL halt;      
-            NH_BOOL undoHalt;  
-            NH_BOOL rendering; 
-            NH_BOOL resize;   
-            NH_BOOL ready;    
-            NH_BOOL atomicRender;
+            bool halt;      
+            bool undoHalt;  
+            bool rendering; 
+            bool resize;   
+            bool ready;    
+            bool atomicRender;
         } Sync;
         struct {
-            NH_BOOL getNextImage;       
-            NH_BOOL skipRender;          
-            NH_BOOL atomic;
+            bool getNextImage;       
+            bool skipRender;          
+            bool atomic;
         } Internal;
     } nh_gfx_Surface;           
 
@@ -57,11 +55,8 @@
  *  @{
  */
 
-    typedef nh_gfx_SurfaceRequirements *(*nh_gfx_getSurfaceRequirements_f)(
-    );
-
     typedef nh_gfx_Surface *(*nh_gfx_createSurface_f)(
-        nh_wsi_Window *Window_p, NH_GFX_API_E api
+        nh_wsi_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api
     );
 
 /** @} */
@@ -71,13 +66,7 @@
  */
 
     nh_gfx_Surface *nh_gfx_createSurface(
-        nh_wsi_Window *Window_p, NH_GFX_API_E api
-    );
-
-    NH_GFX_RESULT nh_gfx_createSurfaceRequirements(
-    );
-
-    NH_GFX_RESULT nh_gfx_freeSurfaceRequirements(
+        nh_wsi_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api
     );
 
 /** @} */

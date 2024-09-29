@@ -22,11 +22,11 @@ static nh_core_Config NH_CORE_CONFIG;
 
 // FUNCTIONS =======================================================================================
 
-const NH_BYTE *NH_CORE_SETTING_NAMES_PP[] = {
+const char *NH_CORE_SETTING_NAMES_PP[] = {
     "loader.unload",
 };
 
-static NH_CORE_RESULT nh_core_getConfigSetting(
+static NH_API_RESULT nh_core_getConfigSetting(
     nh_core_Config *Config_p, NH_CORE_SETTING_E setting)
 {
 NH_CORE_BEGIN()
@@ -38,12 +38,12 @@ NH_CORE_BEGIN()
 
     switch (setting) {
         case NH_CORE_SETTING_LOADER_UNLOAD :
-            if (Setting_p->size != 1) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
             Config_p->loaderUnload = atoi(Setting_p->pp[0]) == 1;
             break;
     }
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 nh_core_Config nh_core_getConfig()

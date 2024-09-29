@@ -35,7 +35,7 @@
     } nh_Vertex;
 
     typedef struct nh_PixelVertex {
-        NH_PIXEL x, y;
+        int x, y;
         double z;
         double u, v;
     } nh_PixelVertex;
@@ -78,7 +78,7 @@
         nh_Vector2D A, nh_Vector2D B, nh_Vector2D C, nh_Vector2D D
     ); 
 
-    NH_BOOL nh_pointInBox(
+    bool nh_pointInBox(
         nh_Vector2D TopLeft, nh_Vector2D BottomRight, nh_Vector2D Point
     );
 
@@ -91,11 +91,11 @@
     ); 
 
     int nh_verticesToArray(
-        nh_Vertex *Vertices_p, float *values_p, int count, NH_BOOL uv, int offset
+        nh_Vertex *Vertices_p, float *values_p, int count, bool uv, int offset
     );
     
     int nh_trianglesToArray(
-        nh_Triangle *Triangles_p, float *values_p, int count, NH_BOOL uv
+        nh_Triangle *Triangles_p, float *values_p, int count, bool uv
     );
     
 //    void nh_scrollVertices(

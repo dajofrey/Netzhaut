@@ -41,12 +41,12 @@
 
     // Used by API.
     typedef nh_ecmascript_Script *(*nh_ecmascript_parseScript_f)( 
-        NH_BYTE *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding 
+        char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding 
     ); 
 
     // https://tc39.es/ecma262/#sec-parse-script
     nh_ecmascript_Script *nh_ecmascript_parseScript(
-        NH_BYTE *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding
+        char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding
     );
 
     // https://www.ecma-international.org/ecma-262/#sec-runtime-semantics-scriptevaluation

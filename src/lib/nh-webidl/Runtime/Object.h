@@ -10,15 +10,25 @@
  */
 
 #include "../Common/Includes.h"
+#include "../ECMAScriptBinding/Interface.h"
 
 #endif
+
+typedef struct nh_webidl_Object { 
+    nh_webidl_Interface *Interface_p; 
+    struct nh_webidl_Object *Parent_p; 
+    struct nh_webidl_Object *Child_p; 
+    nh_List Attributes; 
+    nh_List Parts; 
+    void *internal_p; 
+} nh_webidl_Object; 
 
 /** @addtogroup lib_nh-webidl_functions
  *  @{
  */
 
     nh_webidl_Object *nh_webidl_createObject(
-        NH_BYTE *specification_p, NH_BYTE *interface_p
+        char *specification_p, char *interface_p
     );
 
     nh_webidl_Object *nh_webidl_createObjectFromInterface(
@@ -26,15 +36,15 @@
     );
 
     nh_webidl_Object *nh_webidl_createCompositeObject(
-        NH_BYTE *specification_p, NH_BYTE *interface_p, ...
+        char *specification_p, char *interface_p, ...
     );
 
     nh_webidl_Object *nh_webidl_getObject(
-        nh_webidl_Object *Object_p, NH_BYTE *specification_p, NH_BYTE *interface_p
+        nh_webidl_Object *Object_p, char *specification_p, char *interface_p
     );
 
     void *nh_webidl_getAttribute(
-        nh_webidl_Object *Object_p, NH_BYTE *attribute_p
+        nh_webidl_Object *Object_p, char *attribute_p
     );
 
 /** @} */

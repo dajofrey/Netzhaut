@@ -10,6 +10,7 @@
  */
 
 #include "../Common/Includes.h"
+#include "../Encodings/UTF32.h"
 
 #include <stdint.h>
 #include <stddef.h>
@@ -46,15 +47,15 @@
  *  @{
  */
 
-    const NH_BYTE *nh_encoding_getDescription(
+    const char *nh_encoding_getDescription(
         NH_ENCODING_UTF32 codepoint
     );
 
-    NH_BOOL nh_encoding_inIDSTART(
+    bool nh_encoding_inIDSTART(
         NH_ENCODING_UTF32 codepoint
     );
     
-    NH_BOOL nh_encoding_inIDCONTINUE(
+    bool nh_encoding_inIDCONTINUE(
         NH_ENCODING_UTF32 codepoint
     );
 

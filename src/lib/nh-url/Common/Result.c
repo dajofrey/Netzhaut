@@ -12,13 +12,13 @@
 
 // RESULTS =========================================================================================
 
-const char *NH_URL_RESULTS_PP[] = 
+const char *NH_API_RESULTS_PP[] = 
 {
-    "NH_URL_SUCCESS",                    
-    "NH_URL_ERROR_NULL_POINTER",         
-    "NH_URL_ERROR_BAD_STATE", 
-    "NH_URL_ERROR_MEMORY_ALLOCATION",
+    "NH_API_SUCCESS",                    
+    "NH_API_ERROR_NULL_POINTER",         
+    "NH_API_ERROR_BAD_STATE", 
+    "NH_API_ERROR_MEMORY_ALLOCATION",
 };
 
-unsigned int NH_URL_RESULTS_PP_COUNT = sizeof(NH_URL_RESULTS_PP)/sizeof(NH_URL_RESULTS_PP[0]);
+unsigned int NH_API_RESULTS_PP_COUNT = sizeof(NH_API_RESULTS_PP)/sizeof(NH_API_RESULTS_PP[0]);
 

@@ -77,16 +77,16 @@
  */
 
     typedef struct nh_wsi_WindowConfig {
-        NH_BYTE namespace_p[255];
-        NH_BYTE title_p[255];
-        nh_PixelSize Size;
-        nh_PixelPosition Position;
+        char namespace_p[255];
+        char title_p[255];
+        nh_api_PixelSize Size;
+        nh_api_PixelPosition Position;
         double delay;
-        NH_BOOL decorated;
-        NH_BOOL resizable;
-        NH_BOOL decoration_p[NH_WSI_WINDOW_DECORATION_E_COUNT];
-        NH_BOOL action_p[NH_WSI_WINDOW_ACTION_E_COUNT];
-        NH_BOOL state_p[NH_WSI_WINDOW_STATE_E_COUNT];
+        bool decorated;
+        bool resizable;
+        bool decoration_p[NH_WSI_WINDOW_DECORATION_E_COUNT];
+        bool action_p[NH_WSI_WINDOW_ACTION_E_COUNT];
+        bool state_p[NH_WSI_WINDOW_STATE_E_COUNT];
         NH_WSI_WINDOW_TYPE_E type;
     } nh_wsi_WindowConfig;
  
@@ -96,7 +96,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_WSI_SETTING_NAMES_PP[];
+    extern const char *NH_WSI_SETTING_NAMES_PP[];
     extern size_t NH_WSI_SETTING_NAMES_PP_COUNT;
 
 /** @} */
@@ -105,7 +105,7 @@
  *  @{
  */
 
-    const NH_BYTE *nh_wsi_getSettingName(
+    const char *nh_wsi_getSettingName(
         NH_WSI_SETTING_E setting
     );
 

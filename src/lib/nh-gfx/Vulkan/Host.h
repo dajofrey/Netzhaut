@@ -45,7 +45,7 @@
     } nh_vk_HostFunctions;
     
     typedef struct nh_vk_Host {
-        NH_BOOL validation;
+        bool validation;
         VkInstance Instance;
         nh_vk_HostFunctions Functions;
         VkDebugUtilsMessengerEXT Messenger;
@@ -57,8 +57,8 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_vk_createHost(
-        nh_vk_Host *Host_p, NH_BOOL validation
+    NH_API_RESULT nh_vk_createHost(
+        nh_vk_Host *Host_p, bool validation
     );
 
     void nh_vk_destroyHost(

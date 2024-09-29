@@ -19,13 +19,13 @@
 
 // DEBUG ===========================================================================================
 
-NH_ENCODING_RESULT nh_encoding_initialize()
+NH_API_RESULT nh_encoding_initialize()
 {
 NH_ENCODING_BEGIN()
 
     NH_ENCODING_CHECK(nh_encoding_logUnicodeCodepointDescriptions())
     NH_ENCODING_CHECK(nh_encoding_createIndexMap())
 
-NH_ENCODING_DIAGNOSTIC_END(NH_ENCODING_SUCCESS)
+NH_ENCODING_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

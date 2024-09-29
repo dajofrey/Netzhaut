@@ -77,14 +77,14 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(String_p)
 }
 
-NH_ECMASCRIPT_RESULT nh_ecmascript_appendFormatToString(
-    nh_ecmascript_String *String_p, NH_BYTE *p, size_t len)
+NH_API_RESULT nh_ecmascript_appendFormatToString(
+    nh_ecmascript_String *String_p, char *p, size_t len)
 {
 NH_ECMASCRIPT_BEGIN()
 
-    NH_CORE_RESULT result = nh_core_appendFormatToString(String_p, p, len);
+    NH_API_RESULT result = nh_core_appendFormatToString(String_p, p, len);
 
-NH_ECMASCRIPT_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_END(NH_API_SUCCESS)
 }
 
 nh_ecmascript_Any nh_ecmascript_wrapNumber(

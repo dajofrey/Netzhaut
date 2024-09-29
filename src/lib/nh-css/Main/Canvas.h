@@ -19,12 +19,12 @@
  */
 
     typedef struct nh_css_Canvas {
-        nh_css_CanvasType Type;
+        nh_api_CanvasType Type;
         nh_css_SourceTree SourceTree;
         nh_css_BoxTree BoxTree;
         nh_css_FragmentTree FragmentTree;
-        NH_BOOL render;
-        NH_BOOL _float;
+        bool render;
+        bool _float;
         nh_List Floats;
         nh_Array LineBoxes;
     } nh_css_Canvas;
@@ -35,12 +35,12 @@
  *  @{
  */
 
-    typedef nh_css_CanvasType (*nh_css_createCanvasType_f)(
-        nh_PixelSize Size 
+    typedef nh_api_CanvasType (*nh_css_createCanvasType_f)(
+        nh_api_PixelSize Size 
     );
 
-    typedef NH_CSS_RESULT (*nh_css_addCanvasType_f)(
-        nh_css_LayoutEngine *LayoutEngine_p, nh_css_CanvasType CanvasType
+    typedef NH_API_RESULT (*nh_css_addCanvasType_f)(
+        nh_css_LayoutEngine *LayoutEngine_p, nh_api_CanvasType CanvasType
     );
 
 /** @} */
@@ -50,19 +50,19 @@
  */
 
     nh_css_Canvas *nh_css_addCanvas(
-        nh_css_Layout *Layout_p, nh_css_CanvasType Type 
+        nh_css_Layout *Layout_p, nh_api_CanvasType Type 
     );
 
-    NH_CSS_RESULT nh_css_computeCanvas(
+    NH_API_RESULT nh_css_computeCanvas(
         nh_css_Canvas *Canvas_p, nh_webidl_Object *HTMLElement_p, nh_css_StyleSheetListObject *StyleSheets_p
     );
 
-    nh_css_CanvasType nh_css_createCanvasType(
-        nh_PixelSize Size
+    nh_api_CanvasType nh_css_createCanvasType(
+        nh_api_PixelSize Size
     );
 
-    NH_CSS_RESULT nh_css_addCanvasType(
-        nh_css_LayoutEngine *LayoutEngine_p, nh_css_CanvasType CanvasType 
+    NH_API_RESULT nh_css_addCanvasType(
+        nh_css_LayoutEngine *LayoutEngine_p, nh_api_CanvasType CanvasType 
     );
 
 /** @} */

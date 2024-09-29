@@ -40,10 +40,10 @@ static nh_ecmascript_CompletionOrReference nh_ecmascript_evaluateBooleanLiteral(
 NH_ECMASCRIPT_BEGIN()
 
     if (!strcmp("true", ((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->Value_p->String.p)) {
-        NH_ECMASCRIPT_END(nh_ecmascript_wrapCompletion(nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(NH_TRUE))))
+        NH_ECMASCRIPT_END(nh_ecmascript_wrapCompletion(nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(true))))
     }
     else if (!strcmp("false", ((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->Value_p->String.p)) {
-        NH_ECMASCRIPT_END(nh_ecmascript_wrapCompletion(nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(NH_FALSE))))
+        NH_ECMASCRIPT_END(nh_ecmascript_wrapCompletion(nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(false))))
     }
 
 NH_ECMASCRIPT_END(nh_ecmascript_wrapCompletion(nh_ecmascript_throwTypeError()))

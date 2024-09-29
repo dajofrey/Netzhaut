@@ -9,9 +9,16 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "List.h"
 #include "../Common/Includes.h"
 
 #endif
+
+   typedef struct nh_ArrayList { 
+       nh_List Arrays; 
+       int elementSize;             /**<Number of items.*/ 
+       int allocatedLengthPerChunk; 
+   } nh_ArrayList; 
 
 /** @addtogroup lib_nh-core_functions
  *  @{

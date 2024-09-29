@@ -41,7 +41,7 @@
  * IP Version 6 Addressing Architecture. [RFC4291]: 
  *   https://datatracker.ietf.org/doc/html/rfc4291#section-2.2
  */
-static NH_URL_RESULT nh_url_parseIPv6(
+static NH_API_RESULT nh_url_parseIPv6(
     nh_encoding_UTF32String Input, nh_url_Host *Host_p)
 {
 NH_URL_BEGIN()
@@ -56,7 +56,7 @@ NH_URL_BEGIN()
     if (*pointer == 0x3A) {
         if (*(pointer+1) != 0x3A) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
         pointer += 2;
         pieceIndex++;
@@ -67,13 +67,13 @@ NH_URL_BEGIN()
     {
         if (pieceIndex == 8) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
 
         if (*pointer == 0x3A) {
             if (compress != -1) {
                 // val err
-                NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                NH_URL_END(NH_API_ERROR_BAD_STATE)
             }
             pointer++;
             pieceIndex++;
@@ -92,12 +92,12 @@ NH_URL_BEGIN()
         if (*pointer == 0x2E) {
             if (length == 0) {
                 // val err
-                NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                NH_URL_END(NH_API_ERROR_BAD_STATE)
             }
             pointer -= length;
             if (pieceIndex > 6) {
                 // val err
-                NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                NH_URL_END(NH_API_ERROR_BAD_STATE)
             }
             int numbersSeen = 0;
             while (*pointer)
@@ -109,12 +109,12 @@ NH_URL_BEGIN()
                     }
                     else {
                         // val err
-                        NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                        NH_URL_END(NH_API_ERROR_BAD_STATE)
                     }
                 }
                 if (!nh_encoding_isASCIIDigit(*pointer)) {
                     // val err
-                    NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                    NH_URL_END(NH_API_ERROR_BAD_STATE)
                 }
                 while (nh_encoding_isASCIIDigit(*pointer)) {
                     int number = nh_encoding_hexDigitToNumber(*pointer);
@@ -123,14 +123,14 @@ NH_URL_BEGIN()
                     }
                     else if (ipv4Piece == 0) {
                         // val err
-                        NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                        NH_URL_END(NH_API_ERROR_BAD_STATE)
                     }
                     else {
                         ipv4Piece = ipv4Piece * 10 + number;
                     }
                     if (ipv4Piece > 255) {
                         // val err
-                        NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                        NH_URL_END(NH_API_ERROR_BAD_STATE)
                     }
                     pointer++;
                 }
@@ -142,7 +142,7 @@ NH_URL_BEGIN()
             }
             if (numbersSeen != 4) {
                 // val err
-                NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                NH_URL_END(NH_API_ERROR_BAD_STATE)
             }
             break;
         }
@@ -150,12 +150,12 @@ NH_URL_BEGIN()
             pointer++;
             if (*pointer == 0) {
                 // val err
-                NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                NH_URL_END(NH_API_ERROR_BAD_STATE)
             }
         }
         else if (*pointer) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
         Host_p->IPv6.pieces_p[pieceIndex] = value;
         pieceIndex++;
@@ -174,15 +174,15 @@ NH_URL_BEGIN()
     }
     else if (compress == -1 && pieceIndex != 8) {
         // val err
-        NH_URL_END(NH_URL_ERROR_BAD_STATE)
+        NH_URL_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // IPV4 PARSER =====================================================================================
 
-static NH_URL_RESULT nh_url_parseIPv4Number(
+static NH_API_RESULT nh_url_parseIPv4Number(
     nh_encoding_UTF32String *Input_p, long *number_p)
 {
 NH_URL_BEGIN()
@@ -205,25 +205,25 @@ NH_URL_BEGIN()
 
     if (Input_p->length - offset <= 0) {
         *number_p = 0;
-        NH_URL_END(NH_URL_SUCCESS)
+        NH_URL_END(NH_API_SUCCESS)
     }
 
     for (int i = offset; i < Input_p->length; ++i) {
         if (r <= 10) {
             if (!nh_encoding_isASCIIDigit(Input_p->p[i])) {
-                NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                NH_URL_END(NH_API_ERROR_BAD_STATE)
             }
         }
         else {
             if (!nh_encoding_isASCIIHexDigit(Input_p->p[i])) {
-                NH_URL_END(NH_URL_ERROR_BAD_STATE)
+                NH_URL_END(NH_API_ERROR_BAD_STATE)
             }
         }
     }
 
     *number_p = nh_encoding_digitsToNumber(&Input_p->p[offset], Input_p->length - offset, r);
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 /**
@@ -232,36 +232,36 @@ NH_URL_END(NH_URL_SUCCESS)
  * The implementation is based on WHATWG's URL Standard: 
  *   https://url.spec.whatwg.org/#concept-ipv4-parser
  */
-static NH_URL_RESULT nh_url_parseIPv4(
+static NH_API_RESULT nh_url_parseIPv4(
     nh_encoding_UTF32String *Input_p, nh_url_Host *Host_p)
 {
 NH_URL_BEGIN()
 
-    NH_URL_RESULT result = NH_URL_SUCCESS;
+    NH_API_RESULT result = NH_API_SUCCESS;
     nh_List Parts = nh_encoding_splitUTF32(Input_p, 0x2E);
     nh_Array Numbers = nh_core_initArray(sizeof(long), 4);
 
     if (Parts.size > 0 && ((nh_encoding_UTF32String*)Parts.pp[Parts.size-1])->length == 0) {
         // val err
         if (Parts.size > 1) {
-            nh_core_removeFromList(&Parts, NH_TRUE, Parts.size-1);
+            nh_core_removeFromList(&Parts, true, Parts.size-1);
         }
     }
 
     if (Parts.size > 4) {
-        result = NH_URL_ERROR_BAD_STATE;
+        result = NH_API_ERROR_BAD_STATE;
         goto NH_URL_PARSE_IPV4_CLEAN_UP;
     }
 
     for (int i = 0; i < Parts.size; ++i) {
         nh_encoding_UTF32String *Part_p = Parts.pp[i];
         if (Part_p->length == 0) {
-            result = NH_URL_ERROR_BAD_STATE;
+            result = NH_API_ERROR_BAD_STATE;
             goto NH_URL_PARSE_IPV4_CLEAN_UP;
         }
         long number = 0;
-        if (nh_url_parseIPv4Number(Part_p, &number) != NH_URL_SUCCESS) {
-            result = NH_URL_ERROR_BAD_STATE;
+        if (nh_url_parseIPv4Number(Part_p, &number) != NH_API_SUCCESS) {
+            result = NH_API_ERROR_BAD_STATE;
             goto NH_URL_PARSE_IPV4_CLEAN_UP;
         }
         long *number_p = nh_core_incrementArray(&Numbers);
@@ -288,7 +288,7 @@ NH_URL_PARSE_IPV4_CLEAN_UP:
         nh_encoding_freeUTF32(Parts.pp[i]);
     }
 
-    nh_core_freeList(&Parts, NH_TRUE);
+    nh_core_freeList(&Parts, true);
     nh_core_freeArray(&Numbers);
 
 NH_URL_END(result)
@@ -296,7 +296,7 @@ NH_URL_END(result)
 
 // OPAQUE HOST PARSER ==============================================================================
 
-static NH_URL_RESULT nh_url_parseOpaqueHost(
+static NH_API_RESULT nh_url_parseOpaqueHost(
     nh_encoding_UTF32String Input, nh_url_Host *Host_p)
 {
 NH_URL_BEGIN()
@@ -304,41 +304,41 @@ NH_URL_BEGIN()
     for (int i = 0; i < Input.length; ++i) {
         if (Input.p[i] != 0x25 && nh_url_isForbiddenHostCodepoint(Input.p[i])) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
         if (Input.p[i] != 0x25 && !nh_url_isURLCodepoint(Input.p[i])) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
         if (Input.p[i] == 0x25 && (i+2 >= Input.length || !nh_encoding_isASCIIHexDigit(Input.p[i+1]) || !nh_encoding_isASCIIHexDigit(Input.p[i+2]))) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         } 
     }
 
     Host_p->type = NH_URL_HOST_OPAQUE;
     Host_p->DomainOrOpaque.String = nh_url_percentEncodeAfterEncodingUTF8(Input, NH_URL_PERCENT_ENCODE_SET_C0_CONTROL);
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // HOST PARSER =====================================================================================
 
-static NH_URL_RESULT nh_url_domainToASCII(
-    nh_encoding_UTF32String *Domain_p, NH_BOOL beStrict)
+static NH_API_RESULT nh_url_domainToASCII(
+    nh_encoding_UTF32String *Domain_p, bool beStrict)
 {
 NH_URL_BEGIN()
 
-    NH_URL_CHECK(nh_url_unicodeToASCII(Domain_p, NH_FALSE))
+    NH_URL_CHECK(nh_url_unicodeToASCII(Domain_p, false))
 
-    if (Domain_p->length == 0) {NH_URL_END(NH_URL_ERROR_BAD_STATE)}
+    if (Domain_p->length == 0) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 
 // https://url.spec.whatwg.org/#host-parsing
-NH_URL_RESULT nh_url_parseHost(
-    nh_encoding_UTF32String Input, NH_BOOL isNotSpecial, nh_url_Host *Host_p)
+NH_API_RESULT nh_url_parseHost(
+    nh_encoding_UTF32String Input, bool isNotSpecial, nh_url_Host *Host_p)
 {
 NH_URL_BEGIN()
 
@@ -346,7 +346,7 @@ NH_URL_BEGIN()
     {
         if (Input.p[Input.length - 1] != 0x5D) {
             // val err
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
 
         nh_encoding_UTF32String Tmp = nh_encoding_initUTF32(Input.length-1);
@@ -355,7 +355,7 @@ NH_URL_BEGIN()
         nh_url_parseIPv6(Tmp, Host_p);
         nh_encoding_freeUTF32(&Tmp);
 
-        NH_URL_END(NH_URL_SUCCESS)
+        NH_URL_END(NH_API_SUCCESS)
     }
 
     if (isNotSpecial) {
@@ -367,24 +367,24 @@ NH_URL_BEGIN()
     nh_encoding_UTF32String Domain = nh_encoding_decodeUTF8(String.p, String.length, NULL);
     nh_core_freeString(&String);
 
-    NH_URL_CHECK(nh_url_domainToASCII(&Domain, NH_FALSE))
+    NH_URL_CHECK(nh_url_domainToASCII(&Domain, false))
 
     for (int i = 0; i < Domain.length; ++i) {
         if (nh_url_isForbiddenHostCodepoint(Domain.p[i])) {
             nh_encoding_freeUTF32(&Domain);
-            NH_URL_END(NH_URL_ERROR_BAD_STATE)
+            NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
     }
 
-    if (nh_url_parseIPv4(&Domain, Host_p) == NH_URL_SUCCESS) {
+    if (nh_url_parseIPv4(&Domain, Host_p) == NH_API_SUCCESS) {
         nh_encoding_freeUTF32(&Domain);
-        NH_URL_END(NH_URL_SUCCESS)
+        NH_URL_END(NH_API_SUCCESS)
     }
 
     Host_p->type = NH_URL_HOST_DOMAIN;
     Host_p->DomainOrOpaque.String = nh_encoding_encodeUTF8(Domain.p, Domain.length); 
     nh_encoding_freeUTF32(&Domain);
 
-NH_URL_END(NH_URL_SUCCESS)
+NH_URL_END(NH_API_SUCCESS)
 }
 

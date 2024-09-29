@@ -28,7 +28,7 @@
 
 // PREPARE RENDERING ===============================================================================
 
-NH_GFX_RESULT nh_vk_prepareRendering(
+NH_API_RESULT nh_vk_prepareRendering(
     nh_vk_Surface *Surface_p)
 {
 NH_GFX_BEGIN()
@@ -40,12 +40,12 @@ NH_GFX_BEGIN()
 
     NH_GFX_CHECK_VULKAN(result)
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // RENDER ==========================================================================================
 
-static NH_GFX_RESULT nh_vk_clearSurface(
+static NH_API_RESULT nh_vk_clearSurface(
     nh_gfx_Surface *Surface_p, nh_vk_Driver *Driver_p)
 {
 NH_GFX_BEGIN()
@@ -97,10 +97,10 @@ NH_GFX_BEGIN()
 
     Driver_p->Functions.vkEndCommandBuffer(*CommandBuffer_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_vk_render( // TODO multi GPU rendering
+NH_API_RESULT nh_vk_render( // TODO multi GPU rendering
     nh_gfx_Surface *Surface_p, nh_List *SortedViewports_p)
 {
 NH_GFX_BEGIN()
@@ -165,6 +165,6 @@ NH_GFX_BEGIN()
 
     nh_core_free(Commands_p); 
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

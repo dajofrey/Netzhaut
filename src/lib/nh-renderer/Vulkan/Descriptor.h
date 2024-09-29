@@ -40,7 +40,7 @@
  *  @{
  */
 
-    NH_RENDERER_RESULT nh_renderer_vk_createColorDescriptor(
+    NH_API_RESULT nh_renderer_vk_createColorDescriptor(
         nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p, NH_RENDERER_VK_DESCRIPTOR type
     );
 

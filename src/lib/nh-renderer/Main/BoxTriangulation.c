@@ -37,10 +37,10 @@ typedef struct nh_renderer_CornerData {
         int rightCount;
         int bottomCount;
         int topCount;
-        NH_BOOL topLeft;
-        NH_BOOL topRight;
-        NH_BOOL bottomLeft;
-        NH_BOOL bottomRight;
+        bool topLeft;
+        bool topRight;
+        bool bottomLeft;
+        bool bottomRight;
     } Rounded;
     nh_renderer_ClipBox TopLeft;
     nh_renderer_ClipBox TopRight;
@@ -537,7 +537,7 @@ NH_RENDERER_END(Corners)
 
 int nh_renderer_triangulateBox(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, float radii_p[4], int cornerTriangleCount, 
-    NH_BYTE *side_p, nh_Triangle *Triangles_p, NH_BOOL enclosedPoint, int offset, float z)
+    char *side_p, nh_Triangle *Triangles_p, bool enclosedPoint, int offset, float z)
 {
 NH_RENDERER_BEGIN()
 

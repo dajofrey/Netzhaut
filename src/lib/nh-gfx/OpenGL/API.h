@@ -17,7 +17,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_GFX_OPENGL_COMMAND_NAMES_PP[];
+    extern const char *NH_GFX_OPENGL_COMMAND_NAMES_PP[];
     extern size_t NH_GFX_OPENGL_COMMAND_NAMES_PP_COUNT;
 
     extern const int NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P[];
@@ -397,7 +397,7 @@
  */
 
     NH_GFX_OPENGL_COMMAND_E nh_opengl_getCommandType(
-        NH_BYTE *name_p
+        char *name_p
     );
 
     int nh_opengl_getCommandParameterCount(

@@ -39,7 +39,7 @@
 //
 //// INIT ============================================================================================
 //
-//NH_GFX_RESULT nh_core_initDefaultTextures(
+//NH_API_RESULT nh_core_initDefaultTextures(
 //    nh_Content *Content_p)
 //{
 //NH_GFX_BEGIN()
@@ -57,7 +57,7 @@
 //}
 //
 //nh_gfx_Texture *nh_gfx_initTexture(
-//    nh_Content *Content_p, NH_BYTE *id_p)
+//    nh_Content *Content_p, char *id_p)
 //{
 //NH_GFX_BEGIN()
 //
@@ -109,7 +109,7 @@
 //
 //    switch (Surface_p->api)
 //    {
-//        case NH_GFX_API_VULKAN :
+//        case NH_API_GRAPHICS_BACKEND_VULKAN :
 //            for (int i = 0; i < Surface_p->Vulkan_p->GPU_p->Textures.size; ++i) {
 //
 //            }
@@ -147,7 +147,7 @@
 //        case NH_MEDIA_IMAGE_JPEG :
 //        case NH_MEDIA_IMAGE_PNG  :
 //        {
-//            NH_BYTE *data_p = nh_core_getPayload(&Texture_p->URI);
+//            char *data_p = nh_core_getPayload(&Texture_p->URI);
 //            Texture_p->pixels_p = stbi_load_from_memory(data_p, Texture_p->URI.size, &Texture_p->width, &Texture_p->height, &Texture_p->compression, STBI_rgb_alpha);
 //            nh_core_freePayload(&Texture_p->URI);
 //            NH_GFX_CHECK_NULL(NULL, Texture_p->pixels_p)
@@ -220,7 +220,7 @@
 //
 //// DELETE ==========================================================================================
 //
-//NH_GFX_RESULT nh_deleteTextures(
+//NH_API_RESULT nh_deleteTextures(
 //    nh_Content *Content_p)
 //{
 //NH_GFX_BEGIN()
@@ -234,7 +234,7 @@
 //NH_DIAGNOSTIC_END(NH_SUCCESS)
 //}
 //
-//NH_GFX_RESULT nh_deleteTexture(
+//NH_API_RESULT nh_deleteTexture(
 //    nh_Content *Content_p, nh_Texture *Texture_p)
 //{
 //NH_GFX_BEGIN()
@@ -260,7 +260,7 @@
 //
 //// UPDATE ==========================================================================================
 //
-//NH_GFX_RESULT nh_core_updateTexture(
+//NH_API_RESULT nh_core_updateTexture(
 //    nh_Content *Content_p, nh_Texture *Texture_p)
 //{
 //NH_GFX_BEGIN()
@@ -279,8 +279,8 @@
 //
 //// CHECK ===========================================================================================
 //
-//NH_BOOL nh_textureLoaded(
-//    nh_Content *Content_p, NH_BYTE *location_p, NH_BYTE *base_p)
+//bool nh_textureLoaded(
+//    nh_Content *Content_p, char *location_p, char *base_p)
 //{
 //NH_GFX_BEGIN()
 //
@@ -292,7 +292,7 @@
 //// GET =============================================================================================
 //
 //nh_Texture *nh_core_getTextureFromLocation(
-//    nh_Content *Content_p, NH_BYTE *location_p, NH_BYTE *base_p)
+//    nh_Content *Content_p, char *location_p, char *base_p)
 //{
 //NH_GFX_BEGIN()
 //

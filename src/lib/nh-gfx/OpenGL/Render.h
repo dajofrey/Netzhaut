@@ -10,6 +10,7 @@
  */
 
 #include "Surface.h"
+#include "../Base/Surface.h"
 
 #include "../Common/Includes.h"
 
@@ -19,7 +20,7 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_opengl_render(
+    NH_API_RESULT nh_opengl_render(
         nh_gfx_Surface *Surface_p, nh_List *SortedViewports_p
     );
 

@@ -10,6 +10,7 @@
  */
 
 #include "Window.h"
+#include "../../Window/Window.h"
 #include "../../Common/Includes.h"
 
 #endif
@@ -19,27 +20,27 @@
  *  @{
  */
 
-    NH_WSI_RESULT_E nh_x11_setWindowBackgroundColor(
+    NH_API_RESULT nh_x11_setWindowBackgroundColor(
         nh_x11_Window *Window_p, nh_Color Color 
     );
     
-    NH_WSI_RESULT_E nh_x11_setWindowTitle(
-        nh_x11_Window *Window_p, NH_BYTE *title_p
+    NH_API_RESULT nh_x11_setWindowTitle(
+        nh_x11_Window *Window_p, char *title_p
     );
     
-    NH_WSI_RESULT_E nh_x11_setWindowDecorated(
-        nh_x11_Window *Window_p, NH_BOOL decorated
+    NH_API_RESULT nh_x11_setWindowDecorated(
+        nh_x11_Window *Window_p, bool decorated
     );
 
-    NH_WSI_RESULT_E nh_x11_setWindowState(
-        nh_x11_Window *Window_p, NH_BOOL *state_p
+    NH_API_RESULT nh_x11_setWindowState(
+        nh_x11_Window *Window_p, bool *state_p
     );
  
-    NH_WSI_RESULT_E nh_x11_setWindowType(
+    NH_API_RESULT nh_x11_setWindowType(
         nh_x11_Window *Window_p, NH_WSI_WINDOW_TYPE_E type
     );
 
-    NH_WSI_RESULT_E nh_x11_setMouseCursor(
+    NH_API_RESULT nh_x11_setMouseCursor(
         nh_x11_Window *Window_p, NH_WSI_CURSOR_E type
     );
 

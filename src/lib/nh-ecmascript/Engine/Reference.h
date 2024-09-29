@@ -22,13 +22,13 @@
  */
 
     typedef struct nh_ecmascript_ReferenceBase {
-        NH_BOOL unresolvable;
+        bool unresolvable;
         nh_ecmascript_Any Value;
         nh_ecmascript_Environment *Environment_p;
     } nh_ecmascript_ReferenceBase;
 
     typedef struct nh_ecmascript_ReferenceValue {
-        NH_BOOL empty;
+        bool empty;
         nh_ecmascript_Any Payload;
     } nh_ecmascript_ReferenceValue;
 

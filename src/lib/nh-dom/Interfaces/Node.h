@@ -21,11 +21,11 @@
         nh_webidl_Object *Object_p
     );
 
-    NH_DOM_RESULT nh_dom_appendToNode(
+    NH_API_RESULT nh_dom_appendToNode(
         nh_dom_Node *Node_p, nh_webidl_Object *Child_p
     );
 
-    NH_DOM_RESULT nh_dom_insertIntoNode(
+    NH_API_RESULT nh_dom_insertIntoNode(
         nh_dom_Node *Node_p, nh_webidl_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index
     );
 
@@ -33,7 +33,7 @@
         nh_dom_Node *Node_p
     );
 
-    NH_DOM_RESULT nh_dom_setNodeDocument(
+    NH_API_RESULT nh_dom_setNodeDocument(
         nh_dom_Node *Node_p, nh_webidl_Object *NodeDocument_p
     );
 
@@ -41,11 +41,11 @@
         nh_dom_Node *Node_p
     );
 
-    NH_DOM_RESULT nh_dom_setSpecifiedPropertyValues(
+    NH_API_RESULT nh_dom_setSpecifiedPropertyValues(
         nh_dom_Node *Node_p, nh_Array SpecifiedPropertyValues
     );
 
-    NH_DOM_RESULT nh_dom_setComputedPropertyValues(
+    NH_API_RESULT nh_dom_setComputedPropertyValues(
         nh_dom_Node *Node_p, nh_List ComputedPropertyValues
     );
 
@@ -57,12 +57,12 @@
         nh_dom_Node *Node_p
     );
 
-    NH_BOOL nh_dom_getUpdateAnnotationsFlag(
+    bool nh_dom_getUpdateAnnotationsFlag(
         nh_dom_Node *Node_p
     );
 
-    NH_DOM_RESULT nh_dom_setUpdateAnnotationsFlag(
-        nh_dom_Node *Node_p, NH_BOOL update
+    NH_API_RESULT nh_dom_setUpdateAnnotationsFlag(
+        nh_dom_Node *Node_p, bool update
     );
 
     void nh_dom_setParentNode(

@@ -16,15 +16,14 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-
     nh_dom_NodeList *nh_dom_createNodeList(
     );
 
-    NH_DOM_RESULT nh_dom_appendToNodeList(
+    NH_API_RESULT nh_dom_appendToNodeList(
         nh_dom_NodeList *NodeList_p, nh_webidl_Object *Node_p
     );
 
-    NH_DOM_RESULT nh_dom_insertIntoNodeList(
+    NH_API_RESULT nh_dom_insertIntoNodeList(
         nh_dom_NodeList *NodeList_p, nh_webidl_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index
     );
 

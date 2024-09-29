@@ -23,7 +23,7 @@
 
 // BACKGROUND ======================================================================================
 
-NH_RENDERER_RESULT nh_renderer_vk_createBackgroundVertices(
+NH_API_RESULT nh_renderer_vk_createBackgroundVertices(
     nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p)
 {
 NH_RENDERER_BEGIN()
@@ -53,18 +53,18 @@ NH_RENDERER_BEGIN()
     {
         .Info_p           = &CreateInfo,
         .data_p           = vertices_p,
-        .mapMemory        = NH_TRUE,
+        .mapMemory        = true,
         .memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        .createInfo       = NH_TRUE 
+        .createInfo       = true 
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createBuffer(Driver_p, &BufferInfo, Buffer_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createBuffer(Driver_p, &BufferInfo, Buffer_p))
     nh_core_free(vertices_p);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-//NH_CORE_RESULT nh_vk_updateBackgroundVertices(
+//NH_API_RESULT nh_vk_updateBackgroundVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_renderer_FormattingNode *Fragment_p)
 //{
 //NH_RENDERER_BEGIN()
@@ -87,7 +87,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //
 //// BACKGROUND IMAGE ================================================================================
 //
-//NH_CORE_RESULT nh_vk_createBackgroundImageVertices(
+//NH_API_RESULT nh_vk_createBackgroundImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_renderer_FormattingNode *Fragment_p, NH_RENDERER_Image *Image_p)
 //{
 //NH_RENDERER_BEGIN()
@@ -114,9 +114,9 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //    {
 //        .Info_p           = &CreateInfo,
 //        .data_p           = vertices_p,
-//        .mapMemory        = NH_TRUE,
+//        .mapMemory        = true,
 //        .memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-//        .createInfo       = NH_TRUE 
+//        .createInfo       = true 
 //    };
 //
 //    NH_CHECK(nh_vk_createBuffer(nh_vk_getHost(), Driver_p, &BufferInfo, Buffer_p))
@@ -124,7 +124,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //NH_RENDERER_DIAGNOSTIC_END(NH_SUCCESS)
 //}
 //
-//NH_CORE_RESULT nh_vk_updateBackgroundImageVertices(
+//NH_API_RESULT nh_vk_updateBackgroundImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_renderer_FormattingNode *Fragment_p, NH_RENDERER_Image *Image_p)
 //{
 //NH_RENDERER_BEGIN()
@@ -142,7 +142,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //
 // BORDER ==========================================================================================
 
-NH_RENDERER_RESULT nh_renderer_vk_createBorderVertices(
+NH_API_RESULT nh_renderer_vk_createBorderVertices(
     nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p, 
     NH_RENDERER_VK_BUFFER type)
 {
@@ -177,17 +177,17 @@ NH_RENDERER_BEGIN()
     {
         .Info_p           = &CreateInfo,
         .data_p           = vertices_p,
-        .mapMemory        = NH_TRUE,
+        .mapMemory        = true,
         .memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        .createInfo       = NH_TRUE
+        .createInfo       = true
     };
 
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createBuffer(Driver_p, &BufferInfo, Buffer_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createBuffer(Driver_p, &BufferInfo, Buffer_p))
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-//NH_CORE_RESULT nh_vk_updateBorderVertices(
+//NH_API_RESULT nh_vk_updateBorderVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_renderer_FormattingNode *Fragment_p, NH_VK_BUFFER type)
 //{
 //NH_RENDERER_BEGIN()
@@ -213,7 +213,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //
 //// TEXTURE =========================================================================================
 //
-//NH_CORE_RESULT nh_vk_createImageVertices(
+//NH_API_RESULT nh_vk_createImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_renderer_FormattingNode *Fragment_p, float subtractFromZ)
 //{
 //NH_RENDERER_BEGIN()
@@ -238,9 +238,9 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //    {
 //        .Info_p           = &CreateInfo,
 //        .data_p           = vertices_p,
-//        .mapMemory        = NH_TRUE,
+//        .mapMemory        = true,
 //        .memoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-//        .createInfo       = NH_TRUE 
+//        .createInfo       = true 
 //    };
 //
 //    NH_CHECK(nh_vk_createBuffer(nh_vk_getHost(), Driver_p, &BufferInfo, Buffer_p))
@@ -248,7 +248,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //NH_RENDERER_DIAGNOSTIC_END(NH_SUCCESS)
 //}
 //
-//NH_CORE_RESULT nh_vk_updateImageVertices(
+//NH_API_RESULT nh_vk_updateImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_vk_Driver *Driver_p, nh_renderer_FormattingNode *Fragment_p, float subtractFromZ)
 //{
 //NH_RENDERER_BEGIN()

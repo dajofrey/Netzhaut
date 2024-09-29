@@ -30,7 +30,7 @@ typedef struct nh_dom_NamedNodeMapInternal {
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeNamedNodeMap(
+NH_API_RESULT nh_dom_initializeNamedNodeMap(
     nh_webidl_Object *NamedNodeMap_p)
 {
 NH_DOM_BEGIN()
@@ -41,7 +41,7 @@ NH_DOM_BEGIN()
     ((nh_dom_NamedNodeMapInternal*)NamedNodeMap_p->internal_p)->AttributeList = nh_core_initList(8);
     NamedNodeMap_p->Attributes.pp[0] = &((nh_dom_NamedNodeMapInternal*)NamedNodeMap_p->internal_p)->AttributeList.size;
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================

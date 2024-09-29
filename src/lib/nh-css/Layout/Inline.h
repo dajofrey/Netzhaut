@@ -20,10 +20,10 @@
  */
 
     typedef struct nh_css_LineBox {
-        NH_BOOL shortened;
-        nh_PixelSize Size;
-        nh_PixelPosition Position;
-        NH_PIXEL currentX;
+        bool shortened;
+        nh_api_PixelSize Size;
+        nh_api_PixelPosition Position;
+        int currentX;
         nh_css_Fragment *RootInline_p;
     } nh_css_LineBox;
 
@@ -33,8 +33,8 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_arrangeInlineFormattingContext(
-        nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p, NH_PIXEL yOffset, int *newFragments_p
+    NH_API_RESULT nh_css_arrangeInlineFormattingContext(
+        nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p, int yOffset, int *newFragments_p
     );
 
 /** @} */

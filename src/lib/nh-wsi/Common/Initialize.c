@@ -22,7 +22,7 @@
 
 // DEBUG ===========================================================================================
 
-NH_WSI_RESULT_E nh_wsi_initialize()
+NH_API_RESULT nh_wsi_initialize()
 {
     NH_WSI_CHECK(nh_wsi_normalizeListener())
     NH_WSI_CHECK(nh_x11_initialize())

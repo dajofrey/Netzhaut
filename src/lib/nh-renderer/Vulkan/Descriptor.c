@@ -23,7 +23,7 @@
 
 // COLOR ===========================================================================================
 
-NH_RENDERER_RESULT nh_renderer_vk_createColorDescriptor(
+NH_API_RESULT nh_renderer_vk_createColorDescriptor(
     nh_vk_Driver *Driver_p, nh_css_Fragment *Fragment_p, NH_RENDERER_VK_DESCRIPTOR type)
 {
 NH_RENDERER_BEGIN()
@@ -54,7 +54,7 @@ NH_RENDERER_BEGIN()
         .descriptorPool     = Driver_p->DescriptorPool_p[0],
         .descriptorSetCount = 1,
     };
-    NH_GFX_CHECK_2(NH_RENDERER_ERROR_BAD_STATE, nh_vk_createDescriptorSet(Driver_p, &AllocateInfo, &LayoutInfo, Descriptor_p))
+    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createDescriptorSet(Driver_p, &AllocateInfo, &LayoutInfo, Descriptor_p))
 
     NH_RENDERER_VK_UNIFORM uniformType;
     switch (type)
@@ -64,7 +64,7 @@ NH_RENDERER_BEGIN()
         case NH_RENDERER_VK_DESCRIPTOR_RIGHT_BORDER  : uniformType = NH_RENDERER_VK_UNIFORM_RIGHT_BORDER; break;
         case NH_RENDERER_VK_DESCRIPTOR_BOTTOM_BORDER : uniformType = NH_RENDERER_VK_UNIFORM_BOTTOM_BORDER; break;
         case NH_RENDERER_VK_DESCRIPTOR_LEFT_BORDER   : uniformType = NH_RENDERER_VK_UNIFORM_LEFT_BORDER; break;
-        default : NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_ERROR_BAD_STATE)
+        default : NH_RENDERER_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
 // update
@@ -88,12 +88,12 @@ NH_RENDERER_BEGIN()
     };
     Driver_p->Functions.vkUpdateDescriptorSets(Driver_p->Device, 1, &Write, 0, VK_NULL_HANDLE);  
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 //// IMAGE ===========================================================================================
 //
-//NH_RENDERER_RESULT nh_vk_createImageDescriptor(
+//NH_API_RESULT nh_vk_createImageDescriptor(
 //    nh_vk_GPU *GPU_p, nh_html_Node *Node_p, nh_Texture *Texture_p)
 //{
 //NH_RENDERER_BEGIN()
@@ -178,7 +178,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //
 //// BACKGROUND IMAGE ================================================================================
 //
-//NH_RENDERER_RESULT nh_vk_createBackgroundImageDescriptor(
+//NH_API_RESULT nh_vk_createBackgroundImageDescriptor(
 //    nh_vk_GPU *GPU_p, nh_html_Node *Node_p, NH_RENDERER_Image *Image_p)
 //{
 //NH_RENDERER_BEGIN()
@@ -264,7 +264,7 @@ NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
 //
 //// CANVAS RENDERING CONTEXT 2D ======================================================================
 //
-//NH_RENDERER_RESULT nh_vk_createCanvasRenderingContext2DDescriptor(
+//NH_API_RESULT nh_vk_createCanvasRenderingContext2DDescriptor(
 //    nh_Tab *Tab_p, nh_vk_Driver *Driver_p, NH_JS_CanvasRenderingContext2D *Context_p, 
 //    nh_vk_Buffer *Uniform_p, size_t size)
 //{

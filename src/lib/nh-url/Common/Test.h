@@ -18,11 +18,11 @@
  */
 
 //    int nh_url_testHostParser(
-//        int arguments, nh_make_TestArgument *Arguments_p, NH_BYTE *output_p, int maxOutputLength
+//        int arguments, nh_make_TestArgument *Arguments_p, char *output_p, int maxOutputLength
 //    );
 //
 //    int nh_url_testURLParser(
-//        int arguments, nh_make_TestArgument *Arguments_p, NH_BYTE *output_p, int maxOutputLength
+//        int arguments, nh_make_TestArgument *Arguments_p, char *output_p, int maxOutputLength
 //    );
 
 /** @} */

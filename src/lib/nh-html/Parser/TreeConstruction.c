@@ -32,13 +32,13 @@
 
 // DECLARE =========================================================================================
 
-static NH_HTML_RESULT nh_html_reprocessToken(
+static NH_API_RESULT nh_html_reprocessToken(
     nh_html_Parser *Parser_p, NH_HTML_INSERTION_MODE insertionMode
 );
 
 // PARSE ERROR =====================================================================================
 
-static NH_HTML_RESULT nh_html_newTreeConstructionError(
+static NH_API_RESULT nh_html_newTreeConstructionError(
     nh_html_Parser *Parser_p, NH_HTML_PARSE_ERROR error)
 {
 NH_HTML_BEGIN()
@@ -47,17 +47,17 @@ NH_HTML_DIAGNOSTIC_END(nh_html_newParseError(Parser_p, 0, error))
 
 // INITIAL =========================================================================================
 
-static NH_BOOL nh_html_startsWith(
-    NH_BYTE *a, NH_BYTE *b)
+static bool nh_html_startsWith(
+    char *a, char *b)
 {
 NH_HTML_BEGIN()
 
-   if(strncmp(a, b, strlen(b)) == 0) {NH_HTML_END(NH_TRUE)}
+   if(strncmp(a, b, strlen(b)) == 0) {NH_HTML_END(true)}
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-static NH_BYTE *doctypeIdentifierPrefixes_pp[] =
+static char *doctypeIdentifierPrefixes_pp[] =
 {
     "+//Silmaril//dtd html Pro v0r11 19970101//",
     "-//AS//DTD HTML 3.0 asWedit + extensions//",
@@ -118,7 +118,7 @@ static NH_BYTE *doctypeIdentifierPrefixes_pp[] =
     "-//W3C//DTD HTML 4.01 Transitional//",
 };
 
-static NH_BOOL nh_html_setDocumentToQuirksModeFromDOCTYPE(
+static bool nh_html_setDocumentToQuirksModeFromDOCTYPE(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -127,12 +127,12 @@ NH_HTML_BEGIN()
     ||  Parser_p->Token_p->DOCTYPE.Name_p == NULL 
     ||  strcmp(Parser_p->Token_p->DOCTYPE.Name_p->p, "html")) 
     {
-        NH_HTML_END(NH_TRUE) 
+        NH_HTML_END(true) 
     }
     if (Parser_p->Token_p->DOCTYPE.SystemIdentifier_p != NULL 
     && !strcmp(Parser_p->Token_p->DOCTYPE.SystemIdentifier_p->p, "http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd")) 
     {
-        NH_HTML_END(NH_TRUE) 
+        NH_HTML_END(true) 
     }
     if (Parser_p->Token_p->DOCTYPE.PublicIdentifier_p != NULL)
     {
@@ -140,13 +140,13 @@ NH_HTML_BEGIN()
         ||  !strcmp(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "-/W3C/DTD HTML 4.0 Transitional/EN")
         ||  !strcmp(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "HTML")) 
         {
-            NH_HTML_END(NH_TRUE) 
+            NH_HTML_END(true) 
         }
         for (int i = 0; i < sizeof(doctypeIdentifierPrefixes_pp) / sizeof(doctypeIdentifierPrefixes_pp[0]); ++i) 
         {
             if (nh_html_startsWith(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, doctypeIdentifierPrefixes_pp[i]))
             {
-                NH_HTML_END(NH_TRUE)
+                NH_HTML_END(true)
             }
         }
         if (Parser_p->Token_p->DOCTYPE.SystemIdentifier_p == NULL) 
@@ -154,15 +154,15 @@ NH_HTML_BEGIN()
             if (nh_html_startsWith(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "-//W3C//DTD HTML 4.01 Frameset//")
             ||  nh_html_startsWith(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "-//W3C//DTD HTML 4.01 Transitional//")) 
             {
-                NH_HTML_END(NH_TRUE) 
+                NH_HTML_END(true) 
             }
         }
     }
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-static NH_BOOL nh_html_setDocumentToLimitedQuirksModeFromDOCTYPE(
+static bool nh_html_setDocumentToLimitedQuirksModeFromDOCTYPE(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -172,22 +172,22 @@ NH_HTML_BEGIN()
         if (!strcmp(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "-//W3C//DTD XHTML 1.0 Frameset//" )
         ||  !strcmp(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "-//W3C//DTD XHTML 1.0 Transitional//"))
         {
-            NH_HTML_END(NH_TRUE) 
+            NH_HTML_END(true) 
         }
         if (Parser_p->Token_p->DOCTYPE.SystemIdentifier_p == NULL) 
         {
             if (nh_html_startsWith(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "-//W3C//DTD HTML 4.01 Frameset//")
             ||  nh_html_startsWith(Parser_p->Token_p->DOCTYPE.PublicIdentifier_p->p, "-//W3C//DTD HTML 4.01 Transitional//")) 
             {
-                NH_HTML_END(NH_TRUE) 
+                NH_HTML_END(true) 
             }
         }
     }
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-static NH_HTML_RESULT nh_html_processInitial(
+static NH_API_RESULT nh_html_processInitial(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -243,17 +243,17 @@ NH_HTML_BEGIN()
         }
         default : INITIAL_DEFAULT :
         {
-            NH_DOM_CHECK_2(NH_HTML_ERROR_BAD_STATE, nh_dom_setDocumentMode(Parser_p->Document_p, &NH_DOM_DOCUMENT_MODE_QUIRKS))
+            NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_setDocumentMode(Parser_p->Document_p, &NH_DOM_DOCUMENT_MODE_QUIRKS))
             NH_HTML_CHECK(nh_html_reprocessToken(Parser_p, NH_HTML_INSERTION_MODE_BEFORE_HTML))
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // BEFORE HTML =====================================================================================
 
-static NH_HTML_RESULT nh_html_processBeforeHTML(
+static NH_API_RESULT nh_html_processBeforeHTML(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -289,7 +289,7 @@ NH_HTML_BEGIN()
             {
                 nh_webidl_Object *HTMLHtmlElement_p = nh_html_createElementForToken(Parser_p->Token_p, &NH_WEBIDL_HTML_NAMESPACE, Parser_p->Document_p);
                 NH_HTML_CHECK_MEM(HTMLHtmlElement_p)
-                NH_DOM_CHECK_2(NH_HTML_ERROR_BAD_STATE, nh_dom_appendToNode(nh_dom_getNode(Parser_p->Document_p), HTMLHtmlElement_p))
+                NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToNode(nh_dom_getNode(Parser_p->Document_p), HTMLHtmlElement_p))
                 NH_HTML_CHECK(nh_html_pushOpenElement(Parser_p, HTMLHtmlElement_p))
                 Parser_p->insertionMode = NH_HTML_INSERTION_MODE_BEFORE_HEAD;
                 break; 
@@ -312,18 +312,18 @@ NH_HTML_BEGIN()
         {
             nh_webidl_Object *HTMLHtmlElement_p = nh_html_createElementForToken(nh_html_getEmptyStartTagToken(NH_HTML_TAG_HTML), &NH_WEBIDL_HTML_NAMESPACE, Parser_p->Document_p);
             NH_HTML_CHECK_MEM(HTMLHtmlElement_p)
-            NH_DOM_CHECK_2(NH_HTML_ERROR_BAD_STATE, nh_dom_appendToNode(nh_dom_getNode(Parser_p->Document_p), HTMLHtmlElement_p))
+            NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToNode(nh_dom_getNode(Parser_p->Document_p), HTMLHtmlElement_p))
             NH_HTML_CHECK(nh_html_pushOpenElement(Parser_p, HTMLHtmlElement_p))
             NH_HTML_CHECK(nh_html_reprocessToken(Parser_p, NH_HTML_INSERTION_MODE_BEFORE_HEAD))
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // BEFORE HEAD =====================================================================================
 
-static NH_HTML_RESULT nh_html_processBeforeHead(
+static NH_API_RESULT nh_html_processBeforeHead(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -383,16 +383,16 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // IN HEAD =========================================================================================
 
-static NH_HTML_RESULT nh_html_processInBody(
+static NH_API_RESULT nh_html_processInBody(
     nh_html_Parser *Parser_p
 );
 
-static NH_HTML_RESULT nh_html_processInHead(
+static NH_API_RESULT nh_html_processInHead(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -450,13 +450,13 @@ NH_HTML_BEGIN()
                 }
                 case NH_HTML_TAG_TITLE : 
                 {
-                    NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, NH_FALSE))
+                    NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, false))
                     break;
                 }
                 case NH_HTML_TAG_NOFRAMES :
                 case NH_HTML_TAG_STYLE    :
                 {
-                    NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, NH_TRUE))
+                    NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, true))
                     break;
                 }
                 case NH_HTML_TAG_SCRIPT :
@@ -468,7 +468,7 @@ NH_HTML_BEGIN()
                 {
                     NH_HTML_CHECK_NULL(nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p))
                     NH_HTML_CHECK(nh_html_insertMarker(Parser_p))
-                    Parser_p->framesetOk = NH_FALSE;
+                    Parser_p->framesetOk = false;
                     Parser_p->insertionMode = NH_HTML_INSERTION_MODE_IN_TEMPLATE;
                     // TODO Push "in template" onto the stack of template insertion modes so that it is the new current template insertion mode.
                     break;
@@ -481,7 +481,7 @@ NH_HTML_BEGIN()
                 case NH_HTML_TAG_NOSCRIPT :
                 {
                     if (Parser_p->scripting) {
-                        NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, NH_TRUE))
+                        NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, true))
                         break;
 	    	    }
 
@@ -532,12 +532,12 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // IN HEAD NOSCRIPT ================================================================================
 
-static NH_HTML_RESULT nh_html_processInHeadNoscript(
+static NH_API_RESULT nh_html_processInHeadNoscript(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -629,12 +629,12 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // AFTER HEAD =======================================================================================
 
-static NH_HTML_RESULT nh_html_processAfterHead(
+static NH_API_RESULT nh_html_processAfterHead(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -676,7 +676,7 @@ NH_HTML_BEGIN()
                 case NH_HTML_TAG_BODY :
                 {
                     NH_HTML_CHECK_NULL(nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p))
-                    Parser_p->framesetOk = NH_FALSE;
+                    Parser_p->framesetOk = false;
                     Parser_p->insertionMode = NH_HTML_INSERTION_MODE_IN_BODY;
                     break; 
                 }
@@ -700,7 +700,7 @@ NH_HTML_BEGIN()
                     NH_HTML_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
                     NH_HTML_CHECK(nh_html_pushOpenElement(Parser_p, Parser_p->HeadElement_p))
                     NH_HTML_CHECK(nh_html_processInHead(Parser_p)) 
-                    nh_core_removeFromList2(&Parser_p->OpenElements, NH_FALSE, Parser_p->HeadElement_p);
+                    nh_core_removeFromList2(&Parser_p->OpenElements, false, Parser_p->HeadElement_p);
                     break;
                 }
                 case NH_HTML_TAG_HEAD :
@@ -745,13 +745,13 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // IN BODY =========================================================================================
 
-static NH_HTML_RESULT nh_html_closeElement(
-    nh_html_Parser *Parser_p, NH_BYTE *tagName_p)
+static NH_API_RESULT nh_html_closeElement(
+    nh_html_Parser *Parser_p, char *tagName_p)
 {
 NH_HTML_BEGIN()
 
@@ -766,22 +766,22 @@ NH_HTML_BEGIN()
         Pop_p = nh_html_popCurrentNode(Parser_p);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_HTML_RESULT nh_html_closePElement(
+static NH_API_RESULT nh_html_closePElement(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
 NH_HTML_DIAGNOSTIC_END(nh_html_closeElement(Parser_p, "p"))
 }
 
-static NH_BOOL nh_html_hasOtherOpenElements(
+static bool nh_html_hasOtherOpenElements(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *elements_pp[] = {
+    static char *elements_pp[] = {
         "dd",
         "dt",
         "li",
@@ -809,19 +809,19 @@ NH_HTML_BEGIN()
 
         nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(Element_p);
 
-        NH_BOOL match = NH_FALSE;
+        bool match = false;
         for (int j = 0; j < sizeof(elements_pp)/sizeof(elements_pp[0]); ++j) {
-            if (!strcmp(LocalName_p->p, elements_pp[j])) {match = NH_TRUE; break;}
+            if (!strcmp(LocalName_p->p, elements_pp[j])) {match = true; break;}
         }
 
-        if (!match) {NH_HTML_END(NH_TRUE)}
+        if (!match) {NH_HTML_END(true)}
     }
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-static NH_BOOL nh_html_hasOpenElement(
-    nh_html_Parser *Parser_p, NH_BYTE *target_p)
+static bool nh_html_hasOpenElement(
+    nh_html_Parser *Parser_p, char *target_p)
 {
 NH_HTML_BEGIN()
 
@@ -829,13 +829,13 @@ NH_HTML_BEGIN()
     {
         nh_webidl_Object *Node_p = nh_core_getFromList(&Parser_p->OpenElements, i);
         nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(nh_dom_getElement(Node_p));
-        if (!strcmp(LocalName_p->p, target_p)) {NH_HTML_END(NH_TRUE)}
+        if (!strcmp(LocalName_p->p, target_p)) {NH_HTML_END(true)}
     }
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-static NH_HTML_RESULT nh_html_processInBody(
+static NH_API_RESULT nh_html_processInBody(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -860,7 +860,7 @@ NH_HTML_BEGIN()
         {
             NH_HTML_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
             NH_HTML_CHECK(nh_html_insertCharacter(Parser_p, NULL, NULL))
-            Parser_p->framesetOk = NH_FALSE;
+            Parser_p->framesetOk = false;
         }
     }
     else if (Parser_p->Token_p->type == NH_HTML_TOKEN_COMMENT) {
@@ -880,7 +880,7 @@ NH_HTML_BEGIN()
                 for (int i = 0; i < Parser_p->OpenElements.size; ++i) {
                     nh_webidl_Object *Element_p = Parser_p->OpenElements.pp[i];
                     if (!strcmp(Element_p->Interface_p->name_p, "HTMLTemplateElement")) {
-                        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
                     }
                 }
 
@@ -906,7 +906,7 @@ NH_HTML_BEGIN()
             {
                 NH_HTML_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
                 if (Parser_p->OpenElements.size > 1 && !strcmp(nh_dom_getLocalName(nh_dom_getElement(Parser_p->OpenElements.pp[1]))->p, "body") && !nh_html_hasOpenElement(Parser_p, "template")) {
-                    Parser_p->framesetOk = NH_FALSE;
+                    Parser_p->framesetOk = false;
                     // TODO
                 }
                 break;
@@ -986,7 +986,7 @@ NH_HTML_BEGIN()
                 }
                 NH_HTML_CHECK_NULL(nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p))
                 // TODO If the next token is a U+000A LINE FEED (LF) character token, then ignore that token and move on to the next one. (Newlines at the start of pre blocks are ignored as an authoring convenience.)
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 break;
             }
             case NH_HTML_TAG_FORM :
@@ -1007,7 +1007,7 @@ NH_HTML_BEGIN()
             }
             case NH_HTML_TAG_LI :
             {
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 nh_webidl_Object *Node_p = nh_html_getCurrentNode(Parser_p);
 
                 while (1)
@@ -1034,7 +1034,7 @@ NH_HTML_BEGIN()
             case NH_HTML_TAG_DD :
             case NH_HTML_TAG_DT :
             {
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 nh_webidl_Object *Node_p = nh_html_getCurrentNode(Parser_p);
 
                 while (1)
@@ -1083,7 +1083,7 @@ NH_HTML_BEGIN()
                 }
                 NH_HTML_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
                 NH_HTML_CHECK_NULL(nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p))
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 break;
             }
             case NH_HTML_TAG_A :
@@ -1133,7 +1133,7 @@ NH_HTML_BEGIN()
                 NH_HTML_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
                 NH_HTML_CHECK_NULL(nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p))
                 NH_HTML_CHECK(nh_html_insertMarker(Parser_p))
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 break;
             }
             case NH_HTML_TAG_TABLE : 
@@ -1155,11 +1155,11 @@ NH_HTML_BEGIN()
 
                 NH_HTML_CHECK_NULL(nh_html_popCurrentNode(Parser_p))
                 // TODO Acknowledge the token's self-closing flag, if it is set.
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
 
                 // By default, images are obtained immediately.
                 if (Parser_p->Token_p->StartOrEndTag.tag == NH_HTML_TAG_IMG) {
-                    nh_html_updateImageData(nh_html_getHTMLImageElement(Image_p), NH_FALSE);
+                    nh_html_updateImageData(nh_html_getHTMLImageElement(Image_p), false);
                 }
 
                 break;
@@ -1171,7 +1171,7 @@ NH_HTML_BEGIN()
                 NH_HTML_CHECK_NULL(nh_html_popCurrentNode(Parser_p))
                 // TODO Acknowledge the token's self-closing flag, if it is set.
                 // TODO If the token does not have an attribute with the name "type", or if it does, but that attribute's value is not an ASCII case-insensitive match for the string "hidden", then: set the frameset-ok flag to "not ok".
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 break;
             }
             case NH_HTML_TAG_PARAM  :
@@ -1191,7 +1191,7 @@ NH_HTML_BEGIN()
                 NH_HTML_CHECK_NULL(nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p))
                 NH_HTML_CHECK_NULL(nh_html_popCurrentNode(Parser_p))
                 // TODO Acknowledge the token's self-closing flag, if it is set.
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 break;
             }
             case NH_HTML_TAG_TEXTAREA :
@@ -1200,7 +1200,7 @@ NH_HTML_BEGIN()
                 // TODO If the next token is a U+000A LINE FEED (LF) character token, then ignore that token and move on to the next one. (Newlines at the start of textarea elements are ignored as an authoring convenience.)
                 Parser_p->Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_RCDATA;
                 Parser_p->originalInsertionMode = Parser_p->insertionMode;
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
                 Parser_p->insertionMode = NH_HTML_INSERTION_MODE_TEXT;
                 break;
             }
@@ -1210,14 +1210,14 @@ NH_HTML_BEGIN()
                     NH_HTML_CHECK(nh_html_closePElement(Parser_p))
                 }
                 NH_HTML_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
-                Parser_p->framesetOk = NH_FALSE;
-                NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, NH_TRUE))
+                Parser_p->framesetOk = false;
+                NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, true))
                 break;
             }
             case NH_HTML_TAG_IFRAME :
             {
-                Parser_p->framesetOk = NH_FALSE;
-                NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, NH_TRUE))
+                Parser_p->framesetOk = false;
+                NH_HTML_CHECK(nh_html_parseRAWTEXTOrRCDATA(Parser_p, Parser_p->Token_p, true))
                 break;
             }
 //        else 
@@ -1225,13 +1225,13 @@ NH_HTML_BEGIN()
 //        || (!strcmp(Parser_p->Token_p->StartOrEndTag.TagName.p, "noscript") && Parser_p->scripting))
 //        {
 //            // TODO
-//            NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS) 
+//            NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS) 
 //        }
             case NH_HTML_TAG_SELECT :
             {
                 NH_HTML_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
                 NH_HTML_CHECK_NULL(nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p))
-                Parser_p->framesetOk = NH_FALSE;
+                Parser_p->framesetOk = false;
 
                 if (Parser_p->insertionMode == NH_HTML_INSERTION_MODE_IN_TABLE
                 ||  Parser_p->insertionMode == NH_HTML_INSERTION_MODE_IN_CAPTION
@@ -1270,17 +1270,17 @@ NH_HTML_BEGIN()
             case NH_HTML_TAG_RT :
             {
                 // TODO
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS) 
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS) 
             }
             case NH_HTML_TAG_MATH :
             {
                 // TODO
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             case NH_HTML_TAG_SVG :
             {
                 // TODO
-                NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+                NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
             }
             case NH_HTML_TAG_CAPTION  :
             case NH_HTML_TAG_COL      :
@@ -1513,16 +1513,16 @@ NH_HTML_BEGIN()
             if (nh_html_hasOtherOpenElements(Parser_p)) {
                 NH_HTML_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
             }
-            Parser_p->stop = NH_TRUE;
+            Parser_p->stop = true;
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // TEXT ============================================================================================
 
-static NH_HTML_RESULT nh_html_processText(
+static NH_API_RESULT nh_html_processText(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -1555,12 +1555,12 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // AFTER BODY =======================================================================================
 
-static NH_HTML_RESULT nh_html_processAfterBody(
+static NH_API_RESULT nh_html_processAfterBody(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -1609,7 +1609,7 @@ NH_HTML_BEGIN()
         }
         case NH_HTML_TOKEN_END_OF_FILE :
         {
-            Parser_p->stop = NH_TRUE;
+            Parser_p->stop = true;
             break;
         }
         default : AFTER_BODY_DEFAULT :
@@ -1619,12 +1619,12 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // AFTER AFTER BODY ================================================================================
 
-static NH_HTML_RESULT nh_html_processAfterAfterBody(
+static NH_API_RESULT nh_html_processAfterAfterBody(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -1664,7 +1664,7 @@ NH_HTML_BEGIN()
         }
         case NH_HTML_TOKEN_END_OF_FILE :
         {
-            Parser_p->stop = NH_TRUE;
+            Parser_p->stop = true;
             break;
         }
         default : AFTER_AFTER_BODY_DEFAULT :
@@ -1674,12 +1674,12 @@ NH_HTML_BEGIN()
         }
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // DISPATCH ========================================================================================
 
-static NH_HTML_RESULT nh_html_processToken(
+static NH_API_RESULT nh_html_processToken(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -1698,10 +1698,10 @@ NH_HTML_BEGIN()
         case NH_HTML_INSERTION_MODE_AFTER_AFTER_BODY : NH_HTML_DIAGNOSTIC_END(nh_html_processAfterAfterBody(Parser_p))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_ERROR_BAD_STATE)
+NH_HTML_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-static NH_HTML_RESULT nh_html_reprocessToken(
+static NH_API_RESULT nh_html_reprocessToken(
     nh_html_Parser *Parser_p, NH_HTML_INSERTION_MODE insertionMode)
 {
 NH_HTML_BEGIN()
@@ -1709,11 +1709,11 @@ NH_HTML_BEGIN()
     Parser_p->insertionMode = insertionMode;
     NH_HTML_CHECK(nh_html_processToken(Parser_p))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#tree-construction-dispatcher
-NH_HTML_RESULT nh_html_dispatchTreeConstruction(
+NH_API_RESULT nh_html_dispatchTreeConstruction(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
@@ -1733,6 +1733,6 @@ NH_HTML_BEGIN()
         exit(0);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

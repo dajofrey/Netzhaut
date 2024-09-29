@@ -15,13 +15,13 @@
 
 /** @{ */
 
-    extern const char *NH_GFX_RESULTS_PP[];
-    extern unsigned int NH_GFX_RESULTS_PP_COUNT;
+    extern const char *NH_API_RESULTS_PP[];
+    extern unsigned int NH_API_RESULTS_PP_COUNT;
 
 /** @} */
 /** @{ */
 
-    NH_GFX_RESULT nh_vk_getResult(
+    NH_API_RESULT nh_vk_getResult(
         int result
     );
 

@@ -30,7 +30,7 @@ nh_webidl_DOMString NH_WEBIDL_XMLNS_NAMESPACE;
 
 // INIT NAMESPACES =================================================================================
 
-NH_WEBIDL_RESULT nh_webidl_initNamespaces()
+NH_API_RESULT nh_webidl_initNamespaces()
 {
 NH_WEBIDL_BEGIN()
 
@@ -48,7 +48,7 @@ NH_WEBIDL_BEGIN()
     NH_WEBIDL_CHECK(nh_webidl_appendToDOMString(&NH_WEBIDL_XML_NAMESPACE,    "http://www.w3.org/XML/1998/namespace", 36))
     NH_WEBIDL_CHECK(nh_webidl_appendToDOMString(&NH_WEBIDL_XMLNS_NAMESPACE,  "http://www.w3.org/2000/xmlns/", 29))
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // DOM STRING ======================================================================================
@@ -60,26 +60,26 @@ NH_WEBIDL_BEGIN()
 NH_WEBIDL_END(nh_core_initString(chunkSize))
 }
 
-NH_WEBIDL_RESULT nh_webidl_appendToDOMString(
-    nh_webidl_DOMString *String_p, NH_BYTE *p, int length)
+NH_API_RESULT nh_webidl_appendToDOMString(
+    nh_webidl_DOMString *String_p, char *p, int length)
 {
 NH_WEBIDL_BEGIN()
 
-    NH_CORE_CHECK_2(NH_WEBIDL_ERROR_BAD_STATE, nh_core_appendToString(String_p, p, length))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_core_appendToString(String_p, p, length))
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_WEBIDL_RESULT nh_webidl_appendUnicodeToDOMString(
+NH_API_RESULT nh_webidl_appendUnicodeToDOMString(
     nh_webidl_DOMString *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length)
 {
 NH_WEBIDL_BEGIN()
 
     nh_encoding_UTF8String String = nh_encoding_encodeUTF8(codepoints_p, length);
-    NH_CORE_CHECK_2(NH_WEBIDL_ERROR_BAD_STATE, nh_core_appendToString(String_p, String.p, String.length))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_core_appendToString(String_p, String.p, String.length))
     nh_core_freeString(&String);
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_webidl_freeDOMString(
@@ -108,14 +108,14 @@ NH_WEBIDL_BEGIN()
 NH_WEBIDL_END(nh_encoding_initUTF32(chunkSize))
 }
 
-NH_WEBIDL_RESULT nh_webidl_appendToUSVString(
+NH_API_RESULT nh_webidl_appendToUSVString(
     nh_webidl_USVString *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length)
 {
 NH_WEBIDL_BEGIN()
 
-    NH_ENCODING_CHECK_2(NH_WEBIDL_ERROR_BAD_STATE, nh_encoding_appendUTF32(String_p, codepoints_p, length))
+    NH_ENCODING_CHECK_2(NH_API_ERROR_BAD_STATE, nh_encoding_appendUTF32(String_p, codepoints_p, length))
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_webidl_freeUSVString(

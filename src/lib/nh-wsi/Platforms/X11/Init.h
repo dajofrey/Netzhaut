@@ -127,10 +127,10 @@
  *  @{
  */
 
-    NH_WSI_RESULT_E nh_x11_initialize(
+    NH_API_RESULT nh_x11_initialize(
     );
 
-    NH_WSI_RESULT_E nh_x11_close(
+    NH_API_RESULT nh_x11_close(
     );
 
 /** @} */

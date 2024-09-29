@@ -17,14 +17,14 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_getExeDir(
-        NH_BYTE *buffer_p, unsigned int size
+    NH_API_RESULT nh_core_getExeDir(
+        char *buffer_p, unsigned int size
     );
 
-    NH_CORE_RESULT nh_downloadnetzhaut(
+    NH_API_RESULT nh_downloadnetzhaut(
     );
     
-    NH_CORE_RESULT nh_core_buildnhinstaller(
+    NH_API_RESULT nh_core_buildnhinstaller(
     );
 
 /** @} */

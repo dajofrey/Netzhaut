@@ -46,8 +46,8 @@ static void *nh_css_initLayoutEngine(
 {
 NH_CSS_BEGIN()
 
-    static NH_BYTE *name_p = "Layout Engine";
-    static NH_BYTE *path_p = "nh-css/Main/LayoutEngine.c";
+    static char *name_p = "Layout Engine";
+    static char *path_p = "nh-css/Main/LayoutEngine.c";
     Workload_p->name_p = name_p;
     Workload_p->path_p = path_p;
     Workload_p->module = NH_MODULE_CSS;
@@ -56,7 +56,7 @@ NH_CSS_BEGIN()
     NH_CSS_CHECK_MEM_2(NULL, LayoutEngine_p)
 
     LayoutEngine_p->DocumentContext_p = Workload_p->args_p;
-    LayoutEngine_p->CanvasTypes = nh_core_initArray(sizeof(nh_css_CanvasType), 2);
+    LayoutEngine_p->CanvasTypes = nh_core_initArray(sizeof(nh_api_CanvasType), 2);
     LayoutEngine_p->Layout_p = NULL;
 
 NH_CSS_END(LayoutEngine_p)
@@ -65,7 +65,7 @@ NH_CSS_END(LayoutEngine_p)
 // RUN =============================================================================================
 
 static nh_css_Canvas *nh_css_getCanvas(
-    nh_css_Layout *Layout_p, nh_css_CanvasType *Type_p)
+    nh_css_Layout *Layout_p, nh_api_CanvasType *Type_p)
 {
 NH_CSS_BEGIN()
 
@@ -98,40 +98,40 @@ NH_CSS_BEGIN()
 NH_CSS_END(NULL)
 }
 
-static NH_CSS_RESULT nh_css_initializeLayout(
+static NH_API_RESULT nh_css_initializeLayout(
     nh_css_Layout *Layout_p)
 {
 NH_CSS_BEGIN()
 
     Layout_p->Canvases = nh_core_initList(8);
-    Layout_p->initialized = NH_TRUE;
+    Layout_p->initialized = true;
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_updateLayout(
-    nh_css_LayoutEngine *LayoutEngine_p, NH_BOOL *idle_p)
+static NH_API_RESULT nh_css_updateLayout(
+    nh_css_LayoutEngine *LayoutEngine_p, bool *idle_p)
 {
 NH_CSS_BEGIN()
 
     nh_webidl_Object *DocumentObject_p = LayoutEngine_p->DocumentContext_p->Document_p;
-    if (!DocumentObject_p) {NH_CSS_END(NH_CSS_SUCCESS)}
+    if (!DocumentObject_p) {NH_CSS_END(NH_API_SUCCESS)}
 
     nh_css_DocumentObject *Document_p = nh_css_getDocument(DocumentObject_p);
     NH_CSS_CHECK_MEM(Document_p)
 
     nh_css_Layout *Layout_p = nh_css_getLayout(Document_p);
 
-    if (!Layout_p) {NH_CSS_END(NH_CSS_SUCCESS)}
+    if (!Layout_p) {NH_CSS_END(NH_API_SUCCESS)}
     if (!Layout_p->initialized) {
 //        NH_CSS_CHECK(nh_css_initializeDocument(Document_p))
         NH_CSS_CHECK(nh_css_initializeLayout(Layout_p))
-        *idle_p = NH_FALSE;
+        *idle_p = false;
     }
 
     for (int j = 0; j < LayoutEngine_p->CanvasTypes.length; ++j) 
     {
-        nh_css_CanvasType *Type_p = &((nh_css_CanvasType*)LayoutEngine_p->CanvasTypes.p)[j];
+        nh_api_CanvasType *Type_p = &((nh_api_CanvasType*)LayoutEngine_p->CanvasTypes.p)[j];
         nh_css_Canvas *Canvas_p = nh_css_getCanvas(Layout_p, Type_p);
 
         if (!Canvas_p) {
@@ -140,13 +140,13 @@ NH_CSS_BEGIN()
             NH_CSS_CHECK(nh_css_computeCanvas(
                 Canvas_p, nh_css_getHTMLElement(DocumentObject_p), nh_css_getStyleSheetList(Document_p)
             ))
-            *idle_p = NH_FALSE;
+            *idle_p = false;
         }
     }
 
     LayoutEngine_p->Layout_p = Layout_p;
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 static NH_SIGNAL nh_css_runLayoutEngine(
@@ -157,7 +157,7 @@ NH_CSS_BEGIN()
     nh_css_LayoutEngine *LayoutEngine_p = args_p;
     NH_CSS_CHECK_NULL_2(NH_SIGNAL_ERROR, LayoutEngine_p)
 
-    NH_BOOL idle = NH_TRUE;
+    bool idle = true;
     NH_CSS_CHECK_2(NH_SIGNAL_ERROR, nh_css_updateLayout(LayoutEngine_p, &idle))
 
 NH_CSS_END(idle ? NH_SIGNAL_IDLE : NH_SIGNAL_OK)
@@ -173,7 +173,7 @@ NH_CSS_BEGIN()
     if (DocumentContext_p->LayoutEngine_p) {NH_CSS_END(NULL)}
 
     nh_css_LayoutEngine *LayoutEngine_p = 
-        nh_core_activateWorkload(nh_css_initLayoutEngine, nh_css_runLayoutEngine, NULL, NULL,  DocumentContext_p, NH_TRUE);
+        nh_core_activateWorkload(nh_css_initLayoutEngine, nh_css_runLayoutEngine, NULL, NULL,  DocumentContext_p, true);
 
     DocumentContext_p->LayoutEngine_p = LayoutEngine_p;
 

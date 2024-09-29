@@ -50,11 +50,11 @@
     );
 
     nh_css_ComponentValueData nh_css_parseComponentValuesFromUTF8Codepoints(
-        NH_BYTE *logId_p, NH_BYTE *p, unsigned long long length
+        char *logId_p, char *p, unsigned long long length
     );
 
     nh_css_DeclarationData nh_css_parseDeclarationsFromBytes(
-        NH_BYTE *logId_p, NH_BYTE *p, unsigned long long length
+        char *logId_p, char *p, unsigned long long length
     );
 
 /** @} */

@@ -33,7 +33,7 @@
 
 // ADOPTION AGENCY ALGORITHM =======================================================================
 
-NH_BOOL inB = NH_FALSE;
+bool inB = false;
 
 typedef struct nh_html_AdoptionAgencyBookmark {
     int left;
@@ -67,7 +67,7 @@ NH_HTML_BEGIN()
 
     int counter = 0;
 
-    while (NH_TRUE) 
+    while (true) 
     {
         if (counter >= 8) {break;}
         counter++;
@@ -91,7 +91,7 @@ NH_HTML_BEGIN()
 
         if (!nh_inList(&Parser_p->OpenElements, FormattingElement_p)) {
             // parse error
-            nh_core_removeFromList2(&Parser_p->ActiveFormattingElements, NH_FALSE, FormattingElement_p);
+            nh_core_removeFromList2(&Parser_p->ActiveFormattingElements, false, FormattingElement_p);
             break; 
         }
 
@@ -119,7 +119,7 @@ NH_HTML_BEGIN()
                     break;
                 }
             }
-            nh_core_removeFromList2(&Parser_p->ActiveFormattingElements, NH_FALSE, FormattingElement_p);
+            nh_core_removeFromList2(&Parser_p->ActiveFormattingElements, false, FormattingElement_p);
             break;
         }
     
@@ -128,11 +128,11 @@ NH_HTML_BEGIN()
         nh_html_AdoptionAgencyBookmark Bookmark;
         Bookmark.left = 0;
         Bookmark.right = 0;
-        NH_BOOL countRight = NH_TRUE;
+        bool countRight = true;
         for (int i = Parser_p->ActiveFormattingElements.size - 1; i >= 0; --i) 
         {
             nh_webidl_Object *Tmp_p = Parser_p->ActiveFormattingElements.pp[i];
-            if (Tmp_p == FormattingElement_p) {countRight = NH_FALSE;}
+            if (Tmp_p == FormattingElement_p) {countRight = false;}
             else if (countRight) {Bookmark.right++;}
             else {Bookmark.left++;}
         }
@@ -157,7 +157,7 @@ NH_HTML_BEGIN()
     nh_dom_Element *Element_p = nh_dom_getElement(CurrentNode_p);
 
 
-if (!strcmp(Subject_p->p, "b")) {inB = NH_TRUE;}
+if (!strcmp(Subject_p->p, "b")) {inB = true;}
 
 
     if (Element_p && !strcmp(nh_dom_getLocalName(Element_p)->p, Subject_p->p)) {

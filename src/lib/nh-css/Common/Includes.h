@@ -9,20 +9,15 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-// Include public API.
+#include "../Interfaces.h"
+
 #include "../../nh-api/nh-css.h"
 #include "../../nh-api/nh-dom.h"
 #include "../../nh-api/nh-webidl.h"
 
-#endif // DOXYGEN_SHOULD_SKIP_THIS
+#include "../../nh-webidl/Runtime/Object.h"
+#include "../../nh-dom/Interfaces.h"
 
-typedef struct nh_css_StyleRuleObject nh_css_StyleRuleObject;
-typedef struct nh_css_CounterStyleRuleObject nh_css_CounterStyleRuleObject;
-typedef struct nh_css_RuleObject nh_css_RuleObject;
-typedef struct nh_css_RuleListObject nh_css_RuleListObject;
-typedef struct nh_css_StyleSheetObject nh_css_StyleSheetObject;
-typedef struct nh_css_StyleDeclarationObject nh_css_StyleDeclarationObject;
-typedef struct nh_css_StyleSheetListObject nh_css_StyleSheetListObject;
-typedef struct nh_css_DocumentObject nh_css_DocumentObject;
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 #endif // NH_CSS_COMMON_INCLUDES_H

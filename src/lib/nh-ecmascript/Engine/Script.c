@@ -29,7 +29,7 @@
 
 // PARSE ===========================================================================================
 
-static NH_ECMASCRIPT_RESULT nh_ecmascript_prepareText(
+static NH_API_RESULT nh_ecmascript_prepareText(
     nh_ecmascript_Script *Script_p, nh_encoding_UTF32String *UnicodeCodepoints_p, 
     nh_Array *DirtyInputElements_p, nh_Array *CleanInputElements_p)
 {
@@ -39,17 +39,17 @@ NH_ECMASCRIPT_BEGIN()
     nh_ecmascript_logDecoder(Script_p, UnicodeCodepoints_p);
 
     *DirtyInputElements_p = nh_ecmascript_getInputElements(*UnicodeCodepoints_p);
-    nh_ecmascript_logLexer(Script_p, DirtyInputElements_p, NH_TRUE);
+    nh_ecmascript_logLexer(Script_p, DirtyInputElements_p, true);
 
     *CleanInputElements_p = nh_ecmascript_discardRedundantInputElements(*DirtyInputElements_p);
-    nh_ecmascript_logLexer(Script_p, CleanInputElements_p, NH_FALSE);
+    nh_ecmascript_logLexer(Script_p, CleanInputElements_p, false);
 
-NH_ECMASCRIPT_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_END(NH_API_SUCCESS)
 }
 
 // https://tc39.es/ecma262/#sec-parse-script
 nh_ecmascript_Script *nh_ecmascript_parseScript(
-    NH_BYTE *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding)
+    char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -82,7 +82,7 @@ NH_ECMASCRIPT_BEGIN()
         NH_ECMASCRIPT_END(NULL);
     }
 
-    NH_BOOL branch_p[1024] = {0};
+    bool branch_p[1024] = {0};
     nh_ecmascript_logParseTree(Script_p, Result.Node_p, NULL, 0, branch_p);
     Script_p->ECMAScriptCode_p = Result.Node_p;
 
@@ -105,7 +105,7 @@ NH_ECMASCRIPT_BEGIN()
     ScriptContext_p->Function_p = NULL;
     ScriptContext_p->Realm_p    = Script_p->Realm_p;
 
-    ScriptContext_p->ScriptOrModule.isScript = NH_TRUE;
+    ScriptContext_p->ScriptOrModule.isScript = true;
     ScriptContext_p->ScriptOrModule.handle_p = Script_p;
 
     ScriptContext_p->VariableEnvironment_p = GlobalEnvironment_p; 

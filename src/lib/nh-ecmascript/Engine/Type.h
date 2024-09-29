@@ -10,6 +10,7 @@
  */
 
 #include "../Common/Includes.h"
+#include "../../nh-encoding/Encodings/UTF8.h"
 
 #include <stddef.h>
 
@@ -40,7 +41,7 @@ typedef struct nh_ecmascript_Object nh_ecmascript_Object;
 
     #define NH_ECMASCRIPT_UNDEFINED 0
     #define NH_ECMASCRIPT_NULL NULL
-    #define NH_ECMASCRIPT_BOOLEAN NH_BOOL
+    #define NH_ECMASCRIPT_BOOLEAN bool
     #define NH_ECMASCRIPT_NUMBER double
     #define nh_ecmascript_String nh_encoding_UTF8String
 
@@ -183,8 +184,8 @@ typedef struct nh_ecmascript_Object nh_ecmascript_Object;
         size_t chunkSize
     );
     
-    NH_ECMASCRIPT_RESULT nh_ecmascript_appendFormatToString(
-        nh_ecmascript_String *String_p, NH_BYTE *p, size_t len
+    NH_API_RESULT nh_ecmascript_appendFormatToString(
+        nh_ecmascript_String *String_p, char *p, size_t len
     );
 
     nh_ecmascript_Any nh_ecmascript_wrapNumber(

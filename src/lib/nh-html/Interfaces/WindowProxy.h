@@ -21,7 +21,7 @@
         nh_webidl_Object *Window_p
     );
     
-    NH_HTML_RESULT nh_html_setWindowProxyWindow(
+    NH_API_RESULT nh_html_setWindowProxyWindow(
         nh_webidl_Object *WindowProxy_p, nh_webidl_Object *Window_p
     );
 

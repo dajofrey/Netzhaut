@@ -15,7 +15,6 @@
 
 #include "../../nh-core/System/Thread.h"
 #include "../../nh-core/System/Memory.h"
-#include "../../nh-core/Util/Array.h"
 
 #include "../../nh-wsi/Window/Window.h"
 #include "../../nh-wsi/Platforms/X11/Init.h"
@@ -61,7 +60,7 @@ static int VISUAL_DATA_P[] = {
 typedef GLXContext (*glXCreateContextAttribsARBProc)
     (Display*, GLXFBConfig, GLXContext, Bool, const int*);
 
-static NH_GFX_RESULT nh_opengl_createOpenGLContext(
+static NH_API_RESULT nh_opengl_createOpenGLContext(
     nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
 {
 NH_GFX_BEGIN()
@@ -85,7 +84,7 @@ NH_GFX_BEGIN()
     }
 
     if (!FrameBufferConfiguration_p) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
  
     glXCreateContextAttribsARBProc glXCreateContextAttribsARB_f = 0;
@@ -93,7 +92,7 @@ NH_GFX_BEGIN()
         glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
 
     if (!glXCreateContextAttribsARB_f) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     /* Set desired minimum OpenGL version */
@@ -108,15 +107,15 @@ NH_GFX_BEGIN()
         Window_p->X11.Common_p->Display_p, FrameBufferConfiguration_p, NULL, true, contextAttributes_p);
 
     if (!Surface_p->Context_p) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     XFree(FrameBufferConfigurations_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_opengl_createSurface(
+NH_API_RESULT nh_opengl_createSurface(
     nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
 {
 NH_GFX_BEGIN()
@@ -135,12 +134,12 @@ NH_GFX_BEGIN()
          Surface_p->CommandBuffers_p[i] = nh_opengl_initCommandBuffer();
     }
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // DESTROY =========================================================================================
 
-NH_GFX_RESULT nh_opengl_destroySurface(
+NH_API_RESULT nh_opengl_destroySurface(
     nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
 {
 NH_GFX_BEGIN()
@@ -148,56 +147,6 @@ NH_GFX_BEGIN()
     glXDestroyContext(Window_p->X11.Common_p->Display_p, Surface_p->Context_p);
     nh_core_free(Surface_p->CommandBuffers_p);
     
-NH_GFX_END(NH_GFX_SUCCESS)
-}
-
-// REQUIREMENTS ====================================================================================
-
-NH_GFX_RESULT nh_opengl_createSurfaceRequirements(
-    nh_opengl_SurfaceRequirements *Requirements_p)
-{
-NH_GFX_BEGIN()
-
-    Requirements_p->Ids = nh_core_initArray(sizeof(VisualID), 8);
-
-    Display *Display_p = XOpenDisplay(NULL);
-
-    int count = 0;
-    GLXFBConfig *FrameBufferConfigurations_p = 
-        glXChooseFBConfig(Display_p, DefaultScreen(Display_p), VISUAL_DATA_P, &count);
-
-    for (int i = 0; i < count; i++) {
-        XVisualInfo *Visual_p = 
-            (XVisualInfo*) glXGetVisualFromFBConfig(Display_p, FrameBufferConfigurations_p[i]);
-        if (!Visual_p) {continue;}
-
-        XRenderPictFormat *Format_p = XRenderFindVisualFormat(Display_p, Visual_p->visual);
-        if (!Format_p) {
-            XFree(Visual_p);
-            continue;
-        }
-
-        // We need a framebuffer with alpha capabilities.
-        if (Format_p->direct.alphaMask > 0) {
-            nh_core_appendToArray(&Requirements_p->Ids, &Visual_p->visualid, 1);
-        }
-
-        XFree(Visual_p);
-    }
-
-    XFree(FrameBufferConfigurations_p);
-    XCloseDisplay(Display_p);
-
-NH_GFX_END(NH_GFX_SUCCESS)
-}
-
-NH_GFX_RESULT nh_opengl_freeSurfaceRequirements(
-    nh_opengl_SurfaceRequirements *Requirements_p)
-{
-NH_GFX_BEGIN()
-
-    nh_core_freeArray(&Requirements_p->Ids);
-
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 

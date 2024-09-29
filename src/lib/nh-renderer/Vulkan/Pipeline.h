@@ -34,7 +34,7 @@
  *  @{
  */
 
-    NH_RENDERER_RESULT nh_renderer_vk_createPipelines(
+    NH_API_RESULT nh_renderer_vk_createPipelines(
         nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipelines_p
     );
     

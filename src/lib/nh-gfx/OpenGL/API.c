@@ -17,7 +17,7 @@
 
 // COMMAND NAMES ===================================================================================
 
-const NH_BYTE *NH_GFX_OPENGL_COMMAND_NAMES_PP[] = {
+const char *NH_GFX_OPENGL_COMMAND_NAMES_PP[] = {
     "glAccum",
     "glActiveTexture",
     "glAddSwapHintRectWIN",
@@ -748,7 +748,7 @@ size_t NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P_COUNT =
 // GET TYPE ========================================================================================
 
 NH_GFX_OPENGL_COMMAND_E nh_opengl_getCommandType(
-    NH_BYTE *name_p)
+    char *name_p)
 {
 NH_GFX_BEGIN()
 

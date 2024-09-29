@@ -41,8 +41,8 @@
  */
 
     typedef struct nh_gfx_FontFamily {
-        NH_BYTE *name_p;
-        NH_BOOL generic_p[NH_GFX_GENERIC_FONT_FAMILY_COUNT];
+        char *name_p;
+        bool generic_p[NH_GFX_GENERIC_FONT_FAMILY_COUNT];
     } nh_gfx_FontFamily;
 
 /** @} */
@@ -51,7 +51,7 @@
  *  @{
  */
 
-    extern NH_BYTE *NH_GFX_GENERIC_FONT_FAMILY_NAMES_PP[];
+    extern char *NH_GFX_GENERIC_FONT_FAMILY_NAMES_PP[];
 
 /** @} */
 
@@ -60,11 +60,11 @@
  */
 
     nh_gfx_FontFamily nh_gfx_initFontFamily(
-        NH_BYTE *name_p
+        char *name_p
     );
 
-    NH_GFX_RESULT nh_gfx_parseFontFamily(
-        nh_gfx_FontFamily *FontFamily_p, NH_BYTE *name_p
+    NH_API_RESULT nh_gfx_parseFontFamily(
+        nh_gfx_FontFamily *FontFamily_p, char *name_p
     );
 
     void nh_gfx_freeFontFamily(

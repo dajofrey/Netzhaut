@@ -25,12 +25,12 @@
 	
 // PARSE NODE NAMES ================================================================================
 
-const NH_BYTE *nh_css_getSelectorParseNodeName(
+const char *nh_css_getSelectorParseNodeName(
     nh_css_SelectorParseNode *Node_p)
 {
 NH_CSS_BEGIN()
 
-    static const NH_BYTE *parseNodeNames_pp[] =
+    static const char *parseNodeNames_pp[] =
     {
         "<terminal>",
         "<selector-list>",
@@ -321,11 +321,11 @@ NH_CSS_BEGIN()
             nh_css_SelectorParser Local;
             Local.Tokens_pp = &Parser_p->Tokens_pp[2];
 
-            NH_BOOL valid = NH_TRUE;
+            bool valid = true;
             while (Local.Tokens_pp[0]->type != NH_CSS_TOKEN_RIGHT_PARENTHESIS) {
                 Local.Tokens_pp = &Local.Tokens_pp[1];
                 if (Local.Tokens_pp[0]->type == NH_CSS_TOKEN_EOF) {
-                    valid = NH_FALSE;
+                    valid = false;
                     break;
                 } 
             }
@@ -543,15 +543,15 @@ NH_CSS_BEGIN()
              nh_core_appendToList(&CompoundSelector_p->Children, PseudoSelectors.pp[i]);
          }
 
-         nh_core_freeList(&SubclassSelectors, NH_FALSE);
-         nh_core_freeList(&PseudoSelectors, NH_FALSE);
+         nh_core_freeList(&SubclassSelectors, false);
+         nh_core_freeList(&PseudoSelectors, false);
 
          *Parser_p = Local;
          NH_CSS_END(CompoundSelector_p)
     }
 
-    nh_core_freeList(&SubclassSelectors, NH_FALSE);
-    nh_core_freeList(&PseudoSelectors, NH_FALSE);
+    nh_core_freeList(&SubclassSelectors, false);
+    nh_core_freeList(&PseudoSelectors, false);
 
 NH_CSS_END(NULL)
 }
@@ -631,7 +631,7 @@ NH_CSS_BEGIN()
 
     nh_core_appendToList(&SelectorList_p->Children, ComplexSelectorList_p);
 
-    nh_core_freeList(&Tokens, NH_FALSE);
+    nh_core_freeList(&Tokens, false);
 
 NH_CSS_END(SelectorList_p)
 }

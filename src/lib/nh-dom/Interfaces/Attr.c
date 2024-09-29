@@ -26,7 +26,7 @@
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeAttr(
+NH_API_RESULT nh_dom_initializeAttr(
     nh_webidl_Object *Attr_p)
 {
 NH_DOM_BEGIN()
@@ -39,7 +39,7 @@ NH_DOM_BEGIN()
     NH_DOM_CHECK_MEM(Attr_p->Attributes.pp[4])
     *((nh_webidl_DOMString*)Attr_p->Attributes.pp[4]) = nh_webidl_initDOMString(16);
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================

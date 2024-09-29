@@ -168,7 +168,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_HTML_TAG_NAMES_PP[];
+    extern const char *NH_HTML_TAG_NAMES_PP[];
     extern unsigned long NH_HTML_TAG_NAMES_PP_COUNT;
 
 /** @} */
@@ -178,11 +178,11 @@
  */
 
     int nh_html_getTagIndex(
-        NH_BYTE *tagname_p
+        char *tagname_p
     );
 
     nh_webidl_Interface *nh_html_getElementInterface(
-        NH_BYTE *tagname_p
+        char *tagname_p
     );
 
 /** @} */

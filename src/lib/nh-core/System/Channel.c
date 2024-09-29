@@ -20,7 +20,7 @@
 
 // INIT ============================================================================================
 
-NH_CORE_RESULT nh_core_initChannel(
+NH_API_RESULT nh_core_initChannel(
     nh_Channel *Channel_p)
 {
 NH_CORE_BEGIN()
@@ -30,10 +30,10 @@ NH_CORE_BEGIN()
     Channel_p->rw_p[1] = 0;
 #endif
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_openChannel(
+NH_API_RESULT nh_openChannel(
     nh_Channel *Channel_p)
 {
 NH_CORE_BEGIN()
@@ -42,7 +42,7 @@ NH_CORE_BEGIN()
     pipe(Channel_p->rw_p);
 #endif
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_closeChannelReadAccess(
@@ -70,7 +70,7 @@ NH_CORE_SILENT_END()
 }
 
 int nh_core_writeToChannel(
-    nh_Channel *Channel_p, NH_BYTE *bytes_p, int byteCount)
+    nh_Channel *Channel_p, char *bytes_p, int byteCount)
 {
 NH_CORE_BEGIN()
 
@@ -81,7 +81,7 @@ NH_CORE_BEGIN()
 NH_CORE_END(result)
 }
 
-NH_BYTE *nh_readFromChannel(
+char *nh_readFromChannel(
     nh_Channel *Channel_p, size_t *size_p)
 {
 NH_CORE_BEGIN()
@@ -102,7 +102,7 @@ NH_CORE_BEGIN()
     if (rv > 0)
     {
         int offset = 0;
-        NH_BYTE *buff_p = malloc(128);
+        char *buff_p = malloc(128);
         memset(buff_p, '\0', 128);
         int result;
         while (result = read(r, buff_p + offset, 128)) {

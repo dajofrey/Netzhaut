@@ -27,7 +27,7 @@
 
 // nh_opengl_glAccum
 
-static NH_GFX_RESULT nh_opengl_glActiveTexture(
+static NH_API_RESULT nh_opengl_glActiveTexture(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -37,7 +37,7 @@ NH_GFX_BEGIN()
     glActiveTexture(
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glAddSwapHintRectWIN
@@ -45,7 +45,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glAreTexturesResident
 // nh_opengl_glArrayElement
 
-static NH_GFX_RESULT nh_opengl_glAttachShader(
+static NH_API_RESULT nh_opengl_glAttachShader(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -58,13 +58,13 @@ NH_GFX_BEGIN()
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glBegin
 // nh_opengl_glEnd
 
-static NH_GFX_RESULT nh_opengl_glBindBuffer(
+static NH_API_RESULT nh_opengl_glBindBuffer(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -77,10 +77,10 @@ NH_GFX_BEGIN()
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glBindTexture(
+static NH_API_RESULT nh_opengl_glBindTexture(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -93,10 +93,10 @@ NH_GFX_BEGIN()
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glBindVertexArray(
+static NH_API_RESULT nh_opengl_glBindVertexArray(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -107,12 +107,12 @@ NH_GFX_BEGIN()
     glBindVertexArray(
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glBitmap
 
-static NH_GFX_RESULT nh_opengl_glBlendFunc(
+static NH_API_RESULT nh_opengl_glBlendFunc(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -125,10 +125,10 @@ NH_GFX_BEGIN()
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glBufferData(
+static NH_API_RESULT nh_opengl_glBufferData(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -145,13 +145,13 @@ NH_GFX_BEGIN()
       (const void*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p,
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glCallList
 // nh_opengl_glCallLists
 
-static NH_GFX_RESULT nh_opengl_glClear(
+static NH_API_RESULT nh_opengl_glClear(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -162,12 +162,12 @@ NH_GFX_BEGIN()
     glClear(
         *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glClearAccum
 
-static NH_GFX_RESULT nh_opengl_glClearColor(
+static NH_API_RESULT nh_opengl_glClearColor(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -184,7 +184,7 @@ NH_GFX_BEGIN()
         *((GLfloat*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
         *((GLfloat*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glClearDepth
@@ -224,7 +224,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glColor4uiv
 // nh_opengl_glColor4usv
 
-static NH_GFX_RESULT nh_opengl_glColorMask(
+static NH_API_RESULT nh_opengl_glColorMask(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -241,7 +241,7 @@ NH_GFX_BEGIN()
         *((GLboolean*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
         *((GLboolean*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glColorMaterial
@@ -249,7 +249,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glColorTableEXT
 // nh_opengl_glColorSubTableEXT
 
-static NH_GFX_RESULT nh_opengl_glCompileShader(
+static NH_API_RESULT nh_opengl_glCompileShader(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -260,7 +260,7 @@ NH_GFX_BEGIN()
     glCompileShader(
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glCopyPixels
@@ -269,7 +269,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glCopyTexSubImage1D
 // nh_opengl_glCopyTexSubImage2D
 
-static NH_GFX_RESULT nh_opengl_glCreateProgram(
+static NH_API_RESULT nh_opengl_glCreateProgram(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -277,10 +277,10 @@ NH_GFX_BEGIN()
     nh_opengl_gluint(&Command_p->Result, glCreateProgram());
     nh_gfx_logOpenGLCommand("glCreateProgram(void) -> %d\n", *((GLuint*)Command_p->Result.p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glCreateShader(
+static NH_API_RESULT nh_opengl_glCreateShader(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -293,14 +293,14 @@ NH_GFX_BEGIN()
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
         *((GLuint*)Command_p->Result.p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glCullFace
 // nh_opengl_glDeleteLists
 // nh_opengl_glDeleteTextures
 
-static NH_GFX_RESULT nh_opengl_glDepthFunc(
+static NH_API_RESULT nh_opengl_glDepthFunc(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -311,13 +311,13 @@ NH_GFX_BEGIN()
     glDepthFunc(
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glDepthMask
 // nh_opengl_glDepthRange
 
-static NH_GFX_RESULT nh_opengl_glDrawArrays(
+static NH_API_RESULT nh_opengl_glDrawArrays(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -332,12 +332,12 @@ NH_GFX_BEGIN()
         *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p),
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glDrawBuffer
 
-static NH_GFX_RESULT nh_opengl_glDrawElements(
+static NH_API_RESULT nh_opengl_glDrawElements(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -354,7 +354,7 @@ NH_GFX_BEGIN()
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
         (const void*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glDrawPixels
@@ -362,7 +362,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glEdgeFlagv
 // nh_opengl_glEdgeFlagPointer
 
-static NH_GFX_RESULT nh_opengl_glEnable(
+static NH_API_RESULT nh_opengl_glEnable(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -373,10 +373,10 @@ NH_GFX_BEGIN()
     glEnable(
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glEnableVertexAttribArray(
+static NH_API_RESULT nh_opengl_glEnableVertexAttribArray(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -387,10 +387,10 @@ NH_GFX_BEGIN()
     glEnableVertexAttribArray(
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glDisable(
+static NH_API_RESULT nh_opengl_glDisable(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -401,7 +401,7 @@ NH_GFX_BEGIN()
     glDisable(
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glEnableClientState
@@ -428,7 +428,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glFrontFace
 // nh_opengl_glFrustum
 
-static NH_GFX_RESULT nh_opengl_glGenBuffers(
+static NH_API_RESULT nh_opengl_glGenBuffers(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -437,7 +437,7 @@ NH_GFX_BEGIN()
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
            (GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p);
 
-    NH_BYTE b[255] = {};
+    char b[255] = {};
     memset(b, 0, 255);
      
     sprintf(b, "glGenBuffers(n: %d, buffers: %p) -> (",
@@ -451,12 +451,12 @@ NH_GFX_BEGIN()
     sprintf(b+strlen(b), ")\n");
     nh_gfx_logOpenGLCommand(b);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glGenLists
 
-static NH_GFX_RESULT nh_opengl_glGenTextures(
+static NH_API_RESULT nh_opengl_glGenTextures(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -469,10 +469,10 @@ NH_GFX_BEGIN()
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
            (GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glGenVertexArrays(
+static NH_API_RESULT nh_opengl_glGenVertexArrays(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -481,7 +481,7 @@ NH_GFX_BEGIN()
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
            (GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p);
 
-    NH_BYTE b[255] = {};
+    char b[255] = {};
     memset(b, 0, 255);
      
     sprintf(b, "glGenVertexArrays(n: %d, arrays: %p) -> (",
@@ -496,7 +496,7 @@ NH_GFX_BEGIN()
     sprintf(b+strlen(b), ")\n");
     nh_gfx_logOpenGLCommand(b);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glGetBooleanv
@@ -532,7 +532,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glGetTexParameterfv
 // nh_opengl_glGetTexParameteriv
 
-static NH_GFX_RESULT nh_opengl_glGetUniformLocation(
+static NH_API_RESULT nh_opengl_glGetUniformLocation(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -546,7 +546,7 @@ NH_GFX_BEGIN()
             *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
             *((const GLchar**)((nh_opengl_Data*)Command_p->Arguments.pp[1])->pp)));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glHint
@@ -576,7 +576,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glLineStipple
 // nh_opengl_glLineWidth
 
-static NH_GFX_RESULT nh_opengl_glLinkProgram(
+static NH_API_RESULT nh_opengl_glLinkProgram(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -587,7 +587,7 @@ NH_GFX_BEGIN()
     glLinkProgram(
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glListBase
@@ -687,7 +687,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glScaled
 // nh_opengl_glScalef
 
-static NH_GFX_RESULT nh_opengl_glScissor(
+static NH_API_RESULT nh_opengl_glScissor(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -704,13 +704,13 @@ NH_GFX_BEGIN()
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glSelectBuffer
 // nh_opengl_glShadeModel
 
-static NH_GFX_RESULT nh_opengl_glShaderSource(
+static NH_API_RESULT nh_opengl_glShaderSource(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -727,7 +727,7 @@ NH_GFX_BEGIN()
           (const GLchar**)((nh_opengl_Data*)Command_p->Arguments.pp[2])->pp,
           (const GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glStencilFunc
@@ -777,7 +777,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glTexGeniv
 // nh_opengl_glTexImage1D
 
-static NH_GFX_RESULT nh_opengl_glTexImage2D(
+static NH_API_RESULT nh_opengl_glTexImage2D(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -804,12 +804,12 @@ NH_GFX_BEGIN()
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[7])->p),
         *((const void**)((nh_opengl_Data*)Command_p->Arguments.pp[8])->pp));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glTexParameterf
 
-static NH_GFX_RESULT nh_opengl_glTexParameteri(
+static NH_API_RESULT nh_opengl_glTexParameteri(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -824,7 +824,7 @@ NH_GFX_BEGIN()
         *((GLenum*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p),
         *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glTexParameterfv
@@ -834,7 +834,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glTranslated
 // nh_opengl_glTranslatef
 
-static NH_GFX_RESULT nh_opengl_glUniform1i(
+static NH_API_RESULT nh_opengl_glUniform1i(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -847,10 +847,10 @@ NH_GFX_BEGIN()
         *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p),
         *((GLint*)((nh_opengl_Data*)Command_p->Arguments.pp[1])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glUniform3f(
+static NH_API_RESULT nh_opengl_glUniform3f(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -867,10 +867,10 @@ NH_GFX_BEGIN()
         *((GLfloat*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
         *((GLfloat*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-static NH_GFX_RESULT nh_opengl_glUseProgram(
+static NH_API_RESULT nh_opengl_glUseProgram(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -881,7 +881,7 @@ NH_GFX_BEGIN()
     glUseProgram(
         *((GLuint*)((nh_opengl_Data*)Command_p->Arguments.pp[0])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glVertex2d
@@ -909,7 +909,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 // nh_opengl_glVertex4iv
 // nh_opengl_glVertex4sv
 
-static NH_GFX_RESULT nh_opengl_glVertexAttribPointer(
+static NH_API_RESULT nh_opengl_glVertexAttribPointer(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -926,12 +926,12 @@ NH_GFX_BEGIN()
      *((GLboolean*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p),
        *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[4])->p), p);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // nh_opengl_glVertexPointer
 
-static NH_GFX_RESULT nh_opengl_glViewport(
+static NH_API_RESULT nh_opengl_glViewport(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()
@@ -948,12 +948,12 @@ NH_GFX_BEGIN()
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[2])->p),
         *((GLsizei*)((nh_opengl_Data*)Command_p->Arguments.pp[3])->p));
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // COMMANDS LIST ===================================================================================
 
-typedef NH_GFX_RESULT (*nh_opengl_command_f)(
+typedef NH_API_RESULT (*nh_opengl_command_f)(
     nh_opengl_Command *Command_p    
 );
 
@@ -1319,7 +1319,7 @@ nh_opengl_command_f commands_p[] = {
 
 // EXECUTE COMMAND =================================================================================
 
-NH_GFX_RESULT nh_opengl_executeCommand(
+NH_API_RESULT nh_opengl_executeCommand(
     nh_opengl_Command *Command_p)
 {
 NH_GFX_BEGIN()

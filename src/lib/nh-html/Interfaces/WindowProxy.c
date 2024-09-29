@@ -23,11 +23,11 @@
 
 // INITIALIZE ======================================================================================
 
-NH_HTML_RESULT nh_html_initializeWindowProxy(
+NH_API_RESULT nh_html_initializeWindowProxy(
     nh_webidl_Object *WindowProxy_p)
 {
 NH_HTML_BEGIN()
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // API =============================================================================================
@@ -45,7 +45,7 @@ NH_HTML_BEGIN()
 NH_HTML_END(WindowProxy_p)
 }
 
-NH_HTML_RESULT nh_html_setWindowProxyWindow(
+NH_API_RESULT nh_html_setWindowProxyWindow(
     nh_webidl_Object *WindowProxy_p, nh_webidl_Object *Window_p)
 {
 NH_HTML_BEGIN()
@@ -55,6 +55,6 @@ NH_HTML_BEGIN()
 
     WindowProxy_p->internal_p = Window_p;
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

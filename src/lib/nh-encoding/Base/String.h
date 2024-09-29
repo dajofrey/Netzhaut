@@ -9,9 +9,17 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "Encodings.h"
+
 #include "../Common/Includes.h"
+#include "../Encodings/UTF32.h"
 
 #endif
+
+typedef struct nh_encoding_String { 
+    NH_ENCODING_NAME encoding; 
+    nh_String Bytes; 
+} nh_encoding_String;
 
 /** @addtogroup lib_nh-encoding_functions
  *  @{
@@ -25,7 +33,7 @@
         NH_ENCODING_NAME encoding, int length 
     );
 
-    NH_ENCODING_RESULT nh_encoding_append(
+    NH_API_RESULT nh_encoding_append(
         nh_encoding_String *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length
     );
 

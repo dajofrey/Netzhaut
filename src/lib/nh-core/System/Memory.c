@@ -36,14 +36,14 @@ void nh_core_free(
     free(ptr);
 }
 
-NH_CORE_RESULT nh_core_initMemory()
+NH_API_RESULT nh_core_initMemory()
 {
 NH_CORE_BEGIN()
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_initThreadMemory()
+NH_API_RESULT nh_core_initThreadMemory()
 {
 NH_CORE_BEGIN()
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }

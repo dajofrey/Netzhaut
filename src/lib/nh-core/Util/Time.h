@@ -23,6 +23,11 @@
 /** @addtogroup lib_nh-core_structs
  *  @{
  */
+    typedef struct nh_SystemTime { 
+        long seconds; 
+        long milliseconds; 
+        long microseconds; 
+    } nh_SystemTime; 
 
     typedef struct nh_LocalTime {
         long weekday;

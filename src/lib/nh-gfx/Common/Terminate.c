@@ -23,7 +23,7 @@
 
 // DEBUG ===========================================================================================
 
-NH_GFX_RESULT nh_gfx_terminate()
+NH_API_RESULT nh_gfx_terminate()
 {
 NH_GFX_BEGIN()
 
@@ -34,6 +34,6 @@ NH_GFX_BEGIN()
 //    nh_vk_terminateVulkan();
     nh_opengl_terminateOpenGL();
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

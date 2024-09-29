@@ -12,15 +12,14 @@
 #include "CommandBuffer.h"
 #include "../Common/Includes.h"
 
+#include "../../nh-core/Util/Array.h"
+#include "../../nh-wsi/Window/Window.h"
+
 #endif
 
 /** @addtogroup lib_nh-gfx_structs
  *  @{
  */
-
-    typedef struct nh_opengl_SurfaceRequirements {
-        nh_Array Ids; // Contains visualid's that are glx framebuffer compatible. This is used for WSI window creation.
-    } nh_opengl_SurfaceRequirements;
 
     typedef struct nh_opengl_Surface {
         GLXContext Context_p;
@@ -38,20 +37,12 @@
     nh_opengl_Surface nh_opengl_initSurface(
     );
 
-    NH_GFX_RESULT nh_opengl_createSurface(
+    NH_API_RESULT nh_opengl_createSurface(
         nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p
     );
 
-    NH_GFX_RESULT nh_opengl_destroySurface(
+    NH_API_RESULT nh_opengl_destroySurface(
         nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p
-    );
-
-    NH_GFX_RESULT nh_opengl_createSurfaceRequirements(
-        nh_opengl_SurfaceRequirements *Requirements_p
-    );
-
-    NH_GFX_RESULT nh_opengl_freeSurfaceRequirements(
-        nh_opengl_SurfaceRequirements *Requirements_p
     );
 
 /** @} */

@@ -69,7 +69,7 @@ NH_ECMASCRIPT_BEGIN()
         );
 
         nh_ecmascript_setFunctionName(Function_p, nh_ecmascript_wrapString(Name_p), NULL);
-        nh_ecmascript_makeConstructor(Function_p, NH_FALSE, NULL);
+        nh_ecmascript_makeConstructor(Function_p, false, NULL);
 
         NH_ECMASCRIPT_END(Function_p)
     }
@@ -87,7 +87,7 @@ NH_ECMASCRIPT_BEGIN()
         );
 
         nh_ecmascript_setFunctionName(Function_p, nh_ecmascript_wrapString(&Name), NULL);
-        nh_ecmascript_makeConstructor(Function_p, NH_FALSE, NULL);
+        nh_ecmascript_makeConstructor(Function_p, false, NULL);
 
         NH_ECMASCRIPT_END(Function_p)
     }
@@ -97,16 +97,16 @@ NH_ECMASCRIPT_END(NULL)
 
 // GLOBAL DECLARATION INSTANTIATION ================================================================
 
-static NH_BOOL nh_ecmascript_nameInList(
+static bool nh_ecmascript_nameInList(
     nh_List *Names_p, nh_encoding_UTF8String *Name_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
-    NH_BOOL inList = NH_FALSE;
+    bool inList = false;
     for (int j = 0; j < Names_p->size; ++j) {
         nh_encoding_UTF8String *Compare_p = Names_p->pp[j];
         if (!strcmp(Name_p->p, Compare_p->p)) {
-            inList = NH_TRUE;
+            inList = true;
             break;
         }
     }
@@ -131,7 +131,7 @@ NH_ECMASCRIPT_BEGIN()
         if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
             NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())
         }
-        NH_BOOL hasRestrictedGlobal = nh_ecmascript_hasRestrictedGlobalProperty(GlobalEnvironment_p->Handle_p, LexNames.pp[i]);
+        bool hasRestrictedGlobal = nh_ecmascript_hasRestrictedGlobalProperty(GlobalEnvironment_p->Handle_p, LexNames.pp[i]);
         if (hasRestrictedGlobal) {
             NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())
         }
@@ -160,13 +160,13 @@ NH_ECMASCRIPT_BEGIN()
             nh_encoding_UTF8String *Name_p = BoundNames.pp[BoundNames.size - 1];
 
             if (!nh_ecmascript_nameInList(&DeclaredFunctionNames, Name_p)) {
-                NH_BOOL fnDefinable = nh_ecmascript_canDeclareGlobalFunction(GlobalEnvironment_p->Handle_p, Name_p);
+                bool fnDefinable = nh_ecmascript_canDeclareGlobalFunction(GlobalEnvironment_p->Handle_p, Name_p);
                 if (!fnDefinable) {NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())}
                 nh_core_appendToList(&DeclaredFunctionNames, Name_p);
                 nh_core_prependToList(&FunctionsToInitialize, Declaration_p);
             }
 
-            nh_core_freeList(&BoundNames, NH_FALSE);
+            nh_core_freeList(&BoundNames, false);
         }
     }
 
@@ -186,7 +186,7 @@ NH_ECMASCRIPT_BEGIN()
                 nh_encoding_UTF8String *Name_p = BoundNames.pp[j];
 
                 if (!nh_ecmascript_nameInList(&DeclaredFunctionNames, Name_p)) {
-                    NH_BOOL vnDefinable = nh_ecmascript_canDeclareGlobalVar(GlobalEnvironment_p->Handle_p, Name_p);
+                    bool vnDefinable = nh_ecmascript_canDeclareGlobalVar(GlobalEnvironment_p->Handle_p, Name_p);
                     if (!vnDefinable) {NH_ECMASCRIPT_END(nh_ecmascript_throwTypeError())}
                     if (!nh_ecmascript_nameInList(&DeclaredVarNames, Name_p)) {
                         nh_core_appendToList(&DeclaredVarNames, Name_p);
@@ -194,7 +194,7 @@ NH_ECMASCRIPT_BEGIN()
                 }
             }
 
-            nh_core_freeList(&BoundNames, NH_FALSE);
+            nh_core_freeList(&BoundNames, false);
         }
     } 
 
@@ -210,13 +210,13 @@ NH_ECMASCRIPT_BEGIN()
         for (int j = 0; j < BoundNames.size; ++j) {
             nh_encoding_UTF8String *Name_p = BoundNames.pp[j];
             if (nh_ecmascript_isConstantDeclaration(Declaration_p)) {
-                nh_ecmascript_createImmutableBinding(GlobalEnvironment_p, Name_p, NH_TRUE);
+                nh_ecmascript_createImmutableBinding(GlobalEnvironment_p, Name_p, true);
             } else {
-                nh_ecmascript_createMutableBinding(GlobalEnvironment_p, Name_p, NH_FALSE);
+                nh_ecmascript_createMutableBinding(GlobalEnvironment_p, Name_p, false);
             }
         }
 
-        nh_core_freeList(&BoundNames, NH_FALSE);
+        nh_core_freeList(&BoundNames, false);
     }
 
     for (int i = 0; i < FunctionsToInitialize.size; ++i) 
@@ -225,21 +225,21 @@ NH_ECMASCRIPT_BEGIN()
         nh_List BoundNames = nh_ecmascript_getBoundNames(Function_p);
         nh_encoding_UTF8String *Name_p = BoundNames.pp[BoundNames.size - 1];
         nh_ecmascript_Object *FunctionObject_p = nh_ecmascript_instantiateFunctionObject(GlobalEnvironment_p, Function_p);
-        nh_ecmascript_createGlobalFunctionBinding(Name_p, nh_ecmascript_wrapObject(FunctionObject_p), NH_FALSE);
-        nh_core_freeList(&BoundNames, NH_FALSE);
+        nh_ecmascript_createGlobalFunctionBinding(Name_p, nh_ecmascript_wrapObject(FunctionObject_p), false);
+        nh_core_freeList(&BoundNames, false);
     }
 
     for (int i = 0; i < DeclaredVarNames.size; ++i) {
-        nh_ecmascript_createGlobalVarBinding(GlobalEnvironment_p->Handle_p, DeclaredVarNames.pp[i], NH_FALSE);
+        nh_ecmascript_createGlobalVarBinding(GlobalEnvironment_p->Handle_p, DeclaredVarNames.pp[i], false);
     }
 
-    nh_core_freeList(&LexNames, NH_FALSE);
-    nh_core_freeList(&VarNames, NH_FALSE);
-    nh_core_freeList(&DeclaredVarNames, NH_FALSE);
-    nh_core_freeList(&DeclaredFunctionNames, NH_FALSE);
-    nh_core_freeList(&FunctionsToInitialize, NH_FALSE);
-    nh_core_freeList(&VarDeclarations, NH_FALSE);
-    nh_core_freeList(&LexDeclarations, NH_FALSE);
+    nh_core_freeList(&LexNames, false);
+    nh_core_freeList(&VarNames, false);
+    nh_core_freeList(&DeclaredVarNames, false);
+    nh_core_freeList(&DeclaredFunctionNames, false);
+    nh_core_freeList(&FunctionsToInitialize, false);
+    nh_core_freeList(&VarDeclarations, false);
+    nh_core_freeList(&LexDeclarations, false);
 
 NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
 }

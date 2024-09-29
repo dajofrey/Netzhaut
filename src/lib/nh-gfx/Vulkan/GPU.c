@@ -23,14 +23,14 @@
 
 // GPU =============================================================================================
 
-static NH_GFX_RESULT nh_vk_prepareDetectedGPUs(
+static NH_API_RESULT nh_vk_prepareDetectedGPUs(
     nh_List *GPUs_p, nh_vk_Host *Host_p)
 {
 NH_GFX_BEGIN()
 
     int detectedCount = 0;
     Host_p->Functions.vkEnumeratePhysicalDevices(Host_p->Instance, &detectedCount, VK_NULL_HANDLE);
-    if (detectedCount <= 0) {NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)}
+    if (detectedCount <= 0) {NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
     VkPhysicalDevice *Physical_p = nh_core_allocate(sizeof(VkPhysicalDevice) * detectedCount);
     NH_GFX_CHECK_MEM(Physical_p)
@@ -59,10 +59,10 @@ NH_GFX_BEGIN()
 
     nh_core_free(Physical_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_vk_initGPUs(
+NH_API_RESULT nh_vk_initGPUs(
     nh_List *GPUs_p, nh_vk_Host *Host_p)
 {
 NH_GFX_BEGIN()
@@ -75,7 +75,7 @@ NH_GFX_BEGIN()
         NH_GFX_CHECK(nh_vk_createDriver(Host_p, &GPU_p->Driver, GPU_p->name_p))
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_vk_freeGPUs(
@@ -90,7 +90,7 @@ NH_GFX_BEGIN()
         nh_vk_destroyDriver(&GPU_p->Driver);
     }
 
-    nh_core_freeList(GPUs_p, NH_TRUE);
+    nh_core_freeList(GPUs_p, true);
 
 NH_GFX_SILENT_END()
 }

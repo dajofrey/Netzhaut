@@ -195,7 +195,7 @@
  */
 
     typedef struct nh_ecmascript_RealmHostDefined {
-        NH_BYTE *temporary_p;
+        char *temporary_p;
     } nh_ecmascript_RealmHostDefined;
 
     // https://tc39.es/ecma262/#sec-code-realms
@@ -212,7 +212,7 @@
  *  @{
  */
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_initializeHostDefinedRealm(
+    NH_API_RESULT nh_ecmascript_initializeHostDefinedRealm(
         nh_ecmascript_Agent *Agent_p, nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p
     );
 

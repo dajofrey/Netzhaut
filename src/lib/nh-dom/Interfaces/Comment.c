@@ -25,12 +25,12 @@
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeComment(
+NH_API_RESULT nh_dom_initializeComment(
     nh_webidl_Object *Node_p)
 {
 NH_DOM_BEGIN()
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================

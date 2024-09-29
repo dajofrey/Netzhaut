@@ -18,12 +18,12 @@
  *  @{
  */
 
-    typedef NH_CORE_RESULT (*nh_core_registerConfig_f)(
-        NH_BYTE *absolutePath_p, int length
+    typedef NH_API_RESULT (*nh_core_registerConfig_f)(
+        char *absolutePath_p, int length
     );
     
-    typedef NH_CORE_RESULT (*nh_core_loadConfig_f)(
-        NH_BYTE *data_p, int length
+    typedef NH_API_RESULT (*nh_core_loadConfig_f)(
+        char *data_p, int length
     );
 
 /** @ } */
@@ -32,7 +32,7 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_startConfigUpdater(
+    NH_API_RESULT nh_core_startConfigUpdater(
     );
 
 /** @} */

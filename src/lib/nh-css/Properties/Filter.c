@@ -39,7 +39,7 @@
 	
 // ORIGIN NAMES ====================================================================================
 
-const NH_BYTE *NH_CSS_DECLARATION_ORIGIN_NAMES_PP[] =
+const char *NH_CSS_DECLARATION_ORIGIN_NAMES_PP[] =
 {
     "author",
     "user",
@@ -50,7 +50,7 @@ const NH_BYTE *NH_CSS_DECLARATION_ORIGIN_NAMES_PP[] =
 
 // FILTER ==========================================================================================
 
-static NH_CSS_RESULT nh_css_insertDeclaredValue(
+static NH_API_RESULT nh_css_insertDeclaredValue(
     nh_css_Filter *Filter_p, nh_css_DeclaredValue *Value_p, NH_CSS_PROPERTY property)
 {
 NH_CSS_BEGIN()
@@ -63,10 +63,10 @@ NH_CSS_BEGIN()
     }
     nh_core_appendToList(List_p, Value_p);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_insertOrDropDeclaredValue(
+static NH_API_RESULT nh_css_insertOrDropDeclaredValue(
     nh_css_Filter *Filter_p, nh_css_Declaration *Declaration_p)
 {
 NH_CSS_BEGIN()
@@ -83,10 +83,10 @@ NH_CSS_BEGIN()
         nh_css_insertDeclaredValue(Filter_p, Value_p, *property_p);
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getStyleSheetDeclarations(
+static NH_API_RESULT nh_css_getStyleSheetDeclarations(
     nh_css_Filter *Filter_p, nh_dom_Element *Element_p, nh_css_StyleSheetObject *StyleSheet_p)
 {
 NH_CSS_BEGIN()
@@ -105,10 +105,10 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getDefaultStyleSheetDeclarations(
+static NH_API_RESULT nh_css_getDefaultStyleSheetDeclarations(
     nh_css_Filter *Filter_p, nh_dom_Element *Element_p)
 {
 NH_CSS_BEGIN()
@@ -119,13 +119,13 @@ NH_CSS_BEGIN()
     for (int i = oldLength; i < Filter_p->DeclaredValues.length; ++i) {
         nh_css_DeclaredValue *Value_p = &((nh_css_DeclaredValue*)Filter_p->DeclaredValues.p)[i];
         Value_p->origin = NH_CSS_DECLARATION_ORIGIN_USER_AGENT;
-        Value_p->direct = NH_FALSE;
+        Value_p->direct = false;
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getAuthorStyleSheetDeclarations(
+static NH_API_RESULT nh_css_getAuthorStyleSheetDeclarations(
     nh_css_Filter *Filter_p, nh_dom_Element *Element_p, nh_css_StyleSheetObject *StyleSheet_p)
 {
 NH_CSS_BEGIN()
@@ -136,13 +136,13 @@ NH_CSS_BEGIN()
     for (int i = oldLength; i < Filter_p->DeclaredValues.length; ++i) {
         nh_css_DeclaredValue *Value_p = &((nh_css_DeclaredValue*)Filter_p->DeclaredValues.p)[i];
         Value_p->origin = NH_CSS_DECLARATION_ORIGIN_AUTHOR;
-        Value_p->direct = NH_FALSE;
+        Value_p->direct = false;
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getStyleAttributeDeclarations(
+static NH_API_RESULT nh_css_getStyleAttributeDeclarations(
     nh_css_Filter *Filter_p, nh_dom_Element *Element_p)
 {
 NH_CSS_BEGIN()
@@ -169,10 +169,10 @@ NH_CSS_BEGIN()
     for (int i = oldLength; i < Filter_p->DeclaredValues.length; ++i) {
         nh_css_DeclaredValue *Value_p = &((nh_css_DeclaredValue*)Filter_p->DeclaredValues.p)[i];
         Value_p->origin = NH_CSS_DECLARATION_ORIGIN_AUTHOR;
-        Value_p->direct = NH_TRUE;
+        Value_p->direct = true;
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_css_Filter nh_css_filterDeclarations(

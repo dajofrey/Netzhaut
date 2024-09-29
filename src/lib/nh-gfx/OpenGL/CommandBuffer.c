@@ -49,14 +49,14 @@ NH_GFX_BEGIN()
         }
     }
 
-    nh_core_freeList(&Command_p->Arguments, NH_FALSE);
+    nh_core_freeList(&Command_p->Arguments, false);
     nh_core_free(Command_p);
 
 NH_GFX_SILENT_END()
 }
 
 nh_opengl_Command *nh_opengl_addCommand(
-    nh_opengl_CommandBuffer *CommandBuffer_p, NH_BYTE *name_p, ...)
+    nh_opengl_CommandBuffer *CommandBuffer_p, char *name_p, ...)
 {
 NH_GFX_BEGIN()
 
@@ -72,7 +72,7 @@ NH_GFX_BEGIN()
     int arguments = nh_opengl_getCommandParameterCount(type);
 
     Command_p->type = type;
-    Command_p->autoFree = NH_TRUE;
+    Command_p->autoFree = true;
     Command_p->Arguments = nh_core_initList(arguments);
     Command_p->Result = nh_opengl_initData();
 
@@ -94,13 +94,13 @@ nh_opengl_Command *nh_opengl_disableCommandAutoFree(
 {
 NH_GFX_BEGIN()
 
-    Command_p->autoFree = NH_FALSE;
-    Command_p->Result.autoFree = NH_FALSE;
+    Command_p->autoFree = false;
+    Command_p->Result.autoFree = false;
 
 NH_GFX_END(Command_p)
 }
 
-NH_GFX_RESULT nh_opengl_executeCommandBuffer(
+NH_API_RESULT nh_opengl_executeCommandBuffer(
     nh_opengl_CommandBuffer *CommandBuffer_p)
 {
 NH_GFX_BEGIN()
@@ -109,10 +109,10 @@ NH_GFX_BEGIN()
         nh_opengl_executeCommand(CommandBuffer_p->Commands.pp[i]);
     }
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_opengl_freeCommandBuffer(
+NH_API_RESULT nh_opengl_freeCommandBuffer(
     nh_opengl_CommandBuffer *CommandBuffer_p)
 {
 NH_GFX_BEGIN()
@@ -123,13 +123,13 @@ NH_GFX_BEGIN()
         }
     }
 
-    nh_core_freeList(&CommandBuffer_p->Commands, NH_FALSE);
+    nh_core_freeList(&CommandBuffer_p->Commands, false);
     *CommandBuffer_p = nh_opengl_initCommandBuffer();
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_opengl_appendCommandBuffer(
+NH_API_RESULT nh_opengl_appendCommandBuffer(
     nh_opengl_CommandBuffer *CommandBuffer_p, nh_opengl_CommandBuffer *ToBeAppended_p)
 {
 NH_GFX_BEGIN()
@@ -138,6 +138,6 @@ NH_GFX_BEGIN()
         nh_core_appendToList(&CommandBuffer_p->Commands, ToBeAppended_p->Commands.pp[i]);
     }
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 

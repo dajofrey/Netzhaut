@@ -24,7 +24,7 @@
         nh_html_Origin *TopLevelOrigin_p;
         nh_html_BrowsingContext *TargetBrowsingContext_p;
         void *ActiveServiceWorker_p;
-        NH_BOOL executionReady;
+        bool executionReady;
     } nh_html_Environment;
 
     typedef struct nh_html_WindowEnvironmentSettings {

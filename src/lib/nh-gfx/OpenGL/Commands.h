@@ -19,7 +19,7 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_opengl_executeCommand(
+    NH_API_RESULT nh_opengl_executeCommand(
         nh_opengl_Command *Command_p
     );
 

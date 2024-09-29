@@ -42,7 +42,7 @@ NH_RENDERER_END(Data_p)
 
 // CREATE ==========================================================================================
 
-static NH_RENDERER_RESULT nh_renderer_vk_createTextFragmentData(
+static NH_API_RESULT nh_renderer_vk_createTextFragmentData(
     nh_css_Fragment *Fragment_p, nh_gfx_Viewport *Viewport_p)
 {
 NH_RENDERER_BEGIN()
@@ -52,8 +52,8 @@ NH_RENDERER_BEGIN()
 
     nh_vk_Driver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
 
-    NH_PIXEL x = Fragment_p->Block.Position.x;
-    NH_PIXEL y = Fragment_p->Block.Position.y;
+    int x = Fragment_p->Block.Position.x;
+    int y = Fragment_p->Block.Position.y;
     float z = Fragment_p->Block.depth;
 
     for (int i = 0; i < Fragment_p->Text.Values.Text.Segments.length; ++i)
@@ -66,17 +66,17 @@ NH_RENDERER_BEGIN()
 
         NH_RENDERER_CHECK(nh_renderer_getTextVertices(Viewport_p, Segment_p, &x, y, &z, &vertices_p, &indices_p))
         NH_RENDERER_CHECK(nh_renderer_vk_createText(
-            Viewport_p->Surface_p->Vulkan.GPU_p, Fragment_p, Segment_p, NH_TRUE, vertices_p, indices_p, i
+            Viewport_p->Surface_p->Vulkan.GPU_p, Fragment_p, Segment_p, true, vertices_p, indices_p, i
         ))
     
         nh_core_free(vertices_p);
         nh_core_free(indices_p);
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_RENDERER_RESULT nh_renderer_vk_createBoxFragmentData(
+static NH_API_RESULT nh_renderer_vk_createBoxFragmentData(
     nh_css_Fragment *Fragment_p, nh_gfx_Viewport *Viewport_p)
 {
 NH_RENDERER_BEGIN()
@@ -120,10 +120,10 @@ NH_RENDERER_BEGIN()
         NH_RENDERER_CHECK(nh_renderer_vk_createColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_LEFT_BORDER))
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_RENDERER_RESULT nh_renderer_vk_createFragmentData(
+static NH_API_RESULT nh_renderer_vk_createFragmentData(
     nh_css_Fragment *Fragment_p, nh_gfx_Viewport *Viewport_p)
 {
 NH_RENDERER_BEGIN()
@@ -142,10 +142,10 @@ NH_RENDERER_BEGIN()
         NH_RENDERER_CHECK(nh_renderer_vk_createFragmentData(Fragment_p->Children.pp[i], Viewport_p))
     }
 
-NH_RENDERER_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_END(NH_API_SUCCESS)
 }
 
-NH_RENDERER_RESULT nh_renderer_vk_createFragmentTreeData(
+NH_API_RESULT nh_renderer_vk_createFragmentTreeData(
     nh_css_FragmentTree *Tree_p, nh_gfx_Viewport *Viewport_p)
 {
 NH_RENDERER_BEGIN()
@@ -154,7 +154,7 @@ NH_RENDERER_END(nh_renderer_vk_createFragmentData(Tree_p->Root_p, Viewport_p))
 
 //// UPDATE ==========================================================================================
 //
-//NH_CORE_RESULT nh_vk_updateNodeProperty(
+//NH_API_RESULT nh_vk_updateNodeProperty(
 //    nh_vk_GPU *GPU_p, nh_html_Node *Node_p, nh_renderer_GenericProperty *Property_p)
 //{
 //NH_CORE_BEGIN()

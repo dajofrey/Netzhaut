@@ -17,19 +17,19 @@
  *  @{
  */
 
-    NH_ENCODING_RESULT _nh_encoding_logBegin(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_encoding_logBegin(
+        const char *file_p, const char *function_p
     );
     
-    NH_ENCODING_RESULT _nh_encoding_logEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p
+    NH_API_RESULT _nh_encoding_logEnd(
+        const char *file_p, const char *function_p
     );
     
-    NH_ENCODING_RESULT _nh_encoding_logDiagnosticEnd(
-        const NH_BYTE *file_p, const NH_BYTE *function_p, NH_ENCODING_RESULT result, int line
+    NH_API_RESULT _nh_encoding_logDiagnosticEnd(
+        const char *file_p, const char *function_p, NH_API_RESULT result, int line
     );
 
-    NH_ENCODING_RESULT nh_encoding_logUnicodeCodepointDescriptions(
+    NH_API_RESULT nh_encoding_logUnicodeCodepointDescriptions(
     );
 
 /** @} */

@@ -23,7 +23,7 @@
 
 // DEBUG ===========================================================================================
 
-NH_RENDERER_RESULT nh_renderer_terminate()
+NH_API_RESULT nh_renderer_terminate()
 {
 NH_RENDERER_BEGIN()
 
@@ -34,6 +34,6 @@ NH_RENDERER_BEGIN()
         nh_core_free(GPU_p->Renderer.Pipelines_p);
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

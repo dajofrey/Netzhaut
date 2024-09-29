@@ -61,7 +61,7 @@
         nh_ecmascript_InternalSlots *InternalSlots_p, NH_ECMASCRIPT_INTERNAL_SLOT slot
     );
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_setInternalSlot(
+    NH_API_RESULT nh_ecmascript_setInternalSlot(
         nh_ecmascript_InternalSlots *InternalSlots_p, NH_ECMASCRIPT_INTERNAL_SLOT slot, void *value_p
     );
 

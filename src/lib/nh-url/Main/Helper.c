@@ -78,31 +78,31 @@ NH_URL_END(NH_URL_SPECIAL_SCHEME_UNDEFINED)
 //NH_URL_END(NULL)
 //}
 
-NH_BOOL nh_url_isURLCodepoint(
+bool nh_url_isURLCodepoint(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 
     if (nh_encoding_isASCIIAlphaNumeric(codepoint)) {
-        NH_URL_END(NH_TRUE)
+        NH_URL_END(true)
     }
     if (codepoint == 0x21 || codepoint == 0x24 || codepoint == 0x26 || codepoint == 0x27 ||
         codepoint == 0x28 || codepoint == 0x29 || codepoint == 0x2A || codepoint == 0x2B ||
         codepoint == 0x2C || codepoint == 0x2D || codepoint == 0x2E || codepoint == 0x2F || 
         codepoint == 0x3A || codepoint == 0x3B || codepoint == 0x3D || codepoint == 0x3F ||
         codepoint == 0x40 || codepoint == 0x5F || codepoint == 0x7E) {
-        NH_URL_END(NH_TRUE)
+        NH_URL_END(true)
     }
     if (codepoint >= 0xA0 && codepoint <= 0x10FFFD) {
         if (!nh_encoding_isSurrogate(codepoint) && !nh_encoding_isNonCharacter(codepoint)) {
-            NH_URL_END(NH_TRUE)
+            NH_URL_END(true)
         }
     }
 
-NH_URL_END(NH_FALSE)
+NH_URL_END(false)
 }
 
-NH_BOOL nh_url_isForbiddenHostCodepoint(
+bool nh_url_isForbiddenHostCodepoint(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
@@ -113,28 +113,28 @@ NH_URL_END(
     codepoint == 0x5D || codepoint == 0x5E || codepoint == 0x7C
 )}
 
-NH_BOOL nh_url_inC0PercentEncodeSet(
+bool nh_url_inC0PercentEncodeSet(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_encoding_isC0Control(codepoint) || codepoint > 0x7E)
 }
 
-NH_BOOL nh_url_isWindowsDriveLetter(
+bool nh_url_isWindowsDriveLetter(
     nh_encoding_UTF32String *String_p)
 {
 NH_URL_BEGIN()
 NH_URL_END(String_p->length == 2 && nh_encoding_isASCIIAlpha(String_p->p[0]) && (String_p->p[1] == 0x3A || String_p->p[1] == 0x7C))
 }
 
-NH_BOOL nh_url_isNormalizedWindowsDriveLetter(
+bool nh_url_isNormalizedWindowsDriveLetter(
     nh_encoding_UTF32String *String_p)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_isWindowsDriveLetter(String_p) && String_p->p[1] == 0x3A)
 }
 
-NH_BOOL nh_url_stringStartsWithWindowsDriveLetter(
+bool nh_url_stringStartsWithWindowsDriveLetter(
     nh_encoding_UTF32String *String_p)
 {
 NH_URL_BEGIN()

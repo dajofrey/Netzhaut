@@ -10,11 +10,20 @@
  */
 
 #include "../Common/Includes.h"
+#include "../../nh-core/Util/List.h"
 
 #include <stdint.h>
 #include <stddef.h>
 
 #endif
+
+typedef NH_API_UTF32 NH_ENCODING_UTF32; 
+
+typedef struct nh_encoding_UTF32String { 
+    NH_ENCODING_UTF32 *p; 
+    unsigned long length; 
+    nh_Array Array; 
+} nh_encoding_UTF32String; 
 
 /** @addtogroup lib_nh-core_typedefs
  *  @{
@@ -24,7 +33,7 @@
         int chunkSize
     );
 
-    typedef NH_ENCODING_RESULT (*nh_encoding_appendUTF32_f)(
+    typedef NH_API_RESULT (*nh_encoding_appendUTF32_f)(
         nh_encoding_UTF32String *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length
     );
 
@@ -44,16 +53,16 @@
         int chunkSize
     );
     
-    NH_ENCODING_RESULT nh_encoding_appendUTF32(
+    NH_API_RESULT nh_encoding_appendUTF32(
         nh_encoding_UTF32String *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length
     );
     
-    NH_ENCODING_RESULT nh_encoding_appendUTF32Codepoint(
+    NH_API_RESULT nh_encoding_appendUTF32Codepoint(
         nh_encoding_UTF32String *String_p, NH_ENCODING_UTF32 codepoint
     );
 
-    NH_ENCODING_RESULT nh_encoding_appendUTF8ToUTF32(
-        nh_encoding_UTF32String *String_p, NH_UNSIGNED_BYTE *bytes_p, unsigned long length
+    NH_API_RESULT nh_encoding_appendUTF8ToUTF32(
+        nh_encoding_UTF32String *String_p, unsigned char *bytes_p, unsigned long length
     );
 
     NH_ENCODING_UTF32 *nh_encoding_incrementUTF32(
@@ -64,15 +73,15 @@
         nh_encoding_UTF32String *String_p
     );
 
-    NH_ENCODING_RESULT nh_encoding_removeUTF32Tail(
+    NH_API_RESULT nh_encoding_removeUTF32Tail(
         nh_encoding_UTF32String *String_p, unsigned long count
     );
 
-    NH_ENCODING_RESULT nh_encoding_removeUTF32(
+    NH_API_RESULT nh_encoding_removeUTF32(
         nh_encoding_UTF32String *String_p, int index, unsigned int count
     );
     
-    NH_ENCODING_RESULT nh_encoding_insertUTF32(
+    NH_API_RESULT nh_encoding_insertUTF32(
         nh_encoding_UTF32String *String_p, int index, NH_ENCODING_UTF32 *codepoints_p, int length
     );
 
@@ -90,63 +99,63 @@
 
 // CHECKS 
 
-    NH_BOOL nh_encoding_isASCIIWhitespace(
+    bool nh_encoding_isASCIIWhitespace(
         NH_ENCODING_UTF32 codepoint
     );
 
-    NH_BOOL nh_encoding_isASCIIUpperAlpha(
+    bool nh_encoding_isASCIIUpperAlpha(
         NH_ENCODING_UTF32 codepoint
     );
     
-    NH_BOOL nh_encoding_isASCIILowerAlpha(
+    bool nh_encoding_isASCIILowerAlpha(
         NH_ENCODING_UTF32 codepoint
     );
     
-    NH_BOOL nh_encoding_isASCIIAlpha(
+    bool nh_encoding_isASCIIAlpha(
         NH_ENCODING_UTF32 codepoint
     );
     
-    NH_BOOL nh_encoding_isASCIIDigit(
+    bool nh_encoding_isASCIIDigit(
         NH_ENCODING_UTF32 codepoint
     );
     
-    NH_BOOL nh_encoding_isASCIIDigit2(
+    bool nh_encoding_isASCIIDigit2(
         NH_ENCODING_UTF32 codepoint
     );
  
-    NH_BOOL nh_encoding_isASCIIHexDigit(
+    bool nh_encoding_isASCIIHexDigit(
         NH_ENCODING_UTF32 codepoint
     );
 
-    NH_BOOL nh_encoding_isASCIIAlphaNumeric(
+    bool nh_encoding_isASCIIAlphaNumeric(
         NH_ENCODING_UTF32 codepoint
     );
     
-    NH_BOOL nh_encoding_isASCIICaseInsensitiveMatch(
-        NH_BYTE *str1_p, NH_BYTE *str2_p
+    bool nh_encoding_isASCIICaseInsensitiveMatch(
+        char *str1_p, char *str2_p
     );
 
-    NH_BOOL nh_encoding_isASCIICodepoint(
-        NH_ENCODING_UTF32 codepoint
-    );
-
-    NH_BOOL nh_encoding_isSurrogate(
-        NH_ENCODING_UTF32 codepoint
-    );
-    
-    NH_BOOL nh_encoding_isScalarValue(
-        NH_ENCODING_UTF32 codepoint
-    );
-    
-    NH_BOOL nh_encoding_isNonCharacter(
+    bool nh_encoding_isASCIICodepoint(
         NH_ENCODING_UTF32 codepoint
     );
 
-    NH_BOOL nh_encoding_isC0Control(
+    bool nh_encoding_isSurrogate(
         NH_ENCODING_UTF32 codepoint
     );
     
-    NH_BOOL nh_encoding_isControl(
+    bool nh_encoding_isScalarValue(
+        NH_ENCODING_UTF32 codepoint
+    );
+    
+    bool nh_encoding_isNonCharacter(
+        NH_ENCODING_UTF32 codepoint
+    );
+
+    bool nh_encoding_isC0Control(
+        NH_ENCODING_UTF32 codepoint
+    );
+    
+    bool nh_encoding_isControl(
         NH_ENCODING_UTF32 codepoint
     );
 
@@ -158,12 +167,12 @@
 
 // COMPARE
 
-    NH_BOOL nh_encoding_compareUTF32(
+    bool nh_encoding_compareUTF32(
         NH_ENCODING_UTF32 *p1, NH_ENCODING_UTF32 *p2
     );
 
-    NH_BOOL nh_encoding_compareUTF32ASCII(
-        NH_ENCODING_UTF32 *utf32_p, NH_BYTE *ascii_p
+    bool nh_encoding_compareUTF32ASCII(
+        NH_ENCODING_UTF32 *utf32_p, char *ascii_p
     );
 
 // DIGITS

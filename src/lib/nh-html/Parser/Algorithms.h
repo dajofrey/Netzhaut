@@ -18,7 +18,7 @@
  *  @{
  */
 
-    NH_HTML_RESULT nh_html_updateAStyleBlock(
+    NH_API_RESULT nh_html_updateAStyleBlock(
         nh_webidl_Object *Object_p
     );
 

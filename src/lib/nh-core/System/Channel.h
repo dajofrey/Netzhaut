@@ -32,11 +32,11 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_initChannel(
+    NH_API_RESULT nh_core_initChannel(
         nh_Channel *Channel_p
     );
     
-    NH_CORE_RESULT nh_openChannel(
+    NH_API_RESULT nh_openChannel(
         nh_Channel *Channel_p
     );
     
@@ -49,10 +49,10 @@
     );
     
     int nh_core_writeToChannel(
-        nh_Channel *Channel_p, NH_BYTE *bytes_p, int byteCount
+        nh_Channel *Channel_p, char *bytes_p, int byteCount
     );
     
-    NH_BYTE *nh_readFromChannel(
+    char *nh_readFromChannel(
         nh_Channel *Channel_p, size_t *size_p
     );
 

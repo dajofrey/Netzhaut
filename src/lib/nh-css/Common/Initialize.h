@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_initialize(
+    NH_API_RESULT nh_css_initialize(
     );
     
 /** @} */

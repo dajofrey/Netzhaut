@@ -9,7 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "../Common/Includes.h"
+#include "Window.h"
 
 #endif
 
@@ -18,15 +18,15 @@
  */
 
     void nh_wsi_sendWindowEvent(
-        nh_wsi_Window *Window_p, NH_WSI_WINDOW_E type, NH_PIXEL x, NH_PIXEL y, NH_PIXEL width, NH_PIXEL height
+        nh_wsi_Window *Window_p, NH_API_WINDOW_E type, int x, int y, int width, int height
     );
 
     void nh_wsi_sendMouseEvent(
-        nh_wsi_Window *Window_p, NH_PIXEL x, NH_PIXEL y, NH_WSI_TRIGGER_E trigger, NH_WSI_MOUSE_E type
+        nh_wsi_Window *Window_p, int x, int y, NH_API_TRIGGER_E trigger, NH_API_MOUSE_E type
     );
 
     void nh_wsi_sendKeyboardEvent(
-        nh_wsi_Window *Window_p, NH_ENCODING_UTF32 codepoint, NH_WSI_KEY_E special, NH_WSI_TRIGGER_E trigger, NH_WSI_MODIFIER_FLAG state
+        nh_wsi_Window *Window_p, NH_ENCODING_UTF32 codepoint, NH_API_KEY_E special, NH_API_TRIGGER_E trigger, NH_API_MODIFIER_FLAG state
     );
 
 /** @} */

@@ -20,8 +20,8 @@
  */
 
     typedef struct nh_css_PixelBox {
-        nh_PixelPosition Position;
-        nh_PixelSize Size;
+        nh_api_PixelPosition Position;
+        nh_api_PixelSize Size;
         float depth;
     } nh_css_PixelBox;
 
@@ -38,14 +38,14 @@
  */
 
     nh_css_ClipBox nh_css_convertToClipBox(
-        nh_gfx_Viewport *Viewport_p, nh_css_PixelBox PixelBox
+        void *Viewport_p, nh_css_PixelBox PixelBox
     );
 
-    NH_PIXEL nh_css_getMaxX(
+    int nh_css_getMaxX(
         nh_css_PixelBox Box
     );
     
-    NH_PIXEL nh_css_getMaxY(
+    int nh_css_getMaxY(
         nh_css_PixelBox Box
     );
 

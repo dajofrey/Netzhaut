@@ -42,7 +42,7 @@
 
     typedef struct nh_ConfigToken {
         NH_CONFIG_TOKEN_E type;
-        NH_BYTE *string_p;
+        char *string_p;
     } nh_ConfigToken;
 
     typedef struct nh_ConfigTokenizer {
@@ -56,8 +56,8 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_tokenizeConfig(
-        nh_ConfigTokenizer *Tokenizer_p, NH_BYTE *data_p, int length 
+    NH_API_RESULT nh_core_tokenizeConfig(
+        nh_ConfigTokenizer *Tokenizer_p, char *data_p, int length 
     ); 
 
     void nh_core_freeConfigTokenizer(

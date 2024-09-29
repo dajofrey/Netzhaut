@@ -22,7 +22,7 @@
         nh_ecmascript_Realm *Realm_p
     );
     
-    NH_ECMASCRIPT_RESULT nh_ecmascript_freeDefaultGlobalBindings(
+    NH_API_RESULT nh_ecmascript_freeDefaultGlobalBindings(
         nh_ecmascript_Object *Object_p
     );
 

@@ -11,6 +11,7 @@
 
 #include "Helper.h"
 #include "Driver.h"
+#include "../../nh-core/Util/List.h"
 
 #endif
 
@@ -19,7 +20,7 @@
  */
 
     typedef struct nh_vk_GPU {
-        NH_BYTE *name_p;                       
+        char *name_p;                       
         nh_vk_Driver Driver;
         nh_List Textures;
         struct {
@@ -36,7 +37,7 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_vk_initGPUs(
+    NH_API_RESULT nh_vk_initGPUs(
         nh_List *GPUs_p, nh_vk_Host *Host_p
     );
 

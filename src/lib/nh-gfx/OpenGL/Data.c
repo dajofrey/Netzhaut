@@ -30,13 +30,13 @@ NH_GFX_BEGIN()
     Data.size = 0;
     Data.p = NULL;
     Data.pp = NULL;
-    Data.autoFree = NH_TRUE;
+    Data.autoFree = true;
 
 NH_GFX_END(Data)
 }
 
 static nh_opengl_Data *nh_opengl_createData(
-    nh_opengl_Data *Data_p, NH_GFX_OPENGL_DATA_E type, int size, NH_BYTE *data_p, NH_BYTE **data_pp)
+    nh_opengl_Data *Data_p, NH_GFX_OPENGL_DATA_E type, int size, char *data_p, char **data_pp)
 {
 NH_GFX_BEGIN()
 
@@ -44,7 +44,7 @@ NH_GFX_BEGIN()
         Data_p = nh_core_allocate(sizeof(nh_opengl_Data));
         NH_GFX_CHECK_MEM_2(NULL, Data_p)
         *Data_p = nh_opengl_initData();
-        Data_p->autoFree = NH_TRUE;
+        Data_p->autoFree = true;
     }
 
     Data_p->type = type;
@@ -66,7 +66,7 @@ nh_opengl_Data *nh_opengl_disableDataAutoFree(
 {
 NH_GFX_BEGIN()
 
-    Data_p->autoFree = NH_FALSE;
+    Data_p->autoFree = false;
 
 NH_GFX_END(Data_p)
 }
@@ -89,70 +89,70 @@ nh_opengl_Data *nh_opengl_glboolean(
     nh_opengl_Data *Data_p, GLboolean data)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBOOLEAN, sizeof(GLboolean), (NH_BYTE*)&data, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBOOLEAN, sizeof(GLboolean), (char*)&data, NULL))
 }
 
 nh_opengl_Data *nh_opengl_glbyte(
     nh_opengl_Data *Data_p, GLbyte *data_p, int length)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, sizeof(GLbyte)*length, (NH_BYTE*)data_p, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, sizeof(GLbyte)*length, (char*)data_p, NULL))
 }
 
 nh_opengl_Data *nh_opengl_glubyte(
     nh_opengl_Data *Data_p, GLubyte *data_p, int length)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLUBYTE, sizeof(GLubyte)*length, (NH_UNSIGNED_BYTE*)data_p, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLUBYTE, sizeof(GLubyte)*length, (unsigned char*)data_p, NULL))
 }
 
 nh_opengl_Data *nh_opengl_glint(
     nh_opengl_Data *Data_p, GLint data)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLINT, sizeof(GLint), (NH_BYTE*)&data, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLINT, sizeof(GLint), (char*)&data, NULL))
 }
 
 nh_opengl_Data *nh_opengl_gluint(
     nh_opengl_Data *Data_p, GLuint data)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLUINT, sizeof(GLuint), (NH_BYTE*)&data, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLUINT, sizeof(GLuint), (char*)&data, NULL))
 }
 
 nh_opengl_Data *nh_opengl_glfloat(
     nh_opengl_Data *Data_p, GLfloat data)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLFLOAT, sizeof(GLfloat), (NH_BYTE*)&data, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLFLOAT, sizeof(GLfloat), (char*)&data, NULL))
 }
 
 nh_opengl_Data *nh_opengl_glsizei(
     nh_opengl_Data *Data_p, GLsizei data)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEI, sizeof(GLsizei), (NH_BYTE*)&data, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEI, sizeof(GLsizei), (char*)&data, NULL))
 }
 
 nh_opengl_Data *nh_opengl_glsizeiptr(
     nh_opengl_Data *Data_p, GLsizeiptr data)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEIPTR, sizeof(GLsizeiptr), (NH_BYTE*)&data, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEIPTR, sizeof(GLsizeiptr), (char*)&data, NULL))
 }
 
 nh_opengl_Data *nh_opengl_glchar(
     nh_opengl_Data *Data_p, GLchar *data_p, int length, GLchar **data_pp)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, length, (NH_BYTE*)data_p, (NH_BYTE**)data_pp))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, length, (char*)data_p, (char**)data_pp))
 }
 
 nh_opengl_Data *nh_opengl_glenum(
     nh_opengl_Data *Data_p, GLenum data)
 {
 NH_GFX_BEGIN()
-NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLENUM, sizeof(GLenum), (NH_BYTE*)&data, NULL))
+NH_GFX_END(nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLENUM, sizeof(GLenum), (char*)&data, NULL))
 }
 
 nh_opengl_Data *nh_opengl_pointer(

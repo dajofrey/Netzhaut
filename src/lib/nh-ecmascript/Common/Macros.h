@@ -45,20 +45,20 @@
 
 #define NH_ECMASCRIPT_CHECK(checkable)                                             \
 {                                                                           \
-    NH_ECMASCRIPT_RESULT checkResult = checkable;                                  \
-    if (checkResult != NH_ECMASCRIPT_SUCCESS) {NH_ECMASCRIPT_DIAGNOSTIC_END(checkResult)} \
+    NH_API_RESULT checkResult = checkable;                                  \
+    if (checkResult != NH_API_SUCCESS) {NH_ECMASCRIPT_DIAGNOSTIC_END(checkResult)} \
 }
 
 #define NH_ECMASCRIPT_CHECK_2(checkReturn, checkable)                   \
 {                                                                \
-    NH_ECMASCRIPT_RESULT checkResult = checkable;                       \
-    if (checkResult != NH_ECMASCRIPT_SUCCESS) {NH_ECMASCRIPT_END(checkReturn)} \
+    NH_API_RESULT checkResult = checkable;                       \
+    if (checkResult != NH_API_SUCCESS) {NH_ECMASCRIPT_END(checkReturn)} \
 }
 
 #define NH_ECMASCRIPT_CHECK_NULL(checkable)                                              \
 {                                                                                 \
     void *checkResult_p = checkable;                                              \
-    if (checkResult_p == NULL) {NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_ERROR_NULL_POINTER)} \
+    if (checkResult_p == NULL) {NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_ERROR_NULL_POINTER)} \
 }
 
 #define NH_ECMASCRIPT_CHECK_NULL_2(checkReturn, checkable)      \
@@ -70,7 +70,7 @@
 #define NH_ECMASCRIPT_CHECK_MEM(checkable)                                                    \
 {                                                                                      \
     void *checkResult_p = checkable;                                                   \
-    if (checkResult_p == NULL) {NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_ERROR_MEMORY_ALLOCATION)} \
+    if (checkResult_p == NULL) {NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_ERROR_MEMORY_ALLOCATION)} \
 }
 
 #define NH_ECMASCRIPT_CHECK_MEM_2(checkReturn, checkable)       \

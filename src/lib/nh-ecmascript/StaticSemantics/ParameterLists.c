@@ -20,7 +20,7 @@
 // HAS INITIALIZER =================================================================================
 
 // https://tc39.es/ecma262/#sec-static-semantics-hasinitializer
-static NH_BOOL nh_ecmascript_hasInitializer(
+static bool nh_ecmascript_hasInitializer(
     nh_ecmascript_ParseNode *Node_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -33,22 +33,22 @@ NH_ECMASCRIPT_BEGIN()
         case NH_ECMASCRIPT_PARSE_NODE_BINDING_ELEMENT :
             if (Node_p->Children.size == 1) {
                 if (((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->type == NH_ECMASCRIPT_PARSE_NODE_BINDING_PATTERN) {
-                    NH_ECMASCRIPT_END(NH_FALSE)
+                    NH_ECMASCRIPT_END(false)
                 }
             }
-            else {NH_ECMASCRIPT_END(NH_TRUE)}
+            else {NH_ECMASCRIPT_END(true)}
             break;
 
         case NH_ECMASCRIPT_PARSE_NODE_SINGLE_NAME_BINDING :
             if (Node_p->Children.size == 1) {
-                NH_ECMASCRIPT_END(NH_FALSE)
+                NH_ECMASCRIPT_END(false)
             }
-            else {NH_ECMASCRIPT_END(NH_TRUE)}
+            else {NH_ECMASCRIPT_END(true)}
             break;
 
         case NH_ECMASCRIPT_PARSE_NODE_FORMAL_PARAMETER_LIST :
         {
-            NH_BOOL hasInitializer = nh_ecmascript_hasInitializer(Node_p->Children.pp[0]);
+            bool hasInitializer = nh_ecmascript_hasInitializer(Node_p->Children.pp[0]);
             if (!hasInitializer && Node_p->Children.size == 2) {
                 hasInitializer = nh_ecmascript_hasInitializer(Node_p->Children.pp[1]);
             }
@@ -56,7 +56,7 @@ NH_ECMASCRIPT_BEGIN()
         }
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 // PARAMETER LISTS =================================================================================

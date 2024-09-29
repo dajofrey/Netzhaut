@@ -25,7 +25,7 @@
 
 // DEBUG ===========================================================================================
 
-NH_GFX_RESULT nh_gfx_initialize()
+NH_API_RESULT nh_gfx_initialize()
 {
     _nh_gfx_initConfig();
 

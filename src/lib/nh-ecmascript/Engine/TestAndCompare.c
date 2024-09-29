@@ -31,12 +31,12 @@ NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isCallable(
 {
 NH_ECMASCRIPT_BEGIN()
 
-    if (Value.type != NH_ECMASCRIPT_TYPE_OBJECT) {NH_ECMASCRIPT_END(NH_FALSE)}
+    if (Value.type != NH_ECMASCRIPT_TYPE_OBJECT) {NH_ECMASCRIPT_END(false)}
 
     if (Value.handle_p != NULL && ((nh_ecmascript_Object*)Value.handle_p)->InternalMethods_p->call_f != NULL) {
-        NH_ECMASCRIPT_END(NH_TRUE)
+        NH_ECMASCRIPT_END(true)
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 

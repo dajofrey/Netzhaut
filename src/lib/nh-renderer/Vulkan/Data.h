@@ -11,6 +11,7 @@
 
 #include "../Common/Includes.h"
 #include "../../nh-css/Main/FragmentTree.h"
+#include "../../nh-gfx/Base/Viewport.h"
 
 #endif
 
@@ -33,7 +34,7 @@
     nh_renderer_vk_Data nh_renderer_vk_initData(
     );
 
-    NH_RENDERER_RESULT nh_renderer_vk_createFragmentTreeData(
+    NH_API_RESULT nh_renderer_vk_createFragmentTreeData(
         nh_css_FragmentTree *Tree_p, nh_gfx_Viewport *Viewport_p
     );
 

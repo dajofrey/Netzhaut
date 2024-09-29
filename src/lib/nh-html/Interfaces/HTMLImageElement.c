@@ -37,7 +37,7 @@ typedef enum NH_HTML_IMAGE_REQUEST {
 typedef struct nh_html_ImageRequest {
     NH_HTML_IMAGE_REQUEST state;
     nh_url_URL *CurrentURL_p;
-    NH_BYTE *imageData_p;
+    char *imageData_p;
     int currentPixelDensity;
 } nh_html_ImageRequest;
 
@@ -63,7 +63,7 @@ NH_HTML_BEGIN()
 NH_HTML_END(Request)
 }
 
-NH_HTML_RESULT nh_html_initializeHTMLImageElement(
+NH_API_RESULT nh_html_initializeHTMLImageElement(
     nh_webidl_Object *Image_p)
 {
 NH_HTML_BEGIN()
@@ -75,20 +75,20 @@ NH_HTML_BEGIN()
     ((nh_html_Image*)Image_p->internal_p)->CurrentRequest = nh_html_initImageRequest();
     ((nh_html_Image*)Image_p->internal_p)->PendingRequest_p = NULL;
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // UPDATE ==========================================================================================
 
 // https://html.spec.whatwg.org/#update-the-image-data
 void nh_html_updateImageData(
-    nh_html_HTMLImageElement *Image_p, NH_BOOL restartAnimations)
+    void *Image_p, bool restartAnimations)
 {
 NH_HTML_BEGIN()
 
     // TODO
 
-    NH_BYTE *selectedSource_p = NULL;
+    char *selectedSource_p = NULL;
     int selectedPixelDensity = -1;
 
     nh_dom_Attr *Attr_p = nh_dom_getAttrByLocalName(
@@ -100,7 +100,7 @@ NH_HTML_BEGIN()
     selectedSource_p = Value_p->p;
     selectedPixelDensity = 1;
 
-    NH_BYTE *lastSelectedSource_p = selectedSource_p;
+    char *lastSelectedSource_p = selectedSource_p;
 
 //    if (selectedSource_p) 
 //    {
@@ -115,10 +115,10 @@ NH_HTML_SILENT_END()
 
 // API =============================================================================================
 
-nh_html_HTMLImageElement *nh_html_getHTMLImageElement(
+void *nh_html_getHTMLImageElement(
     nh_webidl_Object *Object_p)
 {
 NH_HTML_BEGIN()
-NH_HTML_END((nh_html_HTMLImageElement*)nh_webidl_getObject(Object_p, "HTML", "HTMLImageElement"))
+NH_HTML_END(nh_webidl_getObject(Object_p, "HTML", "HTMLImageElement"))
 }
 

@@ -38,18 +38,18 @@ NH_CORE_BEGIN()
 NH_CORE_END(_nh_core_initList(chunkSize))
 }
 
-NH_CORE_RESULT nh_core_appendToList(
+NH_API_RESULT nh_core_appendToList(
     nh_List *List_p, void *handle_p)
 {
     if (List_p->size >= List_p->chunkSize * List_p->chunkCount) 
     {
         if (List_p->pp == NULL) {
             List_p->pp = nh_core_allocate(sizeof(void*) * List_p->chunkSize);
-            if (List_p->pp == NULL) {return NH_CORE_ERROR_BAD_STATE;}
+            if (List_p->pp == NULL) {return NH_API_ERROR_BAD_STATE;}
         }
         else {
             List_p->pp = realloc(List_p->pp, sizeof(void*) * List_p->chunkSize * (List_p->chunkCount + 1));
-            if (List_p->pp == NULL) {return NH_CORE_ERROR_BAD_STATE;}
+            if (List_p->pp == NULL) {return NH_API_ERROR_BAD_STATE;}
         }
         List_p->chunkCount++;
     }
@@ -57,10 +57,10 @@ NH_CORE_RESULT nh_core_appendToList(
     List_p->pp[List_p->size] = handle_p;
     List_p->size++;
 
-    return NH_CORE_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
-NH_CORE_RESULT nh_core_appendItemsToList(
+NH_API_RESULT nh_core_appendItemsToList(
     nh_List *List_p, nh_List *Append_p)
 {
 NH_CORE_BEGIN()
@@ -69,10 +69,10 @@ NH_CORE_BEGIN()
         NH_CORE_CHECK(nh_core_appendToList(List_p, Append_p->pp[i]))
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_insertIntoList(
+NH_API_RESULT nh_core_insertIntoList(
     nh_List *List_p, void *handle_p, unsigned long index)
 {
 NH_CORE_BEGIN()
@@ -89,10 +89,10 @@ NH_CORE_BEGIN()
 
     List_p->pp[index] = handle_p;
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_prependToList(
+NH_API_RESULT nh_core_prependToList(
     nh_List *List_p, void *handle_p)
 {
 NH_CORE_BEGIN()
@@ -142,7 +142,7 @@ NH_CORE_END(NULL)
 }
 
 void nh_core_freeList(
-    nh_List *List_p, NH_BOOL freeHandles)
+    nh_List *List_p, bool freeHandles)
 {
     if (freeHandles) {
         for (int i = 0; i < List_p->size; ++i) {
@@ -156,10 +156,10 @@ void nh_core_freeList(
     List_p->pp = NULL;
 }
 
-NH_CORE_RESULT nh_core_removeFromList(
-    nh_List *List_p, NH_BOOL freeHandle, unsigned int index)
+NH_API_RESULT nh_core_removeFromList(
+    nh_List *List_p, bool freeHandle, unsigned int index)
 {
-    if (index < 0 || List_p->size == 0) {return NH_CORE_ERROR_BAD_STATE;}
+    if (index < 0 || List_p->size == 0) {return NH_API_ERROR_BAD_STATE;}
     if (index >= List_p->size) {index = List_p->size - 1;}
 
     if (freeHandle) {
@@ -179,25 +179,25 @@ NH_CORE_RESULT nh_core_removeFromList(
     }
     else if (List_p->size == List_p->chunkSize * (List_p->chunkCount - 1)) {
         List_p->pp = realloc(List_p->pp, sizeof(void*) * List_p->size);
-        if (List_p->pp == NULL) {return NH_CORE_ERROR_BAD_STATE;}
+        if (List_p->pp == NULL) {return NH_API_ERROR_BAD_STATE;}
         List_p->chunkCount--;
     }
 
-    return NH_CORE_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
-NH_CORE_RESULT nh_core_removeFromList2(
-    nh_List *List_p, NH_BOOL freeHandle, void *handle_p)
+NH_API_RESULT nh_core_removeFromList2(
+    nh_List *List_p, bool freeHandle, void *handle_p)
 {
 NH_CORE_BEGIN()
 
-    NH_BOOL ok = NH_FALSE;
+    bool ok = false;
     unsigned long index = 0;
 
     for (unsigned long i = 0; i < List_p->size; ++i) {
         if (List_p->pp[i] == handle_p) {
             index = i; 
-            ok = NH_TRUE; 
+            ok = true; 
             break;
         }
     }
@@ -206,18 +206,18 @@ NH_CORE_BEGIN()
         NH_CORE_DIAGNOSTIC_END(nh_core_removeFromList(List_p, freeHandle, index))
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)
+NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
-NH_BOOL nh_inList(
+bool nh_inList(
     nh_List *List_p, void *handle_p)
 {
 NH_CORE_BEGIN()
 
     for (int i = 0; i < List_p->size; ++i) {
-        if (List_p->pp[i] == handle_p) {NH_CORE_END(NH_TRUE)}
+        if (List_p->pp[i] == handle_p) {NH_CORE_END(true)}
     }
 
-NH_CORE_END(NH_FALSE)
+NH_CORE_END(false)
 }
 

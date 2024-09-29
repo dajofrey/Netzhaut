@@ -31,7 +31,7 @@
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeDocumentType(
+NH_API_RESULT nh_dom_initializeDocumentType(
     nh_webidl_Object *DocumentType_p)
 {
 NH_DOM_BEGIN()
@@ -48,7 +48,7 @@ NH_DOM_BEGIN()
     NH_DOM_CHECK_MEM(SYSTEM_ID)
     *((nh_webidl_DOMString*)SYSTEM_ID) = nh_webidl_initDOMString(32);
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================

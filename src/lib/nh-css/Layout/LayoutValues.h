@@ -85,9 +85,9 @@ typedef struct nh_css_Fragment nh_css_Fragment;
 
     typedef struct nh_css_TextValues {
         nh_Color Color;
-        NH_PIXEL fontSize;
-        NH_PIXEL textWidth;
-        NH_PIXEL textHeight;
+        int fontSize;
+        int textWidth;
+        int textHeight;
         nh_gfx_Text Text;
         nh_Array FontFamilies;
         nh_gfx_FontStyle FontStyle;
@@ -96,7 +96,7 @@ typedef struct nh_css_Fragment nh_css_Fragment;
 
     typedef struct nh_css_BoxSizing {
         NH_CSS_BOX_SIZING type;
-        NH_PIXEL value;
+        int value;
         float percentage;
     } nh_css_BoxSizing;
 
@@ -110,26 +110,26 @@ typedef struct nh_css_Fragment nh_css_Fragment;
         nh_css_BoxSizing MinHeight;
         nh_css_BoxSizing MaxWidth;
         nh_css_BoxSizing MaxHeight;
-        NH_PIXEL marginTop;
-        NH_PIXEL marginRight;
-        NH_PIXEL marginBottom;
-        NH_PIXEL marginLeft;
-        NH_PIXEL paddingTop;
-        NH_PIXEL paddingRight;
-        NH_PIXEL paddingBottom;
-        NH_PIXEL paddingLeft;
-        NH_PIXEL borderTop;
-        NH_PIXEL borderRight;
-        NH_PIXEL borderBottom;
-        NH_PIXEL borderLeft;
+        int marginTop;
+        int marginRight;
+        int marginBottom;
+        int marginLeft;
+        int paddingTop;
+        int paddingRight;
+        int paddingBottom;
+        int paddingLeft;
+        int borderTop;
+        int borderRight;
+        int borderBottom;
+        int borderLeft;
         nh_Color BorderTopColor;
         nh_Color BorderRightColor;
         nh_Color BorderBottomColor;
         nh_Color BorderLeftColor;
-        NH_PIXEL borderTopLeftRadius;
-        NH_PIXEL borderTopRightRadius;
-        NH_PIXEL borderBottomLeftRadius;
-        NH_PIXEL borderBottomRightRadius;
+        int borderTopLeftRadius;
+        int borderTopRightRadius;
+        int borderBottomLeftRadius;
+        int borderBottomRightRadius;
         NH_CSS_LINE_STYLE borderTopStyle;
         NH_CSS_LINE_STYLE borderRightStyle;
         NH_CSS_LINE_STYLE borderBottomStyle;
@@ -144,7 +144,7 @@ typedef struct nh_css_Fragment nh_css_Fragment;
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_computeTextValues(
+    NH_API_RESULT nh_css_computeTextValues(
         nh_css_Fragment *Fragment_p
     );
 
@@ -152,7 +152,7 @@ typedef struct nh_css_Fragment nh_css_Fragment;
         nh_css_Fragment *Fragment_p
     );
 
-    NH_CSS_RESULT nh_css_computeBoxValues(
+    NH_API_RESULT nh_css_computeBoxValues(
         nh_css_Fragment *Fragment_p
     );
 

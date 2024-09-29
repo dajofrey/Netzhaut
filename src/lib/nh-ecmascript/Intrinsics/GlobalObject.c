@@ -20,7 +20,7 @@ static const int lookup_p[] = {
      0
 };
 
-static const NH_BYTE *globalPropertyNames_pp[] = {
+static const char *globalPropertyNames_pp[] = {
 // values
     "globalThis",
     "Infinity",
@@ -81,20 +81,20 @@ static const NH_BYTE *globalPropertyNames_pp[] = {
 
 // CREATE/FREE =====================================================================================
 
-static NH_ECMASCRIPT_RESULT nh_ecmascript_createGlobalObjectValueProperties(
+static NH_API_RESULT nh_ecmascript_createGlobalObjectValueProperties(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Realm *Realm_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_ECMASCRIPT_RESULT nh_ecmascript_createGlobalObjectFunctionProperties(
+static NH_API_RESULT nh_ecmascript_createGlobalObjectFunctionProperties(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Realm *Realm_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static nh_ecmascript_Property *nh_ecmascript_getGlobalProperty(
@@ -103,9 +103,9 @@ static nh_ecmascript_Property *nh_ecmascript_getGlobalProperty(
 NH_ECMASCRIPT_BEGIN()
 
     Realm_p->Intrinsics.Properties_p[i].type = NH_ECMASCRIPT_PROPERTY_DATA;
-    Realm_p->Intrinsics.Properties_p[i].enumerable   = NH_FALSE;
-    Realm_p->Intrinsics.Properties_p[i].configurable = NH_FALSE;
-    Realm_p->Intrinsics.Properties_p[i].Fields.Data.writable = NH_FALSE;
+    Realm_p->Intrinsics.Properties_p[i].enumerable   = false;
+    Realm_p->Intrinsics.Properties_p[i].configurable = false;
+    Realm_p->Intrinsics.Properties_p[i].Fields.Data.writable = false;
 
     nh_ecmascript_Any Value;
     Value.type = NH_ECMASCRIPT_TYPE_OBJECT;
@@ -182,7 +182,7 @@ NH_ECMASCRIPT_BEGIN()
 
     for (int i = 0; i < sizeof(globalPropertyNames_pp) / sizeof(globalPropertyNames_pp[0]); ++i) 
     {
-        Realm_p->Intrinsics.Keys_p[i].p = (NH_BYTE*)globalPropertyNames_pp[i];
+        Realm_p->Intrinsics.Keys_p[i].p = (char*)globalPropertyNames_pp[i];
         Realm_p->Intrinsics.Keys_p[i].length  = strlen(globalPropertyNames_pp[i]);
 
         nh_ecmascript_Property *Property_p = nh_ecmascript_getGlobalProperty(Realm_p, i);
@@ -194,13 +194,13 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(Global_p)
 }
 
-NH_ECMASCRIPT_RESULT nh_ecmascript_freeDefaultGlobalBindings(
+NH_API_RESULT nh_ecmascript_freeDefaultGlobalBindings(
     nh_ecmascript_Object *Object_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
     // TODO
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

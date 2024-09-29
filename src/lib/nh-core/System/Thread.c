@@ -44,12 +44,12 @@ NH_CORE_SILENT_END()
 }
 
 static inline void nh_core_initWorkload(
-    nh_core_Workload *Workload_p, NH_BOOL firstTime)
+    nh_core_Workload *Workload_p, bool firstTime)
 {
 NH_CORE_BEGIN()
 
     Workload_p->signal  = NH_SIGNAL_INACTIVE;
-    Workload_p->crucial = NH_FALSE;
+    Workload_p->crucial = false;
 
     Workload_p->SignalCounter.idle = 0;
     Workload_p->SignalCounter.ok   = 0;
@@ -92,13 +92,13 @@ NH_CORE_BEGIN()
         nh_core_initThread(&ThreadPool.Threads_p[i]);
     }
     for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
-        nh_core_initWorkload(&ThreadPool.Workloads_p[i], NH_TRUE);
+        nh_core_initWorkload(&ThreadPool.Workloads_p[i], true);
     }
 
 NH_CORE_END(ThreadPool)
 }
 
-NH_CORE_RESULT nh_core_freeThreadPool(
+NH_API_RESULT nh_core_freeThreadPool(
     nh_ThreadPool *ThreadPool_p)
 {
 NH_CORE_BEGIN()
@@ -108,13 +108,13 @@ NH_CORE_BEGIN()
         nh_core_freeRingBuffer(&ThreadPool_p->Workloads_p[i].Commands);
     }
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 // RUN =============================================================================================
 
-static NH_CORE_RESULT nh_core_runWorkloadLoop(
-    nh_core_Workload *Workload_p, NH_BOOL *idle_p)
+static NH_API_RESULT nh_core_runWorkloadLoop(
+    nh_core_Workload *Workload_p, bool *idle_p)
 {
 NH_CORE_BEGIN()
 
@@ -127,8 +127,8 @@ NH_CORE_BEGIN()
         if (Workload_p->runCommand_f) {
             Workload_p->runCommand_f(Workload_p->args_p, Command_p);
         }
-        Command_p->done = NH_TRUE;
-        NH_CORE_END(NH_CORE_SUCCESS)
+        Command_p->done = true;
+        NH_CORE_END(NH_API_SUCCESS)
     }
 
     // Very important line. This runs the encapsulated program loop.
@@ -136,10 +136,10 @@ NH_CORE_BEGIN()
 
     if (Command_p) {
         // This should only get triggered in case of a dummy command, used to wait for a workload loop.
-        Command_p->done = NH_TRUE;
+        Command_p->done = true;
     }
 
-    if (Workload_p->signal != NH_SIGNAL_IDLE && idle_p) {*idle_p = NH_FALSE;}
+    if (Workload_p->signal != NH_SIGNAL_IDLE && idle_p) {*idle_p = false;}
 
     switch (Workload_p->signal)
     {
@@ -158,11 +158,11 @@ NH_CORE_BEGIN()
 
     Workload_p->Timing.turnAround = nh_core_getSystemTimeDiffInSeconds(TAT, nh_core_getSystemTime());
     
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CORE_RESULT nh_core_runWorkload(
-    nh_core_Workload *Workload_p, NH_BOOL *idle_p)
+static NH_API_RESULT nh_core_runWorkload(
+    nh_core_Workload *Workload_p, bool *idle_p)
 {
 NH_CORE_BEGIN()
 
@@ -183,14 +183,14 @@ NH_CORE_BEGIN()
         if (Workload_p->free_f != NULL) {
             Workload_p->free_f(Workload_p->args_p);
         }
-        nh_core_initWorkload(Workload_p, NH_FALSE);
+        nh_core_initWorkload(Workload_p, false);
         Workload_p->signal = NH_SIGNAL_INACTIVE;
     }
     else {NH_CORE_CHECK(nh_core_runWorkloadLoop(Workload_p, idle_p))}
 
     Thread_p->CurrentWorkload_p = NULL;
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 unsigned int nh_core_runThreadWorkloads()
@@ -199,7 +199,7 @@ NH_CORE_BEGIN()
 
     nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
-    NH_BOOL idle = NH_TRUE;
+    bool idle = true;
     unsigned int count = 0;
     nh_Thread *Thread_p = nh_core_getThread();
 
@@ -236,7 +236,7 @@ NH_CORE_END(count)
 //
 //    nh_core_initializeThreadMemory();
 //
-//    NH_BOOL run = NH_TRUE;
+//    bool run = true;
 //    while (run) {run = nh_core_runWorkloads();}
 //
 //#ifdef __unix__
@@ -264,13 +264,13 @@ NH_CORE_SILENT_END()
 
 // KEEP RUNNING? ===================================================================================
 
-NH_BOOL nh_core_keepRunning()
+bool nh_core_keepRunning()
 {
 NH_CORE_BEGIN()
 
     nh_checkForks();
 
-NH_CORE_END(nh_core_activeWorkloads(NH_TRUE) > 0 || nh_core_activeForks() > 0 ? NH_TRUE : NH_FALSE)
+NH_CORE_END(nh_core_activeWorkloads(true) > 0 || nh_core_activeForks() > 0 ? true : false)
 }
 
 // GET =============================================================================================
@@ -385,7 +385,7 @@ NH_CORE_SILENT_END()
 
 void *nh_core_activateWorkload(
     void *(*init_f)(nh_core_Workload*), NH_SIGNAL (*run_f)(void*), void (*free_f)(void*), 
-    NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, NH_BOOL crucial)
+    NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, bool crucial)
 {
 NH_CORE_BEGIN()
 
@@ -416,18 +416,18 @@ NH_CORE_BEGIN()
 NH_CORE_END(Workload_p->args_p)
 }
 
-NH_CORE_RESULT nh_core_deactivateWorkload(
+NH_API_RESULT nh_core_deactivateWorkload(
     nh_core_Workload *Workload_p)
 {
 NH_CORE_BEGIN()
 
     // Check if already deactivated.
-    if (Workload_p->signal == NH_SIGNAL_INACTIVE) {NH_CORE_END(NH_CORE_SUCCESS)}
+    if (Workload_p->signal == NH_SIGNAL_INACTIVE) {NH_CORE_END(NH_API_SUCCESS)}
 
     Workload_p->signal = NH_SIGNAL_FREE;
     nh_core_waitForCompletion(Workload_p, NH_SIGNAL_INACTIVE);
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 void *nh_core_getWorkloadArg()
@@ -438,7 +438,7 @@ NH_CORE_END(nh_core_getThread()->CurrentWorkload_p->args_p)
 
 // EXECUTE =========================================================================================
 
-NH_CORE_RESULT nh_core_executeWorkloadCommand(
+NH_API_RESULT nh_core_executeWorkloadCommand(
     void *handle_p, int type, void *p, int byteSize)
 {
 NH_CORE_BEGIN()
@@ -449,8 +449,8 @@ NH_CORE_BEGIN()
     nh_core_WorkloadCommand *Command_p = nh_core_advanceRingBuffer(&Workload_p->Commands);
     NH_CORE_CHECK_NULL(Command_p)
 
-    Command_p->done = NH_FALSE;
-    Command_p->dummy = NH_FALSE;
+    Command_p->done = false;
+    Command_p->dummy = false;
     Command_p->type = type;
     Command_p->p = p;
     Command_p->length = byteSize;
@@ -465,7 +465,7 @@ NH_CORE_BEGIN()
     // we can just execute the function directly. But we need to remember
     // the previous workload and reset the pointer.
     if (Workload_p->Thread_p == nh_core_getThread()) {
-        while (Command_p->done == NH_FALSE) {
+        while (Command_p->done == false) {
             nh_core_Workload *PreviousWorkload_p = nh_core_getThread()->CurrentWorkload_p;
             nh_core_runWorkload(Workload_p, NULL);
             nh_core_getThread()->CurrentWorkload_p = PreviousWorkload_p;
@@ -474,14 +474,14 @@ NH_CORE_BEGIN()
 
     // Otherwise we need to wait for the executing thread to do its work.
     // TODO Sleep.
-    else {while (Command_p->done == NH_FALSE) {}}
+    else {while (Command_p->done == false) {}}
 
     if (byteSize > 0) {nh_core_free(Command_p->p);}
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_executeWorkload(
+NH_API_RESULT nh_core_executeWorkload(
     void *handle_p)
 {
 NH_CORE_BEGIN()
@@ -492,8 +492,8 @@ NH_CORE_BEGIN()
     nh_core_WorkloadCommand *Command_p = nh_core_advanceRingBuffer(&Workload_p->Commands);
     NH_CORE_CHECK_NULL(Command_p)
 
-    Command_p->done = NH_FALSE;
-    Command_p->dummy = NH_TRUE;
+    Command_p->done = false;
+    Command_p->dummy = true;
 
     // If the thread that handles the workload is executing this code,
     // we can just execute the function directly. But we need to remember
@@ -506,9 +506,9 @@ NH_CORE_BEGIN()
 
     // Otherwise we need to wait for the executing thread to do its work.
     // TODO Sleep.
-    else {while (Command_p->done == NH_FALSE) {}}
+    else {while (Command_p->done == false) {}}
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 // COUNT ==========================================================================================
@@ -528,7 +528,7 @@ NH_CORE_END(count)
 }
 
 int nh_core_activeWorkloads(
-    NH_BOOL onlyCrucial)
+    bool onlyCrucial)
 {
 NH_CORE_BEGIN()
 
@@ -547,7 +547,7 @@ NH_CORE_END(count)
 
 // SLEEP ===========================================================================================
 
-NH_CORE_RESULT nh_sleepMs(
+NH_API_RESULT nh_sleepMs(
     int milliseconds)
 {
 NH_CORE_BEGIN()
@@ -563,6 +563,6 @@ NH_CORE_BEGIN()
     usleep(milliseconds * 1000);
 #endif
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

@@ -52,7 +52,7 @@ static NH_GFX_FONT_WEIGHT fontWeightValues_p[] = {
     NH_GFX_FONT_WEIGHT_HEAVY,
 };
 
-static NH_BYTE *fontWeights_pp[] = {
+static char *fontWeights_pp[] = {
     "thin",
     "extralight",
     "ultralight",
@@ -70,7 +70,7 @@ static NH_BYTE *fontWeights_pp[] = {
 };
 
 static int nh_gfx_parseFontWeight(
-    NH_BYTE *weight_p)
+    char *weight_p)
 {
 NH_GFX_BEGIN()
 
@@ -117,8 +117,8 @@ NH_GFX_END(NULL)
 
 // FONT STYLE ======================================================================================
 
-NH_GFX_RESULT nh_gfx_parseFontStyle(
-    nh_gfx_FontStyle *Style_p, NH_BYTE *name_p)
+NH_API_RESULT nh_gfx_parseFontStyle(
+    nh_gfx_FontStyle *Style_p, char *name_p)
 {
 NH_GFX_BEGIN()
 
@@ -129,10 +129,10 @@ NH_GFX_BEGIN()
     }
 
     Style_p->weight = nh_gfx_parseFontWeight(Style_p->name_p);
-    Style_p->oblique = strstr(Style_p->name_p, "oblique") ? NH_TRUE : NH_FALSE;
-    Style_p->italic = strstr(Style_p->name_p, "italic") ? NH_TRUE : NH_FALSE;
+    Style_p->oblique = strstr(Style_p->name_p, "oblique") ? true : false;
+    Style_p->italic = strstr(Style_p->name_p, "italic") ? true : false;
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_gfx_freeFontStyle(

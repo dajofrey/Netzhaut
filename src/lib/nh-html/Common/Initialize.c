@@ -22,13 +22,13 @@
 
 // DEBUG ===========================================================================================
 
-NH_HTML_RESULT nh_html_initialize()
+NH_API_RESULT nh_html_initialize()
 {
 NH_HTML_BEGIN()
 
     NH_HTML_DOCUMENT_CONTEXTS = nh_core_initList(16);
     NH_HTML_CHECK(nh_html_createIndexMap())
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

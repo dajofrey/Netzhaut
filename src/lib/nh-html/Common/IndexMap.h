@@ -36,7 +36,7 @@
  *  @{
  */
 
-    NH_HTML_RESULT nh_html_createIndexMap(
+    NH_API_RESULT nh_html_createIndexMap(
     );
 
     void nh_html_freeIndexMap(

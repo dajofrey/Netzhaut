@@ -11,6 +11,7 @@
 
 #include "../Common/Includes.h"
 #include "../Loader/Loader.h"
+#include "../Util/List.h"
 
 #endif
 
@@ -28,11 +29,11 @@
 
     typedef struct nh_RawConfigSetting {
         int module;
-        NH_BYTE *name_p;
-        NH_BYTE namespace_p[255];
+        char *name_p;
+        char namespace_p[255];
         struct nh_RawConfigSetting *Default_p;
         nh_List Values;
-        NH_BOOL mark;
+        bool mark;
     } nh_RawConfigSetting;
 
     typedef struct nh_RawConfig {
@@ -45,7 +46,7 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_initGlobalConfig(
+    NH_API_RESULT nh_core_initGlobalConfig(
     );
 
     void nh_core_freeGlobalConfig(
@@ -55,19 +56,19 @@
     );
 
     nh_List *nh_core_getGlobalConfigSetting(
-        NH_BYTE *namespace_p, int _module, const NH_BYTE *name_p
+        char *namespace_p, int _module, const char *name_p
     );
 
-    NH_CORE_RESULT nh_core_appendConfig(
-        NH_BYTE *data_p, int length, NH_BOOL override
+    NH_API_RESULT nh_core_appendConfig(
+        char *data_p, int length, bool override
     );
     
-    NH_CORE_RESULT nh_core_overwriteGlobalConfigSetting(
-        NH_BYTE *namespace_p, NH_MODULE_E module, const NH_BYTE *setting_p, NH_BYTE *value_p
+    NH_API_RESULT nh_core_overwriteGlobalConfigSetting(
+        char *namespace_p, NH_MODULE_E module, const char *setting_p, char *value_p
     );
 
-    NH_CORE_RESULT nh_core_overwriteGlobalConfigSettingInt(
-        NH_BYTE *namespace_p, int _module, const NH_BYTE *setting_p, int value 
+    NH_API_RESULT nh_core_overwriteGlobalConfigSettingInt(
+        char *namespace_p, int _module, const char *setting_p, int value 
     );
 
 /** @} */

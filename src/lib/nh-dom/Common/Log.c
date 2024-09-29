@@ -18,22 +18,22 @@
 
 // LOG =============================================================================================
 
-NH_DOM_RESULT _nh_dom_logBegin(
+NH_API_RESULT _nh_dom_logBegin(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_begin(file_p, function_p);
 }
 
-NH_DOM_RESULT _nh_dom_logEnd(
+NH_API_RESULT _nh_dom_logEnd(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_end(file_p, function_p);
 }
 
-NH_DOM_RESULT _nh_dom_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_DOM_RESULT result, int line)
+NH_API_RESULT _nh_dom_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
 //    _nh_diagnosticEnd(file_p, function_p, result, line);

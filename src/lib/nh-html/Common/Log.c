@@ -29,22 +29,22 @@
 
 // LOG EXECUTION FLOW ==============================================================================
 
-NH_HTML_RESULT _nh_html_logBegin(
+NH_API_RESULT _nh_html_logBegin(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_begin(file_p, function_p);
 }
 
-NH_HTML_RESULT _nh_html_logEnd(
+NH_API_RESULT _nh_html_logEnd(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_end(file_p, function_p);
 }
 
-NH_HTML_RESULT _nh_html_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_HTML_RESULT result, int line)
+NH_API_RESULT _nh_html_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
 //    _nh_diagnosticEnd(file_p, function_p, result, line);
@@ -56,20 +56,20 @@ NH_HTML_RESULT _nh_html_logDiagnosticEnd(
 #define MAX_INDENT 2047
 #define MAX_MESSAGE 4095
 
-static NH_HTML_RESULT nh_html_logDocumentRecursively(
-    NH_BYTE *node_p, nh_webidl_Object *Object_p, NH_BOOL lastChild, int depth, NH_BOOL *branch_p, 
-    NH_BYTE *indent_p)
+static NH_API_RESULT nh_html_logDocumentRecursively(
+    char *node_p, nh_webidl_Object *Object_p, bool lastChild, int depth, bool *branch_p, 
+    char *indent_p)
 {
 NH_HTML_BEGIN()
 
     nh_String Message = nh_core_initString(255);
     nh_String Attributes = nh_core_initString(128);
 
-    if (depth >= MAX_INDENT) {NH_HTML_END(NH_HTML_ERROR_BAD_STATE)}
+    if (depth >= MAX_INDENT) {NH_HTML_END(NH_API_ERROR_BAD_STATE)}
 
     for (int i = 0, offset = 0; i < depth * 2; ++i) {
         if (i % 2) {offset++, indent_p[i] = ' '; continue;}
-        indent_p[i] = branch_p[offset] == NH_TRUE ? '|' : ' ';
+        indent_p[i] = branch_p[offset] == true ? '|' : ' ';
     }
     indent_p[depth * 2 - 1] = '-';
 
@@ -87,7 +87,7 @@ NH_HTML_BEGIN()
         } 
     }
 
-    NH_BYTE tag_p[64] = {0};
+    char tag_p[64] = {0};
     sprintf(tag_p, Element_p ? "<%s>" : "%s", Element_p ? nh_dom_getLocalName(Element_p)->p : "node");
 
     if (Attributes.length) {
@@ -114,8 +114,8 @@ NH_HTML_BEGIN()
     nh_core_freeString(&Attributes);
     nh_core_freeString(&Message);
 
-    branch_p[depth] = NH_TRUE;
-    if (lastChild) {branch_p[depth - 1] = NH_FALSE;}
+    branch_p[depth] = true;
+    if (lastChild) {branch_p[depth - 1] = false;}
 
     memset(indent_p, 0, MAX_INDENT);
     
@@ -130,23 +130,23 @@ NH_HTML_BEGIN()
         ))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_HTML_RESULT nh_html_logDocument(
-    NH_BYTE *logId_p, nh_webidl_Object *Document_p)
+NH_API_RESULT nh_html_logDocument(
+    char *logId_p, nh_webidl_Object *Document_p)
 {
 NH_HTML_BEGIN()
 
-    NH_BYTE node_p[255] = {0};
+    char node_p[255] = {0};
     sprintf(node_p, "nh-html:Parser:%s:DOMTree", logId_p);
 
-    NH_BYTE indent_p[MAX_INDENT] = {'\0'};
+    char indent_p[MAX_INDENT] = {'\0'};
 
-    NH_BOOL branch_p[MAX_INDENT];
-    memset(branch_p, NH_FALSE, MAX_INDENT);
-    nh_html_logDocumentRecursively(node_p, Document_p, NH_FALSE, 0, branch_p, indent_p);
+    bool branch_p[MAX_INDENT];
+    memset(branch_p, false, MAX_INDENT);
+    nh_html_logDocumentRecursively(node_p, Document_p, false, 0, branch_p, indent_p);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

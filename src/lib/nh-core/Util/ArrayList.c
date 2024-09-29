@@ -43,7 +43,7 @@ static void *_nh_core_incrementArrayListRecursion(
         Array_p = nh_core_allocate(sizeof(nh_Array));
         if (!Array_p) {return NULL;}
         *Array_p = nh_core_initArray(ArrayList_p->elementSize, ArrayList_p->allocatedLengthPerChunk);
-        if (nh_core_appendToList(&ArrayList_p->Arrays, Array_p) != NH_CORE_SUCCESS) {return NULL;}
+        if (nh_core_appendToList(&ArrayList_p->Arrays, Array_p) != NH_API_SUCCESS) {return NULL;}
     }
 
     if (Array_p->length < ArrayList_p->allocatedLengthPerChunk - 1) {
@@ -74,7 +74,7 @@ void nh_core_freeArrayList(
         nh_core_freeArray(ArrayList_p->Arrays.pp[i]);
     }
 
-    nh_core_freeList(&ArrayList_p->Arrays, NH_TRUE);
+    nh_core_freeList(&ArrayList_p->Arrays, true);
 
     ArrayList_p->allocatedLengthPerChunk = 0;
     ArrayList_p->elementSize = 0;

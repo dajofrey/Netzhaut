@@ -21,12 +21,12 @@
  *  @{
  */
 
-    typedef NH_BYTE *(*nh_core_getFileData_f)(
-        const NH_BYTE* path_p, long *size_p
+    typedef char *(*nh_core_getFileData_f)(
+        const char* path_p, long *size_p
     );
     
-    typedef NH_CORE_RESULT (*nh_core_writeBytesToFile_f)(
-        NH_BYTE *filePath_p, NH_BYTE *bytes_p
+    typedef NH_API_RESULT (*nh_core_writeBytesToFile_f)(
+        char *filePath_p, char *bytes_p
     );
 
 /** @} */
@@ -35,32 +35,32 @@
  *  @{
  */
 
-    NH_CORE_RESULT nh_core_getCurrentDir(
-        NH_BYTE *set_p, int size
+    NH_API_RESULT nh_core_getCurrentDir(
+        char *set_p, int size
     );
 
     nh_List nh_core_getDirContentPaths(
-        NH_BYTE *dirPath_p
+        char *dirPath_p
     );
 
-    NH_CORE_RESULT nh_core_getFilePath(
-        NH_BYTE *filename_p, NH_BYTE *base_p, NH_BYTE *out_p
+    NH_API_RESULT nh_core_getFilePath(
+        char *filename_p, char *base_p, char *out_p
     );
 
-    NH_BYTE *nh_core_getFileData(
-        const NH_BYTE* path_p, long *size_p
+    char *nh_core_getFileData(
+        const char* path_p, long *size_p
     );
     
-    NH_CORE_RESULT nh_core_writeBytesToFile(
-        NH_BYTE *filePath_p, NH_BYTE *bytes_p
+    NH_API_RESULT nh_core_writeBytesToFile(
+        char *filePath_p, char *bytes_p
     );
 
-    NH_BOOL nh_fileExistsOnMachine(
-        NH_BYTE *filename_p, NH_BYTE *base_p
+    bool nh_fileExistsOnMachine(
+        char *filename_p, char *base_p
     ); 
 
-    NH_BOOL nh_core_isRegularFile(
-        const NH_BYTE *path_p
+    bool nh_core_isRegularFile(
+        const char *path_p
     );
 
 /** @} */

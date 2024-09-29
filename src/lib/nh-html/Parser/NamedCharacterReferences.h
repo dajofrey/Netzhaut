@@ -17,7 +17,7 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_HTML_CHARACTER_REFERENCES_PP[];
+    extern const char *NH_HTML_CHARACTER_REFERENCES_PP[];
     extern const NH_ENCODING_UTF32 NH_HTML_CHARACTER_REFERENCE_CODEPOINTS_P[];
 
 /** @} */

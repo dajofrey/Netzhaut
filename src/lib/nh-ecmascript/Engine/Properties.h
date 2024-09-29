@@ -74,7 +74,7 @@
         int chunkSize 
     );
 
-    NH_BOOL nh_ecmascript_equalPropertyKeys(
+    bool nh_ecmascript_equalPropertyKeys(
         nh_ecmascript_Any Key1, nh_ecmascript_Any Key2
     );
 

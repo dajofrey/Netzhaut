@@ -30,7 +30,7 @@
 	
 // TYPES ===========================================================================================
 
-const NH_BYTE *NH_CSS_TYPE_NAMES_PP[] =
+const char *NH_CSS_TYPE_NAMES_PP[] =
 {
     "undefined",
     "number",
@@ -98,7 +98,7 @@ NH_CSS_END(Value)
 
 // IS STRING =======================================================================================
 
-NH_BOOL nh_css_isStringValue(
+bool nh_css_isStringValue(
     nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -112,13 +112,13 @@ NH_CSS_BEGIN()
     ||  Value_p->Common.type == NH_CSS_VALUE_HEX
     ||  Value_p->Common.type == NH_CSS_VALUE_FUNCTION)
     {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
-static NH_BOOL nh_css_isDimensionValueType(
+static bool nh_css_isDimensionValueType(
     NH_CSS_VALUE type)
 {
 NH_CSS_BEGIN()
@@ -155,20 +155,20 @@ NH_CSS_BEGIN()
     ||  type == NH_CSS_VALUE_GRAD
     ||  type == NH_CSS_VALUE_RAD
     ||  type == NH_CSS_VALUE_TURN) {
-        NH_CSS_END(NH_TRUE)
+        NH_CSS_END(true)
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
-NH_BOOL nh_css_isLengthValue(
+bool nh_css_isLengthValue(
     nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
 NH_CSS_END(nh_css_isDimensionValueType(Value_p->Common.type) || (Value_p->Common.type == NH_CSS_VALUE_NUMBER && Value_p->number == 0))
 }
 
-NH_BOOL nh_css_isLengthPercentageValue(
+bool nh_css_isLengthPercentageValue(
     nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -177,7 +177,7 @@ NH_CSS_END(nh_css_isLengthValue(Value_p) || Value_p->Common.type == NH_CSS_VALUE
 
 // CONVERT =========================================================================================
 
-static NH_CSS_RESULT nh_css_convertTokenToValue(
+static NH_API_RESULT nh_css_convertTokenToValue(
     nh_css_Token *Token_p, nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -265,7 +265,7 @@ NH_CSS_BEGIN()
                     Value_p->Common.type = NH_CSS_VALUE_PX;
                 }
                 else {
-                    NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+                    NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
                 }
 
                 Value_p->number = Token_p->Dimension.value;
@@ -289,13 +289,13 @@ NH_CSS_BEGIN()
         case NH_CSS_TOKEN_LEFT_CURLY_BRACKET   :
         case NH_CSS_TOKEN_RIGHT_CURLY_BRACKET  :
         case NH_CSS_TOKEN_EOF                  : 
-            NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+            NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_convertComponentValueToValue(
+static NH_API_RESULT nh_css_convertComponentValueToValue(
     nh_css_ComponentValue *ComponentValue_p, nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -311,12 +311,12 @@ NH_CSS_BEGIN()
             break; 
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 }
 
 // SPECIFIED VALUES ================================================================================
 
-static NH_CSS_RESULT nh_css_getValue(
+static NH_API_RESULT nh_css_getValue(
     nh_Array *ComponentValues_p, nh_css_Value *Value_p, nh_css_DeclaredValue *Origin_p)
 {
 NH_CSS_BEGIN()
@@ -328,8 +328,8 @@ NH_CSS_BEGIN()
         nh_css_ComponentValue *ComponentValue_p = &((nh_css_ComponentValue*)ComponentValues_p->p)[i];
         NH_CSS_CHECK_NULL(ComponentValue_p)
 
-        if (nh_css_convertComponentValueToValue(ComponentValue_p, Value_p) != NH_CSS_SUCCESS) {
-            NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)
+        if (nh_css_convertComponentValueToValue(ComponentValue_p, Value_p) != NH_API_SUCCESS) {
+            NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
         }
 
         if (i + 1 < ComponentValues_p->length) {
@@ -339,10 +339,10 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getCascadedValue(
+static NH_API_RESULT nh_css_getCascadedValue(
     nh_List *OrderedList_p, nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -351,10 +351,10 @@ NH_CSS_BEGIN()
     NH_CSS_CHECK_NULL(CascadedValue_p)
     NH_CSS_CHECK(nh_css_getValue(&CascadedValue_p->Declaration_p->ComponentValues, Value_p, CascadedValue_p))
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getInitialValue(
+static NH_API_RESULT nh_css_getInitialValue(
     NH_CSS_PROPERTY property, nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -363,10 +363,10 @@ NH_CSS_BEGIN()
     NH_CSS_CHECK_NULL(Data_p)
     NH_CSS_CHECK(nh_css_getValue(&Data_p->ComponentValues, Value_p, NULL))
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getDefaultValue(
+static NH_API_RESULT nh_css_getDefaultValue(
     nh_dom_Node *Node_p, NH_CSS_PROPERTY property, nh_css_Value *Value_p)
 {
 NH_CSS_BEGIN()
@@ -381,10 +381,10 @@ NH_CSS_BEGIN()
         NH_CSS_CHECK(nh_css_getInitialValue(property, Value_p))
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_getSpecifiedValue(
+static NH_API_RESULT nh_css_getSpecifiedValue(
     nh_dom_Node *Node_p, NH_CSS_PROPERTY property, nh_css_Value *Value_p, nh_css_Filter *Filter_p)
 {
 NH_CSS_BEGIN()
@@ -398,17 +398,17 @@ NH_CSS_BEGIN()
         NH_CSS_CHECK(nh_css_getDefaultValue(Node_p, property, Value_p))
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CSS_RESULT nh_css_setSpecifiedValues(
+NH_API_RESULT nh_css_setSpecifiedValues(
     nh_css_LogContext *LogContext_p, nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, 
     nh_List UserStyleSheets)
 {
 NH_CSS_BEGIN()
 
     nh_dom_Node *Node_p = nh_dom_getNode((nh_webidl_Object*)Element_p);
-    if (nh_dom_getSpecifiedPropertyValues(Node_p)->length > 0) {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)}
+    if (nh_dom_getSpecifiedPropertyValues(Node_p)->length > 0) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     nh_Array SpecifiedValues = nh_core_initArray(sizeof(nh_css_Value), NH_CSS_PROPERTY_COUNT);
     nh_css_Filter Filter = nh_css_filterDeclarations(Element_p, AuthorStyleSheets_p, UserStyleSheets);
@@ -418,21 +418,21 @@ NH_CSS_BEGIN()
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) 
     {
         nh_css_Value Value = nh_css_initValue(NH_CSS_VALUE_SCOPE_SPECIFIED, NH_CSS_VALUE_UNDEFINED);
-        if (nh_css_getSpecifiedValue(Node_p, i, &Value, &Filter) == NH_CSS_SUCCESS) {
+        if (nh_css_getSpecifiedValue(Node_p, i, &Value, &Filter) == NH_API_SUCCESS) {
             nh_css_Value *Value_p = nh_core_incrementArray(&SpecifiedValues);
             *Value_p = Value;
         }
-        else {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_BAD_STATE)}
+        else {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
     }
 
     nh_dom_setSpecifiedPropertyValues(Node_p, SpecifiedValues);
 
     if (LogContext_p) {nh_css_logSpecifiedValues(LogContext_p, &SpecifiedValues);}
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_CSS_RESULT nh_css_freeSpecifiedValues(
+NH_API_RESULT nh_css_freeSpecifiedValues(
     nh_dom_Node *Node_p)
 {
 NH_CSS_BEGIN()
@@ -450,6 +450,6 @@ NH_CSS_BEGIN()
 
     nh_core_freeArray(SpecifiedValues_p);
 
-NH_CSS_DIAGNOSTIC_END(NH_CSS_SUCCESS)
+NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

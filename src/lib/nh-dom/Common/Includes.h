@@ -9,9 +9,12 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-// Include public API.
+#include "../Interfaces.h"
+
 #include "../../nh-api/nh-dom.h"
 #include "../../nh-api/nh-webidl.h"
+
+#include "../../nh-webidl/Runtime/Type.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

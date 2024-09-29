@@ -11,8 +11,10 @@
 
 #include "../../nh-api/nh-html.h"
 #include "../../nh-api/nh-css.h"
-#include "../../nh-api/nh-webidl.h"
-#include "../../nh-api/nh-url.h"
+
+#include "../../nh-core/Util/List.h"
+#include "../../nh-webidl/Runtime/Object.h"
+#include "../../nh-url/Main/URLParser.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

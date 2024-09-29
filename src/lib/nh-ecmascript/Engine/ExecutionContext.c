@@ -78,7 +78,7 @@ NH_ECMASCRIPT_BEGIN()
     }
 
     // TODO If the code matching the syntactic production that is being evaluated is contained in strict mode code, let strict be true; else let strict be false.
-    NH_ECMASCRIPT_BOOLEAN strict = NH_FALSE;
+    NH_ECMASCRIPT_BOOLEAN strict = false;
 
 NH_ECMASCRIPT_END(nh_ecmascript_getIdentifierReference(Environment_p, Name_p, strict))
 }

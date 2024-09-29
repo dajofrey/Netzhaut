@@ -18,13 +18,13 @@
 
 // HELPER ==========================================================================================
 
-static nh_wsi_Event nh_wsi_initEvent(
-    NH_WSI_EVENT_E type)
+static nh_api_WSIEvent nh_wsi_initEvent(
+    NH_API_WSI_EVENT_E type)
 {
 NH_WSI_BEGIN()
 
-    nh_wsi_Event Event;
-    memset(&Event, 0, sizeof(nh_wsi_Event));
+    nh_api_WSIEvent Event;
+    memset(&Event, 0, sizeof(nh_api_WSIEvent));
     Event.type = type;
  
 NH_WSI_END(Event)
@@ -33,11 +33,11 @@ NH_WSI_END(Event)
 // SEND ============================================================================================
 
 void nh_wsi_sendWindowEvent(
-    nh_wsi_Window *Window_p, NH_WSI_WINDOW_E type, NH_PIXEL x, NH_PIXEL y, NH_PIXEL width, NH_PIXEL height)
+    nh_wsi_Window *Window_p, NH_API_WINDOW_E type, int x, int y, int width, int height)
 {
 NH_WSI_BEGIN()
 
-    nh_wsi_Event Event = nh_wsi_initEvent(NH_WSI_EVENT_WINDOW);
+    nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_WINDOW);
 
     Event.Window.type        = type;
     Event.Window.Position.x  = x;
@@ -49,18 +49,18 @@ NH_WSI_BEGIN()
         Window_p->callback_f(Window_p, Event);
     }
 
-    nh_wsi_Event *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
+    nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
     *Event_p = Event;
 
 NH_WSI_SILENT_END()
 }
 
 void nh_wsi_sendMouseEvent(
-    nh_wsi_Window *Window_p, NH_PIXEL x, NH_PIXEL y, NH_WSI_TRIGGER_E trigger, NH_WSI_MOUSE_E type)
+    nh_wsi_Window *Window_p, int x, int y, NH_API_TRIGGER_E trigger, NH_API_MOUSE_E type)
 {
 NH_WSI_BEGIN()
 
-    nh_wsi_Event Event = nh_wsi_initEvent(NH_WSI_EVENT_MOUSE);
+    nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_MOUSE);
 
     Event.Mouse.Position.x = x;
     Event.Mouse.Position.y = y;
@@ -71,19 +71,19 @@ NH_WSI_BEGIN()
         Window_p->callback_f(Window_p, Event);
     }
 
-    nh_wsi_Event *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
+    nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
     *Event_p = Event;
 
 NH_WSI_SILENT_END()
 }
 
 void nh_wsi_sendKeyboardEvent(
-    nh_wsi_Window *Window_p, NH_ENCODING_UTF32 codepoint, NH_WSI_KEY_E special, NH_WSI_TRIGGER_E trigger,
-    NH_WSI_MODIFIER_FLAG state)
+    nh_wsi_Window *Window_p, NH_ENCODING_UTF32 codepoint, NH_API_KEY_E special, NH_API_TRIGGER_E trigger,
+    NH_API_MODIFIER_FLAG state)
 {
 NH_WSI_BEGIN()
 
-    nh_wsi_Event Event = nh_wsi_initEvent(NH_WSI_EVENT_KEYBOARD);
+    nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_KEYBOARD);
 
     Event.Keyboard.codepoint = codepoint;
     Event.Keyboard.trigger = trigger;
@@ -94,7 +94,7 @@ NH_WSI_BEGIN()
         Window_p->callback_f(Window_p, Event);
     }
 
-    nh_wsi_Event *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
+    nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
     *Event_p = Event;
 
 NH_WSI_SILENT_END()

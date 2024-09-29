@@ -30,7 +30,7 @@
 
     // https://tc39.es/ecma262/#sec-data-blocks
     typedef struct nh_ecmascript_DataBlock {
-        NH_BOOL shared;
+        bool shared;
         nh_Array Data; 
     } nh_ecmascript_DataBlock;
 
@@ -38,7 +38,7 @@
     typedef struct nh_ecmascript_SharedDataBlockEvent {
         NH_ECMASCRIPT_SHARED_DATA_BLOCK_EVENT type;
         int order;
-        NH_BOOL noTear;
+        bool noTear;
         nh_ecmascript_DataBlock *Block_p;
         unsigned int byteIndex;
         unsigned int elementSize;

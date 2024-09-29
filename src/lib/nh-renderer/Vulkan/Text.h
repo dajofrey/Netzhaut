@@ -24,12 +24,12 @@
  *  @{
  */
 
-    NH_RENDERER_RESULT nh_renderer_vk_createText(
-        nh_vk_GPU *GPU_p, nh_css_Fragment *Fragment_p, nh_gfx_TextSegment *Segment_p, NH_BOOL allocate, 
+    NH_API_RESULT nh_renderer_vk_createText(
+        nh_vk_GPU *GPU_p, nh_css_Fragment *Fragment_p, nh_gfx_TextSegment *Segment_p, bool allocate, 
         float *vertices_p, uint32_t *indices_p, int index
     );
 
-//    NH_CORE_RESULT nh_vk_updateText(
+//    NH_API_RESULT nh_vk_updateText(
 //        nh_Tab *Tab_p, nh_html_Node *Node_p
 //    );
 

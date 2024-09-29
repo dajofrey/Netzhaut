@@ -45,20 +45,20 @@
 
 #define NH_CORE_CHECK(checkable)                                             \
 {                                                                           \
-    NH_CORE_RESULT checkResult = checkable;                                  \
-    if (checkResult != NH_CORE_SUCCESS) {NH_CORE_DIAGNOSTIC_END(checkResult)} \
+    NH_API_RESULT checkResult = checkable;                                  \
+    if (checkResult != NH_API_SUCCESS) {NH_CORE_DIAGNOSTIC_END(checkResult)} \
 }
 
 #define NH_CORE_CHECK_2(checkReturn, checkable)                   \
 {                                                                \
-    NH_CORE_RESULT checkResult = checkable;                       \
-    if (checkResult != NH_CORE_SUCCESS) {NH_CORE_END(checkReturn)} \
+    NH_API_RESULT checkResult = checkable;                       \
+    if (checkResult != NH_API_SUCCESS) {NH_CORE_END(checkReturn)} \
 }
 
 #define NH_CORE_CHECK_NULL(checkable)                                              \
 {                                                                                 \
     void *checkResult_p = checkable;                                              \
-    if (checkResult_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_NULL_POINTER)} \
+    if (checkResult_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_NULL_POINTER)} \
 }
 
 #define NH_CORE_CHECK_NULL_2(checkReturn, checkable)      \
@@ -70,7 +70,7 @@
 #define NH_CORE_CHECK_MEM(checkable)                                                    \
 {                                                                                      \
     void *checkResult_p = checkable;                                                   \
-    if (checkResult_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_MEMORY_ALLOCATION)} \
+    if (checkResult_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_MEMORY_ALLOCATION)} \
 }
 
 #define NH_CORE_CHECK_MEM_2(checkReturn, checkable)       \

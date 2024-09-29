@@ -37,27 +37,27 @@
         NH_ENCODING_UTF32 *scheme_p
     );
     
-    NH_BOOL nh_url_isURLCodepoint(
+    bool nh_url_isURLCodepoint(
         NH_ENCODING_UTF32 codepoint
     );
 
-    NH_BOOL nh_url_isForbiddenHostCodepoint(
+    bool nh_url_isForbiddenHostCodepoint(
         NH_ENCODING_UTF32 codepoint
     );
 
-    NH_BOOL nh_url_inC0PercentEncodeSet(
+    bool nh_url_inC0PercentEncodeSet(
         NH_ENCODING_UTF32 codepoint
     );
 
-    NH_BOOL nh_url_isWindowsDriveLetter(
+    bool nh_url_isWindowsDriveLetter(
         nh_encoding_UTF32String *String_p
     );
     
-    NH_BOOL nh_url_isNormalizedWindowsDriveLetter(
+    bool nh_url_isNormalizedWindowsDriveLetter(
         nh_encoding_UTF32String *String_p
     );
     
-    NH_BOOL nh_url_stringStartsWithWindowsDriveLetter(
+    bool nh_url_stringStartsWithWindowsDriveLetter(
         nh_encoding_UTF32String *String_p
     );
 

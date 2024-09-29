@@ -11,7 +11,7 @@
 
 // Include public API.
 #include "../../nh-api/nh-encoding.h"
+#include "../../nh-core/Util/String.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
-
 #endif // NH_ENCODING_COMMON_INCLUDES_H

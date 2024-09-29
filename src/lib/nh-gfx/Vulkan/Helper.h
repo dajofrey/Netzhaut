@@ -43,9 +43,9 @@
    typedef struct nh_vk_BufferInfo {
         VkBufferCreateInfo *Info_p;
         void *data_p;              
-        NH_BOOL mapMemory;           
+        bool mapMemory;           
         int memoryProperties;    
-        NH_BOOL createInfo;          
+        bool createInfo;          
     } nh_vk_BufferInfo;
     
    typedef struct nh_vk_Buffer {
@@ -93,45 +93,45 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_vk_createBuffer(
+    NH_API_RESULT nh_vk_createBuffer(
         nh_vk_Driver *Driver_p, nh_vk_BufferInfo *BufferInfo_p, nh_vk_Buffer *Buffer_p
     );
     
-    NH_GFX_RESULT nh_vk_destroyBuffer(
+    NH_API_RESULT nh_vk_destroyBuffer(
         nh_vk_Driver *Driver_p, nh_vk_Buffer *Buffer_p
     );
 
-    NH_GFX_RESULT nh_vk_createDescriptorSet(
+    NH_API_RESULT nh_vk_createDescriptorSet(
         nh_vk_Driver *Driver_p, VkDescriptorSetAllocateInfo *DescriptorSetAllocateInfo_p, 
         VkDescriptorSetLayoutCreateInfo *DescriptorSetLayoutInfo_p, nh_vk_DescriptorSet *DescriptorSet_p
     );
     
-    NH_GFX_RESULT nh_vk_destroyDescriptorSet(
+    NH_API_RESULT nh_vk_destroyDescriptorSet(
         nh_vk_Driver *Driver_p, nh_vk_DescriptorSet *DescriptorSet_p, VkDescriptorPool *DescriptorPool_p
     );
     
-    NH_GFX_RESULT nh_vk_createDeviceMemory(
+    NH_API_RESULT nh_vk_createDeviceMemory(
         nh_vk_Driver *Driver_p, nh_vk_DeviceMemoryInfo *Info_p, VkDeviceMemory *DeviceMemory_p
     );
     
-    NH_GFX_RESULT nh_vk_bindDeviceMemory(
+    NH_API_RESULT nh_vk_bindDeviceMemory(
         nh_vk_Driver *Driver_p, VkDeviceMemory *DeviceMemory_p, nh_vk_DeviceMemoryInfo *Info_p
     );
     
-    NH_GFX_RESULT nh_vk_mapDeviceMemory(
+    NH_API_RESULT nh_vk_mapDeviceMemory(
         nh_vk_Driver *Driver_p, VkDeviceMemory *DeviceMemory_p, const void *data_p, 
         size_t bufferSize, size_t offset
     );
     
-    NH_GFX_RESULT nh_vk_findMemoryType(
+    NH_API_RESULT nh_vk_findMemoryType(
         nh_vk_Driver *Driver_p, int typeFilter, VkMemoryPropertyFlags properties, uint32_t *result_p
     ); 
 
-    NH_GFX_RESULT nh_vk_createShaderModule(
+    NH_API_RESULT nh_vk_createShaderModule(
         nh_vk_Driver *Driver_p, const uint32_t *code, size_t size, VkShaderModule *ShaderModule_p
     );
 
-    NH_GFX_RESULT nh_vk_createPipeline(
+    NH_API_RESULT nh_vk_createPipeline(
         nh_vk_Driver *Driver_p, NH_VK_PIPELINE PipelineType, VkPipelineLayoutCreateInfo *PipelineLayoutCreateInfo_p, 
         void *pipelineInfo_p, nh_vk_Pipeline *Pipeline_p
     );

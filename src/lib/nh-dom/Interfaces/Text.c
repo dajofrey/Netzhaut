@@ -24,12 +24,12 @@
 
 // INITIALIZE ======================================================================================
 
-NH_DOM_RESULT nh_dom_initializeText(
+NH_API_RESULT nh_dom_initializeText(
     nh_webidl_Object *CharacterData_p)
 {
 NH_DOM_BEGIN()
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // INTERNAL ========================================================================================
@@ -55,7 +55,7 @@ NH_DOM_BEGIN()
 NH_DOM_END((nh_dom_Text*)Text_p)
 }
 
-NH_DOM_RESULT nh_dom_appendToText(
+NH_API_RESULT nh_dom_appendToText(
     nh_dom_Text *Text_p, nh_webidl_DOMString DOMString)
 {
 NH_DOM_BEGIN()
@@ -63,7 +63,7 @@ NH_DOM_BEGIN()
     NH_DOM_CHECK(nh_dom_appendToCharacterData(
         (nh_dom_CharacterData*)((nh_webidl_Object*)Text_p)->Child_p, DOMString))
 
-NH_DOM_DIAGNOSTIC_END(NH_DOM_SUCCESS)
+NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_webidl_DOMString *nh_dom_getTextString(

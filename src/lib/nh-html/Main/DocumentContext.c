@@ -39,15 +39,15 @@ NH_HTML_BEGIN()
     nh_html_DocumentContext DocumentContext;
     DocumentContext.Documents = nh_core_initList(64);
     DocumentContext.Document_p = NULL;
-    DocumentContext.scripting = NH_FALSE;
-    DocumentContext.browsingContext = NH_FALSE;
+    DocumentContext.scripting = false;
+    DocumentContext.browsingContext = false;
     DocumentContext.LayoutEngine_p = NULL;
 
 NH_HTML_END(DocumentContext)
 }
 
 nh_html_DocumentContext *nh_html_createDocumentContext(
-    NH_BOOL browsingContext)
+    bool browsingContext)
 {
 NH_HTML_BEGIN()
 
@@ -68,8 +68,8 @@ NH_HTML_END(DocumentContext_p)
 
 // LOAD ============================================================================================
 
-NH_HTML_RESULT nh_html_loadBytes(
-    nh_html_DocumentContext *Context_p, NH_BYTE *bytes_p, unsigned long long size)
+NH_API_RESULT nh_html_loadBytes(
+    nh_html_DocumentContext *Context_p, char *bytes_p, unsigned long long size)
 {
 NH_HTML_BEGIN()
 
@@ -91,7 +91,7 @@ NH_HTML_BEGIN()
             memset(Object_p->internal_p, 0, sizeof(nh_css_Layout));
         }
 
-        NH_BYTE logId_p[127] = {0};
+        char logId_p[127] = {0};
         sprintf(logId_p, "%p", Document_p);
 
         NH_HTML_CHECK(nh_html_parseDocument(logId_p, String, Document_p))
@@ -100,6 +100,6 @@ NH_HTML_BEGIN()
         Context_p->Document_p = Document_p;
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

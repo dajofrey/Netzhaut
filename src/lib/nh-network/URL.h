@@ -23,7 +23,7 @@
 
 //    typedef struct nh_network_URL nh_network_URL;
 //
-//    typedef NH_NETWORK_RESULT (*nh_network_createURL_f)(
+//    typedef NH_API_RESULT (*nh_network_createURL_f)(
 //        nh_URI *URI_p
 //    );
 //
@@ -50,7 +50,7 @@
  *  @{
  */
 
-//    NH_NETWORK_RESULT nh_network_createURL(
+//    NH_API_RESULT nh_network_createURL(
 //        nh_URI *URI_p
 //    );
 //

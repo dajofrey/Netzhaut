@@ -39,11 +39,11 @@ NH_RENDERER_BEGIN()
 
     nh_renderer_ClipBox ClipBox = {0};
 
-    ClipBox.Position.x = PIXEL_TO_CLIP(PixelBox.Position.x, Viewport_p, NH_TRUE);
-    ClipBox.Position.y = PIXEL_TO_CLIP(PixelBox.Position.y, Viewport_p, NH_FALSE);
+    ClipBox.Position.x = PIXEL_TO_CLIP(PixelBox.Position.x, Viewport_p, true);
+    ClipBox.Position.y = PIXEL_TO_CLIP(PixelBox.Position.y, Viewport_p, false);
 
-    ClipBox.Size.width  = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.width, Viewport_p, NH_TRUE));
-    ClipBox.Size.height = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.height, Viewport_p, NH_FALSE));
+    ClipBox.Size.width  = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.width, Viewport_p, true));
+    ClipBox.Size.height = CLIP_LENGTH(PIXEL_TO_CLIP(PixelBox.Size.height, Viewport_p, false));
 
     ClipBox.depth = PixelBox.depth;
 
@@ -116,20 +116,20 @@ NH_RENDERER_BEGIN()
 //    radii_p[2] = Fragment_p->Values.borderBottomLeftRadius;
 //    radii_p[3] = Fragment_p->Values.borderBottomRightRadius;
     
-    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "top", Triangles_p, NH_TRUE, triangleCount, PaddingBox.depth);
-    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "right", Triangles_p, NH_TRUE, triangleCount, PaddingBox.depth);
-    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "bottom", Triangles_p, NH_TRUE, triangleCount, PaddingBox.depth);
-    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "left", Triangles_p, NH_TRUE, triangleCount, PaddingBox.depth);
+    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "top", Triangles_p, true, triangleCount, PaddingBox.depth);
+    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "right", Triangles_p, true, triangleCount, PaddingBox.depth);
+    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "bottom", Triangles_p, true, triangleCount, PaddingBox.depth);
+    triangleCount = nh_renderer_triangulateBox(PaddingBox, ContentBox, radii_p, cornerTriangleCount, "left", Triangles_p, true, triangleCount, PaddingBox.depth);
 
     if (vertices_p != NULL) {
 //        nh_scrollTriangles(Viewport_p, Triangles_p, triangleCount);
-        nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, NH_FALSE);
+        nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, false);
     }
 
 NH_RENDERER_END(triangleCount * 9)
 }
 
-//NH_CORE_RESULT nh_renderer_getBackgroundImageVertices(
+//NH_API_RESULT nh_renderer_getBackgroundImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_renderer_FormattingNodeFragment *Fragment_p, float vertices_p[30], NH_RENDERER_Image *Image_p, 
 //    float subtractFromZ)
 //{
@@ -141,7 +141,7 @@ NH_RENDERER_END(triangleCount * 9)
 //    nh_renderer_getTextureTriangles(Triangles_p, Box);
 //
 //    nh_scrollTriangles(Viewport_p, Triangles_p, 2);
-//    nh_trianglesToArray(Triangles_p, vertices_p, 2, NH_TRUE);
+//    nh_trianglesToArray(Triangles_p, vertices_p, 2, true);
 //
 //NH_DIAGNOSTIC_END(NH_SUCCESS)
 //}
@@ -153,7 +153,7 @@ NH_RENDERER_END(triangleCount * 9)
 )
 
 int nh_renderer_getBorderVertices(
-    nh_gfx_Viewport *Viewport_p, nh_css_Fragment *Fragment_p, float *vertices_p, NH_BYTE *side_p, 
+    nh_gfx_Viewport *Viewport_p, nh_css_Fragment *Fragment_p, float *vertices_p, char *side_p, 
     int cornerTriangleCount)
 {
 NH_RENDERER_BEGIN()
@@ -166,21 +166,21 @@ NH_RENDERER_BEGIN()
 
 // TODO radii second value
     float radii_p[4] = {0.0f};
-    radii_p[0] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderTopLeftRadius, Viewport_p, NH_TRUE);
-    radii_p[1] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderTopRightRadius, Viewport_p, NH_TRUE);
-    radii_p[2] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderBottomLeftRadius, Viewport_p, NH_TRUE);
-    radii_p[3] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderBottomRightRadius, Viewport_p, NH_TRUE);
+    radii_p[0] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderTopLeftRadius, Viewport_p, true);
+    radii_p[1] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderTopRightRadius, Viewport_p, true);
+    radii_p[2] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderBottomLeftRadius, Viewport_p, true);
+    radii_p[3] = PIXEL_TO_CLIP_LENGTH(Fragment_p->Box.Values.borderBottomRightRadius, Viewport_p, true);
 
     float offsetZ = 0.001f;
-    int triangleCount = nh_renderer_triangulateBox(BorderBox, PaddingBox, radii_p, cornerTriangleCount, side_p, Triangles_p, NH_FALSE, 0, BorderBox.depth - offsetZ);
+    int triangleCount = nh_renderer_triangulateBox(BorderBox, PaddingBox, radii_p, cornerTriangleCount, side_p, Triangles_p, false, 0, BorderBox.depth - offsetZ);
 
 //    nh_scrollTriangles(Viewport_p, Triangles_p, triangleCount);
-    nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, NH_FALSE);
+    nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, false);
 
 NH_RENDERER_END(triangleCount * 9)
 }
 
-//NH_CORE_RESULT nh_renderer_getImageVertices(
+//NH_API_RESULT nh_renderer_getImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_renderer_FormattingNodeFragment *Fragment_p, float vertices_p[30], float subtractFromZ)
 //{
 //NH_RENDERER_BEGIN()
@@ -192,13 +192,13 @@ NH_RENDERER_END(triangleCount * 9)
 //    nh_renderer_getTextureTriangles(Triangles_p, ContentBox);
 //
 //    nh_scrollTriangles(Viewport_p, Triangles_p, 2);
-//    nh_trianglesToArray(Triangles_p, vertices_p, 2, NH_TRUE);
+//    nh_trianglesToArray(Triangles_p, vertices_p, 2, true);
 //
 //NH_DIAGNOSTIC_END(NH_SUCCESS)
 //}
 
-NH_RENDERER_RESULT nh_renderer_getTextVertices(
-    nh_gfx_Viewport *Viewport_p, nh_gfx_TextSegment *Segment_p, NH_PIXEL *x_p, NH_PIXEL y, float *z_p,
+NH_API_RESULT nh_renderer_getTextVertices(
+    nh_gfx_Viewport *Viewport_p, nh_gfx_TextSegment *Segment_p, int *x_p, int y, float *z_p,
     float **vertices_pp, uint32_t **indices_pp)
 {
 NH_RENDERER_BEGIN()
@@ -214,7 +214,7 @@ NH_RENDERER_BEGIN()
 
     nh_css_PixelBox GlyphBox;
     GlyphBox.Position.x = *x_p;
-    GlyphBox.Position.y = y + (NH_PIXEL)Segment_p->FontInstance_p->descender + Segment_p->FontInstance_p->fontSize;
+    GlyphBox.Position.y = y + (int)Segment_p->FontInstance_p->descender + Segment_p->FontInstance_p->fontSize;
 
     for (int i = 0, offset = 0, indicesIndex = 0; i < glyphs; ++i) 
     {
@@ -272,7 +272,7 @@ NH_RENDERER_BEGIN()
 
     float *vertices_p = nh_core_allocate(sizeof(float) * 20 * glyphs);
     NH_RENDERER_CHECK_MEM(vertices_p)
-    nh_verticesToArray(Vertices_p, vertices_p, 4 * glyphs, NH_TRUE, 0);
+    nh_verticesToArray(Vertices_p, vertices_p, 4 * glyphs, true, 0);
 
     if (vertices_pp != NULL) {*vertices_pp = vertices_p;}
     if (indices_pp != NULL) {*indices_pp = indices_p;}
@@ -282,6 +282,6 @@ NH_RENDERER_BEGIN()
 
     nh_gfx_destroyHarfBuzzBuffer(Buffer);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_RENDERER_SUCCESS)
+NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

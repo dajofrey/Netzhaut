@@ -12,13 +12,13 @@
 
 // RESULTS =========================================================================================
 
-const char *NH_WSI_RESULT_ES_PP[] = 
+const char *NH_API_RESULTS_PP[] = 
 {
-    "NH_WSI_SUCCESS",                    
-    "NH_WSI_ERROR_NULL_POINTER",         
-    "NH_WSI_ERROR_BAD_STATE", 
-    "NH_WSI_ERROR_MEMORY_ALLOCATION",
+    "NH_API_SUCCESS",                    
+    "NH_API_ERROR_NULL_POINTER",         
+    "NH_API_ERROR_BAD_STATE", 
+    "NH_API_ERROR_MEMORY_ALLOCATION",
 };
 
-unsigned int NH_WSI_RESULT_ES_PP_COUNT = sizeof(NH_WSI_RESULT_ES_PP) / sizeof(NH_WSI_RESULT_ES_PP[0]);
+unsigned int NH_API_RESULTS_PP_COUNT = sizeof(NH_API_RESULTS_PP) / sizeof(NH_API_RESULTS_PP[0]);
 

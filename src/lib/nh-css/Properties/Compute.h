@@ -18,11 +18,11 @@
  *  @{
  */
 
-    NH_CSS_RESULT nh_css_computeSpecifiedValues(
+    NH_API_RESULT nh_css_computeSpecifiedValues(
         nh_css_LogContext *LogContext_p, nh_dom_Node *Node_p
     );
 
-    NH_CSS_RESULT nh_css_freeComputedValues(
+    NH_API_RESULT nh_css_freeComputedValues(
         nh_dom_Node *Node_p
     );
 

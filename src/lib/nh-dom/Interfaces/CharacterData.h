@@ -16,8 +16,7 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-
-    NH_DOM_RESULT nh_dom_appendToCharacterData(
+    NH_API_RESULT nh_dom_appendToCharacterData(
         nh_dom_CharacterData *CharacterData_p, nh_webidl_DOMString DOMString 
     );
 

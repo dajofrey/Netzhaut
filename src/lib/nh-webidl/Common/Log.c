@@ -19,35 +19,35 @@
 
 // DEBUG ===========================================================================================
 
-NH_WEBIDL_RESULT _nh_webidl_logBegin(
+NH_API_RESULT _nh_webidl_logBegin(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_begin(file_p, function_p);
 }
 
-NH_WEBIDL_RESULT _nh_webidl_logEnd(
+NH_API_RESULT _nh_webidl_logEnd(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_end(file_p, function_p);
 }
 
-NH_WEBIDL_RESULT _nh_webidl_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_WEBIDL_RESULT result, int line)
+NH_API_RESULT _nh_webidl_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
 //    _nh_diagnosticEnd(file_p, function_p, result, line);
 //    return result;
 }
 
-NH_WEBIDL_RESULT nh_webidl_logTokens(
-    NH_BYTE *fragmentName_p, nh_Array *Tokens_p, NH_BOOL dirty)
+NH_API_RESULT nh_webidl_logTokens(
+    char *fragmentName_p, nh_Array *Tokens_p, bool dirty)
 {
 NH_WEBIDL_BEGIN()
 
-    NH_BYTE message_p[1023] = {0};
-    NH_BYTE node_p[255] = {0};
+    char message_p[1023] = {0};
+    char node_p[255] = {0};
 
     for (int i = 0; i < Tokens_p->length; ++i) 
     {
@@ -70,22 +70,22 @@ NH_WEBIDL_BEGIN()
         memset(node_p, 0, 255);
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 #define MAX_DEPTH 1024
 
-static NH_WEBIDL_RESULT nh_webidl_logParseTreeRecursively(
-    NH_BYTE *fragmentName_p, nh_webidl_ParseNode *ParseNode_p, nh_webidl_ParseNode *Parent_p, int depth, 
-    NH_BOOL *branch_p, NH_BYTE *message_p, NH_BYTE *indent_p, NH_BYTE *node_p)
+static NH_API_RESULT nh_webidl_logParseTreeRecursively(
+    char *fragmentName_p, nh_webidl_ParseNode *ParseNode_p, nh_webidl_ParseNode *Parent_p, int depth, 
+    bool *branch_p, char *message_p, char *indent_p, char *node_p)
 {
 NH_WEBIDL_BEGIN()
 
-    if (depth >= MAX_DEPTH) {NH_WEBIDL_END(NH_WEBIDL_ERROR_BAD_STATE)}
+    if (depth >= MAX_DEPTH) {NH_WEBIDL_END(NH_API_ERROR_BAD_STATE)}
 
     int offset;
     for (offset = 0; offset < depth; ++offset) {
-        indent_p[offset] = branch_p[offset] == NH_TRUE ? '|' : ' ';
+        indent_p[offset] = branch_p[offset] == true ? '|' : ' ';
     }
 
     if (ParseNode_p->Token_p == NULL) {
@@ -98,9 +98,9 @@ NH_WEBIDL_BEGIN()
     sprintf(node_p, "nh-webidl:Parser:%s:ParseTree", fragmentName_p);
     nh_core_sendLogMessage(node_p, NULL, message_p);
 
-    branch_p[depth] = NH_TRUE;
+    branch_p[depth] = true;
     if (Parent_p != NULL && ParseNode_p == Parent_p->Children.pp[Parent_p->Children.size - 1]) {
-        branch_p[depth - 1] = NH_FALSE;
+        branch_p[depth - 1] = false;
     }
 
     memset(message_p, 0, 2047);
@@ -114,42 +114,42 @@ NH_WEBIDL_BEGIN()
         );
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_WEBIDL_RESULT nh_webidl_logParseTree(
-    NH_BYTE *fragmentName_p, nh_webidl_ParseNode *ParseNode_p)
+NH_API_RESULT nh_webidl_logParseTree(
+    char *fragmentName_p, nh_webidl_ParseNode *ParseNode_p)
 {
 NH_WEBIDL_BEGIN()
 
-    NH_BYTE indent_p[MAX_DEPTH] = {'\0'};
-    NH_BYTE message_p[2047] = {'\0'};
-    NH_BYTE node_p[255] = {0};
+    char indent_p[MAX_DEPTH] = {'\0'};
+    char message_p[2047] = {'\0'};
+    char node_p[255] = {0};
 
-    NH_BOOL branch_p[MAX_DEPTH];
-    memset(branch_p, NH_FALSE, MAX_DEPTH);
+    bool branch_p[MAX_DEPTH];
+    memset(branch_p, false, MAX_DEPTH);
 
     nh_webidl_logParseTreeRecursively(
         fragmentName_p, ParseNode_p, NULL, 0, branch_p, message_p, indent_p, node_p
     );
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_WEBIDL_RESULT nh_webidl_logFragment(
-    NH_BYTE *specification_p, nh_webidl_Fragment *Fragment_p)
+NH_API_RESULT nh_webidl_logFragment(
+    char *specification_p, nh_webidl_Fragment *Fragment_p)
 {
 NH_WEBIDL_BEGIN()
 
-    NH_BYTE message_p[1023] = {'\0'};
+    char message_p[1023] = {'\0'};
 
     for (int i = 0; i < Fragment_p->Interfaces.length; ++i) 
     {
         nh_webidl_Interface *Interface_p = &((nh_webidl_Interface*)Fragment_p->Interfaces.p)[i];
-        NH_BYTE className_p[255] = {'\0'};
+        char className_p[255] = {'\0'};
         sprintf(className_p, Interface_p->partial ? "%s (partial)" : "%s", Interface_p->name_p);
 
-        NH_BYTE node_p[255] = {0};
+        char node_p[255] = {0};
         sprintf(node_p, "nh-webidl:%s:Interfaces:%s", specification_p, className_p);
 
         if (Interface_p->Inheritance_p) 
@@ -174,6 +174,6 @@ NH_WEBIDL_BEGIN()
         }
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

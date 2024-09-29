@@ -37,8 +37,8 @@
     typedef struct nh_html_BrowsingContext {
         nh_webidl_Object *WindowProxy_p;
         struct nh_html_BrowsingContext *OpenerBrowsingContext_p;
-        NH_BOOL disowned;
-        NH_BOOL isClosing;
+        bool disowned;
+        bool isClosing;
         nh_List SessionHistory;
         int virtualBrowsingContextGroupID;
         nh_url *InitialURL_p;

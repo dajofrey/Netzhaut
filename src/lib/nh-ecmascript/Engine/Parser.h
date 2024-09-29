@@ -190,8 +190,8 @@
  *  @{
  */
 
-    extern const NH_BYTE *NH_ECMASCRIPT_RESERVED_WORDS_PP[];
-    extern const NH_BYTE *NH_ECMASCRIPT_PARSE_NODE_NAMES_PP[];
+    extern const char *NH_ECMASCRIPT_RESERVED_WORDS_PP[];
+    extern const char *NH_ECMASCRIPT_PARSE_NODE_NAMES_PP[];
     extern size_t NH_ECMASCRIPT_RESERVED_WORDS_PP_COUNT;
     extern size_t NH_ECMASCRIPT_PARSE_NODE_NAMES_PP_COUNT;
 

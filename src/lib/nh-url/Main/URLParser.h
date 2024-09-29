@@ -9,6 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "HostParser.h"
 #include "../Common/Includes.h"
 
 #endif
@@ -43,6 +44,22 @@
     } NH_URL_PARSER_STATE;
 
 /** @} */
+
+// TYPEDEFS ======================================================================================== 
+
+    typedef uint16_t NH_URL_PORT; 
+
+    typedef struct nh_url_URL { 
+        nh_encoding_UTF32String Scheme; 
+        nh_encoding_UTF32String UserName; 
+        nh_encoding_UTF32String Password; 
+        nh_url_Host *Host_p; 
+        NH_URL_PORT *port_p; 
+        nh_Array Path;                       /**<May contain a path in form of \ref nh_String elements.*/ 
+        nh_String *Query_p;    /**<Can be NULL.*/ 
+        nh_String *Fragment_p; /**<Can be NULL.*/ 
+        bool cannotBeABaseURL; 
+    } nh_url_URL; 
 
 /** @addtogroup lib_nh-url_functions
  *  @{

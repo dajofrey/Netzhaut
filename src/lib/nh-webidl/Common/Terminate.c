@@ -18,12 +18,12 @@
 
 // DEBUG ===========================================================================================
 
-NH_WEBIDL_RESULT nh_webidl_terminate()
+NH_API_RESULT nh_webidl_terminate()
 {
 NH_WEBIDL_BEGIN()
 
     nh_webidl_freeIndexMap();
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

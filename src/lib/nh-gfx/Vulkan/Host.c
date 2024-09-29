@@ -26,24 +26,24 @@
 #define VALIDATION_LAYER "VK_LAYER_KHRONOS_validation"
 #define VALIDATION_EXTENSION "VK_EXT_debug_utils"
 
-static NH_GFX_RESULT nh_vk_createInstance(
-    nh_vk_Host *Host_p, NH_BOOL validation
+static NH_API_RESULT nh_vk_createInstance(
+    nh_vk_Host *Host_p, bool validation
 );
-static NH_GFX_RESULT nh_vk_createMessenger(
+static NH_API_RESULT nh_vk_createMessenger(
     nh_vk_Host *Host_p
 );
 
-static NH_BOOL nh_vk_validationLayerSupported(
+static bool nh_vk_validationLayerSupported(
     nh_vk_Host *Host_p
 ); 
-static NH_BOOL nh_vk_validationExtensionSupported(
+static bool nh_vk_validationExtensionSupported(
     nh_vk_Host *Host_p
 ); 
 
 // HOST ============================================================================================
 
-NH_GFX_RESULT nh_vk_createHost(
-    nh_vk_Host *Host_p, NH_BOOL validation)
+NH_API_RESULT nh_vk_createHost(
+    nh_vk_Host *Host_p, bool validation)
 {
 NH_GFX_BEGIN()
 
@@ -79,10 +79,10 @@ NH_GFX_BEGIN()
     Host_p->validation = validation;
 
     if (validation) {
-        Host_p->validation = nh_vk_createMessenger(Host_p) == NH_GFX_SUCCESS;
+        Host_p->validation = nh_vk_createMessenger(Host_p) == NH_API_SUCCESS;
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_vk_destroyHost(
@@ -110,7 +110,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData, void *pUserData) 
 {
     if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-        NH_BYTE *message_p = nh_core_allocate(sizeof(NH_BYTE) * (strlen(pCallbackData->pMessage) + 1));
+        char *message_p = nh_core_allocate(sizeof(char) * (strlen(pCallbackData->pMessage) + 1));
         if (message_p) {
             sprintf(message_p, pCallbackData->pMessage);
             nh_gfx_logVulkanValidation(message_p);
@@ -122,8 +122,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 
 // INSTANCE ========================================================================================
 
-static NH_GFX_RESULT nh_vk_createInstance(
-    nh_vk_Host *Host_p, NH_BOOL validation)
+static NH_API_RESULT nh_vk_createInstance(
+    nh_vk_Host *Host_p, bool validation)
 {
 NH_GFX_BEGIN();
 
@@ -137,14 +137,14 @@ NH_GFX_BEGIN();
         .apiVersion         = VK_API_VERSION_1_2
     };
 
-    const NH_BYTE* instanceLayers_pp[1] = {VALIDATION_LAYER};
+    const char* instanceLayers_pp[1] = {VALIDATION_LAYER};
 	
 #ifdef __unix__
-    const NH_BYTE* instanceExtensions_pp[]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_xlib_surface", "VK_KHR_portability_enumeration"};
-    const NH_BYTE* instanceExtensions2_pp[] = {"VK_KHR_surface", "VK_KHR_xlib_surface", "VK_KHR_portability_enumeration"};
+    const char* instanceExtensions_pp[]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_xlib_surface", "VK_KHR_portability_enumeration"};
+    const char* instanceExtensions2_pp[] = {"VK_KHR_surface", "VK_KHR_xlib_surface", "VK_KHR_portability_enumeration"};
 #elif defined(_WIN32) || defined (WIN32)
-    const NH_BYTE* instanceExtensions_pp[]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_win32_surface"};
-    const NH_BYTE* instanceExtensions2_pp[] = {"VK_KHR_surface", "VK_KHR_win32_surface"};
+    const char* instanceExtensions_pp[]  = {VALIDATION_EXTENSION, "VK_KHR_surface", "VK_KHR_win32_surface"};
+    const char* instanceExtensions2_pp[] = {"VK_KHR_surface", "VK_KHR_win32_surface"};
 #endif
 
     VkInstanceCreateInfo InstanceInfo = 
@@ -158,11 +158,11 @@ NH_GFX_BEGIN();
         .flags                   = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
     };
 
-    if ((nh_vk_validationLayerSupported(Host_p) == NH_FALSE) || !validation) {
+    if ((nh_vk_validationLayerSupported(Host_p) == false) || !validation) {
         InstanceInfo.enabledLayerCount = 0;
     }
     
-    if ((nh_vk_validationExtensionSupported(Host_p) == NH_FALSE) || !validation) {
+    if ((nh_vk_validationExtensionSupported(Host_p) == false) || !validation) {
         InstanceInfo.enabledExtensionCount   = 3;
         InstanceInfo.ppEnabledExtensionNames = instanceExtensions2_pp;
     }
@@ -171,12 +171,12 @@ NH_GFX_BEGIN();
     
     volkLoadInstanceOnly(Host_p->Instance);
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
 // MESSENGER =======================================================================================
 
-static NH_GFX_RESULT nh_vk_createMessenger(
+static NH_API_RESULT nh_vk_createMessenger(
     nh_vk_Host* Host_p) 
 {
 NH_GFX_BEGIN();
@@ -198,8 +198,8 @@ NH_GFX_BEGIN();
         .pUserData       = VK_NULL_HANDLE
     };
    
-    if (nh_vk_validationLayerSupported(Host_p) == NH_FALSE ||  nh_vk_validationExtensionSupported(Host_p) == NH_FALSE) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_VULKAN_ERROR_VALIDATION_NOT_SUPPORTED)
+    if (nh_vk_validationLayerSupported(Host_p) == false ||  nh_vk_validationExtensionSupported(Host_p) == false) {
+        NH_GFX_DIAGNOSTIC_END(NH_API_VULKAN_ERROR_VALIDATION_NOT_SUPPORTED)
     }
 
     PFN_vkCreateDebugUtilsMessengerEXT create_f;
@@ -207,16 +207,16 @@ NH_GFX_BEGIN();
         Host_p->Instance, "vkCreateDebugUtilsMessengerEXT"
     );    
 
-    if (!create_f) {NH_GFX_DIAGNOSTIC_END(NH_GFX_VULKAN_ERROR_LOADER_CANT_CREATE_DEBUG_MESSENGER)}
+    if (!create_f) {NH_GFX_DIAGNOSTIC_END(NH_API_VULKAN_ERROR_LOADER_CANT_CREATE_DEBUG_MESSENGER)}
 
     create_f(Host_p->Instance, &Info, VK_NULL_HANDLE, &Host_p->Messenger); 
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS);
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
 }
 
 // VALIDATION LAYER ================================================================================
 
-static NH_BOOL nh_vk_validationLayerSupported(
+static bool nh_vk_validationLayerSupported(
     nh_vk_Host *Host_p) 
 {
 NH_GFX_BEGIN();
@@ -226,25 +226,25 @@ NH_GFX_BEGIN();
     Host_p->Functions.vkEnumerateInstanceLayerProperties(&availableLayerCount, VK_NULL_HANDLE);
     
     VkLayerProperties *availableLayers_p = nh_core_allocate(sizeof(VkLayerProperties) * availableLayerCount);
-    if (availableLayers_p == NULL) {NH_GFX_END(NH_FALSE)}
+    if (availableLayers_p == NULL) {NH_GFX_END(false)}
 
     Host_p->Functions.vkEnumerateInstanceLayerProperties(&availableLayerCount, availableLayers_p);
 
     for(int i = 0; i < availableLayerCount; ++i) {
         if (!strcmp(VALIDATION_LAYER, availableLayers_p[i].layerName)) {
             nh_core_free(availableLayers_p); 
-            NH_GFX_END(NH_TRUE)
+            NH_GFX_END(true)
         }
     }
 
     nh_core_free(availableLayers_p);
 
-NH_GFX_END(NH_FALSE);
+NH_GFX_END(false);
 }
 
 // VALIDATION EXTENSION ============================================================================
 
-static NH_BOOL nh_vk_validationExtensionSupported(
+static bool nh_vk_validationExtensionSupported(
     nh_vk_Host *Host_p) 
 {
 NH_GFX_BEGIN()
@@ -254,19 +254,19 @@ NH_GFX_BEGIN()
     Host_p->Functions.vkEnumerateInstanceExtensionProperties(VALIDATION_LAYER, &propCount, VK_NULL_HANDLE);
 
     VkExtensionProperties *extensionProps_p = nh_core_allocate(sizeof(VkExtensionProperties) * propCount);
-    if (extensionProps_p == NULL) {NH_GFX_END(NH_FALSE)}
+    if (extensionProps_p == NULL) {NH_GFX_END(false)}
 
     Host_p->Functions.vkEnumerateInstanceExtensionProperties(VALIDATION_LAYER, &propCount, extensionProps_p);
 
     for (unsigned int i = 0; i < propCount; ++i) {
         if (!strcmp(extensionProps_p[i].extensionName, VALIDATION_EXTENSION)) {
             nh_core_free(extensionProps_p); 
-            NH_GFX_END(NH_TRUE)
+            NH_GFX_END(true)
         }
     }
 
     nh_core_free(extensionProps_p);
 
-NH_GFX_END(NH_FALSE)
+NH_GFX_END(false)
 }
 

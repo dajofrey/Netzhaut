@@ -19,22 +19,22 @@
 
 // LOG =============================================================================================
 
-NH_GFX_RESULT _nh_gfx_logBegin(
+NH_API_RESULT _nh_gfx_logBegin(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_begin(file_p, function_p);
 }
 
-NH_GFX_RESULT _nh_gfx_logEnd(
+NH_API_RESULT _nh_gfx_logEnd(
     const char *file_p, const char *function_p)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
 //    return _nh_end(file_p, function_p);
 }
 
-NH_GFX_RESULT _nh_gfx_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_GFX_RESULT result, int line)
+NH_API_RESULT _nh_gfx_logDiagnosticEnd(
+    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
 {
 //    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
 //    _nh_diagnosticEnd(file_p, function_p, result, line);
@@ -46,9 +46,9 @@ void nh_gfx_logFont(
 {
 NH_GFX_BEGIN()
 
-    NH_BYTE *node_p = Font_p->internal ? "nh-gfx:Fonts:Internal" : "nh-gfx:Fonts:System";
+    char *node_p = Font_p->internal ? "nh-gfx:Fonts:Internal" : "nh-gfx:Fonts:System";
 
-    NH_BYTE message_p[1024];
+    char message_p[1024];
     sprintf(message_p, "%s | %s | %s", Font_p->Family.name_p, Font_p->Style.name_p, Font_p->id_p);
     nh_core_sendLogMessage(node_p, NULL, message_p);
 
@@ -82,7 +82,7 @@ NH_GFX_SILENT_END()
 }
 
 void nh_gfx_logVulkanValidation(
-    NH_BYTE *message_p)
+    char *message_p)
 {
 NH_GFX_BEGIN()
 
@@ -92,7 +92,7 @@ NH_GFX_SILENT_END()
 }
            
 void nh_gfx_logOpenGLCommand(
-    NH_BYTE *format_p, ...)
+    char *format_p, ...)
 {
 NH_GFX_BEGIN()
 

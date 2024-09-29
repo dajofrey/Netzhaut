@@ -41,8 +41,8 @@
     } nh_gfx_Atlas;
 
     typedef struct nh_gfx_Font {
-        NH_BYTE *id_p;
-        NH_BOOL internal;
+        char *id_p;
+        bool internal;
         nh_gfx_Atlas Atlas;
         nh_Array Instances; 
         void *file_p;
@@ -79,45 +79,45 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_gfx_initializeFontManager(
+    NH_API_RESULT nh_gfx_initializeFontManager(
     );
 
     void nh_gfx_terminateFontManager(
     );
 
-    NH_GFX_RESULT nh_gfx_addFontDirectory(
-        NH_BYTE *dirPath_p
+    NH_API_RESULT nh_gfx_addFontDirectory(
+        char *dirPath_p
     );
     
-    NH_GFX_RESULT nh_gfx_addFontUsingAbsolutePath(
-        NH_BYTE *absolutePath_p
+    NH_API_RESULT nh_gfx_addFontUsingAbsolutePath(
+        char *absolutePath_p
     );
     
     nh_gfx_FontInstance *nh_gfx_claimFontInstance(
         nh_gfx_Font *Font_p, unsigned int fontSize
     );
 
-    NH_GFX_RESULT nh_gfx_unclaimFontInstance(
+    NH_API_RESULT nh_gfx_unclaimFontInstance(
         nh_gfx_FontInstance *Instance_p
     );
 
     nh_List nh_gfx_getFonts(
-        nh_gfx_FontFamily FontFamily, nh_gfx_FontStyle FontStyle, NH_BOOL internal
+        nh_gfx_FontFamily FontFamily, nh_gfx_FontStyle FontStyle, bool internal
     );
 
     nh_gfx_Font *nh_gfx_getFontUsingId(
-        NH_BYTE *id_p
+        char *id_p
     );
 
     nh_gfx_Font *nh_gfx_getDefaultFont(
-        NH_GFX_GENERIC_FONT_FAMILY generic, NH_GFX_FONT_WEIGHT weight, NH_BOOL italic, NH_BOOL oblique
+        NH_GFX_GENERIC_FONT_FAMILY generic, NH_GFX_FONT_WEIGHT weight, bool italic, bool oblique
     );
 
-    NH_GFX_RESULT nh_gfx_loadGlyphs(
+    NH_API_RESULT nh_gfx_loadGlyphs(
         nh_gfx_FontInstance *Instance_p, NH_ENCODING_UTF32 *text_p, unsigned int textLength
     );
    
-    NH_BOOL nh_gfx_hasGlyph(
+    bool nh_gfx_hasGlyph(
         nh_gfx_FontInstance *Instance_p, NH_ENCODING_UTF32 codepoint
     );
 

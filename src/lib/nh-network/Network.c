@@ -45,11 +45,11 @@ NH_NETWORK_BEGIN()
 NH_NETWORK_SILENT_END()
 }
 
-static NH_NETWORK_RESULT nh_network_getHostName()
+static NH_API_RESULT nh_network_getHostName()
 {
 NH_NETWORK_BEGIN()
 
-    if (Network.hostName_p != NULL) {NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)}
+    if (Network.hostName_p != NULL) {NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)}
 
 #ifdef __unix__
 
@@ -59,25 +59,25 @@ NH_NETWORK_BEGIN()
 
 #endif
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_NETWORK_RESULT nh_network_createNetwork()
+NH_API_RESULT nh_network_createNetwork()
 {
 NH_NETWORK_BEGIN()
 
     nh_network_initNetwork();
 
-    NH_CHECK(NH_NETWORK_ERROR_BAD_STATE, 
+    NH_CHECK(NH_API_ERROR_BAD_STATE, 
         nh_core_appendToLinkedList(&Network.Sockets, nh_network_createClientSocket(NH_NETWORK_PROTOCOL_FAMILY_IPV4, NH_NETWORK_SOCKET_TCP)
     ))
-    NH_CHECK(NH_NETWORK_ERROR_BAD_STATE, 
+    NH_CHECK(NH_API_ERROR_BAD_STATE, 
         nh_core_appendToLinkedList(&Network.Sockets, nh_network_createClientSocket(NH_NETWORK_PROTOCOL_FAMILY_IPV6, NH_NETWORK_SOCKET_TCP)
     ))
 
     NH_NETWORK_CHECK(nh_network_getHostName())
 
-NH_NETWORK_DIAGNOSTIC_END(NH_NETWORK_SUCCESS)
+NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_network_Network *nh_network_getNetwork()

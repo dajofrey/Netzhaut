@@ -70,7 +70,7 @@ NH_ECMASCRIPT_BEGIN()
     nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_ECMASCRIPT_CODE, Body_p);
 
     // TODO If the source text matching Body is strict mode code, let Strict be true; else let Strict be false.
-    NH_BOOL strict = NH_FALSE;
+    bool strict = false;
     nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_STRICT, (void*)strict);
 
     if (thisMode == NH_ECMASCRIPT_THIS_MODE_LEXICAL) {
@@ -81,7 +81,7 @@ NH_ECMASCRIPT_BEGIN()
         nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_THIS_MODE, (void*)NH_ECMASCRIPT_THIS_MODE_GLOBAL);
     }
 
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_IS_CLASS_CONSTRUCTOR, (void*)NH_FALSE);
+    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_IS_CLASS_CONSTRUCTOR, (void*)false);
     nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_ENVIRONMENT, Scope_p);
     nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_SCRIPT_OR_MODULE, nh_ecmascript_getActiveScriptOrModule());
     nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_REALM, nh_ecmascript_getRunningExecutionContext()->Realm_p);
@@ -95,7 +95,7 @@ NH_ECMASCRIPT_END(Function_p)
 
 // https://tc39.es/ecma262/#sec-makeconstructor
 nh_ecmascript_Completion nh_ecmascript_makeConstructor(
-    nh_ecmascript_Object *Function_p, NH_BOOL writablePrototype, nh_ecmascript_Object *Prototype_p)
+    nh_ecmascript_Object *Function_p, bool writablePrototype, nh_ecmascript_Object *Prototype_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
@@ -106,11 +106,11 @@ NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
 
 // https://tc39.es/ecma262/#sec-setfunctionname
 nh_ecmascript_Completion nh_ecmascript_setFunctionName(
-    nh_ecmascript_Object *Function_p, nh_ecmascript_Any Name, NH_BYTE *prefix_p)
+    nh_ecmascript_Object *Function_p, nh_ecmascript_Any Name, char *prefix_p)
 {
 NH_ECMASCRIPT_BEGIN()
 
-    NH_BYTE *propertyName_p = "name";
+    char *propertyName_p = "name";
 
     nh_ecmascript_String PropertyName;
     PropertyName.p = propertyName_p;
@@ -130,9 +130,9 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_PropertyDescriptor Descriptor;
     Descriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
-    Descriptor.enumerable   = NH_FALSE;
-    Descriptor.configurable = NH_TRUE;
-    Descriptor.Fields.Data.writable = NH_FALSE;
+    Descriptor.enumerable   = false;
+    Descriptor.configurable = true;
+    Descriptor.Fields.Data.writable = false;
     Descriptor.Fields.Data.Value    = Name; 
 
 NH_ECMASCRIPT_END(nh_ecmascript_abstractDefinePropertyOrThrow(Function_p, nh_ecmascript_wrapString(&PropertyName), Descriptor))
@@ -144,7 +144,7 @@ nh_ecmascript_Completion nh_ecmascript_setFunctionLength(
 {
 NH_ECMASCRIPT_BEGIN()
 
-    NH_BYTE *propertyName_p = "length";
+    char *propertyName_p = "length";
 
     nh_ecmascript_String PropertyName;
     PropertyName.p = propertyName_p;
@@ -152,9 +152,9 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_ecmascript_PropertyDescriptor Descriptor;
     Descriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
-    Descriptor.enumerable   = NH_FALSE;
-    Descriptor.configurable = NH_FALSE;
-    Descriptor.Fields.Data.writable = NH_FALSE;
+    Descriptor.enumerable   = false;
+    Descriptor.configurable = false;
+    Descriptor.Fields.Data.writable = false;
     Descriptor.Fields.Data.Value    = nh_ecmascript_wrapNumber(&len); 
 
 NH_ECMASCRIPT_END(nh_ecmascript_abstractDefinePropertyOrThrow(Function_p, nh_ecmascript_wrapString(&PropertyName), Descriptor))

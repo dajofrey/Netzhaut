@@ -45,20 +45,20 @@
 
 #define NH_CSS_CHECK(checkable)                                             \
 {                                                                           \
-    NH_CSS_RESULT checkResult = checkable;                                  \
-    if (checkResult != NH_CSS_SUCCESS) {NH_CSS_DIAGNOSTIC_END(checkResult)} \
+    NH_API_RESULT checkResult = checkable;                                  \
+    if (checkResult != NH_API_SUCCESS) {NH_CSS_DIAGNOSTIC_END(checkResult)} \
 }
 
 #define NH_CSS_CHECK_2(checkReturn, checkable)                   \
 {                                                                \
-    NH_CSS_RESULT checkResult = checkable;                       \
-    if (checkResult != NH_CSS_SUCCESS) {NH_CSS_END(checkReturn)} \
+    NH_API_RESULT checkResult = checkable;                       \
+    if (checkResult != NH_API_SUCCESS) {NH_CSS_END(checkReturn)} \
 }
 
 #define NH_CSS_CHECK_NULL(checkable)                                              \
 {                                                                                 \
     void *checkResult_p = checkable;                                              \
-    if (checkResult_p == NULL) {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_NULL_POINTER)} \
+    if (checkResult_p == NULL) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_NULL_POINTER)} \
 }
 
 #define NH_CSS_CHECK_NULL_2(checkReturn, checkable)      \
@@ -70,7 +70,7 @@
 #define NH_CSS_CHECK_MEM(checkable)                                                    \
 {                                                                                      \
     void *checkResult_p = checkable;                                                   \
-    if (checkResult_p == NULL) {NH_CSS_DIAGNOSTIC_END(NH_CSS_ERROR_MEMORY_ALLOCATION)} \
+    if (checkResult_p == NULL) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_MEMORY_ALLOCATION)} \
 }
 
 #define NH_CSS_CHECK_MEM_2(checkReturn, checkable)       \

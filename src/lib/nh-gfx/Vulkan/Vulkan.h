@@ -38,10 +38,10 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_vk_initVulkan(
+    NH_API_RESULT nh_vk_initVulkan(
     );
     
-    NH_GFX_RESULT nh_vk_terminateVulkan(
+    NH_API_RESULT nh_vk_terminateVulkan(
     );
 
 /** @} */

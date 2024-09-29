@@ -19,11 +19,11 @@
 
 // https://www.262.ecma-international.org/11.0/index.html#sec-testing-and-comparison-operations
 
-//    NH_BOOL nh_ecmascript_requireObjectCoercible(
+//    bool nh_ecmascript_requireObjectCoercible(
 //        argument
 //    );
 //
-//    NH_BOOL nh_ecmascript_isArray(
+//    bool nh_ecmascript_isArray(
 //        argument
 //    );
 
@@ -31,7 +31,7 @@
         nh_ecmascript_Any Value
     );
 
-//    NH_BOOL nh_ecmascript_isConstructor(
+//    bool nh_ecmascript_isConstructor(
 //        nh_ecmascript_Type Value
 //    );
 
@@ -39,45 +39,45 @@
         nh_ecmascript_Object *Object_p
     );
 
-//    NH_BOOL nh_ecmascript_isInteger(
+//    bool nh_ecmascript_isInteger(
 //        argument
 //    );
 //
-//    NH_BOOL nh_ecmascript_isNonNegativeInteger(
+//    bool nh_ecmascript_isNonNegativeInteger(
 //        argument
 //    );
 //
-//    NH_BOOL nh_ecmascript_isPropertyKey(
+//    bool nh_ecmascript_isPropertyKey(
 //        nh_ecmascript_Type Argument
 //    );
 //
-//    NH_BOOL nh_ecmascript_isRegExp(
+//    bool nh_ecmascript_isRegExp(
 //        argument
 //    );
 //
-//    NH_BOOL nh_ecmascript_isStringPrefix(
+//    bool nh_ecmascript_isStringPrefix(
 //        p, q
 //    );
 //
-//    NH_BOOL nh_ecmascript_sameValue(
+//    bool nh_ecmascript_sameValue(
 //        x, y
 //    );
 //
-//    NH_BOOL nh_ecmascript_sameValueZero(
+//    bool nh_ecmascript_sameValueZero(
 //        x, y
 //    );
 //
-//    NH_BOOL nh_ecmascript_sameValueNonNumeric(
+//    bool nh_ecmascript_sameValueNonNumeric(
 //        x, y
 //    );
 //
-//    NH_BOOL nh_ecmascript_abstractRelationalComparison(
+//    bool nh_ecmascript_abstractRelationalComparison(
 //    );
 //
-//    NH_BOOL nh_ecmascript_abstractEqualityComparison(
+//    bool nh_ecmascript_abstractEqualityComparison(
 //    );
 //
-//    NH_BOOL nh_ecmascript_strictEqualityComparison(
+//    bool nh_ecmascript_strictEqualityComparison(
 //    );
 
 /** @} */

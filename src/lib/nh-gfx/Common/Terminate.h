@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_GFX_RESULT nh_gfx_terminate(
+    NH_API_RESULT nh_gfx_terminate(
     );
     
 /** @} */

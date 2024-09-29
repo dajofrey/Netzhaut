@@ -9,8 +9,8 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-// Include public API.
 #include "../../nh-api/nh-gfx.h"
+#include "../../nh-encoding/Encodings/UTF32.h"
 
 #ifndef VOLK_VULKAN_H_PATH
     #define VOLK_VULKAN_H_PATH "Vulkan-Headers/include/vulkan/vulkan.h"

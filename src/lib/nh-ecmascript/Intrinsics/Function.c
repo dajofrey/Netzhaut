@@ -22,7 +22,7 @@
 //{
 //NH_ECMASCRIPT_BEGIN()
 //
-//NH_ECMASCRIPT_END(NH_FALSE)
+//NH_ECMASCRIPT_END(false)
 //}
 
 //// DATA ============================================================================================
@@ -300,20 +300,20 @@
 //
 //// CREATE ==========================================================================================
 //
-//static NH_ECMASCRIPT_RESULT nh_ecmascript_createIntrinsicFunctionConstructor(
+//static NH_API_RESULT nh_ecmascript_createIntrinsicFunctionConstructor(
 //    nh_ecmascript_IntrinsicFunction *Function_p, nh_ecmascript_Realm *Realm_p)
 //{
 //NH_ECMASCRIPT_BEGIN()
 //
 ////    Object_p->Constructor.Properties = nh_ecmascript_initProperties(22);
 //////    Object_p->Prototype.InternalSlots = nh_core_initInternalSlots(ordinaryInternalSlotLookUp_p);
-//////    Object_p->Prototype.InternalSlots.values_pp[NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE] = NH_TRUE;
+//////    Object_p->Prototype.InternalSlots.values_pp[NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE] = true;
 //////    Object_p->Prototype.InternalSlots.values_pp[NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE] = NULL;
 //////    Object_p->Prototype.InternalMethods_p = ObjectPrototypeInternalMethods;
 ////
 ////    Object_p->Constructor.InternalSlots.values_pp[
 ////        Object_p->Constructor.InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE]
-////    ] = (void*)NH_FALSE;
+////    ] = (void*)false;
 ////    Object_p->Constructor.InternalSlots.values_pp[
 ////        Object_p->Constructor.InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE]
 ////    ] = &Realm_p->Intrinsics.Function.Prototype;
@@ -386,10 +386,10 @@
 ////        &Object_p->Constructor, &Object_p->Values, cProps_pp[21], nh_ecmascript_values, Realm_p
 ////    ))
 //
-//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
 //
-//static NH_ECMASCRIPT_RESULT nh_ecmascript_createIntrinsicFunctionPrototype(
+//static NH_API_RESULT nh_ecmascript_createIntrinsicFunctionPrototype(
 //    nh_ecmascript_IntrinsicFunction *Function_p, nh_ecmascript_Realm *Realm_p)
 //{
 //NH_ECMASCRIPT_BEGIN()
@@ -400,13 +400,13 @@
 ////
 ////    Object_p->Prototype.InternalSlots.values_pp[
 ////        Object_p->Prototype.InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE]
-////    ] = (void*)NH_TRUE;
+////    ] = (void*)true;
 ////    Object_p->Prototype.InternalSlots.values_pp[
 ////        Object_p->Prototype.InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE]
 ////    ] = NULL;
 ////
 ////    NH_ECMASCRIPT_CHECK(nh_ecmascript_createIntrinsicDataProperty(
-////        &Object_p->Prototype, pProps_pp[0], NH_FALSE, NH_FALSE, NH_FALSE, NH_ECMASCRIPT_TYPE_OBJECT,
+////        &Object_p->Prototype, pProps_pp[0], false, false, false, NH_ECMASCRIPT_TYPE_OBJECT,
 ////        &Realm_p->Intrinsics.Object.Constructor
 ////    ))
 ////
@@ -429,10 +429,10 @@
 ////        &Object_p->Prototype, &Object_p->ValueOf, pProps_pp[6], nh_ecmascript_valueOf, Realm_p
 ////    ))
 //
-//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
 //
-//NH_ECMASCRIPT_RESULT nh_ecmascript_createIntrinsicFunction(
+//NH_API_RESULT nh_ecmascript_createIntrinsicFunction(
 //    nh_ecmascript_IntrinsicFunction *Function_p, nh_ecmascript_Realm *Realm_p)
 //{
 //NH_ECMASCRIPT_BEGIN()
@@ -440,16 +440,16 @@
 //    NH_ECMASCRIPT_CHECK(nh_ecmascript_createIntrinsicFunctionConstructor(Function_p, Realm_p))
 //    NH_ECMASCRIPT_CHECK(nh_ecmascript_createIntrinsicFunctionPrototype(Function_p, Realm_p))
 //
-//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
 //
-//NH_ECMASCRIPT_RESULT nh_ecmascript_freeIntrinsicFunction(
+//NH_API_RESULT nh_ecmascript_freeIntrinsicFunction(
 //    nh_ecmascript_IntrinsicFunction *Function_p)
 //{
 //NH_ECMASCRIPT_BEGIN()
 //
 //    // TODO
 //
-//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
 //

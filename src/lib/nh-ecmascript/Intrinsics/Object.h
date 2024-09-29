@@ -18,7 +18,7 @@
  *  @{
  */
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_createIntrinsicObject(
+    NH_API_RESULT nh_ecmascript_createIntrinsicObject(
         nh_ecmascript_IntrinsicObject *Object_p, nh_ecmascript_Realm *Realm_p
     );
 

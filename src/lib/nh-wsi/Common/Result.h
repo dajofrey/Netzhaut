@@ -1,5 +1,5 @@
-#ifndef NH_WSI_RESULT_E_H
-#define NH_WSI_RESULT_E_H
+#ifndef NH_API_RESULT_H
+#define NH_API_RESULT_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -13,8 +13,8 @@
 
 /** @{ */
 
-    extern const char *NH_WSI_RESULT_ES_PP[];
-    extern unsigned int NH_WSI_RESULT_ES_PP_COUNT;
+    extern const char *NH_API_RESULTS_PP[];
+    extern unsigned int NH_API_RESULTS_PP_COUNT;
 
 /** @} */
 

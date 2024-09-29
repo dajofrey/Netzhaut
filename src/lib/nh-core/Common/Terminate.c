@@ -30,7 +30,7 @@
 
 // TERMINATE =======================================================================================
 
-NH_CORE_RESULT nh_core_terminate(
+NH_API_RESULT nh_core_terminate(
     nh_Loader *Loader_p)
 {
 NH_CORE_BEGIN()
@@ -51,5 +51,5 @@ NH_CORE_BEGIN()
     // Great. Now what remains to be done is for nh-api/nh-core.c to close this module aka the nh-core library
     // and Netzhaut should be terminated.
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }

@@ -34,7 +34,7 @@
  */
 
     void nh_url_percentEncodeByte(
-        NH_BYTE byte, nh_String *Output_p
+        char byte, nh_String *Output_p
     );
     
     nh_String nh_url_percentDecodeUTF8(
@@ -43,7 +43,7 @@
 
     nh_String nh_url_percentEncodeAfterEncoding(
         NH_ENCODING_NAME encoding, nh_encoding_UTF32String Input, NH_URL_PERCENT_ENCODE_SET percentEncodeSet, 
-        NH_BOOL spaceAsPlus
+        bool spaceAsPlus
     );
 
     nh_String nh_url_percentEncodeAfterEncodingUTF8(
@@ -54,7 +54,7 @@
         NH_ENCODING_UTF32 codepoint, NH_URL_PERCENT_ENCODE_SET percentEncodeSet
     );
 
-    NH_BOOL nh_url_inPercentEncodeSet(
+    bool nh_url_inPercentEncodeSet(
         NH_URL_PERCENT_ENCODE_SET encodeSet, NH_ENCODING_UTF32 codepoint
     );
 

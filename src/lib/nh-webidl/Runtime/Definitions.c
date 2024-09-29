@@ -22,12 +22,12 @@
 
 // CLASSES =========================================================================================
 
-static const NH_BYTE *nh_webidl_getInterfaceMemberName(
+static const char *nh_webidl_getInterfaceMemberName(
     nh_webidl_ParseNode *Node_p)
 {
 NH_WEBIDL_BEGIN()
 
-    NH_BYTE *name_p = NULL;
+    char *name_p = NULL;
 
     switch (Node_p->type)
     {
@@ -45,7 +45,7 @@ NH_WEBIDL_BEGIN()
                     name_p = ((nh_webidl_ParseNode*)((nh_webidl_ParseNode*)AttributeNames.pp[0])->Children.pp[0])->Token_p->String.p;
                 } 
             }
-            nh_core_freeList(&AttributeNames, NH_FALSE);
+            nh_core_freeList(&AttributeNames, false);
             break;
         }
         case NH_WEBIDL_PARSE_NODE_OPERATION :
@@ -57,7 +57,7 @@ NH_WEBIDL_BEGIN()
                     name_p = ((nh_webidl_ParseNode*)((nh_webidl_ParseNode*)OperationNames.pp[0])->Children.pp[0])->Token_p->String.p;
                 } 
             }
-            nh_core_freeList(&OperationNames, NH_FALSE);
+            nh_core_freeList(&OperationNames, false);
             break;
         }
         case NH_WEBIDL_PARSE_NODE_READ_WRITE_MAPLIKE :
@@ -68,8 +68,8 @@ NH_WEBIDL_BEGIN()
 NH_WEBIDL_END(name_p)
 }
 
-static NH_WEBIDL_RESULT nh_webidl_getInterfaceMembers(
-    nh_webidl_Interface *Interface_p, nh_webidl_ParseNode *InterfaceRest_p, NH_BOOL partial)
+static NH_API_RESULT nh_webidl_getInterfaceMembers(
+    nh_webidl_Interface *Interface_p, nh_webidl_ParseNode *InterfaceRest_p, bool partial)
 {
 NH_WEBIDL_BEGIN()
 
@@ -95,12 +95,12 @@ NH_WEBIDL_BEGIN()
         }
     }
   
-    nh_core_freeList(&InterfaceMembers, NH_FALSE);
+    nh_core_freeList(&InterfaceMembers, false);
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-static NH_WEBIDL_RESULT nh_webidl_getInterfaceInheritance(
+static NH_API_RESULT nh_webidl_getInterfaceInheritance(
     nh_webidl_Interface *Interface_p, nh_webidl_ParseNode *InterfaceRest_p)
 {
 NH_WEBIDL_BEGIN()
@@ -119,13 +119,13 @@ NH_WEBIDL_BEGIN()
         }
     }
 
-    nh_core_freeList(&Inheritance, NH_FALSE);
+    nh_core_freeList(&Inheritance, false);
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 static nh_webidl_Interface nh_webidl_createInterface(
-    nh_webidl_Specification *Specification_p, nh_webidl_ParseNode *InterfaceRest_p, NH_BOOL partial)
+    nh_webidl_Specification *Specification_p, nh_webidl_ParseNode *InterfaceRest_p, bool partial)
 {
 NH_WEBIDL_BEGIN()
 
@@ -142,7 +142,7 @@ NH_WEBIDL_BEGIN()
 NH_WEBIDL_END(Interface)
 }
 
-NH_WEBIDL_RESULT nh_webidl_createInterfaces(
+NH_API_RESULT nh_webidl_createInterfaces(
     nh_webidl_Fragment *Fragment_p)
 {
 NH_WEBIDL_BEGIN()
@@ -158,23 +158,23 @@ NH_WEBIDL_BEGIN()
     for (int i = 0; i < InterfaceRests.size; ++i) {
         nh_webidl_Interface *Interface_p = nh_core_incrementArray(&Fragment_p->Interfaces);
         NH_WEBIDL_CHECK_MEM(Interface_p)
-        *Interface_p = nh_webidl_createInterface(Fragment_p->Specification_p, InterfaceRests.pp[i], NH_FALSE);
+        *Interface_p = nh_webidl_createInterface(Fragment_p->Specification_p, InterfaceRests.pp[i], false);
     }
 
     for (int i = 0; i < PartialInterfaceRests.size; ++i) {
         nh_webidl_Interface *Interface_p = nh_core_incrementArray(&Fragment_p->Interfaces);
         NH_WEBIDL_CHECK_MEM(Interface_p)
-        *Interface_p = nh_webidl_createInterface(Fragment_p->Specification_p, PartialInterfaceRests.pp[i], NH_TRUE);
+        *Interface_p = nh_webidl_createInterface(Fragment_p->Specification_p, PartialInterfaceRests.pp[i], true);
     }
 
-    nh_core_freeList(&InterfaceRests, NH_FALSE);
-    nh_core_freeList(&PartialInterfaceRests, NH_FALSE);
+    nh_core_freeList(&InterfaceRests, false);
+    nh_core_freeList(&PartialInterfaceRests, false);
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_webidl_Interface *nh_webidl_getInterfaceFromFragment(
-    nh_webidl_Fragment *Fragment_p, NH_BYTE *className_p)
+    nh_webidl_Fragment *Fragment_p, char *className_p)
 {
 NH_WEBIDL_BEGIN()
 

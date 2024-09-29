@@ -13,4 +13,6 @@
 #include "../../nh-api/nh-core.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
+
+
 #endif // NH_TTY_COMMON_INCLUDES_H

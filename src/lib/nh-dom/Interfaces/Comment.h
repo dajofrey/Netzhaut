@@ -16,7 +16,6 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-
     nh_dom_Comment *nh_dom_createComment(
         nh_webidl_DOMString DOMString
     );

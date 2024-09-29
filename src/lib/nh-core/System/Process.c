@@ -25,16 +25,16 @@
 
 // DATA ============================================================================================
 
-static NH_BOOL init = NH_FALSE;
+static bool init = false;
 nh_ProcessPool NH_PROCESS_POOL;
 
 // INIT/FREE =======================================================================================
 
-NH_CORE_RESULT nh_core_initProcessPool()
+NH_API_RESULT nh_core_initProcessPool()
 {
 NH_CORE_BEGIN()
 
-    if (init == NH_TRUE) {NH_CORE_END(NH_CORE_ERROR_BAD_STATE)}
+    if (init == true) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
 
     NH_PROCESS_POOL.forks = 0;
     NH_PROCESS_POOL.IPC.updateIntervalInSeconds = 1;
@@ -52,19 +52,19 @@ NH_CORE_BEGIN()
         nh_core_initChannel(&NH_PROCESS_POOL.Forks_p[i].IPC.Out);
     }
 
-    init = NH_TRUE;
+    init = true;
  
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
-NH_CORE_RESULT nh_core_freeProcessPool() 
+NH_API_RESULT nh_core_freeProcessPool() 
 {
 NH_CORE_BEGIN()
 
     nh_core_freeThreadPool(&NH_PROCESS_POOL.Main.ThreadPool);
-    init = NH_FALSE;
+    init = false;
 
-NH_CORE_END(NH_CORE_SUCCESS)
+NH_CORE_END(NH_API_SUCCESS)
 }
 
 // FORK ============================================================================================
@@ -89,7 +89,7 @@ nh_Fork *nh_core_fork()
 {
 NH_CORE_BEGIN()
 
-    if (init == NH_FALSE) {NH_CORE_END(NULL)}
+    if (init == false) {NH_CORE_END(NULL)}
     nh_Fork *Fork_p = nh_core_getAvailableFork();
     if (Fork_p == NULL) {NH_CORE_END(NULL)}
 
@@ -111,12 +111,12 @@ NH_CORE_BEGIN()
 NH_CORE_END(Fork_p)
 }
 
-static NH_CORE_RESULT nh_unregisterFork(
+static NH_API_RESULT nh_unregisterFork(
     nh_Fork *Fork_p)
 {
 NH_CORE_BEGIN()
 
-    if (init == NH_FALSE || Fork_p->id == 0) {NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)}
+    if (init == false || Fork_p->id == 0) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     nh_closeChannelWriteAccess(&Fork_p->IPC.In);
     nh_closeChannelReadAccess(&Fork_p->IPC.Out);
@@ -125,14 +125,14 @@ NH_CORE_BEGIN()
 
     NH_PROCESS_POOL.forks--;
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 void nh_checkForks()
 {
 NH_CORE_BEGIN()
 
-    if (init == NH_FALSE) {NH_CORE_SILENT_END()}
+    if (init == false) {NH_CORE_SILENT_END()}
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) {
         nh_Fork *Fork_p = &NH_PROCESS_POOL.Forks_p[i];
@@ -157,7 +157,7 @@ int nh_core_activeForks()
 {
 NH_CORE_BEGIN()
 
-    if (init == NH_FALSE) {NH_CORE_END(0)}
+    if (init == false) {NH_CORE_END(0)}
 
 NH_CORE_END(NH_PROCESS_POOL.forks)
 }
@@ -167,7 +167,7 @@ void nh_killFork(
 {
 NH_CORE_BEGIN()
 
-    if (init == NH_FALSE) {NH_CORE_SILENT_END()}
+    if (init == false) {NH_CORE_SILENT_END()}
 
     kill(Fork_p->id, SIGTERM);
     nh_unregisterFork(Fork_p);
@@ -179,7 +179,7 @@ void nh_killForks()
 {
 NH_CORE_BEGIN()
 
-    if (init == NH_FALSE) {NH_CORE_SILENT_END()}
+    if (init == false) {NH_CORE_SILENT_END()}
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) { 
         if (NH_PROCESS_POOL.Forks_p[i].id != 0) {
@@ -208,14 +208,14 @@ NH_CORE_END(NULL)
 
 // WRITE ===========================================================================================
 
-NH_BYTE *_nh_core_writeToProcess(
-    nh_Process *Proc_p, NH_BYTE *write_p, int writeLen, NH_BOOL getResponse)
+char *_nh_core_writeToProcess(
+    nh_Process *Proc_p, char *write_p, int writeLen, bool getResponse)
 {
     nh_core_writeToChannel(&Proc_p->IPC.In, write_p, writeLen);
 
     while (getResponse) 
     {
-        NH_BYTE *response_p = nh_readFromChannel(&Proc_p->IPC.Out, NULL);
+        char *response_p = nh_readFromChannel(&Proc_p->IPC.Out, NULL);
         if (response_p != NULL) {
             return response_p;
         }
@@ -224,8 +224,8 @@ NH_BYTE *_nh_core_writeToProcess(
     return NULL;
 }
 
-NH_BYTE *nh_core_writeToProcess(
-    nh_Process *Proc_p, NH_BYTE *write_p, int writeLen, NH_BOOL getResponse)
+char *nh_core_writeToProcess(
+    nh_Process *Proc_p, char *write_p, int writeLen, bool getResponse)
 {
 NH_CORE_BEGIN()
 NH_CORE_END(_nh_core_writeToProcess(Proc_p, write_p, writeLen, getResponse))
@@ -234,8 +234,8 @@ NH_CORE_END(_nh_core_writeToProcess(Proc_p, write_p, writeLen, getResponse))
 // IPC HANDLER =====================================================================================
 
 // TODO make better
-NH_CORE_RESULT nh_handleIPCReceive(
-    NH_BYTE *bytes_p)
+NH_API_RESULT nh_handleIPCReceive(
+    char *bytes_p)
 {
 NH_CORE_BEGIN()
 
@@ -243,16 +243,16 @@ NH_CORE_BEGIN()
 //    Args.encoding = NH_UNICODE_ENCODING_UTF8;
 //    Args.bytes_p  = bytes_p + 17;
 //
-//    if (NH_LOADER.load_f("nh-ecmascript", 0) == NH_CORE_SUCCESS) 
+//    if (NH_LOADER.load_f("nh-ecmascript", 0) == NH_API_SUCCESS) 
 //    {
 //        nh_core_activateWorkload(
 //            (nh_ecmascript_initAgent_f)NH_LOADER.loadSymbol_f("nh-ecmascript", 0, "nh_ecmascript_initAgent"), 
 //            (nh_ecmascript_runAgent_f)NH_LOADER.loadSymbol_f("nh-ecmascript", 0, "nh_ecmascript_runAgent"), 
-//            &Args, NH_FALSE
+//            &Args, false
 //        );
 //    }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 NH_SIGNAL nh_core_runIPCHandler(
@@ -266,7 +266,7 @@ NH_CORE_BEGIN()
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) {
         if (NH_PROCESS_POOL.Forks_p[i].id != 0) {
-            NH_BYTE *receive_p = nh_readFromChannel(&NH_PROCESS_POOL.Forks_p[i].IPC.Out, NULL);
+            char *receive_p = nh_readFromChannel(&NH_PROCESS_POOL.Forks_p[i].IPC.Out, NULL);
             if (receive_p != NULL) {
                 NH_CORE_CHECK(nh_handleIPCReceive(receive_p))
             }

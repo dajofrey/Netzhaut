@@ -25,11 +25,11 @@
  
 #define NH_CLIP_TO_PIXEL(clipValue, Content_p, basedOnWidth)                                                                             \
 (                                                                                                                                        \
-    basedOnWidth ? (NH_PIXEL)(((((float)clipValue + 1.0f) / Content_p->Settings.scale) * ((float)Content_p->Tab_p->Size.width)) / 2.0f)  \
-                 : (NH_PIXEL)(((((float)clipValue + 1.0f) / Content_p->Settings.scale) * ((float)Content_p->Tab_p->Size.height)) / 2.0f) \
+    basedOnWidth ? (int)(((((float)clipValue + 1.0f) / Content_p->Settings.scale) * ((float)Content_p->Tab_p->Size.width)) / 2.0f)  \
+                 : (int)(((((float)clipValue + 1.0f) / Content_p->Settings.scale) * ((float)Content_p->Tab_p->Size.height)) / 2.0f) \
 ) 
 
-#define NH_PIXEL_TO_CLIP(pixel, Content_p, basedOnWidth)                                                                 \
+#define int_TO_CLIP(pixel, Content_p, basedOnWidth)                                                                 \
 (                                                                                                                        \
     basedOnWidth ? ((((float)pixel) / ((float)Content_p->Tab_p->Size.width))  * Content_p->Settings.scale) * 2.0f - 1.0f \
                  : ((((float)pixel) / ((float)Content_p->Tab_p->Size.height)) * Content_p->Settings.scale) * 2.0f - 1.0f \
@@ -109,7 +109,7 @@ nh_Vector2D nh_lineLineIntersection(
     } 
 } 
 
-NH_BOOL nh_pointInBox(
+bool nh_pointInBox(
     nh_Vector2D TopLeft, nh_Vector2D BottomRight, nh_Vector2D Point)
 {
     return TopLeft.x <= Point.x && TopLeft.y <= Point.y && BottomRight.x >= Point.x && BottomRight.y >= Point.y;
@@ -130,7 +130,7 @@ nh_Vector2D nh_core_getInversedPointOnCircle(
 }
 
 int nh_verticesToArray(
-    nh_Vertex *Vertices_p, float *values_p, int count, NH_BOOL uv, int offset)
+    nh_Vertex *Vertices_p, float *values_p, int count, bool uv, int offset)
 {
     for (int i = 0; i < count; ++i) 
     {
@@ -147,7 +147,7 @@ int nh_verticesToArray(
 }
 
 int nh_trianglesToArray(
-    nh_Triangle *Triangles_p, float *values_p, int count, NH_BOOL uv)
+    nh_Triangle *Triangles_p, float *values_p, int count, bool uv)
 {
     int offset = 0;
 
@@ -168,8 +168,8 @@ int nh_trianglesToArray(
 //
 //    if (Content_p->Position.x == 0 && Content_p->Position.y == 0) {NH_CORE_SILENT_END()}
 //
-//    float xOff = NH_CLIP_LENGTH(NH_PIXEL_TO_CLIP(Content_p->Position.x, Content_p, NH_TRUE));
-//    float yOff = NH_CLIP_LENGTH(NH_PIXEL_TO_CLIP(Content_p->Position.y, Content_p, NH_FALSE));
+//    float xOff = NH_CLIP_LENGTH(int_TO_CLIP(Content_p->Position.x, Content_p, true));
+//    float yOff = NH_CLIP_LENGTH(int_TO_CLIP(Content_p->Position.y, Content_p, false));
 //
 //    for (int i = 0; i < count; ++i) {
 //        Vertices_p[i].x += xOff; 

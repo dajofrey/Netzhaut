@@ -24,7 +24,7 @@
 // CREATE ==========================================================================================
 
 nh_gfx_Viewport *nh_gfx_createViewport(
-    nh_gfx_Surface *Surface_p, nh_PixelPosition Position, nh_PixelSize Size)
+    nh_gfx_Surface *Surface_p, nh_api_PixelPosition Position, nh_api_PixelSize Size)
 {
 NH_GFX_BEGIN()
 
@@ -48,7 +48,7 @@ NH_GFX_BEGIN()
     Viewport_p->Settings.BorderColor.b = 1.0f;
     Viewport_p->Settings.BorderColor.a = 1.0f;
  
-    Viewport_p->Settings.border   = NH_FALSE;
+    Viewport_p->Settings.border   = false;
     Viewport_p->Settings.borderWidth = 0;
     Viewport_p->Settings.Size     = Size;
     Viewport_p->Settings.Position = Position;
@@ -58,16 +58,16 @@ NH_GFX_BEGIN()
     Viewport_p->Sync.newestBuffers_p[1] = 2;
     Viewport_p->Sync.newestBuffers_p[2] = 4;
 
-    Viewport_p->Sync.atomicRecording = NH_FALSE;
-    Viewport_p->Sync.render          = NH_FALSE;
-    Viewport_p->Sync.atomic          = NH_FALSE;
+    Viewport_p->Sync.atomicRecording = false;
+    Viewport_p->Sync.render          = false;
+    Viewport_p->Sync.atomic          = false;
 
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
             NH_GFX_CHECK_2(NULL, nh_vk_createViewport(Viewport_p)) 
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_GFX_CHECK_2(NULL, nh_opengl_createViewport(Viewport_p)) 
             break;
 
@@ -86,10 +86,10 @@ NH_GFX_BEGIN()
 
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
             nh_vk_destroyViewport(Viewport_p); 
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
             nh_opengl_destroyViewport(Viewport_p);
             break;
     }
@@ -99,8 +99,8 @@ NH_GFX_BEGIN()
 NH_GFX_SILENT_END()
 }
  
-NH_GFX_RESULT nh_gfx_configureViewport(
-    nh_gfx_Viewport *Viewport_p, nh_PixelPosition Position, nh_PixelSize Size)
+NH_API_RESULT nh_gfx_configureViewport(
+    nh_gfx_Viewport *Viewport_p, nh_api_PixelPosition Position, nh_api_PixelSize Size)
 {
 NH_GFX_BEGIN()
 
@@ -109,12 +109,12 @@ NH_GFX_BEGIN()
     Viewport_p->Settings.Size     = Size;
     Viewport_p->Settings.Position = Position;
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // RECORDING =======================================================================================
 
-NH_GFX_RESULT nh_gfx_beginRecording(
+NH_API_RESULT nh_gfx_beginRecording(
     nh_gfx_Viewport *Viewport_p)
 {
 NH_GFX_BEGIN()
@@ -124,16 +124,16 @@ NH_GFX_BEGIN()
     int imageCount = 0;
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
             imageCount = Viewport_p->Vulkan.images = Viewport_p->Surface_p->Vulkan.imageCount; 
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
             imageCount = 1; 
             break;
-        default : NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        default : NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-    if (imageCount > 3) {NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)}
+    if (imageCount > 3) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     for (int i = 0; i < imageCount; ++i)
     {
@@ -146,10 +146,10 @@ NH_GFX_BEGIN()
         
         switch (Viewport_p->Surface_p->api)
         {
-            case NH_GFX_API_VULKAN : 
+            case NH_API_GRAPHICS_BACKEND_VULKAN : 
                 Viewport_p->Vulkan.CommandBuffers_pp[i] = &Viewport_p->Vulkan.CommandBuffers_p[bufferIndex];
                 break;
-            case NH_GFX_API_OPENGL : 
+            case NH_API_GRAPHICS_BACKEND_OPENGL : 
                 Viewport_p->OpenGL.CommandBuffer_p = &Viewport_p->OpenGL.CommandBuffers_p[bufferIndex];
                 break;
         }
@@ -159,34 +159,34 @@ NH_GFX_BEGIN()
 
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
             NH_GFX_CHECK(nh_vk_beginRecording(Viewport_p))
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_GFX_CHECK(nh_opengl_beginRecording(Viewport_p))
             break;
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_GFX_RESULT nh_gfx_endRecording(
-    nh_gfx_Viewport *Viewport_p, NH_BOOL blockUntilRender)
+NH_API_RESULT nh_gfx_endRecording(
+    nh_gfx_Viewport *Viewport_p, bool blockUntilRender)
 {
 NH_GFX_BEGIN()
 
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
             NH_GFX_CHECK(nh_vk_endRecording(Viewport_p))
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_GFX_CHECK(nh_opengl_endRecording(Viewport_p))
             break;
-        default : NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        default : NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-    Viewport_p->Sync.render = NH_TRUE;
+    Viewport_p->Sync.render = true;
 
     if (Viewport_p->Surface_p->renderRequests <= 1) {
         Viewport_p->Surface_p->renderRequests++;
@@ -196,23 +196,23 @@ NH_GFX_BEGIN()
         nh_core_executeWorkload(Viewport_p->Surface_p);
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // CLAIM ===========================================================================================
 
-NH_GFX_RESULT nh_gfx_claimViewport(
+NH_API_RESULT nh_gfx_claimViewport(
     nh_gfx_Viewport *Viewport_p, NH_GFX_VIEWPORT_OWNER owner, void *owner_p)
 {
 NH_GFX_BEGIN()
 
     if (Viewport_p->Owner.type != NH_GFX_VIEWPORT_OWNER_NONE || Viewport_p->Owner.p != NULL) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
  
     Viewport_p->Owner.type = owner;
     Viewport_p->Owner.p = owner_p;
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

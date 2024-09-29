@@ -17,7 +17,7 @@
  *  @{
  */
 
-    NH_HTML_RESULT nh_html_terminate(
+    NH_API_RESULT nh_html_terminate(
     );
     
 /** @} */

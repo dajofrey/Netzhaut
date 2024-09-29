@@ -11,6 +11,9 @@
 
 #include "../Common/Includes.h"
 
+#include "../../nh-gfx/Base/Viewport.h"
+#include "../../nh-css/Main/LayoutEngine.h"
+
 #endif
 
 /** @addtogroup lib_nh-renderer_structs
@@ -19,7 +22,7 @@
 
     typedef struct nh_renderer_RenderTarget {
         nh_gfx_Viewport *Viewport_p;
-        NH_BOOL render;
+        bool render;
     } nh_renderer_RenderTarget;
 
     typedef struct nh_renderer_Renderer {
@@ -37,7 +40,7 @@
         nh_css_LayoutEngine *LayoutEngine_p 
     );
 
-    typedef NH_RENDERER_RESULT (*nh_renderer_addViewport_f)(
+    typedef NH_API_RESULT (*nh_renderer_addViewport_f)(
         nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p
     );
 
@@ -51,7 +54,7 @@
         nh_css_LayoutEngine *LayoutEngine_p
     );
 
-    NH_RENDERER_RESULT nh_renderer_addViewport(
+    NH_API_RESULT nh_renderer_addViewport(
         nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p
     );
 

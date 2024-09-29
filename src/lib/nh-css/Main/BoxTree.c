@@ -29,12 +29,12 @@
 
 // NAMES ===========================================================================================
 
-const NH_BYTE *nh_css_getBoxTreeNodeName(
+const char *nh_css_getBoxTreeNodeName(
     NH_CSS_BOX_TREE_NODE type)
 {
 NH_CSS_BEGIN()
 
-    static const NH_BYTE *names_pp[] = 
+    static const char *names_pp[] = 
     {
         "Undefined",
         "Block Container Box",
@@ -92,22 +92,22 @@ NH_CSS_END(NH_CSS_DISPLAY_FLOW)
 
 // CHECK ===========================================================================================
 
-static NH_BOOL nh_css_isInlineContent(
+static bool nh_css_isInlineContent(
     nh_css_Source *Source_p)
 {
 NH_CSS_BEGIN()
 
     if (Source_p->type == NH_CSS_SOURCE_ELEMENT) {
         if (nh_css_getOuterDisplayType(Source_p) == NH_CSS_DISPLAY_INLINE) {
-            NH_CSS_END(NH_TRUE)
+            NH_CSS_END(true)
         }
     }
-    else {NH_CSS_END(NH_TRUE)}
+    else {NH_CSS_END(true)}
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
-static NH_BOOL nh_css_hasMixedContent(
+static bool nh_css_hasMixedContent(
     nh_css_Source *Source_p)
 {
 NH_CSS_BEGIN()
@@ -125,13 +125,13 @@ NH_CSS_BEGIN()
     {
         if (((nh_css_Source*)Source_p->Element.Children.pp[i])->type == NH_CSS_SOURCE_ELEMENT) {
             if (outer != nh_css_getOuterDisplayType(Source_p->Element.Children.pp[i])) {
-                NH_CSS_END(NH_TRUE)
+                NH_CSS_END(true)
             }
         }
-        else if (outer != NH_CSS_DISPLAY_INLINE) {NH_CSS_END(NH_TRUE)}
+        else if (outer != NH_CSS_DISPLAY_INLINE) {NH_CSS_END(true)}
     }
 
-NH_CSS_END(NH_FALSE)
+NH_CSS_END(false)
 }
 
 // CREATE ==========================================================================================
@@ -188,7 +188,7 @@ static void nh_css_removeBoxTreeNode(
 {
 NH_CSS_BEGIN()
 
-    nh_core_removeFromList2(&Node_p->Parent_p->Children, NH_TRUE, Node_p);
+    nh_core_removeFromList2(&Node_p->Parent_p->Children, true, Node_p);
 
 NH_CSS_SILENT_END()
 }
@@ -221,7 +221,7 @@ NH_CSS_BEGIN()
 NH_CSS_END(Node_p)
 }
 
-static NH_CSS_RESULT nh_css_createTextRun(
+static NH_API_RESULT nh_css_createTextRun(
     nh_css_Source *Source_p, nh_css_BoxTreeNode *Parent_p)
 {
 NH_CSS_BEGIN()
@@ -229,17 +229,17 @@ NH_CSS_BEGIN()
     nh_css_BoxTreeNode *Node_p = nh_css_insertBoxTreeNode(Source_p, Parent_p);
     NH_CSS_CHECK_MEM(Node_p)
     Node_p->type = NH_CSS_BOX_TREE_NODE_TEXT_RUN;
-    Source_p->mark = NH_TRUE;
+    Source_p->mark = true;
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
-static NH_CSS_RESULT nh_css_createInlineBox(
+static NH_API_RESULT nh_css_createInlineBox(
     nh_css_Source *Source_p, nh_css_BoxTreeNode *Parent_p, nh_css_Source **Hoist_pp)
 {
 NH_CSS_BEGIN()
 
-    if (Source_p->mark) {NH_CSS_END(NH_CSS_SUCCESS)}
+    if (Source_p->mark) {NH_CSS_END(NH_API_SUCCESS)}
     if (Source_p->type == NH_CSS_SOURCE_TEXT_NODE) {
         NH_CSS_END(nh_css_createTextRun(Source_p, Parent_p))
     }
@@ -251,24 +251,24 @@ NH_CSS_BEGIN()
     if (Node_p->type != NH_CSS_BOX_TREE_NODE_INLINE) {
         nh_css_removeBoxTreeNode(Node_p);
         *Hoist_pp = Source_p;
-        NH_CSS_END(NH_CSS_SUCCESS)
+        NH_CSS_END(NH_API_SUCCESS)
     }
 
     for (int i = 0; i < Source_p->Element.Children.size; ++i) {
         NH_CSS_CHECK(nh_css_createInlineBox(Source_p->Element.Children.pp[i], Node_p, Hoist_pp))
-        if (*Hoist_pp) {NH_CSS_END(NH_CSS_SUCCESS)}
+        if (*Hoist_pp) {NH_CSS_END(NH_API_SUCCESS)}
     }
 
-    Source_p->mark = NH_TRUE;
+    Source_p->mark = true;
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 static nh_css_BoxTreeNode *nh_css_createBlockBox(
     nh_css_Source *Source_p, nh_css_BoxTreeNode *Parent_p
 );
 
-static NH_CSS_RESULT nh_css_hoist(
+static NH_API_RESULT nh_css_hoist(
     nh_css_Source *Source_p, nh_css_BoxTreeNode **BlockBox_pp, nh_css_BoxTreeNode **RootInlineBox_pp)
 {
 NH_CSS_BEGIN()
@@ -287,7 +287,7 @@ NH_CSS_BEGIN()
     }
     while (Hoist_p);
 
-NH_CSS_END(NH_CSS_SUCCESS)
+NH_CSS_END(NH_API_SUCCESS)
 }
 
 static nh_css_BoxTreeNode *nh_css_createBlockBox(
@@ -301,7 +301,7 @@ NH_CSS_BEGIN()
     Node_p->type = NH_CSS_BOX_TREE_NODE_BLOCK_CONTAINER;
     NH_CSS_CHECK_2(NULL, nh_css_createFormattingContext(Node_p, NH_CSS_FORMATTING_CONTEXT_BLOCK))
 
-    NH_BOOL mixed = nh_css_hasMixedContent(Source_p);
+    bool mixed = nh_css_hasMixedContent(Source_p);
 
     nh_css_BoxTreeNode *BlockBox_p = NULL;
     nh_css_BoxTreeNode *RootInlineBox_p = NULL;
@@ -325,7 +325,7 @@ NH_CSS_BEGIN()
         }
     }
 
-    Source_p->mark = NH_TRUE;
+    Source_p->mark = true;
 
 NH_CSS_END(Node_p)
 }

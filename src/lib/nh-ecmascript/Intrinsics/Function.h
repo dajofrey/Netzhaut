@@ -18,11 +18,11 @@
  *  @{
  */
 
-    NH_ECMASCRIPT_RESULT nh_ecmascript_createIntrinsicFunction(
+    NH_API_RESULT nh_ecmascript_createIntrinsicFunction(
         nh_ecmascript_IntrinsicFunction *Function_p, nh_ecmascript_Realm *Realm_p
     );
     
-    NH_ECMASCRIPT_RESULT nh_ecmascript_freeIntrinsicFunction(
+    NH_API_RESULT nh_ecmascript_freeIntrinsicFunction(
         nh_ecmascript_IntrinsicFunction *Function_p
     );
 

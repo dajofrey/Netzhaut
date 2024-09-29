@@ -28,18 +28,18 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(Properties)
 }
 
-NH_BOOL nh_ecmascript_equalPropertyKeys(
+bool nh_ecmascript_equalPropertyKeys(
     nh_ecmascript_Any Key1, nh_ecmascript_Any Key2)
 {
 NH_ECMASCRIPT_BEGIN()
 
     if (Key1.type == NH_ECMASCRIPT_TYPE_STRING && Key2.type == NH_ECMASCRIPT_TYPE_STRING) {
         if (Key1.handle_p != NULL && Key2.handle_p != NULL && !strcmp(Key1.handle_p, Key2.handle_p)) {
-            NH_ECMASCRIPT_END(NH_TRUE)
+            NH_ECMASCRIPT_END(true)
         }
     }
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 nh_ecmascript_Property *nh_ecmascript_newProperty(

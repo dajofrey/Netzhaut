@@ -22,18 +22,18 @@
 // CREATE OBJECT ===================================================================================
 
 // https://heycam.github.io/webidl/#new
-static NH_WEBIDL_RESULT nh_webidl_createInterfaceObject(
+static NH_API_RESULT nh_webidl_createInterfaceObject(
     nh_webidl_Interface *Interface_p, nh_ecmascript_Realm *Realm_p)
 {
 NH_WEBIDL_BEGIN()
 
     nh_ecmascript_Object *Object_p = &Realm_p->Intrinsics.Function.Prototype;
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // https://heycam.github.io/webidl/#new
-NH_WEBIDL_RESULT nh_webidl_createInterfaceObjects(
+NH_API_RESULT nh_webidl_createInterfaceObjects(
     nh_ecmascript_Realm *Realm_p)
 {
 NH_WEBIDL_BEGIN()
@@ -52,6 +52,6 @@ NH_WEBIDL_BEGIN()
         }
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

@@ -26,16 +26,16 @@ NH_CORE_DIAGNOSTIC_END(hashmap_new())
 
 // ADD =============================================================================================
 
-NH_CORE_RESULT nh_core_addToHashMap(
-    nh_HashMap *Map_p, NH_BYTE *key_p, void *value_p)
+NH_API_RESULT nh_core_addToHashMap(
+    nh_HashMap *Map_p, char *key_p, void *value_p)
 {
 NH_CORE_BEGIN()
 
     if (hashmap_put(*Map_p, key_p, value_p) != MAP_OK) {
-        NH_CORE_DIAGNOSTIC_END(NH_CORE_ERROR_BAD_STATE)
+        NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_CORE_SUCCESS)
+NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // FREE ============================================================================================
@@ -53,7 +53,7 @@ NH_CORE_SILENT_END()
 // GET =============================================================================================
 
 void *nh_core_getFromHashMap(
-    nh_HashMap *Map_p, NH_BYTE *key_p)
+    nh_HashMap *Map_p, char *key_p)
 {
 NH_CORE_BEGIN()
 

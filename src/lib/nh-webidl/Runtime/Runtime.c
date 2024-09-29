@@ -27,7 +27,7 @@ nh_webidl_Runtime NH_WEBIDL_RUNTIME;
 
 // INIT ============================================================================================
 
-NH_WEBIDL_RESULT nh_webidl_initRuntime()
+NH_API_RESULT nh_webidl_initRuntime()
 {
 NH_WEBIDL_BEGIN()
 
@@ -35,10 +35,10 @@ NH_WEBIDL_BEGIN()
 
     for (int i = 0; i < NH_WEBIDL_FRAGMENT_NAMES_PP_COUNT; ++i) 
     {
-        NH_BYTE specificationName_p[255] = {'\0'};
+        char specificationName_p[255] = {'\0'};
         strcpy(specificationName_p, NH_WEBIDL_FRAGMENT_NAMES_PP[i]);
-        NH_BYTE *fragmentName_p = strstr(specificationName_p, "_");
-        if (!fragmentName_p) {NH_WEBIDL_END(NH_WEBIDL_ERROR_BAD_STATE)}
+        char *fragmentName_p = strstr(specificationName_p, "_");
+        if (!fragmentName_p) {NH_WEBIDL_END(NH_API_ERROR_BAD_STATE)}
         *fragmentName_p = '\0';
         fragmentName_p = fragmentName_p + 1;
          
@@ -46,13 +46,13 @@ NH_WEBIDL_BEGIN()
         nh_webidl_load(specificationName_p, fragmentName_p, ParseResult);
     }
 
-NH_WEBIDL_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_END(NH_API_SUCCESS)
 }
 
 // SPECIFICATION ===================================================================================
 
 nh_webidl_Specification *nh_webidl_getSpecification(
-    NH_BYTE *specification_p)
+    char *specification_p)
 {
 NH_WEBIDL_BEGIN()
 
@@ -77,7 +77,7 @@ NH_WEBIDL_END(Specification_p)
 // FRAGMENT ========================================================================================
 
 nh_webidl_Fragment *nh_webidl_getFragment(
-    NH_BYTE *specificationName_p, NH_BYTE *fragmentName_p)
+    char *specificationName_p, char *fragmentName_p)
 {
 NH_WEBIDL_BEGIN()
 
@@ -97,15 +97,15 @@ NH_WEBIDL_BEGIN()
 NH_WEBIDL_END(Fragment_p)
 }
 
-NH_WEBIDL_RESULT nh_webidl_load(
-    NH_BYTE *specification_p, NH_BYTE *fragmentName_p, nh_webidl_FragmentParseResult ParseResult)
+NH_API_RESULT nh_webidl_load(
+    char *specification_p, char *fragmentName_p, nh_webidl_FragmentParseResult ParseResult)
 {
 NH_WEBIDL_BEGIN()
 
     NH_WEBIDL_CHECK_NULL(specification_p)
 
     nh_webidl_Specification *Specification_p = nh_webidl_getSpecification(specification_p);
-    if (!Specification_p) {NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_ERROR_BAD_STATE)}
+    if (!Specification_p) {NH_WEBIDL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
 
     nh_webidl_Fragment *Fragment_p = nh_core_incrementArray(&Specification_p->Fragments);
     NH_WEBIDL_CHECK_MEM(Fragment_p)
@@ -117,13 +117,13 @@ NH_WEBIDL_BEGIN()
 
     nh_webidl_logFragment(specification_p, Fragment_p);
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_WEBIDL_SUCCESS)
+NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // GET =============================================================================================
 
 nh_webidl_Interface *nh_webidl_getInterface(
-    NH_BYTE *specification_p, NH_BYTE *interface_p)
+    char *specification_p, char *interface_p)
 {
 NH_WEBIDL_BEGIN()
 

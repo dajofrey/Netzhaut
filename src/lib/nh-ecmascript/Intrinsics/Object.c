@@ -24,7 +24,7 @@ static NH_ECMASCRIPT_BOOLEAN _nh_ecmascript_setPrototypeOf(
 {
 NH_ECMASCRIPT_BEGIN()
 
-NH_ECMASCRIPT_END(NH_FALSE)
+NH_ECMASCRIPT_END(false)
 }
 
 // DATA ============================================================================================
@@ -45,7 +45,7 @@ static nh_ecmascript_InternalMethods ObjectPrototypeInternalMethods = {
     .construct_f         = NULL,
 };
 
-static const NH_BYTE *objectPropertyNames_pp[] = {
+static const char *objectPropertyNames_pp[] = {
 // constructor properties
     "length",
     "assign",
@@ -319,9 +319,9 @@ static nh_ecmascript_Property *nh_ecmascript_getObjectProperty(
 NH_ECMASCRIPT_BEGIN()
 
     Object_p->Properties_p[i].type = NH_ECMASCRIPT_PROPERTY_DATA;
-    Object_p->Properties_p[i].enumerable   = NH_FALSE;
-    Object_p->Properties_p[i].configurable = NH_FALSE;
-    Object_p->Properties_p[i].Fields.Data.writable = NH_FALSE;
+    Object_p->Properties_p[i].enumerable   = false;
+    Object_p->Properties_p[i].configurable = false;
+    Object_p->Properties_p[i].Fields.Data.writable = false;
 
     nh_ecmascript_Any Value;
     Value.type = NH_ECMASCRIPT_TYPE_OBJECT;
@@ -399,7 +399,7 @@ NH_ECMASCRIPT_BEGIN()
 NH_ECMASCRIPT_END(&Object_p->Properties_p[i])
 }
 
-NH_ECMASCRIPT_RESULT nh_ecmascript_createIntrinsicObject(
+NH_API_RESULT nh_ecmascript_createIntrinsicObject(
     nh_ecmascript_IntrinsicObject *Object_p, nh_ecmascript_Realm *Realm_p)
 {
 NH_ECMASCRIPT_BEGIN()
@@ -408,7 +408,7 @@ NH_ECMASCRIPT_BEGIN()
     Object_p->Prototype.InternalSlots = nh_ecmascript_initInternalSlots(NULL, 0);
     Object_p->Prototype.InternalMethods_p = &ObjectPrototypeInternalMethods;
 
-    nh_ecmascript_setInternalSlot(&Object_p->Prototype.InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*)NH_TRUE);
+    nh_ecmascript_setInternalSlot(&Object_p->Prototype.InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*)true);
     nh_ecmascript_setInternalSlot(&Object_p->Prototype.InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE, NULL);
 
     NH_ECMASCRIPT_CHECK_NULL(nh_ecmascript_createBuiltinFunctionObject(
@@ -419,7 +419,7 @@ NH_ECMASCRIPT_BEGIN()
     {
         nh_ecmascript_Object *ConstructorOrPrototype_p = i < 22 ? &Object_p->Constructor : &Object_p->Prototype;
 
-        Object_p->Keys_p[i].p = (NH_BYTE*)objectPropertyNames_pp[i];
+        Object_p->Keys_p[i].p = (char*)objectPropertyNames_pp[i];
         Object_p->Keys_p[i].length  = strlen(objectPropertyNames_pp[i]);
 
         builtin_f function_p = NULL;
@@ -435,6 +435,6 @@ NH_ECMASCRIPT_BEGIN()
         nh_core_appendToList(&ConstructorOrPrototype_p->Properties, Property_p);
     }
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

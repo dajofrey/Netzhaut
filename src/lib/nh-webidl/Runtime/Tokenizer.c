@@ -23,7 +23,7 @@
 
 // DATA ============================================================================================
 
-const NH_BYTE *NH_WEBIDL_TOKENS_PP[] = {
+const char *NH_WEBIDL_TOKENS_PP[] = {
     "Whitespace",
     "LineTerminator",
     "Comment",
@@ -39,8 +39,8 @@ const NH_BYTE *NH_WEBIDL_TOKENS_PP[] = {
 
 // TOKENIZER =======================================================================================
 
-static NH_BOOL nh_webidl_isDigit(
-    NH_ENCODING_UTF32 codepoint, NH_BOOL zero)
+static bool nh_webidl_isDigit(
+    NH_ENCODING_UTF32 codepoint, bool zero)
 {
 NH_WEBIDL_BEGIN()
 
@@ -54,12 +54,12 @@ NH_WEBIDL_BEGIN()
     ||  codepoint == '8'
     ||  codepoint == '9')
     {
-        NH_WEBIDL_END(NH_TRUE)
+        NH_WEBIDL_END(true)
     }
 
-    if (zero && codepoint == '0') {NH_WEBIDL_END(NH_TRUE)}
+    if (zero && codepoint == '0') {NH_WEBIDL_END(true)}
 
-NH_WEBIDL_END(NH_FALSE)
+NH_WEBIDL_END(false)
 }
 
 static unsigned int nh_webidl_isDigits(
@@ -67,9 +67,9 @@ static unsigned int nh_webidl_isDigits(
 {
 NH_WEBIDL_BEGIN()
 
-    if (nh_webidl_isDigit(codepoints_p[0], NH_TRUE)) {
+    if (nh_webidl_isDigit(codepoints_p[0], true)) {
         unsigned int i = 1;
-        while (i < length && (nh_webidl_isDigit(codepoints_p[i], NH_TRUE) || codepoints_p[i] == '_')) {
+        while (i < length && (nh_webidl_isDigit(codepoints_p[i], true) || codepoints_p[i] == '_')) {
             i++;
         }
         NH_WEBIDL_END(i)
@@ -87,7 +87,7 @@ NH_WEBIDL_BEGIN()
     if (codepoints_p[0] == '+' || codepoints_p[0] == '-') {
         offset++;
     }
-    int digits = nh_webidl_isDigits(offset == 0 ? codepoints_p : &codepoints_p[1], NH_TRUE);
+    int digits = nh_webidl_isDigits(offset == 0 ? codepoints_p : &codepoints_p[1], true);
     if (digits == 0) {NH_WEBIDL_END(0)}
 
 NH_WEBIDL_END(offset + digits)
@@ -101,7 +101,7 @@ NH_WEBIDL_BEGIN()
     if (codepoints_p[0] != 'e' && codepoints_p[0] != 'E') {
         NH_WEBIDL_END(0)
     }
-    int digits = nh_webidl_isSignedInteger(&codepoints_p[1], NH_TRUE);
+    int digits = nh_webidl_isSignedInteger(&codepoints_p[1], true);
 
 NH_WEBIDL_END(digits)
 }
@@ -113,7 +113,7 @@ NH_WEBIDL_BEGIN()
 
     if (codepoints_p[0] == '0') {NH_WEBIDL_END(1)}
 
-    if (nh_webidl_isDigit(codepoints_p[0], NH_FALSE)) 
+    if (nh_webidl_isDigit(codepoints_p[0], false)) 
     {
         int offset = 1;
         if (length > 1 && codepoints_p[1] == '_') {
@@ -247,7 +247,7 @@ NH_WEBIDL_BEGIN()
         }
         if (codepoints_p[0] == '?' && codepoints_p[1] == '.')
         { 
-            if (length > 2 && nh_webidl_isDigit(codepoints_p[2], NH_TRUE)) {}
+            if (length > 2 && nh_webidl_isDigit(codepoints_p[2], true)) {}
             else {NH_WEBIDL_END(2)}
         }
     }
@@ -283,7 +283,7 @@ NH_WEBIDL_BEGIN()
 NH_WEBIDL_END(0)
 }
 
-static NH_BOOL nh_webidl_isHexDigit(
+static bool nh_webidl_isHexDigit(
     NH_ENCODING_UTF32 codepoint)
 {
 NH_WEBIDL_BEGIN()
@@ -309,9 +309,9 @@ NH_WEBIDL_BEGIN()
     ||  codepoint == 'C'
     ||  codepoint == 'D'
     ||  codepoint == 'E'
-    ||  codepoint == 'F') {NH_WEBIDL_END(NH_TRUE)}
+    ||  codepoint == 'F') {NH_WEBIDL_END(true)}
 
-NH_WEBIDL_END(NH_FALSE)
+NH_WEBIDL_END(false)
 }
 
 static unsigned int nh_webidl_isHexDigits(
@@ -365,7 +365,7 @@ NH_WEBIDL_BEGIN()
         NH_WEBIDL_END(2)
     }
 
-    if (nh_webidl_isDigit(codepoints_p[0], NH_FALSE) && length > 1) 
+    if (nh_webidl_isDigit(codepoints_p[0], false) && length > 1) 
     {
         if (codepoints_p[1] == '_') {
             digits = nh_webidl_isDigits(&codepoints_p[2], length - 2);
@@ -441,13 +441,13 @@ static unsigned int nh_webidl_isIdentifierStart(
 {
 NH_WEBIDL_BEGIN()
 
-    if (codepoint == '$' || codepoint == '_') {NH_WEBIDL_END(NH_TRUE)}
-    if (nh_encoding_inIDSTART(codepoint)) {NH_WEBIDL_END(NH_TRUE)}
+    if (codepoint == '$' || codepoint == '_') {NH_WEBIDL_END(true)}
+    if (nh_encoding_inIDSTART(codepoint)) {NH_WEBIDL_END(true)}
     if (codepoint == 92) { // 92 == \
         // unicode esc seq
     }
 
-NH_WEBIDL_END(NH_FALSE)
+NH_WEBIDL_END(false)
 } 
 
 static unsigned int nh_webidl_isIdentifierPart(
@@ -455,13 +455,13 @@ static unsigned int nh_webidl_isIdentifierPart(
 {
 NH_WEBIDL_BEGIN()
 
-    if (codepoint == '$') {NH_WEBIDL_END(NH_TRUE)}
-    if (nh_encoding_inIDCONTINUE(codepoint)) {NH_WEBIDL_END(NH_TRUE)}
+    if (codepoint == '$') {NH_WEBIDL_END(true)}
+    if (nh_encoding_inIDCONTINUE(codepoint)) {NH_WEBIDL_END(true)}
     if (codepoint == 92) {
         // unicode esc seq
     }
 
-NH_WEBIDL_END(NH_FALSE)
+NH_WEBIDL_END(false)
 } 
 
 // https://tc39.es/ecma262/#sec-names-and-keywords
@@ -588,17 +588,17 @@ NH_WEBIDL_END(CleanTokens)
 // TOKENIZE ========================================================================================
 
 nh_Array nh_webidl_tokenizeFragment(
-    NH_BYTE *logName_p, NH_BYTE *fragment_p)
+    char *logName_p, char *fragment_p)
 {
 NH_WEBIDL_BEGIN()
 
     nh_encoding_UTF32String Codepoints = nh_encoding_decodeUTF8(fragment_p, strlen(fragment_p), NULL);
 
     nh_Array DirtyTokens = nh_webidl_getTokens(Codepoints);
-    nh_webidl_logTokens(logName_p, &DirtyTokens, NH_TRUE);
+    nh_webidl_logTokens(logName_p, &DirtyTokens, true);
 
     nh_Array CleanTokens = nh_webidl_discardRedundantTokens(DirtyTokens);
-    nh_webidl_logTokens(logName_p, &CleanTokens, NH_FALSE);
+    nh_webidl_logTokens(logName_p, &CleanTokens, false);
 
     nh_webidl_freeTokens(DirtyTokens);
     nh_encoding_freeUTF32(&Codepoints);
@@ -624,15 +624,15 @@ NH_WEBIDL_SILENT_END()
 
 // IS NUMERIC LITERAL ==============================================================================
 
-NH_BOOL nh_webidl_isNumericToken(
+bool nh_webidl_isNumericToken(
     nh_webidl_Token *Token_p)
 {
 NH_WEBIDL_BEGIN()
 
     if (Token_p->type >= NH_WEBIDL_TOKEN_DECIMAL_LITERAL && Token_p->type <= NH_WEBIDL_TOKEN_NON_DECIMAL_HEX_INTEGER_LITERAL) {
-        NH_WEBIDL_END(NH_TRUE)
+        NH_WEBIDL_END(true)
     }
 
-NH_WEBIDL_END(NH_FALSE)
+NH_WEBIDL_END(false)
 }
 

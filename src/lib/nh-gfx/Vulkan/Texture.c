@@ -25,14 +25,14 @@
 
 // LOAD ============================================================================================
 
-static NH_GFX_RESULT nh_vk_loadTexture(
+static NH_API_RESULT nh_vk_loadTexture(
    nh_vk_Driver *Driver_p, nh_vk_TextureInfo *Info_p, nh_vk_Texture *Texture_p, int threadIndex)
 {
 NH_GFX_BEGIN()
 
-    NH_GFX_CHECK_NULL_2(NH_GFX_ERROR_PARAMETERS, Info_p)
-    NH_GFX_CHECK_NULL_2(NH_GFX_ERROR_PARAMETERS, Driver_p)
-    NH_GFX_CHECK_NULL_2(NH_GFX_ERROR_PARAMETERS, Texture_p)
+    NH_GFX_CHECK_NULL_2(NH_API_ERROR_PARAMETERS, Info_p)
+    NH_GFX_CHECK_NULL_2(NH_API_ERROR_PARAMETERS, Driver_p)
+    NH_GFX_CHECK_NULL_2(NH_API_ERROR_PARAMETERS, Texture_p)
 
     // prepare
     VkImageCreateInfo ImageInfo = {};
@@ -120,7 +120,7 @@ NH_GFX_BEGIN()
     };
 
     if (Driver_p->Functions.vkCreateBuffer(Driver_p->Device, &bufferCreateInfo, VK_NULL_HANDLE, &StagingBuffer) != VK_SUCCESS) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     // get memory requirements for the staging buffer (alignment, memory type bits)
@@ -265,19 +265,19 @@ NH_GFX_BEGIN()
     Texture_p->DescriptorImageInfo.imageView   = Texture_p->ImageView;
     Texture_p->DescriptorImageInfo.imageLayout = Info_p->imageLayout;
 
-NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // RELOAD ==========================================================================================
 
-static NH_GFX_RESULT nh_vk_reloadTexture(
+static NH_API_RESULT nh_vk_reloadTexture(
    nh_vk_Driver *Driver_p, nh_vk_TextureInfo *Info_p, nh_vk_Texture *Texture_p, int threadIndex)
 {
 NH_GFX_BEGIN()
 
-    NH_GFX_CHECK_NULL_2(NH_GFX_ERROR_PARAMETERS, Info_p)
-    NH_GFX_CHECK_NULL_2(NH_GFX_ERROR_PARAMETERS, Driver_p)
-    NH_GFX_CHECK_NULL_2(NH_GFX_ERROR_PARAMETERS, Texture_p)
+    NH_GFX_CHECK_NULL_2(NH_API_ERROR_PARAMETERS, Info_p)
+    NH_GFX_CHECK_NULL_2(NH_API_ERROR_PARAMETERS, Driver_p)
+    NH_GFX_CHECK_NULL_2(NH_API_ERROR_PARAMETERS, Texture_p)
 
     // prepare
     VkImageCreateInfo ImageInfo = {};
@@ -365,7 +365,7 @@ NH_GFX_BEGIN()
     };
 
     if (Driver_p->Functions.vkCreateBuffer(Driver_p->Device, &bufferCreateInfo, VK_NULL_HANDLE, &StagingBuffer) != VK_SUCCESS) {
-        NH_GFX_DIAGNOSTIC_END(NH_GFX_ERROR_BAD_STATE)
+        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
     }
 
     // get memory requirements for the staging buffer (alignment, memory type bits)
@@ -490,13 +490,13 @@ NH_GFX_BEGIN()
     Driver_p->Functions.vkFreeMemory(Driver_p->Device, StagingMemory, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyBuffer(Driver_p->Device, StagingBuffer, VK_NULL_HANDLE);
 
-NH_GFX_END(NH_GFX_SUCCESS)
+NH_GFX_END(NH_API_SUCCESS)
 }
 
 // IMPLEMENT =======================================================================================
 
-//static NH_GFX_RESULT nh_vk_relayLoadOperation(
-//    nh_vk_GPU *GPU_p, nh_Texture *Texture_p, NH_BOOL reload)
+//static NH_API_RESULT nh_vk_relayLoadOperation(
+//    nh_vk_GPU *GPU_p, nh_Texture *Texture_p, bool reload)
 //{
 //NH_GFX_BEGIN()
 //
@@ -579,7 +579,7 @@ NH_GFX_END(NH_GFX_SUCCESS)
 //    Texture_p->width  = Texture_p->Vulkan_p->width;
 //    Texture_p->height = Texture_p->Vulkan_p->height;
 //
-//NH_GFX_DIAGNOSTIC_END(NH_GFX_SUCCESS)
+//NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
 
 nh_vk_Texture *nh_vk_loadFontTexture(
@@ -651,7 +651,7 @@ NH_GFX_BEGIN()
     GPU_p->Driver.Functions.vkDestroyImage(GPU_p->Driver.Device, Texture_p->Image, VK_NULL_HANDLE);
     GPU_p->Driver.Functions.vkDestroySampler(GPU_p->Driver.Device, Texture_p->Sampler, VK_NULL_HANDLE);
 
-    nh_core_removeFromList2(&GPU_p->Textures, NH_TRUE, Texture_p);
+    nh_core_removeFromList2(&GPU_p->Textures, true, Texture_p);
 
 NH_GFX_SILENT_END()
 }

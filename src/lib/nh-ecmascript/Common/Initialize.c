@@ -18,12 +18,12 @@
 
 // DEBUG ===========================================================================================
 
-NH_ECMASCRIPT_RESULT nh_ecmascript_initialize()
+NH_API_RESULT nh_ecmascript_initialize()
 {
 NH_ECMASCRIPT_BEGIN()
 
     NH_ECMASCRIPT_CHECK(nh_ecmascript_createIndexMap())
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_ECMASCRIPT_SUCCESS)
+NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 

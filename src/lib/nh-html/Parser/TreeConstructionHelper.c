@@ -56,14 +56,14 @@ NH_HTML_BEGIN()
         Interface_p = nh_html_getElementInterface(LocalName_p->p);
     }
 
-    NH_BOOL willExecuteScript = NH_FALSE;
+    bool willExecuteScript = false;
 
     if (willExecuteScript) {
         // TODO
     }
 
     nh_webidl_Object *Object_p = nh_dom_createElement(
-        Document_p, LocalName_p, Namespace_p, NULL, Is_p, NH_FALSE, Interface_p 
+        Document_p, LocalName_p, Namespace_p, NULL, Is_p, false, Interface_p 
     );
     nh_dom_setParentNode(nh_dom_getNode(Object_p), IntendedParent_p);
     nh_html_setToken(nh_html_getHTMLElement(Object_p), Token_p);
@@ -113,19 +113,19 @@ NH_HTML_END(adjustedInsertionPosition)
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-comment
-NH_HTML_RESULT nh_html_insertCommentAtPosition(
+NH_API_RESULT nh_html_insertCommentAtPosition(
     nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, NH_WEBIDL_UNSIGNED_LONG position)
 {
 NH_HTML_BEGIN()
 
     nh_dom_Comment *Comment_p = nh_dom_createComment(Parser_p->Token_p->CommentOrCharacter.Data);
     NH_HTML_CHECK_MEM(Comment_p)
-    NH_DOM_CHECK_2(NH_HTML_ERROR_BAD_STATE, nh_dom_insertIntoNode(nh_dom_getNode(Target_p), (nh_webidl_Object*)Comment_p, position))
+    NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(nh_dom_getNode(Target_p), (nh_webidl_Object*)Comment_p, position))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_HTML_RESULT nh_html_insertComment(
+NH_API_RESULT nh_html_insertComment(
     nh_html_Parser *Parser_p, nh_webidl_Object *Node_p)
 {
 NH_HTML_BEGIN()
@@ -157,7 +157,7 @@ NH_HTML_END(nh_html_insertForeignElement(Parser_p, Token_p, &NH_WEBIDL_HTML_NAME
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-character
-NH_HTML_RESULT nh_html_insertCharacter(
+NH_API_RESULT nh_html_insertCharacter(
     nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, nh_webidl_DOMString *Data_p)
 {
 NH_HTML_BEGIN()
@@ -167,14 +167,14 @@ NH_HTML_BEGIN()
     NH_WEBIDL_UNSIGNED_LONG adjustedInsertionLocation = nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Target_p);
 
     if (!strcmp(Target_p->Interface_p->name_p, "Document")) {
-        NH_HTML_END(NH_HTML_SUCCESS)
+        NH_HTML_END(NH_API_SUCCESS)
     } 
 
     if (adjustedInsertionLocation > 0) {
         nh_webidl_Object *Sibling_p = nh_dom_getFromNodeList(nh_webidl_getAttribute(Target_p, "childNodes"), adjustedInsertionLocation - 1);
         if (!strcmp(Sibling_p->Interface_p->name_p, "Text")) {
-            NH_DOM_CHECK_2(NH_HTML_ERROR_BAD_STATE, nh_dom_appendToText((nh_dom_Text*)Sibling_p, *Data_p))
-            NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+            NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToText((nh_dom_Text*)Sibling_p, *Data_p))
+            NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
         }
     }
 
@@ -184,14 +184,14 @@ NH_HTML_BEGIN()
     nh_dom_Text *Text_p = nh_dom_createText(*Data_p, nh_dom_getNodeDocument(TargetNode_p)); 
     NH_HTML_CHECK_MEM(Text_p)
 
-    NH_DOM_CHECK_2(NH_HTML_ERROR_BAD_STATE, nh_dom_insertIntoNode(TargetNode_p, (nh_webidl_Object*)Text_p, adjustedInsertionLocation))
+    NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(TargetNode_p, (nh_webidl_Object*)Text_p, adjustedInsertionLocation))
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#generic-rcdata-element-parsing-algorithm
-NH_HTML_RESULT nh_html_parseRAWTEXTOrRCDATA(
-    nh_html_Parser *Parser_p, nh_html_Token *Token_p, NH_BOOL RAWTEXT)
+NH_API_RESULT nh_html_parseRAWTEXTOrRCDATA(
+    nh_html_Parser *Parser_p, nh_html_Token *Token_p, bool RAWTEXT)
 {
 NH_HTML_BEGIN()
 
@@ -201,7 +201,7 @@ NH_HTML_BEGIN()
     Parser_p->originalInsertionMode = Parser_p->insertionMode;
     Parser_p->insertionMode = NH_HTML_INSERTION_MODE_TEXT;
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_html_Token *nh_html_getEmptyStartTagToken(
@@ -214,10 +214,10 @@ NH_HTML_BEGIN()
     static nh_html_Token Tokens_p[255];
 
     Tokens_p[tag].type                          = NH_HTML_TOKEN_START_TAG;
-    Tokens_p[tag].StartOrEndTag.TagName.p = (NH_BYTE*)NH_HTML_TAG_NAMES_PP[tag];
+    Tokens_p[tag].StartOrEndTag.TagName.p = (char*)NH_HTML_TAG_NAMES_PP[tag];
     Tokens_p[tag].StartOrEndTag.TagName.length  = strlen(NH_HTML_TAG_NAMES_PP[tag]);
     Tokens_p[tag].StartOrEndTag.Attributes      = nh_core_initArray(1, 1);
-    Tokens_p[tag].StartOrEndTag.selfClosing     = NH_FALSE;
+    Tokens_p[tag].StartOrEndTag.selfClosing     = false;
 
 NH_HTML_END(&Tokens_p[tag])
 }
@@ -226,7 +226,7 @@ NH_HTML_END(&Tokens_p[tag])
 // https://html.spec.whatwg.org/multipage/parsing.html#the-list-of-active-formatting-elements
 
 // https://html.spec.whatwg.org/multipage/parsing.html#push-onto-the-list-of-active-formatting-elements
-NH_HTML_RESULT nh_html_pushActiveFormattingElement(
+NH_API_RESULT nh_html_pushActiveFormattingElement(
     nh_html_Parser *Parser_p, nh_webidl_Object *Element_p)
 {
 NH_HTML_BEGIN()
@@ -235,37 +235,37 @@ NH_HTML_BEGIN()
 
     nh_core_appendToList(&Parser_p->ActiveFormattingElements, Element_p);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_HTML_RESULT nh_html_insertMarker(
+NH_API_RESULT nh_html_insertMarker(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
 
     nh_core_appendToList(&Parser_p->ActiveFormattingElements, NULL);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#reconstruct-the-active-formatting-elements
-NH_HTML_RESULT nh_html_reconstructActiveFormattingElements(
+NH_API_RESULT nh_html_reconstructActiveFormattingElements(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
 
     if (Parser_p->ActiveFormattingElements.size == 0) {
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     int index = Parser_p->ActiveFormattingElements.size - 1;
     nh_webidl_Object *Entry_p = Parser_p->ActiveFormattingElements.pp[index];
 
     if (Entry_p == NULL) { // marker
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
     if (nh_inList(&Parser_p->OpenElements, Entry_p)) {
-        NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
     }
 
     RECONSTRUCT_REWIND: {
@@ -292,17 +292,17 @@ NH_HTML_BEGIN()
         if (index > 0) {goto RECONSTRUCT_ADVANCE;}
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // IMPLIED END TAGS ================================================================================
 
-NH_HTML_RESULT nh_html_generateImpliedEndTags(
-    nh_html_Parser *Parser_p, NH_BYTE *exclude_p)
+NH_API_RESULT nh_html_generateImpliedEndTags(
+    nh_html_Parser *Parser_p, char *exclude_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *elements_pp[] = 
+    static char *elements_pp[] = 
     {
         "dd",
         "dt",
@@ -321,13 +321,13 @@ NH_HTML_BEGIN()
     while (CurrentNode_p)
     {
         nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(nh_dom_getElement(CurrentNode_p));
-        NH_BOOL pop = NH_FALSE;
+        bool pop = false;
 
         for (int i = 0; i < sizeof(elements_pp)/sizeof(elements_pp[i]); ++i) {
             if (!strcmp(LocalName_p->p, elements_pp[i])) {
                 if (exclude_p == NULL || strcmp(elements_pp[i], exclude_p)) {
                     nh_webidl_Object *O_p = nh_html_popCurrentNode(Parser_p);
-                    pop = NH_TRUE;
+                    pop = true;
                     break;
                 }
             }
@@ -338,15 +338,15 @@ NH_HTML_BEGIN()
         CurrentNode_p = nh_html_getCurrentNode(Parser_p);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
-NH_HTML_RESULT nh_html_generateAllImpliedEndTags(
+NH_API_RESULT nh_html_generateAllImpliedEndTags(
     nh_html_Parser *Parser_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *elements_pp[] = 
+    static char *elements_pp[] = 
     {
         "caption",
         "colgroup",
@@ -373,12 +373,12 @@ NH_HTML_BEGIN()
     while (CurrentNode_p)
     {
         nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(nh_dom_getElement(CurrentNode_p));
-        NH_BOOL pop = NH_FALSE;
+        bool pop = false;
 
         for (int i = 0; i < sizeof(elements_pp)/sizeof(elements_pp[i]); ++i) {
             if (!strcmp(LocalName_p->p, elements_pp[i])) {
                 nh_html_popCurrentNode(Parser_p);
-                pop = NH_TRUE;
+                pop = true;
                 break;
             }
         }
@@ -388,7 +388,7 @@ NH_HTML_BEGIN()
         CurrentNode_p = nh_html_getCurrentNode(Parser_p);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 // STACK OF OPEN ELEMENTS ==========================================================================
@@ -411,14 +411,14 @@ NH_HTML_BEGIN()
 NH_HTML_END(nh_html_getCurrentNode(Parser_p))
 }
 
-NH_HTML_RESULT nh_html_pushOpenElement(
+NH_API_RESULT nh_html_pushOpenElement(
     nh_html_Parser *Parser_p, nh_webidl_Object *Object_p)
 {
 NH_HTML_BEGIN()
 
     nh_pushStack(&Parser_p->OpenElements, Object_p);
 
-NH_HTML_DIAGNOSTIC_END(NH_HTML_SUCCESS)
+NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
 
 nh_webidl_Object *nh_html_popCurrentNode(
@@ -438,13 +438,13 @@ NH_HTML_END(Object_p)
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#special
-NH_BOOL nh_html_inSpecialCategory(
+bool nh_html_inSpecialCategory(
     nh_webidl_Object *Node_p)
 {
 NH_HTML_BEGIN()
 
     nh_dom_Element *Element_p = nh_dom_getElement(Node_p);
-    if (!Element_p) {NH_HTML_END(NH_FALSE)}
+    if (!Element_p) {NH_HTML_END(false)}
 
     nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(Element_p);
     int tag = nh_html_getTagIndex(LocalName_p->p);
@@ -534,18 +534,18 @@ NH_HTML_BEGIN()
             case NH_HTML_TAG_TRACK      :
             case NH_HTML_TAG_UL         :
             case NH_HTML_TAG_WBR        :
-            case NH_HTML_TAG_XMP        : NH_HTML_END(NH_TRUE)
+            case NH_HTML_TAG_XMP        : NH_HTML_END(true)
             default                     : break;
         }
     }
 
     // TODO MathML, SVG
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-static NH_BOOL nh_html_hasElementInSpecificScope(
-    nh_html_Parser *Parser_p, NH_BYTE *target_p, NH_BYTE **scope_pp, unsigned int items)
+static bool nh_html_hasElementInSpecificScope(
+    nh_html_Parser *Parser_p, char *target_p, char **scope_pp, unsigned int items)
 {
 NH_HTML_BEGIN()
 
@@ -554,24 +554,24 @@ NH_HTML_BEGIN()
         nh_webidl_Object *Node_p = nh_core_getFromList(&Parser_p->OpenElements, i);
         nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(nh_dom_getElement(Node_p));
 
-        if (!strcmp(LocalName_p->p, target_p)) {NH_HTML_END(NH_TRUE)}
+        if (!strcmp(LocalName_p->p, target_p)) {NH_HTML_END(true)}
 
         for (int j = 0; j < items; ++j) {
             if (!strcmp(LocalName_p->p, scope_pp[j])) {
-                NH_HTML_END(NH_FALSE)
+                NH_HTML_END(false)
             }
         }
     }
 
-NH_HTML_END(NH_FALSE)
+NH_HTML_END(false)
 }
 
-NH_BOOL nh_html_hasElementInScope(
-    nh_html_Parser *Parser_p, NH_BYTE *target_p)
+bool nh_html_hasElementInScope(
+    nh_html_Parser *Parser_p, char *target_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *defaultScope_pp[] =
+    static char *defaultScope_pp[] =
     {
         "applet",
         "caption",
@@ -596,12 +596,12 @@ NH_HTML_BEGIN()
 NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, defaultScope_pp, sizeof(defaultScope_pp)/sizeof(defaultScope_pp[0])))
 }
 
-NH_BOOL nh_html_hasElementInListItemScope(
-    nh_html_Parser *Parser_p, NH_BYTE *target_p)
+bool nh_html_hasElementInListItemScope(
+    nh_html_Parser *Parser_p, char *target_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *listItemScope_pp[] =
+    static char *listItemScope_pp[] =
     {
         "applet",
         "caption",
@@ -628,12 +628,12 @@ NH_HTML_BEGIN()
 NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, listItemScope_pp, sizeof(listItemScope_pp)/sizeof(listItemScope_pp[0])))
 }
 
-NH_BOOL nh_html_hasElementInButtonScope(
-    nh_html_Parser *Parser_p, NH_BYTE *target_p)
+bool nh_html_hasElementInButtonScope(
+    nh_html_Parser *Parser_p, char *target_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *buttonScope_pp[] =
+    static char *buttonScope_pp[] =
     {
         "applet",
         "caption",
@@ -659,12 +659,12 @@ NH_HTML_BEGIN()
 NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, buttonScope_pp, sizeof(buttonScope_pp)/sizeof(buttonScope_pp[0])))
 }
 
-NH_BOOL nh_html_hasElementInTableScope(
-    nh_html_Parser *Parser_p, NH_BYTE *target_p)
+bool nh_html_hasElementInTableScope(
+    nh_html_Parser *Parser_p, char *target_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *tableScope_pp[] =
+    static char *tableScope_pp[] =
     {
         "html",
         "table",
@@ -674,12 +674,12 @@ NH_HTML_BEGIN()
 NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, tableScope_pp, sizeof(tableScope_pp)/sizeof(tableScope_pp[0])))
 }
 
-NH_BOOL nh_html_hasElementInSelectScope(
-    nh_html_Parser *Parser_p, NH_BYTE *target_p)
+bool nh_html_hasElementInSelectScope(
+    nh_html_Parser *Parser_p, char *target_p)
 {
 NH_HTML_BEGIN()
 
-    static NH_BYTE *selectScope_pp[] =
+    static char *selectScope_pp[] =
     {
         "optgroup",
         "option",
