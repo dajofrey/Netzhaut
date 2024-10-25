@@ -22,7 +22,7 @@ typedef NH_API_UTF32 NH_ENCODING_UTF32;
 typedef struct nh_encoding_UTF32String { 
     NH_ENCODING_UTF32 *p; 
     unsigned long length; 
-    nh_Array Array; 
+    nh_core_Array Array; 
 } nh_encoding_UTF32String; 
 
 /** @addtogroup lib_nh-core_typedefs
@@ -73,6 +73,10 @@ typedef struct nh_encoding_UTF32String {
         nh_encoding_UTF32String *String_p
     );
 
+    unsigned int nh_encoding_getUTF32Length( 
+        NH_ENCODING_UTF32 *codepoints_p
+    );
+
     NH_API_RESULT nh_encoding_removeUTF32Tail(
         nh_encoding_UTF32String *String_p, unsigned long count
     );
@@ -85,7 +89,7 @@ typedef struct nh_encoding_UTF32String {
         nh_encoding_UTF32String *String_p, int index, NH_ENCODING_UTF32 *codepoints_p, int length
     );
 
-    nh_List nh_encoding_splitUTF32(
+    nh_core_List nh_encoding_splitUTF32(
         nh_encoding_UTF32String *String_p, NH_ENCODING_UTF32 delimiter
     );
 
@@ -96,6 +100,10 @@ typedef struct nh_encoding_UTF32String {
     nh_encoding_UTF32String nh_encoding_replaceNonCharactersExpressively(
         nh_encoding_UTF32String *String_p
     );
+
+    void nh_encoding_printUTF32( 
+        nh_encoding_UTF32String *String_p
+    ); 
 
 // CHECKS 
 
@@ -162,7 +170,7 @@ typedef struct nh_encoding_UTF32String {
 // MATCH
 
     nh_encoding_UTF32String *nh_encoding_getBestMatch(
-        nh_List *Strings_p, nh_encoding_UTF32String *String_p
+        nh_core_List *Strings_p, nh_encoding_UTF32String *String_p
     );
 
 // COMPARE

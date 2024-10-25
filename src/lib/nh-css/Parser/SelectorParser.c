@@ -13,7 +13,6 @@
 #include "Tokenizer.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
@@ -28,8 +27,6 @@
 const char *nh_css_getSelectorParseNodeName(
     nh_css_SelectorParseNode *Node_p)
 {
-NH_CSS_BEGIN()
-
     static const char *parseNodeNames_pp[] =
     {
         "<terminal>",
@@ -56,7 +53,7 @@ NH_CSS_BEGIN()
         "<pseudo-element-selector>",
     };
     
-NH_CSS_END(parseNodeNames_pp[Node_p->type])
+    return parseNodeNames_pp[Node_p->type];
 }
 
 // HELPER ==========================================================================================
@@ -67,38 +64,32 @@ typedef struct nh_css_SelectorParser {
 } nh_css_SelectorParser;
 
 static nh_css_SelectorParser nh_css_initSelectorParser(
-    nh_List Tokens)
+    nh_core_List Tokens)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParser Parser;
     Parser.Tokens_pp = (nh_css_Token**)Tokens.pp;
 
-NH_CSS_END(Parser)
+    return Parser;
 }
 
 static nh_css_SelectorParseNode *nh_css_allocateNonTerminal(
     NH_CSS_SELECTOR_PARSE_NODE type)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParseNode *Node_p = nh_core_allocate(sizeof(nh_css_SelectorParseNode));
-    NH_CSS_CHECK_MEM_2(NULL, Node_p)
+    NH_CORE_CHECK_MEM_2(NULL, Node_p)
 
     Node_p->type = type;
     Node_p->Children = nh_core_initList(8);
     Node_p->Token_p = NULL;
 
-NH_CSS_END(Node_p)
+    return Node_p;
 }
 
 static nh_css_SelectorParseNode *nh_css_appendTerminal(
     nh_css_SelectorParseNode *NonTerminal_p, nh_css_Token *Token_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParseNode *Terminal_p = nh_core_allocate(sizeof(nh_css_SelectorParseNode));
-    NH_CSS_CHECK_MEM_2(NULL, Terminal_p)
+    NH_CORE_CHECK_MEM_2(NULL, Terminal_p)
 
     Terminal_p->type = NH_CSS_SELECTOR_PARSE_NODE_TERMINAL;
     Terminal_p->Children = nh_core_initList(8);
@@ -106,7 +97,7 @@ NH_CSS_BEGIN()
 
     nh_core_appendToList(&NonTerminal_p->Children, Terminal_p);
 
-NH_CSS_END(Terminal_p)
+    return Terminal_p;
 }
 
 // PARSER INTERFACE ================================================================================
@@ -114,29 +105,25 @@ NH_CSS_END(Terminal_p)
 static nh_css_SelectorParseNode *nh_css_parseCombinator(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_DELIM) 
     {
         if (Parser_p->Tokens_pp[0]->Delim.value == '>' || Parser_p->Tokens_pp[0]->Delim.value == '+' || Parser_p->Tokens_pp[0]->Delim.value == '~') 
         {
             nh_css_SelectorParseNode *Combinator_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_COMBINATOR);
-            NH_CSS_CHECK_MEM_2(NULL, Combinator_p)
-            NH_CSS_CHECK_NULL_2(NULL, nh_css_appendTerminal(Combinator_p, Parser_p->Tokens_pp[0]))
+            NH_CORE_CHECK_MEM_2(NULL, Combinator_p)
+            NH_CORE_CHECK_NULL_2(NULL, nh_css_appendTerminal(Combinator_p, Parser_p->Tokens_pp[0]))
             Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];
-            NH_CSS_END(Combinator_p)
+            return Combinator_p;
         }
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseNsPrefix(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
-    if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_EOF) {NH_CSS_END(NULL)}
+    if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_EOF) {return NULL;}
 
     nh_css_SelectorParser Local = *Parser_p;
 
@@ -153,47 +140,43 @@ NH_CSS_BEGIN()
     if (Local.Tokens_pp[0]->type == NH_CSS_TOKEN_DELIM && Local.Tokens_pp[0]->Delim.value == '|') 
     {
         nh_css_SelectorParseNode *NsPrefix_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_NS_PREFIX);
-        NH_CSS_CHECK_MEM_2(NULL, NsPrefix_p)     
-        if (Prev_p) {NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(NsPrefix_p, Prev_p))}
-        NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(NsPrefix_p, Local.Tokens_pp[0]))
+        NH_CORE_CHECK_MEM_2(NULL, NsPrefix_p)     
+        if (Prev_p) {NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(NsPrefix_p, Prev_p))}
+        NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(NsPrefix_p, Local.Tokens_pp[0]))
         Local.Tokens_pp = &Local.Tokens_pp[1];
         *Parser_p = Local;
-        NH_CSS_END(NsPrefix_p)
+        return NsPrefix_p;
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseWqName(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParser Local = *Parser_p;
     nh_css_SelectorParseNode *NsPrefix_p = nh_css_parseNsPrefix(&Local);
 
     if (Local.Tokens_pp[0]->type == NH_CSS_TOKEN_IDENT) 
     {
         nh_css_SelectorParseNode *WqName_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_WQ_NAME);
-        NH_CSS_CHECK_MEM_2(NULL, WqName_p)     
+        NH_CORE_CHECK_MEM_2(NULL, WqName_p)     
 
         if (NsPrefix_p) {nh_core_appendToList(&WqName_p->Children, NsPrefix_p);}
-        NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(WqName_p, Local.Tokens_pp[0]))
+        NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(WqName_p, Local.Tokens_pp[0]))
 
         Local.Tokens_pp = &Local.Tokens_pp[1];
         *Parser_p = Local;
 
-        NH_CSS_END(WqName_p)
+        return WqName_p;
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseAttrMatcher(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_DELIM) 
     {
         if (Parser_p->Tokens_pp[0]->Delim.value == '~' 
@@ -205,48 +188,44 @@ NH_CSS_BEGIN()
             if (Parser_p->Tokens_pp[1]->type == NH_CSS_TOKEN_DELIM && Parser_p->Tokens_pp[1]->Delim.value == '=') 
             {
                 nh_css_SelectorParseNode *AttrMatcher_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_ATTR_MATCHER);
-                NH_CSS_CHECK_MEM_2(NULL, AttrMatcher_p)
-                NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrMatcher_p, Parser_p->Tokens_pp[0]))
-                NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrMatcher_p, Parser_p->Tokens_pp[1]))
+                NH_CORE_CHECK_MEM_2(NULL, AttrMatcher_p)
+                NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrMatcher_p, Parser_p->Tokens_pp[0]))
+                NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrMatcher_p, Parser_p->Tokens_pp[1]))
                 Parser_p->Tokens_pp = &Parser_p->Tokens_pp[2];
-                NH_CSS_END(AttrMatcher_p)
+                return AttrMatcher_p;
             }
         }
         if (Parser_p->Tokens_pp[0]->Delim.value == '=') 
         {
             nh_css_SelectorParseNode *AttrMatcher_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_ATTR_MATCHER);
-            NH_CSS_CHECK_MEM_2(NULL, AttrMatcher_p)
-            NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrMatcher_p, Parser_p->Tokens_pp[0]))
+            NH_CORE_CHECK_MEM_2(NULL, AttrMatcher_p)
+            NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrMatcher_p, Parser_p->Tokens_pp[0]))
             Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];
-            NH_CSS_END(AttrMatcher_p)
+            return AttrMatcher_p;
         }
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseAttrModifier(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_IDENT && Parser_p->Tokens_pp[0]->Other.Value.length == 1) 
     {
         nh_css_SelectorParseNode *AttrModifier_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_ATTR_MODIFIER);
-        NH_CSS_CHECK_MEM_2(NULL, AttrModifier_p)
-        NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrModifier_p, Parser_p->Tokens_pp[0]))
+        NH_CORE_CHECK_MEM_2(NULL, AttrModifier_p)
+        NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttrModifier_p, Parser_p->Tokens_pp[0]))
         Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];
-        NH_CSS_END(AttrModifier_p)
+        return AttrModifier_p;
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseAttributeSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_LEFT_SQUARE_BRACKET) 
     {
         nh_css_SelectorParser Local = *Parser_p;
@@ -258,12 +237,12 @@ NH_CSS_BEGIN()
             if (Local.Tokens_pp[0]->type == NH_CSS_TOKEN_RIGHT_SQUARE_BRACKET) 
             {
                 nh_css_SelectorParseNode *AttributeSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_ATTRIBUTE_SELECTOR);
-                NH_CSS_CHECK_MEM_2(NULL, AttributeSelector_p)
-                NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Parser_p->Tokens_pp[0]))
+                NH_CORE_CHECK_MEM_2(NULL, AttributeSelector_p)
+                NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Parser_p->Tokens_pp[0]))
                 nh_core_appendToList(&AttributeSelector_p->Children, WqName_p);
-                NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Local.Tokens_pp[0]))
+                NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Local.Tokens_pp[0]))
                 Parser_p->Tokens_pp = &Local.Tokens_pp[1];
-                NH_CSS_END(AttributeSelector_p)
+                return AttributeSelector_p;
             }
 
             nh_css_SelectorParseNode *AttrMatcher_p = nh_css_parseAttrMatcher(&Local);
@@ -280,41 +259,39 @@ NH_CSS_BEGIN()
                     if (Local.Tokens_pp[0]->type == NH_CSS_TOKEN_RIGHT_SQUARE_BRACKET) 
                     {
                         nh_css_SelectorParseNode *AttributeSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_ATTRIBUTE_SELECTOR);
-                        NH_CSS_CHECK_MEM_2(NULL, AttributeSelector_p)
-                        NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Parser_p->Tokens_pp[0]))
+                        NH_CORE_CHECK_MEM_2(NULL, AttributeSelector_p)
+                        NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Parser_p->Tokens_pp[0]))
                         nh_core_appendToList(&AttributeSelector_p->Children, WqName_p);
                         nh_core_appendToList(&AttributeSelector_p->Children, AttrMatcher_p);
-                        NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, StringOrIdent_p))
+                        NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, StringOrIdent_p))
                         if (AttrModifier_p) {
                             nh_core_appendToList(&AttributeSelector_p->Children, AttrModifier_p);
                         }
-                        NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Local.Tokens_pp[0]))
+                        NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(AttributeSelector_p, Local.Tokens_pp[0]))
                         Parser_p->Tokens_pp = &Local.Tokens_pp[1];
-                        NH_CSS_END(AttributeSelector_p)
+                        return AttributeSelector_p;
                     }
                 }
             }
         }
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parsePseudoClassSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_COLON) 
     {
         if (Parser_p->Tokens_pp[1]->type == NH_CSS_TOKEN_IDENT) 
         {
             nh_css_SelectorParseNode *PseudoClassSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_PSEUDO_CLASS_SELECTOR);
-            NH_CSS_CHECK_MEM_2(NULL, PseudoClassSelector_p)
-            NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
-            NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[1]))
+            NH_CORE_CHECK_MEM_2(NULL, PseudoClassSelector_p)
+            NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
+            NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[1]))
             Parser_p->Tokens_pp = &Parser_p->Tokens_pp[2];
-            NH_CSS_END(PseudoClassSelector_p)
+            return PseudoClassSelector_p;
         }
         else if (Parser_p->Tokens_pp[1]->type == NH_CSS_TOKEN_FUNCTION)
         {
@@ -333,29 +310,27 @@ NH_CSS_BEGIN()
             if (valid) 
             {
                 nh_css_SelectorParseNode *PseudoClassSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_PSEUDO_CLASS_SELECTOR);
-                NH_CSS_CHECK_MEM_2(NULL, PseudoClassSelector_p)
-                NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
-                NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[1]))
+                NH_CORE_CHECK_MEM_2(NULL, PseudoClassSelector_p)
+                NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
+                NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[1]))
                 Parser_p->Tokens_pp = &Parser_p->Tokens_pp[2];
                 while (Parser_p->Tokens_pp[0]->type != NH_CSS_TOKEN_RIGHT_PARENTHESIS) {
-                    NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
+                    NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
                     Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];
                 }
-                NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
+                NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoClassSelector_p, Parser_p->Tokens_pp[0]))
                 Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];
-                NH_CSS_END(PseudoClassSelector_p)
+                return PseudoClassSelector_p;
             }
         }
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parsePseudoElementSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_COLON) 
     {
         nh_css_SelectorParser Local = *Parser_p;
@@ -366,144 +341,134 @@ NH_CSS_BEGIN()
         if (PseudoClassSelector_p) 
         {
             nh_css_SelectorParseNode *PseudoElementSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_PSEUDO_ELEMENT_SELECTOR);
-            NH_CSS_CHECK_MEM_2(NULL, PseudoElementSelector_p)
-            NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoElementSelector_p, Parser_p->Tokens_pp[0]))
+            NH_CORE_CHECK_MEM_2(NULL, PseudoElementSelector_p)
+            NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(PseudoElementSelector_p, Parser_p->Tokens_pp[0]))
             nh_core_appendToList(&PseudoElementSelector_p->Children, PseudoClassSelector_p);
             *Parser_p = Local;
-            NH_CSS_END(PseudoElementSelector_p)
+            return PseudoElementSelector_p;
         }
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseTypeSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParser Local = *Parser_p;
     nh_css_SelectorParseNode *WqName_p = nh_css_parseWqName(&Local);
 
     if (WqName_p) 
     {
         nh_css_SelectorParseNode *TypeSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_TYPE_SELECTOR);
-        NH_CSS_CHECK_MEM_2(NULL, TypeSelector_p)
+        NH_CORE_CHECK_MEM_2(NULL, TypeSelector_p)
         nh_core_appendToList(&TypeSelector_p->Children, WqName_p);
         *Parser_p = Local;
-        NH_CSS_END(TypeSelector_p)
+        return TypeSelector_p;
     }
     else {
         nh_css_SelectorParseNode *NsPrefix_p = nh_css_parseNsPrefix(&Local);
         if (Local.Tokens_pp[0]->type == NH_CSS_TOKEN_DELIM && Local.Tokens_pp[0]->Delim.value == '*') 
         {
             nh_css_SelectorParseNode *TypeSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_TYPE_SELECTOR);
-            NH_CSS_CHECK_MEM_2(NULL, TypeSelector_p)
+            NH_CORE_CHECK_MEM_2(NULL, TypeSelector_p)
             if (NsPrefix_p) {
                 nh_core_appendToList(&TypeSelector_p->Children, NsPrefix_p);
             }
-            NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(TypeSelector_p, Local.Tokens_pp[0]))
+            NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(TypeSelector_p, Local.Tokens_pp[0]))
             Local.Tokens_pp = &Local.Tokens_pp[1];
             *Parser_p = Local;
-            NH_CSS_END(TypeSelector_p)
+            return TypeSelector_p;
         }
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseClassSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_DELIM && Parser_p->Tokens_pp[0]->Delim.value == '.') 
     {
         if (Parser_p->Tokens_pp[1]->type == NH_CSS_TOKEN_IDENT)
         {
             nh_css_SelectorParseNode *ClassSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_CLASS_SELECTOR);
-            NH_CSS_CHECK_MEM_2(NULL, ClassSelector_p)
-            NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(ClassSelector_p, Parser_p->Tokens_pp[0]))
-            NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(ClassSelector_p, Parser_p->Tokens_pp[1]))
+            NH_CORE_CHECK_MEM_2(NULL, ClassSelector_p)
+            NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(ClassSelector_p, Parser_p->Tokens_pp[0]))
+            NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(ClassSelector_p, Parser_p->Tokens_pp[1]))
             Parser_p->Tokens_pp = &Parser_p->Tokens_pp[2];
-            NH_CSS_END(ClassSelector_p)
+            return ClassSelector_p;
         }
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseIdSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_HASH) 
     {
         nh_css_SelectorParseNode *IdSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_ID_SELECTOR);
-        NH_CSS_CHECK_MEM_2(NULL, IdSelector_p)
-        NH_CSS_CHECK_MEM_2(NULL, nh_css_appendTerminal(IdSelector_p, Parser_p->Tokens_pp[0]))
+        NH_CORE_CHECK_MEM_2(NULL, IdSelector_p)
+        NH_CORE_CHECK_MEM_2(NULL, nh_css_appendTerminal(IdSelector_p, Parser_p->Tokens_pp[0]))
         Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];
-        NH_CSS_END(IdSelector_p)
+        return IdSelector_p;
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseSubclassSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParseNode *IdSelector_p = nh_css_parseIdSelector(Parser_p);
 
     if (IdSelector_p) {
         nh_css_SelectorParseNode *SubclassSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_SUBCLASS_SELECTOR);
-        NH_CSS_CHECK_MEM_2(NULL, SubclassSelector_p)
+        NH_CORE_CHECK_MEM_2(NULL, SubclassSelector_p)
         nh_core_appendToList(&SubclassSelector_p->Children, IdSelector_p);
-        NH_CSS_END(SubclassSelector_p)
+        return SubclassSelector_p;
     }
 
     nh_css_SelectorParseNode *ClassSelector_p = nh_css_parseClassSelector(Parser_p);
 
     if (ClassSelector_p) {
         nh_css_SelectorParseNode *SubclassSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_SUBCLASS_SELECTOR);
-        NH_CSS_CHECK_MEM_2(NULL, SubclassSelector_p)
+        NH_CORE_CHECK_MEM_2(NULL, SubclassSelector_p)
         nh_core_appendToList(&SubclassSelector_p->Children, ClassSelector_p);
-        NH_CSS_END(SubclassSelector_p)
+        return SubclassSelector_p;
     }
 
     nh_css_SelectorParseNode *AttributeSelector_p = nh_css_parseAttributeSelector(Parser_p);
 
     if (AttributeSelector_p) {
         nh_css_SelectorParseNode *SubclassSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_SUBCLASS_SELECTOR);
-        NH_CSS_CHECK_MEM_2(NULL, SubclassSelector_p)
+        NH_CORE_CHECK_MEM_2(NULL, SubclassSelector_p)
         nh_core_appendToList(&SubclassSelector_p->Children, AttributeSelector_p);
-        NH_CSS_END(SubclassSelector_p)
+        return SubclassSelector_p;
     }
 
     nh_css_SelectorParseNode *PseudoClassSelector_p = nh_css_parsePseudoClassSelector(Parser_p);
 
     if (PseudoClassSelector_p) {
         nh_css_SelectorParseNode *SubclassSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_SUBCLASS_SELECTOR);
-        NH_CSS_CHECK_MEM_2(NULL, SubclassSelector_p)
+        NH_CORE_CHECK_MEM_2(NULL, SubclassSelector_p)
         nh_core_appendToList(&SubclassSelector_p->Children, PseudoClassSelector_p);
-        NH_CSS_END(SubclassSelector_p)
+        return SubclassSelector_p;
     }
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseCompoundSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParser Local = *Parser_p;
 
     nh_css_SelectorParseNode *TypeSelector_p = nh_css_parseTypeSelector(&Local);
 
-    nh_List SubclassSelectors = nh_core_initList(8);
+    nh_core_List SubclassSelectors = nh_core_initList(8);
 
     while (Local.Tokens_pp[0]->type != NH_CSS_TOKEN_EOF) {
         nh_css_SelectorParseNode *SubclassSelector_p = nh_css_parseSubclassSelector(&Local);
@@ -511,7 +476,7 @@ NH_CSS_BEGIN()
         nh_core_appendToList(&SubclassSelectors, SubclassSelector_p);
     }
 
-    nh_List PseudoSelectors = nh_core_initList(8);
+    nh_core_List PseudoSelectors = nh_core_initList(8);
 
     while (Local.Tokens_pp[0]->type != NH_CSS_TOKEN_EOF) 
     {
@@ -531,7 +496,7 @@ NH_CSS_BEGIN()
     if (TypeSelector_p || SubclassSelectors.size || PseudoSelectors.size) 
     {
          nh_css_SelectorParseNode *CompoundSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_COMPOUND_SELECTOR);
-         NH_CSS_CHECK_MEM_2(NULL, CompoundSelector_p)     
+         NH_CORE_CHECK_MEM_2(NULL, CompoundSelector_p)     
 
          if (TypeSelector_p) {
              nh_core_appendToList(&CompoundSelector_p->Children, TypeSelector_p);
@@ -547,25 +512,23 @@ NH_CSS_BEGIN()
          nh_core_freeList(&PseudoSelectors, false);
 
          *Parser_p = Local;
-         NH_CSS_END(CompoundSelector_p)
+         return CompoundSelector_p;
     }
 
     nh_core_freeList(&SubclassSelectors, false);
     nh_core_freeList(&PseudoSelectors, false);
 
-NH_CSS_END(NULL)
+    return NULL;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseComplexSelector(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParseNode *CompoundSelector_p = nh_css_parseCompoundSelector(Parser_p);
-    NH_CSS_CHECK_NULL_2(NULL, CompoundSelector_p)
+    NH_CORE_CHECK_NULL_2(NULL, CompoundSelector_p)
 
     nh_css_SelectorParseNode *ComplexSelector_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_COMPLEX_SELECTOR);
-    NH_CSS_CHECK_MEM_2(NULL, ComplexSelector_p)
+    NH_CORE_CHECK_MEM_2(NULL, ComplexSelector_p)
 
     nh_core_appendToList(&ComplexSelector_p->Children, CompoundSelector_p);
     nh_css_SelectorParser Local = *Parser_p;
@@ -587,16 +550,14 @@ NH_CSS_BEGIN()
 
     *Parser_p = Local;
 
-NH_CSS_END(ComplexSelector_p)
+    return ComplexSelector_p;
 }
 
 static nh_css_SelectorParseNode *nh_css_parseComplexSelectorList(
     nh_css_SelectorParser *Parser_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_SelectorParseNode *ComplexSelectorList_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_COMPLEX_SELECTOR_LIST);
-    NH_CSS_CHECK_MEM_2(NULL, ComplexSelectorList_p)
+    NH_CORE_CHECK_MEM_2(NULL, ComplexSelectorList_p)
 
     while (*Parser_p->Tokens_pp && Parser_p->Tokens_pp[0]->type != NH_CSS_TOKEN_EOF)
     {
@@ -607,15 +568,13 @@ NH_CSS_BEGIN()
         else if (*Parser_p->Tokens_pp && Parser_p->Tokens_pp[0]->type != NH_CSS_TOKEN_EOF) {Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];}
     }
 
-NH_CSS_END(ComplexSelectorList_p)
+    return ComplexSelectorList_p;
 }
 
 nh_css_SelectorParseNode *nh_css_parseSelectorList(
-    nh_Array ComponentValues)
+    nh_core_Array ComponentValues)
 {
-NH_CSS_BEGIN()
-
-    nh_List Tokens = nh_css_getTokensFromComponentValues(&ComponentValues);
+    nh_core_List Tokens = nh_css_getTokensFromComponentValues(&ComponentValues);
 
     nh_css_Token EndToken;
     EndToken.type = NH_CSS_TOKEN_EOF;
@@ -624,15 +583,15 @@ NH_CSS_BEGIN()
     nh_css_SelectorParser Parser = nh_css_initSelectorParser(Tokens);
 
     nh_css_SelectorParseNode *SelectorList_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_SELECTOR_LIST);
-    NH_CSS_CHECK_MEM_2(NULL, SelectorList_p)
+    NH_CORE_CHECK_MEM_2(NULL, SelectorList_p)
 
     nh_css_SelectorParseNode *ComplexSelectorList_p = nh_css_parseComplexSelectorList(&Parser);
-    NH_CSS_CHECK_MEM_2(NULL, ComplexSelectorList_p)
+    NH_CORE_CHECK_MEM_2(NULL, ComplexSelectorList_p)
 
     nh_core_appendToList(&SelectorList_p->Children, ComplexSelectorList_p);
 
     nh_core_freeList(&Tokens, false);
 
-NH_CSS_END(SelectorList_p)
+    return SelectorList_p;
 }
 

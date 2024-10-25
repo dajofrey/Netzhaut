@@ -1,7 +1,7 @@
-#ifndef NH_VK_RENDER_H
-#define NH_VK_RENDER_H
+#ifndef NH_GFX_VULKAN_RENDER_H
+#define NH_GFX_VULKAN_RENDER_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,26 +9,22 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "GPU.h"
 #include "Surface.h"
-#include "../Base/Surface.h"
 
+#include "../Base/Surface.h"
 #include "../Common/Includes.h"
 
-#endif
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
+NH_API_RESULT nh_vk_prepareRendering(
+    nh_gfx_VulkanSurface *Surface_p
+);
 
-    NH_API_RESULT nh_vk_prepareRendering(
-        nh_vk_Surface *Surface_p
-    );
+NH_API_RESULT nh_vk_render(
+    nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p
+);
 
-    NH_API_RESULT nh_vk_render(
-        nh_gfx_Surface *Surface_p, nh_List *SortedViewports_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_GFX_VULKAN_RENDER_H

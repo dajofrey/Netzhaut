@@ -21,7 +21,7 @@
  */
 
     NH_API_RESULT nh_opengl_render(
-        nh_gfx_Surface *Surface_p, nh_List *SortedViewports_p
+        nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p
     );
 
 /** @} */

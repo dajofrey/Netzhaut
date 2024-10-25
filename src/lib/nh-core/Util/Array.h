@@ -16,60 +16,52 @@
     /** 
      * Generic linked-list which holds data pointers. 
      */ 
-    typedef struct nh_Array { 
+    typedef struct nh_core_Array { 
         int elementSize;             /**<Number of items.*/ 
         int allocatedLengthPerChunk; 
         int allocatedLength; 
         unsigned long length; 
         char *p;
-    } nh_Array; 
+    } nh_core_Array; 
 
 /** @addtogroup lib_nh-core_functions
  *  @{
  */
 
-    nh_Array nh_core_initArray(
+    nh_core_Array nh_core_initArray(
         int elementSize, int allocatedLengthPerChunk
     );
 
     NH_API_RESULT nh_core_appendToArray(
-        nh_Array *Array_p, void *p, unsigned long count
+        nh_core_Array *Array_p, void *p, unsigned long count
     );
 
     NH_API_RESULT nh_core_appendToArrayRepeatedly(
-        nh_Array *Array_p, void *p, unsigned long count
+        nh_core_Array *Array_p, void *p, unsigned long count
     );
 
     NH_API_RESULT nh_core_insertIntoArray(
-        nh_Array *Array_p, int index, void *elements_p, int length
-    );
-
-    void *_nh_core_getFromArray(
-        nh_Array *Array_p, unsigned long index
+        nh_core_Array *Array_p, int index, void *elements_p, int length
     );
 
     void *nh_core_getFromArray(
-        nh_Array *Array_p, unsigned long index
+        nh_core_Array *Array_p, unsigned long index
     );
    
-    void *_nh_core_incrementArray(
-        nh_Array *Array_p
-    );
-    
     void *nh_core_incrementArray(
-        nh_Array *Array_p
+        nh_core_Array *Array_p
     );
 
     NH_API_RESULT nh_core_removeTailFromArray(
-        nh_Array *Array_p, unsigned int count
+        nh_core_Array *Array_p, unsigned int count
     );
 
     NH_API_RESULT nh_core_removeFromArray(
-        nh_Array *Array_p, int index, unsigned int count
+        nh_core_Array *Array_p, int index, unsigned int count
     );
 
     void nh_core_freeArray(
-        nh_Array *Array_p
+        nh_core_Array *Array_p
     );
 
 /** @} */

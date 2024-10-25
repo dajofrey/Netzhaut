@@ -10,6 +10,7 @@
  */
 
 #include "../Common/Includes.h"
+#include "../Properties/Color.h"
 
 #include "../../nh-gfx/Fonts/FontManager.h"
 #include "../../nh-gfx/Fonts/Text.h"
@@ -84,12 +85,12 @@ typedef struct nh_css_Fragment nh_css_Fragment;
  */
 
     typedef struct nh_css_TextValues {
-        nh_Color Color;
+        nh_css_Color Color;
         int fontSize;
         int textWidth;
         int textHeight;
         nh_gfx_Text Text;
-        nh_Array FontFamilies;
+        nh_core_Array FontFamilies;
         nh_gfx_FontStyle FontStyle;
         NH_CSS_WORD_BREAK wordBreak;
     } nh_css_TextValues;
@@ -103,7 +104,7 @@ typedef struct nh_css_Fragment nh_css_Fragment;
     typedef struct nh_css_BoxValues {
         NH_CSS_POSITION position;
         NH_CSS_FLOAT _float;
-        nh_Color BackgroundColor;
+        nh_css_Color BackgroundColor;
         nh_css_BoxSizing Width;
         nh_css_BoxSizing Height;
         nh_css_BoxSizing MinWidth;
@@ -122,10 +123,10 @@ typedef struct nh_css_Fragment nh_css_Fragment;
         int borderRight;
         int borderBottom;
         int borderLeft;
-        nh_Color BorderTopColor;
-        nh_Color BorderRightColor;
-        nh_Color BorderBottomColor;
-        nh_Color BorderLeftColor;
+        nh_css_Color BorderTopColor;
+        nh_css_Color BorderRightColor;
+        nh_css_Color BorderBottomColor;
+        nh_css_Color BorderLeftColor;
         int borderTopLeftRadius;
         int borderTopRightRadius;
         int borderBottomLeftRadius;

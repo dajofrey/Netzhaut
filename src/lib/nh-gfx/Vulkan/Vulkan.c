@@ -28,30 +28,26 @@
 
 nh_vk_Vulkan NH_VULKAN;
 
-// VULKAN ==========================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_vk_initVulkan()
 {
-NH_GFX_BEGIN()
-
     NH_VULKAN.GPUs = nh_core_initList(8);
 
-    if (nh_vk_createHost(&NH_VULKAN.Host, true) == NH_API_SUCCESS) {
-        NH_GFX_CHECK(nh_vk_initGPUs(&NH_VULKAN.GPUs, &NH_VULKAN.Host))
-        if (NH_VULKAN.GPUs.size <= 0) {NH_GFX_DIAGNOSTIC_END(NH_API_VULKAN_ERROR_NO_DEVICE_SUITABLE)}
+    if (nh_gfx_createVulkanHost(&NH_VULKAN.Host, true) == NH_API_SUCCESS) {
+        NH_CORE_CHECK(nh_gfx_initVulkanGPUs(&NH_VULKAN.GPUs, &NH_VULKAN.Host))
+        if (NH_VULKAN.GPUs.size <= 0) {return NH_API_VULKAN_ERROR_NO_DEVICE_SUITABLE;}
     } 
-    else {NH_GFX_DIAGNOSTIC_END(NH_API_VULKAN_ERROR_HOST_CREATION_FAILED)}
+    else {return NH_API_VULKAN_ERROR_HOST_CREATION_FAILED;}
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_vk_terminateVulkan()
 {
-NH_GFX_BEGIN()
+    nh_gfx_freeVulkanGPUs(&NH_VULKAN.GPUs);
+    nh_gfx_destroyVulkanHost(&NH_VULKAN.Host);
 
-    nh_vk_freeGPUs(&NH_VULKAN.GPUs);
-    nh_vk_destroyHost(&NH_VULKAN.Host);
-
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

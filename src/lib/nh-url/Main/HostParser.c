@@ -238,8 +238,8 @@ static NH_API_RESULT nh_url_parseIPv4(
 NH_URL_BEGIN()
 
     NH_API_RESULT result = NH_API_SUCCESS;
-    nh_List Parts = nh_encoding_splitUTF32(Input_p, 0x2E);
-    nh_Array Numbers = nh_core_initArray(sizeof(long), 4);
+    nh_core_List Parts = nh_encoding_splitUTF32(Input_p, 0x2E);
+    nh_core_Array Numbers = nh_core_initArray(sizeof(long), 4);
 
     if (Parts.size > 0 && ((nh_encoding_UTF32String*)Parts.pp[Parts.size-1])->length == 0) {
         // val err
@@ -329,7 +329,7 @@ static NH_API_RESULT nh_url_domainToASCII(
 {
 NH_URL_BEGIN()
 
-    NH_URL_CHECK(nh_url_unicodeToASCII(Domain_p, false))
+    NH_CORE_CHECK(nh_url_unicodeToASCII(Domain_p, false))
 
     if (Domain_p->length == 0) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
 
@@ -362,12 +362,12 @@ NH_URL_BEGIN()
         NH_URL_END(nh_url_parseOpaqueHost(Input, Host_p))
     }
 
-    nh_String String = nh_url_percentDecodeUTF8(Input.p, Input.length);
+    nh_core_String String = nh_url_percentDecodeUTF8(Input.p, Input.length);
 
     nh_encoding_UTF32String Domain = nh_encoding_decodeUTF8(String.p, String.length, NULL);
     nh_core_freeString(&String);
 
-    NH_URL_CHECK(nh_url_domainToASCII(&Domain, false))
+    NH_CORE_CHECK(nh_url_domainToASCII(&Domain, false))
 
     for (int i = 0; i < Domain.length; ++i) {
         if (nh_url_isForbiddenHostCodepoint(Domain.p[i])) {

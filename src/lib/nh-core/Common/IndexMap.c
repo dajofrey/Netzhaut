@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "IndexMap.h"
-#include "Macros.h"
 
 #include "../System/Memory.h"
 
@@ -35,8 +34,6 @@ static unsigned int *indices_pp[NH_INDEXMAP_COUNT] = {NULL};
 static NH_API_RESULT nh_core_getNames(
     NH_INDEXMAP_E type, char ***array_ppp, int *count_p)
 {
-NH_CORE_BEGIN()
-
     switch (type)
     {
         case NH_INDEXMAP_MEDIA_TYPE :
@@ -45,19 +42,17 @@ NH_CORE_BEGIN()
             *count_p = NH_MEDIA_TYPE_TEMPLATES_PP_COUNT; 
             break;
         }
-        default : NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        default : return NH_API_ERROR_BAD_STATE;
     }
 
-    if (*array_ppp == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    if (*array_ppp == NULL) {return NH_API_ERROR_BAD_STATE;}
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_core_createSingleIndexMap(
-    NH_INDEXMAP_E type, nh_HashMap *map_p)
+    NH_INDEXMAP_E type, nh_core_HashMap *map_p)
 {
-NH_CORE_BEGIN()
-
     int count = 0; char **names_pp = NULL;
     NH_CORE_CHECK(nh_core_getNames(type, &names_pp, &count))
 
@@ -67,19 +62,17 @@ NH_CORE_BEGIN()
         NH_CORE_CHECK(nh_core_addToHashMap(map_p, names_pp[i], &indices_pp[type][i]))
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_createIndexMap()
 {
-NH_CORE_BEGIN()
-
     for (int type = 0; type < NH_INDEXMAP_COUNT; ++type)  
     {
         int count = 0;
         const char **names_pp = NULL;
         if (nh_core_getNames(type, (char***)&names_pp, &count) != NH_API_SUCCESS) {
-            NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
         }
 
         indices_pp[type] = nh_core_allocate(sizeof(unsigned int) * count);
@@ -92,13 +85,11 @@ NH_CORE_BEGIN()
 
     NH_CORE_CHECK(nh_core_createSingleIndexMap(NH_INDEXMAP_MEDIA_TYPE, &NH_INDEXMAP.MediaTypes))
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_core_freeIndexMap()
 {
-NH_CORE_BEGIN()
-
     for (int type = 0; type < NH_INDEXMAP_COUNT; ++type)  
     {
          nh_core_free(indices_pp[type]);
@@ -107,6 +98,5 @@ NH_CORE_BEGIN()
 
     nh_core_freeHashMap(NH_INDEXMAP.MediaTypes);
 
-NH_CORE_SILENT_END()
+    return;
 }
-

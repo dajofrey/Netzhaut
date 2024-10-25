@@ -15,5 +15,7 @@
 #include "../../nh-api/nh-gfx.h" 
 #include "../../nh-api/nh-css.h" 
 
+#include "../../nh-core/Util/Debug.h"
+
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 #endif // NH_RENDERER_COMMON_INCLUDES_H

@@ -1,7 +1,7 @@
-#ifndef NH_CORE_TERMINATE_H
-#define NH_CORE_TERMINATE_H
+#ifndef NH_CORE_COMMON_TERMINATE_H
+#define NH_CORE_COMMON_TERMINATE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,18 +9,15 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "Includes.h"
+#include "../Loader/Loader.h"
 
-#endif
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-core_typedefs
- *  @{
- */
+typedef void (*nh_core_terminate_f)(
+    nh_core_Loader *Loader_p
+);
 
-    typedef void (*nh_core_terminate_f)(
-        nh_Loader *Loader_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_CORE_COMMON_TERMINATE_H

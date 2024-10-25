@@ -19,19 +19,19 @@
 
 // correponds to https://tc39.es/ecma262/#sec-syntax-directed-operations-scope-analysis
 
-    nh_List nh_ecmascript_getLexicallyDeclaredNames(
+    nh_core_List nh_ecmascript_getLexicallyDeclaredNames(
         nh_ecmascript_ParseNode *Node_p
     );
 
-    nh_List nh_ecmascript_getTopLevelLexicallyDeclaredNames(
+    nh_core_List nh_ecmascript_getTopLevelLexicallyDeclaredNames(
         nh_ecmascript_ParseNode *Node_p
     );
 
-    nh_List nh_ecmascript_getVarDeclaredNames(
+    nh_core_List nh_ecmascript_getVarDeclaredNames(
         nh_ecmascript_ParseNode *Node_p
     );
 
-    nh_List nh_ecmascript_getTopLevelVarDeclaredNames(
+    nh_core_List nh_ecmascript_getTopLevelVarDeclaredNames(
         nh_ecmascript_ParseNode *Node_p
     );
 

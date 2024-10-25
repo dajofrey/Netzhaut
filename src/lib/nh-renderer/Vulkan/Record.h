@@ -1,7 +1,7 @@
-#ifndef NH_RENDERER_VK_RECORD_H
-#define NH_RENDERER_VK_RECORD_H
+#ifndef NH_RENDERER_VULKAN_RECORD_H
+#define NH_RENDERER_VULKAN_RECORD_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,20 +9,16 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "../Common/Includes.h"
 #include "../../nh-css/Main/FragmentTree.h"
 #include "../../nh-gfx/Base/Viewport.h"
 
-#endif
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-renderer_functions 
- *  @{
- */
+void nh_renderer_recordVulkanFragmentTree(
+    nh_css_FragmentTree *Tree_p, nh_gfx_Viewport *Viewport_p
+);
 
-    void nh_renderer_vk_recordFragmentTree(
-        nh_css_FragmentTree *Tree_p, nh_gfx_Viewport *Viewport_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_RENDERER_VULKAN_RECORD_H

@@ -1,7 +1,7 @@
-#ifndef NH_CORE_MEMORY_H
-#define NH_CORE_MEMORY_H
+#ifndef NH_CORE_SYSTEM_MEMORY_H
+#define NH_CORE_SYSTEM_MEMORY_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE NOTICE ==================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,34 +9,29 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "../Common/Includes.h"
+// INCLUDES ========================================================================================
 
+#include "../Common/Includes.h"
 #include <stddef.h>
 
-#endif
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-core_functions
- *  @{
- */
+void *nh_core_allocate(
+    size_t size
+);
 
-    void *nh_core_allocate(
-        size_t size
-    );
+void *nh_core_reallocate(
+    void *ptr, size_t size
+);
 
-    void *nh_core_reallocate(
-        void *ptr, size_t size
-    );
+void nh_core_free(
+    void *ptr
+);
 
-    void nh_core_free(
-        void *ptr
-    );
-    
-    NH_API_RESULT nh_core_initMemory(
-    );
-    
-    NH_API_RESULT nh_core_initThreadMemory(
-    );
+NH_API_RESULT nh_core_initMemory(
+);
 
-/** @} */
+NH_API_RESULT nh_core_initThreadMemory(
+);
 
-#endif
+#endif // NH_CORE_SYSTEM_MEMORY_H

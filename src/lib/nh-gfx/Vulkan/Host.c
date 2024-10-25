@@ -27,33 +27,31 @@
 #define VALIDATION_EXTENSION "VK_EXT_debug_utils"
 
 static NH_API_RESULT nh_vk_createInstance(
-    nh_vk_Host *Host_p, bool validation
+    nh_gfx_VulkanHost *Host_p, bool validation
 );
 static NH_API_RESULT nh_vk_createMessenger(
-    nh_vk_Host *Host_p
+    nh_gfx_VulkanHost *Host_p
 );
 
 static bool nh_vk_validationLayerSupported(
-    nh_vk_Host *Host_p
+    nh_gfx_VulkanHost *Host_p
 ); 
 static bool nh_vk_validationExtensionSupported(
-    nh_vk_Host *Host_p
+    nh_gfx_VulkanHost *Host_p
 ); 
 
 // HOST ============================================================================================
 
-NH_API_RESULT nh_vk_createHost(
-    nh_vk_Host *Host_p, bool validation)
+NH_API_RESULT nh_gfx_createVulkanHost(
+    nh_gfx_VulkanHost *Host_p, bool validation)
 {
-NH_GFX_BEGIN()
-
     NH_GFX_CHECK_VULKAN(volkInitialize())
 
     Host_p->Functions.vkCreateInstance                       = vkCreateInstance;
     Host_p->Functions.vkEnumerateInstanceExtensionProperties = vkEnumerateInstanceExtensionProperties;
     Host_p->Functions.vkEnumerateInstanceLayerProperties     = vkEnumerateInstanceLayerProperties;
    
-    NH_GFX_CHECK(nh_vk_createInstance(Host_p, validation))
+    NH_CORE_CHECK(nh_vk_createInstance(Host_p, validation))
 
     Host_p->Functions.vkDestroyInstance                   = vkDestroyInstance;
     Host_p->Functions.vkGetPhysicalDeviceMemoryProperties = vkGetPhysicalDeviceMemoryProperties;
@@ -82,14 +80,12 @@ NH_GFX_BEGIN()
         Host_p->validation = nh_vk_createMessenger(Host_p) == NH_API_SUCCESS;
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-void nh_vk_destroyHost(
-    nh_vk_Host *Host_p)
+void nh_gfx_destroyVulkanHost(
+    nh_gfx_VulkanHost *Host_p)
 {
-NH_GFX_BEGIN()
-
     if (Host_p->validation) 
     {
         PFN_vkDestroyDebugUtilsMessengerEXT function = NULL;
@@ -100,7 +96,7 @@ NH_GFX_BEGIN()
     }
     Host_p->Functions.vkDestroyInstance(Host_p->Instance, VK_NULL_HANDLE);
 
-NH_GFX_SILENT_END()
+    return;
 }
 
 // CALLBACK ========================================================================================
@@ -123,10 +119,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 // INSTANCE ========================================================================================
 
 static NH_API_RESULT nh_vk_createInstance(
-    nh_vk_Host *Host_p, bool validation)
+    nh_gfx_VulkanHost *Host_p, bool validation)
 {
-NH_GFX_BEGIN();
-
     VkApplicationInfo VkApplicationInfo = 
     {
         .sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -171,16 +165,14 @@ NH_GFX_BEGIN();
     
     volkLoadInstanceOnly(Host_p->Instance);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
+    return NH_API_SUCCESS;;
 }
 
 // MESSENGER =======================================================================================
 
 static NH_API_RESULT nh_vk_createMessenger(
-    nh_vk_Host* Host_p) 
+    nh_gfx_VulkanHost* Host_p) 
 {
-NH_GFX_BEGIN();
-
     VkDebugUtilsMessengerCreateInfoEXT Info = 
     {
         .sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
@@ -199,7 +191,7 @@ NH_GFX_BEGIN();
     };
    
     if (nh_vk_validationLayerSupported(Host_p) == false ||  nh_vk_validationExtensionSupported(Host_p) == false) {
-        NH_GFX_DIAGNOSTIC_END(NH_API_VULKAN_ERROR_VALIDATION_NOT_SUPPORTED)
+        return NH_API_VULKAN_ERROR_VALIDATION_NOT_SUPPORTED;
     }
 
     PFN_vkCreateDebugUtilsMessengerEXT create_f;
@@ -207,66 +199,62 @@ NH_GFX_BEGIN();
         Host_p->Instance, "vkCreateDebugUtilsMessengerEXT"
     );    
 
-    if (!create_f) {NH_GFX_DIAGNOSTIC_END(NH_API_VULKAN_ERROR_LOADER_CANT_CREATE_DEBUG_MESSENGER)}
+    if (!create_f) {return NH_API_VULKAN_ERROR_LOADER_CANT_CREATE_DEBUG_MESSENGER;}
 
     create_f(Host_p->Instance, &Info, VK_NULL_HANDLE, &Host_p->Messenger); 
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
+    return NH_API_SUCCESS;
 }
 
 // VALIDATION LAYER ================================================================================
 
 static bool nh_vk_validationLayerSupported(
-    nh_vk_Host *Host_p) 
+    nh_gfx_VulkanHost *Host_p) 
 {
-NH_GFX_BEGIN();
-
     int availableLayerCount = 0;
 
     Host_p->Functions.vkEnumerateInstanceLayerProperties(&availableLayerCount, VK_NULL_HANDLE);
     
     VkLayerProperties *availableLayers_p = nh_core_allocate(sizeof(VkLayerProperties) * availableLayerCount);
-    if (availableLayers_p == NULL) {NH_GFX_END(false)}
+    if (availableLayers_p == NULL) {return false;}
 
     Host_p->Functions.vkEnumerateInstanceLayerProperties(&availableLayerCount, availableLayers_p);
 
     for(int i = 0; i < availableLayerCount; ++i) {
         if (!strcmp(VALIDATION_LAYER, availableLayers_p[i].layerName)) {
             nh_core_free(availableLayers_p); 
-            NH_GFX_END(true)
+            return true;
         }
     }
 
     nh_core_free(availableLayers_p);
 
-NH_GFX_END(false);
+    return false;
 }
 
 // VALIDATION EXTENSION ============================================================================
 
 static bool nh_vk_validationExtensionSupported(
-    nh_vk_Host *Host_p) 
+    nh_gfx_VulkanHost *Host_p) 
 {
-NH_GFX_BEGIN()
-
     uint32_t propCount = 0; 
 
     Host_p->Functions.vkEnumerateInstanceExtensionProperties(VALIDATION_LAYER, &propCount, VK_NULL_HANDLE);
 
     VkExtensionProperties *extensionProps_p = nh_core_allocate(sizeof(VkExtensionProperties) * propCount);
-    if (extensionProps_p == NULL) {NH_GFX_END(false)}
+    if (extensionProps_p == NULL) {return false;}
 
     Host_p->Functions.vkEnumerateInstanceExtensionProperties(VALIDATION_LAYER, &propCount, extensionProps_p);
 
     for (unsigned int i = 0; i < propCount; ++i) {
         if (!strcmp(extensionProps_p[i].extensionName, VALIDATION_EXTENSION)) {
             nh_core_free(extensionProps_p); 
-            NH_GFX_END(true)
+            return true;
         }
     }
 
     nh_core_free(extensionProps_p);
 
-NH_GFX_END(false)
+    return false;
 }
 

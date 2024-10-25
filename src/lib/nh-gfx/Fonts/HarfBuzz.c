@@ -15,7 +15,6 @@
 #include "External/HarfBuzz.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/Util/File.h"
 #include "../../nh-core/Util/String.h"
@@ -37,16 +36,14 @@
 nh_gfx_HarfBuzzGlyphInfo *nh_gfx_getHarfBuzzGlyphInfos(
     nh_gfx_HarfBuzzBuffer Buffer, unsigned int *glyphs_p)
 {
-NH_GFX_BEGIN()
-
     hb_glyph_position_t *positions_p = hb_buffer_get_glyph_positions(Buffer.external_p, glyphs_p);
-    NH_GFX_CHECK_NULL_2(NULL, positions_p)
+    NH_CORE_CHECK_NULL_2(NULL, positions_p)
 
     hb_glyph_info_t *infos_p = hb_buffer_get_glyph_infos(Buffer.external_p, glyphs_p);
-    NH_GFX_CHECK_NULL_2(NULL, infos_p)
+    NH_CORE_CHECK_NULL_2(NULL, infos_p)
 
     nh_gfx_HarfBuzzGlyphInfo *Infos_p = nh_core_allocate(sizeof(nh_gfx_HarfBuzzGlyphInfo) * (*glyphs_p));
-    NH_GFX_CHECK_NULL_2(NULL, Infos_p)
+    NH_CORE_CHECK_NULL_2(NULL, Infos_p)
 
     for (int i = 0 ; i < *glyphs_p; ++i) {
         Infos_p[i].xAdvance  = positions_p[i].x_advance / 64;
@@ -56,14 +53,12 @@ NH_GFX_BEGIN()
         Infos_p[i].id        = infos_p[i].codepoint;
     }
 
-NH_GFX_END(Infos_p)
+    return Infos_p;
 }
 
 nh_gfx_HarfBuzzBuffer nh_gfx_createHarfBuzzBuffer(
     nh_gfx_FontInstance *Instance_p, NH_ENCODING_UTF32 *text_p, unsigned int textLength)
 {
-NH_GFX_BEGIN()
-
     hb_buffer_t *buffer_p = hb_buffer_create();
 
 //    hb_buffer_set_direction(buffer_p, HB_DIRECTION_LTR);
@@ -78,16 +73,13 @@ NH_GFX_BEGIN()
     nh_gfx_HarfBuzzBuffer Buffer;
     Buffer.external_p = buffer_p;
 
-NH_GFX_END(Buffer)
+    return Buffer;
 }
 
 void nh_gfx_destroyHarfBuzzBuffer(
     nh_gfx_HarfBuzzBuffer Buffer)
 {
-NH_GFX_BEGIN()
-
     hb_buffer_destroy(Buffer.external_p);
-
-NH_GFX_SILENT_END()
+    return;
 }
 

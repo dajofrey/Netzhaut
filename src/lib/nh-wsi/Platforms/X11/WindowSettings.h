@@ -12,6 +12,7 @@
 #include "Window.h"
 #include "../../Window/Window.h"
 #include "../../Common/Includes.h"
+#include "../../../nh-css/Properties/Color.h"
 
 #endif
 
@@ -21,7 +22,7 @@
  */
 
     NH_API_RESULT nh_x11_setWindowBackgroundColor(
-        nh_x11_Window *Window_p, nh_Color Color 
+        nh_x11_Window *Window_p, nh_css_Color Color 
     );
     
     NH_API_RESULT nh_x11_setWindowTitle(

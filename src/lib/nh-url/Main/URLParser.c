@@ -60,14 +60,14 @@ NH_URL_BEGIN()
 
     if (nh_url_isFileScheme(URL_p->Scheme.p) && URL_p->Path.length == 1) {	
         nh_encoding_UTF32String UTF32 = 
-            nh_encoding_decodeUTF8(((nh_String*)URL_p->Path.p)->p, ((nh_String*)URL_p->Path.p)->length, NULL);
+            nh_encoding_decodeUTF8(((nh_core_String*)URL_p->Path.p)->p, ((nh_core_String*)URL_p->Path.p)->length, NULL);
         bool skip = nh_url_isNormalizedWindowsDriveLetter(&UTF32);
         nh_encoding_freeUTF32(&UTF32);
         if (skip) {NH_URL_END(NH_API_SUCCESS)}
     }
 
     if (URL_p->Path.length > 0) {
-        nh_core_freeString(&((nh_String*)URL_p->Path.p)[URL_p->Path.length-1]);
+        nh_core_freeString(&((nh_core_String*)URL_p->Path.p)[URL_p->Path.length-1]);
         nh_core_removeTailFromArray(&URL_p->Path, 1);
     }
 
@@ -364,8 +364,8 @@ NH_URL_BEGIN()
             // TODO
         }
         Parser_p->URL_p->Host_p = nh_core_allocate(sizeof(nh_url_Host));
-        NH_URL_CHECK_MEM(Parser_p->URL_p->Host_p)
-        NH_URL_CHECK(nh_url_parseHost(Parser_p->Buffer, true, Parser_p->URL_p->Host_p))
+        NH_CORE_CHECK_MEM(Parser_p->URL_p->Host_p)
+        NH_CORE_CHECK(nh_url_parseHost(Parser_p->Buffer, true, Parser_p->URL_p->Host_p))
         nh_encoding_freeUTF32(&Parser_p->Buffer);
         Parser_p->state = NH_URL_PARSER_STATE_PATH_START;
         if (Parser_p->stateOverride) {
@@ -482,15 +482,15 @@ NH_URL_BEGIN()
     }
     else if (!Parser_p->stateOverride && *Parser_p->pointer == 0x3F) {
         if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-        Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_String));
-        NH_URL_CHECK_MEM(Parser_p->URL_p->Query_p)
+        Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_core_String));
+        NH_CORE_CHECK_MEM(Parser_p->URL_p->Query_p)
         *Parser_p->URL_p->Query_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_QUERY;
     }
     else if (!Parser_p->stateOverride && *Parser_p->pointer == 0x23) {
         if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-        Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_String));
-        NH_URL_CHECK_MEM(Parser_p->URL_p->Fragment_p)
+        Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_core_String));
+        NH_CORE_CHECK_MEM(Parser_p->URL_p->Fragment_p)
         *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_FRAGMENT;
     }
@@ -529,8 +529,8 @@ NH_URL_BEGIN()
             if (nh_url_isFileScheme(Parser_p->URL_p->Scheme.p) && Parser_p->URL_p->Path.length == 0 && nh_url_isWindowsDriveLetter(&Parser_p->Buffer)) {
                 Parser_p->Buffer.p[1] = 0x3A;
             }
-            nh_String *Part_p = nh_core_incrementArray(&Parser_p->URL_p->Path);
-            NH_URL_CHECK_MEM(Part_p)
+            nh_core_String *Part_p = nh_core_incrementArray(&Parser_p->URL_p->Path);
+            NH_CORE_CHECK_MEM(Part_p)
             *Part_p = nh_core_initString(Parser_p->Buffer.length+1);
             for (int i = 0; i < Parser_p->Buffer.length; ++i) {
                 if (Parser_p->Buffer.p[i] >= 128) {NH_URL_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
@@ -542,15 +542,15 @@ NH_URL_BEGIN()
 
         if (*Parser_p->pointer == 0x3F) {
             if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-            Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_String));
-            NH_URL_CHECK_MEM(Parser_p->URL_p->Query_p)
+            Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_core_String));
+            NH_CORE_CHECK_MEM(Parser_p->URL_p->Query_p)
             *Parser_p->URL_p->Query_p = nh_core_initString(16);
             Parser_p->state = NH_URL_PARSER_STATE_QUERY;
         }
         if (*Parser_p->pointer == 0x23) {
             if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-            Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_String));
-            NH_URL_CHECK_MEM(Parser_p->URL_p->Fragment_p)
+            Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_core_String));
+            NH_CORE_CHECK_MEM(Parser_p->URL_p->Fragment_p)
             *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
             Parser_p->state = NH_URL_PARSER_STATE_FRAGMENT;
         }
@@ -563,7 +563,7 @@ NH_URL_BEGIN()
         &&  nh_encoding_isASCIIHexDigit(*(Parser_p->pointer+2))) {
             // val err
         }
-        nh_String String = nh_url_percentEncodeCodepointAfterEncodingUTF8(
+        nh_core_String String = nh_url_percentEncodeCodepointAfterEncodingUTF8(
             *Parser_p->pointer, NH_URL_PERCENT_ENCODE_SET_PATH
         );
         nh_encoding_UTF32String Decoded = nh_encoding_decodeUTF8(String.p, String.length, NULL);
@@ -584,8 +584,8 @@ NH_URL_BEGIN()
         if (Parser_p->URL_p->Query_p) {
             NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
-        Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_String));
-        NH_URL_CHECK_MEM(Parser_p->URL_p->Query_p)
+        Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_core_String));
+        NH_CORE_CHECK_MEM(Parser_p->URL_p->Query_p)
         *Parser_p->URL_p->Query_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_QUERY;
     }
@@ -593,8 +593,8 @@ NH_URL_BEGIN()
         if (Parser_p->URL_p->Fragment_p) {
             NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
-        Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_String));
-        NH_URL_CHECK_MEM(Parser_p->URL_p->Fragment_p)
+        Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_core_String));
+        NH_CORE_CHECK_MEM(Parser_p->URL_p->Fragment_p)
         *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_FRAGMENT;
     }
@@ -633,7 +633,7 @@ NH_URL_BEGIN()
         if (*Parser_p->pointer == 0x25 && !nh_url_hasTwoRemainingASCIIHexDigits(Parser_p)) {
             // val err
         }
-        nh_String String = nh_url_percentEncodeCodepointAfterEncodingUTF8(
+        nh_core_String String = nh_url_percentEncodeCodepointAfterEncodingUTF8(
             *Parser_p->pointer, NH_URL_PERCENT_ENCODE_SET_FRAGMENT
         );
         nh_core_appendToString(Parser_p->URL_p->Fragment_p, String.p, String.length);
@@ -690,7 +690,7 @@ NH_URL_BEGIN()
     URL_p->Password = nh_encoding_initUTF32(16);
     URL_p->Host_p = NULL; 
     URL_p->port_p = NULL;
-    URL_p->Path = nh_core_initArray(sizeof(nh_String), 8);
+    URL_p->Path = nh_core_initArray(sizeof(nh_core_String), 8);
     URL_p->Query_p = NULL;
     URL_p->Fragment_p = NULL;
     URL_p->cannotBeABaseURL = false;
@@ -710,7 +710,7 @@ NH_URL_BEGIN()
     if (!Parser.URL_p) 
     {
         nh_url_URL *URL_p = nh_core_allocate(sizeof(nh_url_URL));
-        NH_URL_CHECK_NULL_2(NULL, URL_p)
+        NH_CORE_CHECK_NULL_2(NULL, URL_p)
 
         Parser.URL_p = nh_url_initURL(URL_p);
 

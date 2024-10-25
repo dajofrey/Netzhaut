@@ -30,13 +30,13 @@
  */
 
     typedef struct nh_css_ComponentValueData {
-        nh_Array Tokens;
-        nh_Array ComponentValues;
+        nh_core_Array Tokens;
+        nh_core_Array ComponentValues;
     } nh_css_ComponentValueData;
 
     typedef struct nh_css_DeclarationData {
-        nh_Array Tokens;
-        nh_Array Declarations; 
+        nh_core_Array Tokens;
+        nh_core_Array Declarations; 
     } nh_css_DeclarationData;
 
 /** @} */
@@ -46,7 +46,7 @@
  */
 
     nh_css_StyleSheetObject *nh_css_parseStyleSheetFromUTF32(
-        nh_encoding_UTF32String *String_p, nh_css_DocumentObject *Document_p
+        nh_encoding_UTF32String *String_p, nh_webidl_Object *Document_p
     );
 
     nh_css_ComponentValueData nh_css_parseComponentValuesFromUTF8Codepoints(

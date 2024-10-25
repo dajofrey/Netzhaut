@@ -78,6 +78,7 @@ SRC_FILES_NHCORE = \
     Util/Stack.c \
     Util/BigInt.c \
     Util/ArrayList.c \
+    Util/Debug.c \
     Config/Parser.c \
     Config/Tokenizer.c \
     Config/Config.c \

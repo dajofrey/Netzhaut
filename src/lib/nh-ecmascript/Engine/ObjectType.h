@@ -54,14 +54,14 @@
         NH_ECMASCRIPT_BOOLEAN (*delete_f) (
             nh_ecmascript_Object *This_p, nh_ecmascript_Any PropertyKey
         );
-        nh_List (*ownPropertyKeys_f) (
+        nh_core_List (*ownPropertyKeys_f) (
             nh_ecmascript_Object *This_p
         );
         nh_ecmascript_Completion (*call_f) (
-            nh_ecmascript_Object *This_p, nh_ecmascript_Any ThisArgument, nh_List ArgumentsList
+            nh_ecmascript_Object *This_p, nh_ecmascript_Any ThisArgument, nh_core_List ArgumentsList
         );
         nh_ecmascript_Object *(*construct_f) (
-            nh_List Arguments, nh_ecmascript_Object *Target_p
+            nh_core_List Arguments, nh_ecmascript_Object *Target_p
         );
     } nh_ecmascript_InternalMethods;
 
@@ -108,7 +108,7 @@
     );
 
     nh_ecmascript_Completion nh_ecmascript_abstractCall(
-        nh_ecmascript_Any F, nh_ecmascript_Any Value, nh_List Arguments
+        nh_ecmascript_Any F, nh_ecmascript_Any Value, nh_core_List Arguments
     );
 
 /** @} */

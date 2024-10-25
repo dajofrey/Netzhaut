@@ -31,32 +31,32 @@
 // DECLARE =========================================================================================
 
 static NH_API_RESULT nh_vk_createPhysicalDevice(
-    nh_vk_Host *Host, nh_vk_Driver *Driver_p, char *name_p
+    nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, char *name_p
 );
 static NH_API_RESULT nh_vk_createDevice(
-    nh_vk_Host *Host, nh_vk_Driver *Driver_p, uint32_t *graphicsQueue_p, uint32_t *computeQueue_p
+    nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, uint32_t *graphicsQueue_p, uint32_t *computeQueue_p
 );
 static NH_API_RESULT nh_vk_createDescriptorPool(
-    nh_vk_Driver *Driver_p
+    nh_gfx_VulkanDriver *Driver_p
 );
 static NH_API_RESULT nh_vk_createCommandPools(
-    nh_vk_Driver *Driver_p, uint32_t graphicsQueue, uint32_t computeQueue
+    nh_gfx_VulkanDriver *Driver_p, uint32_t graphicsQueue, uint32_t computeQueue
 );
 static NH_API_RESULT nh_vk_createRenderPass(
-    nh_vk_Host *Host, nh_vk_Driver *Driver_p
+    nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p
 );
 
 static NH_API_RESULT nh_vk_getSurfaceFormat(
-    nh_vk_Host *Host, nh_vk_Driver *Driver_p, VkSurfaceFormatKHR *surfaceFormat_p
+    nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, VkSurfaceFormatKHR *surfaceFormat_p
 );
 static bool nh_vk_deviceIsSuitable(
-    nh_vk_Host *Host_p, VkPhysicalDevice Device
+    nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device
 );
 static bool nh_vk_deviceSupportsExtensions(
-    nh_vk_Host *Host_p, VkPhysicalDevice Device
+    nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device
 );
 static uint32_t nh_vk_getQueueFamily(
-    nh_vk_Host *Host, nh_vk_Driver *Driver_p, VkQueueFlagBits queueFlag
+    nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, VkQueueFlagBits queueFlag
 );
 static NH_API_RESULT nh_vk_chooseSwapSurfaceFormat(
     VkSurfaceFormatKHR availableFormats[], VkSurfaceFormatKHR *surfaceFormat_p
@@ -71,124 +71,118 @@ LRESULT CALLBACK WindowProc(
 // VALIDATE ========================================================================================
 
 static NH_API_RESULT nh_vk_validateFunctions(
-    nh_vk_Driver *Driver_p)
+    nh_gfx_VulkanDriver *Driver_p)
 {
-NH_GFX_BEGIN()
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateFence)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateSemaphore)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkAllocateCommandBuffers)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyFence)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroySemaphore)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyFramebuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkFreeMemory)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyImageView)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyImage)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroySwapchainKHR)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateSwapchainKHR)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkGetSwapchainImagesKHR)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateImageView)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateImage)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkBeginCommandBuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdPipelineBarrier)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkEndCommandBuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkQueueSubmit)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkQueueWaitIdle)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkFreeCommandBuffers)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateFramebuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyDescriptorPool)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyCommandPool)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyRenderPass)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyDevice)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkGetDeviceQueue)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateDescriptorPool)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateCommandPool)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateRenderPass)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkUpdateDescriptorSets)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateBuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyBuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkFreeMemory)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateDescriptorSetLayout)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkAllocateDescriptorSets)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyDescriptorSetLayout)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkFreeDescriptorSets)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkGetImageMemoryRequirements)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkGetBufferMemoryRequirements)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkAllocateMemory)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkBindImageMemory)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkBindBufferMemory)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkMapMemory)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkUnmapMemory)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateShaderModule)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreatePipelineLayout)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateGraphicsPipelines)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateComputePipelines)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyPipeline)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyPipelineLayout)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkAcquireNextImageKHR)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkBeginCommandBuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdPipelineBarrier)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdClearColorImage)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkAllocateCommandBuffers)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkGetBufferMemoryRequirements)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdPipelineBarrier)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdCopyBufferToImage)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkQueueSubmit)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkQueueWaitIdle)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateSampler)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdBeginRenderPass)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdSetViewport)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdSetScissor)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdClearAttachments)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdEndRenderPass)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkResetCommandBuffer)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdBindPipeline)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdBindDescriptorSets)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdBindVertexBuffers)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkCmdDraw)
+    NH_CORE_CHECK_NULL(Driver_p->Functions.vkDestroyShaderModule)
 
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateFence)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateSemaphore)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkAllocateCommandBuffers)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyFence)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroySemaphore)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyFramebuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkFreeMemory)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyImageView)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyImage)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroySwapchainKHR)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateSwapchainKHR)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkGetSwapchainImagesKHR)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateImageView)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateImage)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkBeginCommandBuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdPipelineBarrier)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkEndCommandBuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkQueueSubmit)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkQueueWaitIdle)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkFreeCommandBuffers)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateFramebuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyDescriptorPool)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyCommandPool)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyRenderPass)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyDevice)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkGetDeviceQueue)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateDescriptorPool)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateCommandPool)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateRenderPass)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkUpdateDescriptorSets)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateBuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyBuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkFreeMemory)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateDescriptorSetLayout)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkAllocateDescriptorSets)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyDescriptorSetLayout)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkFreeDescriptorSets)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkGetImageMemoryRequirements)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkGetBufferMemoryRequirements)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkAllocateMemory)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkBindImageMemory)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkBindBufferMemory)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkMapMemory)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkUnmapMemory)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateShaderModule)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreatePipelineLayout)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateGraphicsPipelines)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateComputePipelines)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyPipeline)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyPipelineLayout)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkAcquireNextImageKHR)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkBeginCommandBuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdPipelineBarrier)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdClearColorImage)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkAllocateCommandBuffers)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkGetBufferMemoryRequirements)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdPipelineBarrier)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdCopyBufferToImage)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkQueueSubmit)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkQueueWaitIdle)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCreateSampler)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdBeginRenderPass)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdSetViewport)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdSetScissor)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdClearAttachments)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdEndRenderPass)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkResetCommandBuffer)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdBindPipeline)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdBindDescriptorSets)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdBindVertexBuffers)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkCmdDraw)
-        NH_GFX_CHECK_NULL(Driver_p->Functions.vkDestroyShaderModule)
-
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // IMPLEMENT =======================================================================================
 
-NH_API_RESULT nh_vk_createDriver(
-    nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, char *name_p)
+NH_API_RESULT nh_gfx_createVulkanDriver(
+    nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, char *name_p)
 {
-NH_GFX_BEGIN()
-
     // allocate
     Driver_p->DescriptorPool_p = nh_core_allocate(sizeof(VkDescriptorPool));
-    NH_GFX_CHECK_MEM(Driver_p->DescriptorPool_p);
+    NH_CORE_CHECK_MEM(Driver_p->DescriptorPool_p);
     Driver_p->descriptorPoolCount = 1;
 
     Driver_p->RenderPass_p = nh_core_allocate(sizeof(VkRenderPass));
-    NH_GFX_CHECK_MEM(Driver_p->RenderPass_p);
+    NH_CORE_CHECK_MEM(Driver_p->RenderPass_p);
     Driver_p->renderPassCount = 1;
 
     Driver_p->ComputeCommandPools_p = nh_core_allocate(sizeof(VkCommandPool) * NH_MAX_THREADS);
-    NH_GFX_CHECK_MEM(Driver_p->ComputeCommandPools_p);
+    NH_CORE_CHECK_MEM(Driver_p->ComputeCommandPools_p);
     Driver_p->GraphicsCommandPools_p = nh_core_allocate(sizeof(VkCommandPool) * NH_MAX_THREADS);
-    NH_GFX_CHECK_MEM(Driver_p->GraphicsCommandPools_p);
+    NH_CORE_CHECK_MEM(Driver_p->GraphicsCommandPools_p);
 
     // create
     uint32_t graphicsQueue = 0, computeQueue = 0;
 
-    NH_GFX_CHECK(nh_vk_createPhysicalDevice(Host_p, Driver_p, name_p))
-    NH_GFX_CHECK(nh_vk_createDevice(Host_p, Driver_p, &graphicsQueue, &computeQueue))
-    NH_GFX_CHECK(nh_vk_createDescriptorPool(Driver_p))
-    NH_GFX_CHECK(nh_vk_createCommandPools(Driver_p, graphicsQueue, computeQueue))
-    NH_GFX_CHECK(nh_vk_createRenderPass(Host_p, Driver_p))
+    NH_CORE_CHECK(nh_vk_createPhysicalDevice(Host_p, Driver_p, name_p))
+    NH_CORE_CHECK(nh_vk_createDevice(Host_p, Driver_p, &graphicsQueue, &computeQueue))
+    NH_CORE_CHECK(nh_vk_createDescriptorPool(Driver_p))
+    NH_CORE_CHECK(nh_vk_createCommandPools(Driver_p, graphicsQueue, computeQueue))
+    NH_CORE_CHECK(nh_vk_createRenderPass(Host_p, Driver_p))
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS);
+    return NH_API_SUCCESS;;
 }
 
-void nh_vk_destroyDriver(
-    nh_vk_Driver *Driver_p)
+void nh_gfx_destroyVulkanDriver(
+    nh_gfx_VulkanDriver *Driver_p)
 {
-NH_GFX_BEGIN()
-
     Driver_p->Functions.vkDestroyDescriptorPool(Driver_p->Device, Driver_p->DescriptorPool_p[0], VK_NULL_HANDLE);
 
     for (int i = 0; i < NH_MAX_THREADS; ++i) {
@@ -206,16 +200,14 @@ NH_GFX_BEGIN()
     nh_core_free(Driver_p->ComputeCommandPools_p);
     nh_core_free(Driver_p->GraphicsCommandPools_p);
 
-NH_GFX_SILENT_END()
+    return;
 }
 
 // HELPER ==========================================================================================
 
 static NH_API_RESULT nh_vk_createPhysicalDevice(
-    nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, char *name_p)
+    nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, char *name_p)
 {
-NH_GFX_BEGIN()
-
     VkInstance *Window_p = &Host_p->Instance;
     VkPhysicalDevice *Device_p = NULL;
 
@@ -224,7 +216,7 @@ NH_GFX_BEGIN()
     Host_p->Functions.vkEnumeratePhysicalDevices(*Window_p, &deviceCount, VK_NULL_HANDLE); 
 
     VkPhysicalDevice *Physical_p = nh_core_allocate(sizeof(VkPhysicalDevice) * deviceCount);
-    NH_GFX_CHECK_MEM(Physical_p)
+    NH_CORE_CHECK_MEM(Physical_p)
     
     Host_p->Functions.vkEnumeratePhysicalDevices(*Window_p, &deviceCount, Physical_p);
 
@@ -236,7 +228,7 @@ NH_GFX_BEGIN()
         if (!strcmp(Properties.deviceName, name_p)) {Device_p = &Physical_p[i];}
     }
 
-    NH_GFX_CHECK_NULL(Device_p)
+    NH_CORE_CHECK_NULL(Device_p)
 
     // add if suitable
     if (nh_vk_deviceIsSuitable(Host_p, *Device_p))
@@ -255,28 +247,26 @@ NH_GFX_BEGIN()
         Driver_p->Info.vendorId = Properties.vendorID;
         Driver_p->Info.deviceId = Properties.deviceID;
     } 
-    else {NH_GFX_DIAGNOSTIC_END(NH_API_VULKAN_ERROR_DEVICE_NOT_SUITABLE)}
+    else {return NH_API_VULKAN_ERROR_DEVICE_NOT_SUITABLE;}
 
     nh_core_free(Physical_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_vk_createDevice(
-    nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, uint32_t *graphicsQueue_p, uint32_t *computeQueue_p)
+    nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, uint32_t *graphicsQueue_p, uint32_t *computeQueue_p)
 {
-NH_GFX_BEGIN()
-
     *graphicsQueue_p = nh_vk_getQueueFamily(Host_p, Driver_p, VK_QUEUE_GRAPHICS_BIT);
     *computeQueue_p  = nh_vk_getQueueFamily(Host_p, Driver_p, VK_QUEUE_COMPUTE_BIT);
 
-    if (*graphicsQueue_p == -1 || *computeQueue_p == -1) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    if (*graphicsQueue_p == -1 || *computeQueue_p == -1) {return NH_API_ERROR_BAD_STATE;}
 
     int queueCount = *graphicsQueue_p == *computeQueue_p ? 1 : 2;
     float queuePriority = 1.0f;
 
     VkDeviceQueueCreateInfo *QueueInfos_p = nh_core_allocate(sizeof(VkDeviceQueueCreateInfo) * queueCount);
-    NH_GFX_CHECK_MEM(QueueInfos_p)
+    NH_CORE_CHECK_MEM(QueueInfos_p)
 
     for (int i = 0; i < queueCount; ++i)
     {
@@ -308,7 +298,7 @@ NH_GFX_BEGIN()
         Host_p->Functions.vkCreateDevice(Driver_p->PhysicalDevice, &DeviceInfo, VK_NULL_HANDLE, &Driver_p->Device))
 
     volkLoadDeviceTable(&Driver_p->Functions, Driver_p->Device);
-    NH_GFX_CHECK(nh_vk_validateFunctions(Driver_p))
+    NH_CORE_CHECK(nh_vk_validateFunctions(Driver_p))
 
     for (unsigned int i = 0; i < queueCount; ++i) {
         Driver_p->Functions.vkGetDeviceQueue(
@@ -319,14 +309,12 @@ NH_GFX_BEGIN()
 
     nh_core_free(QueueInfos_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_vk_createDescriptorPool(
-    nh_vk_Driver *Driver_p)
+    nh_gfx_VulkanDriver *Driver_p)
 {
-NH_GFX_BEGIN()
-
     VkDescriptorPoolSize PoolSizes_p[] =
     {
         { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100000 }, // TODO hardcoded... 
@@ -347,14 +335,12 @@ NH_GFX_BEGIN()
         Driver_p->Device, &PoolInfo, VK_NULL_HANDLE, &(Driver_p->DescriptorPool_p[0])
     ))
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_vk_createCommandPools(
-    nh_vk_Driver *Driver_p, uint32_t graphicsQueue, uint32_t computeQueue)
+    nh_gfx_VulkanDriver *Driver_p, uint32_t graphicsQueue, uint32_t computeQueue)
 {
-NH_GFX_BEGIN()
-
     for (int i = 0; i < NH_MAX_THREADS; ++i)
     {
         VkCommandPoolCreateInfo CommandPoolInfo = 
@@ -369,14 +355,12 @@ NH_GFX_BEGIN()
         NH_GFX_CHECK_VULKAN(Driver_p->Functions.vkCreateCommandPool(Driver_p->Device, &CommandPoolInfo, VK_NULL_HANDLE, &Driver_p->ComputeCommandPools_p[i]))
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_vk_getSurfaceFormat(
-    nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, VkSurfaceFormatKHR *surfaceFormat_p)
+    nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, VkSurfaceFormatKHR *surfaceFormat_p)
 {
-NH_GFX_BEGIN()
-
     VkInstance *Window_p = &Host_p->Instance;
     VkPhysicalDevice *Physical_p = &Driver_p->PhysicalDevice;
 
@@ -385,7 +369,7 @@ NH_GFX_BEGIN()
 #ifdef __unix__
 
     Display *display = XOpenDisplay(NULL);
-    NH_GFX_CHECK_NULL(display) 
+    NH_CORE_CHECK_NULL(display) 
   
     int screen = DefaultScreen(display);
     VkXlibSurfaceCreateInfoKHR SurfaceInfo = 
@@ -422,7 +406,7 @@ NH_GFX_BEGIN()
         NULL 
     );
 
-    NH_GFX_CHECK_NULL(hwnd)
+    NH_CORE_CHECK_NULL(hwnd)
 
     VkWin32SurfaceCreateInfoKHR surfaceInfo =
     {
@@ -444,7 +428,7 @@ NH_GFX_BEGIN()
     );
 
     VkSurfaceFormatKHR *SurfaceFormats_p = nh_core_allocate(sizeof(VkSurfaceFormatKHR) * formatCount);
-    NH_GFX_CHECK_MEM(SurfaceFormats_p)
+    NH_CORE_CHECK_MEM(SurfaceFormats_p)
 
     Host_p->Functions.vkGetPhysicalDeviceSurfaceFormatsKHR(
         *Physical_p, Surface, &formatCount, SurfaceFormats_p
@@ -462,20 +446,18 @@ NH_GFX_BEGIN()
 
     nh_core_free(SurfaceFormats_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static bool nh_vk_deviceIsSuitable(
-    nh_vk_Host *Host_p, VkPhysicalDevice Device)
+    nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device)
 {
-NH_GFX_BEGIN()
-
     uint32_t queueFamilyCount = 0;
     Host_p->Functions.vkGetPhysicalDeviceQueueFamilyProperties(Device, &queueFamilyCount, VK_NULL_HANDLE);
 
     VkQueueFamilyProperties *queueFamilies_p = 
         nh_core_allocate(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
-    NH_GFX_CHECK_NULL_2(false, queueFamilies_p)
+    NH_CORE_CHECK_NULL_2(false, queueFamilies_p)
 
     Host_p->Functions.vkGetPhysicalDeviceQueueFamilyProperties(Device, &queueFamilyCount, queueFamilies_p);
    
@@ -501,14 +483,12 @@ NH_GFX_BEGIN()
 #undef GRAPHICS
 #undef COMPUTE
 
-NH_GFX_END(nh_vk_deviceSupportsExtensions(Host_p, Device) && queueFamiliesSupported)
+    return nh_vk_deviceSupportsExtensions(Host_p, Device) && queueFamiliesSupported;
 }
 
 static bool nh_vk_deviceSupportsExtensions(
-    nh_vk_Host *Host_p, VkPhysicalDevice Device) 
+    nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device) 
 {
-NH_GFX_BEGIN()
-
     const char* requiredExtensions_p = {"VK_KHR_swapchain"};
     uint32_t requiredExtensionsCount = 1;
 
@@ -519,7 +499,7 @@ NH_GFX_BEGIN()
 
     VkExtensionProperties *AvailableExtensions_p = 
         nh_core_allocate(sizeof(VkExtensionProperties) * availableExtensionsCount);
-    NH_GFX_CHECK_NULL_2(false, AvailableExtensions_p)
+    NH_CORE_CHECK_NULL_2(false, AvailableExtensions_p)
 
     Host_p->Functions.vkEnumerateDeviceExtensionProperties(
         Device, VK_NULL_HANDLE, &availableExtensionsCount, AvailableExtensions_p
@@ -536,20 +516,18 @@ NH_GFX_BEGIN()
         if (requiredExtensionAvailable) 
         {
             nh_core_free(AvailableExtensions_p);
-            NH_GFX_END(true)
+            return true;
         }
     }
 
     nh_core_free(AvailableExtensions_p);
 
-NH_GFX_END(false)
+    return false;
 }
 
 static uint32_t nh_vk_getQueueFamily(
-    nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, VkQueueFlagBits queueFlag) 
+    nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, VkQueueFlagBits queueFlag) 
 {   
-NH_GFX_BEGIN();
-
     VkInstance *Window_p = &Host_p->Instance;
     VkPhysicalDevice *Physical_p = &Driver_p->PhysicalDevice;
 
@@ -560,7 +538,7 @@ NH_GFX_BEGIN();
 
     VkQueueFamilyProperties *QueueFamilyProperties_p = 
         nh_core_allocate(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
-    NH_GFX_CHECK_NULL_2(-1, QueueFamilyProperties_p)
+    NH_CORE_CHECK_NULL_2(-1, QueueFamilyProperties_p)
 
     Host_p->Functions.vkGetPhysicalDeviceQueueFamilyProperties(
         *Physical_p, &queueFamilyCount, QueueFamilyProperties_p);
@@ -573,7 +551,7 @@ NH_GFX_BEGIN();
         if (queueFlag == VK_QUEUE_COMPUTE_BIT)
         {
             nh_core_free(QueueFamilyProperties_p); 
-            NH_GFX_END(i);
+            return i;;
         }
         if (queueFlag == VK_QUEUE_GRAPHICS_BIT)
         {
@@ -583,7 +561,7 @@ NH_GFX_BEGIN();
 #ifdef __unix__
 
             Display *display = XOpenDisplay(NULL);
-            NH_GFX_CHECK_NULL_2(-1, display)
+            NH_CORE_CHECK_NULL_2(-1, display)
 
             int screen = DefaultScreen(display);
             VkXlibSurfaceCreateInfoKHR SurfaceInfo = 
@@ -623,7 +601,7 @@ NH_GFX_BEGIN();
                 hinstance,
                 NULL
             );
-            NH_GFX_CHECK_NULL_2(-1, hwnd)
+            NH_CORE_CHECK_NULL_2(-1, hwnd)
 
             VkWin32SurfaceCreateInfoKHR surfaceInfo =
             {
@@ -645,21 +623,19 @@ NH_GFX_BEGIN();
 
             if (presentSupport == VK_TRUE) {
                 nh_core_free(QueueFamilyProperties_p); 
-                NH_GFX_END(i)
+                return i;
             }
         }
     }
  
     nh_core_free(QueueFamilyProperties_p);
 
-NH_GFX_END(-1)
+    return -1;
 }
 
 static NH_API_RESULT nh_vk_chooseSwapSurfaceFormat(
     VkSurfaceFormatKHR availableFormats[], VkSurfaceFormatKHR *surfaceFormat_p) 
 {
-NH_GFX_BEGIN()
-
     if (availableFormats[0].format == VK_FORMAT_UNDEFINED) 
     {
         *surfaceFormat_p = (VkSurfaceFormatKHR) {
@@ -678,16 +654,14 @@ NH_GFX_BEGIN()
 
     *surfaceFormat_p = availableFormats[0];
     
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_vk_createRenderPass(
-    nh_vk_Host *Host_p, nh_vk_Driver *Driver_p)
+    nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p)
 {
-NH_GFX_BEGIN()
-
     VkSurfaceFormatKHR SurfaceFormat;
-    NH_GFX_CHECK(nh_vk_getSurfaceFormat(Host_p, Driver_p, &SurfaceFormat))
+    NH_CORE_CHECK(nh_vk_getSurfaceFormat(Host_p, Driver_p, &SurfaceFormat))
 
     VkAttachmentDescription colorAttachment = 
     {
@@ -766,7 +740,7 @@ NH_GFX_BEGIN()
         Driver_p->Device, &RenderPassInfo, VK_NULL_HANDLE, &Driver_p->RenderPass_p[0]
     );
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 #if defined(_WIN32) || defined (WIN32)

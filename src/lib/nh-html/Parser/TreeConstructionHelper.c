@@ -11,7 +11,6 @@
 #include "TreeConstructionHelper.h"
 #include "Algorithms.h"
 
-#include "../Common/Macros.h"
 #include "../Interfaces/HTMLElement.h"
 
 #include "../../nh-dom/Interfaces/Attr.h"
@@ -22,7 +21,6 @@
 #include "../../nh-dom/Interfaces/Document.h"
 #include "../../nh-dom/Interfaces/DocumentType.h"
 #include "../../nh-dom/Interfaces/Text.h"
-#include "../../nh-dom/Common/Macros.h"
 
 #include "../../nh-core/Util/Array.h"
 #include "../../nh-webidl/Runtime/Object.h"
@@ -37,8 +35,6 @@
 nh_webidl_Object *nh_html_createElementForToken(
     nh_html_Token *Token_p, nh_webidl_DOMString *Namespace_p, nh_webidl_Object *IntendedParent_p)
 {
-NH_HTML_BEGIN()
-
     nh_webidl_Object *Document_p = nh_dom_getNodeDocument(nh_dom_getNode(IntendedParent_p));
     nh_webidl_DOMString *LocalName_p = &Token_p->StartOrEndTag.TagName;
 
@@ -84,15 +80,13 @@ NH_HTML_BEGIN()
     // TODO resettable
     // TODO form-associated
 
-NH_HTML_END(Object_p)
+    return Object_p;
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#appropriate-place-for-inserting-a-node
 NH_WEBIDL_UNSIGNED_LONG nh_html_getAppropriatePlaceForInsertingNode(
     nh_html_Parser *Parser_p, nh_webidl_Object **Target_pp)
 {
-NH_HTML_BEGIN()
-
     if (*Target_pp == NULL) {*Target_pp = nh_html_getCurrentNode(Parser_p);}
 
     NH_WEBIDL_UNSIGNED_LONG adjustedInsertionPosition = 0;
@@ -109,107 +103,95 @@ NH_HTML_BEGIN()
         // TODO
     }
 
-NH_HTML_END(adjustedInsertionPosition)
+    return adjustedInsertionPosition;
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-comment
 NH_API_RESULT nh_html_insertCommentAtPosition(
     nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, NH_WEBIDL_UNSIGNED_LONG position)
 {
-NH_HTML_BEGIN()
-
     nh_dom_Comment *Comment_p = nh_dom_createComment(Parser_p->Token_p->CommentOrCharacter.Data);
-    NH_HTML_CHECK_MEM(Comment_p)
-    NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(nh_dom_getNode(Target_p), (nh_webidl_Object*)Comment_p, position))
+    NH_CORE_CHECK_MEM(Comment_p)
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(nh_dom_getNode(Target_p), (nh_webidl_Object*)Comment_p, position))
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_html_insertComment(
     nh_html_Parser *Parser_p, nh_webidl_Object *Node_p)
 {
-NH_HTML_BEGIN()
-NH_HTML_DIAGNOSTIC_END(nh_html_insertCommentAtPosition(Parser_p, Node_p, nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Node_p)))
+    return nh_html_insertCommentAtPosition(Parser_p, Node_p, nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Node_p));
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-foreign-element
 nh_webidl_Object *nh_html_insertForeignElement(
     nh_html_Parser *Parser_p, nh_html_Token *Token_p, nh_webidl_DOMString *Namespace_p)
 {
-NH_HTML_BEGIN()
-
     nh_webidl_Object *Target_p = NULL;
     NH_WEBIDL_UNSIGNED_LONG adjustedInsertionLocation = nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Target_p);
 
     nh_webidl_Object *Element_p = nh_html_createElementForToken(Token_p, Namespace_p, Target_p);
     nh_dom_insertIntoNode(nh_dom_getNode(Target_p), Element_p, adjustedInsertionLocation);
 
-    nh_pushStack(&Parser_p->OpenElements, Element_p);
+    nh_core_pushStack(&Parser_p->OpenElements, Element_p);
 
-NH_HTML_END(Element_p)
+    return Element_p;
 }
 
 nh_webidl_Object *nh_html_insertHTMLElement(
     nh_html_Parser *Parser_p, nh_html_Token *Token_p)
 {
-NH_HTML_BEGIN()
-NH_HTML_END(nh_html_insertForeignElement(Parser_p, Token_p, &NH_WEBIDL_HTML_NAMESPACE))
+    return nh_html_insertForeignElement(Parser_p, Token_p, &NH_WEBIDL_HTML_NAMESPACE);
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-character
 NH_API_RESULT nh_html_insertCharacter(
     nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, nh_webidl_DOMString *Data_p)
 {
-NH_HTML_BEGIN()
-
     if (!Data_p) {Data_p = &Parser_p->Token_p->CommentOrCharacter.Data;}
 
     NH_WEBIDL_UNSIGNED_LONG adjustedInsertionLocation = nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Target_p);
 
     if (!strcmp(Target_p->Interface_p->name_p, "Document")) {
-        NH_HTML_END(NH_API_SUCCESS)
+        return NH_API_SUCCESS;
     } 
 
     if (adjustedInsertionLocation > 0) {
         nh_webidl_Object *Sibling_p = nh_dom_getFromNodeList(nh_webidl_getAttribute(Target_p, "childNodes"), adjustedInsertionLocation - 1);
         if (!strcmp(Sibling_p->Interface_p->name_p, "Text")) {
-            NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToText((nh_dom_Text*)Sibling_p, *Data_p))
-            NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+            NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToText((nh_dom_Text*)Sibling_p, *Data_p))
+            return NH_API_SUCCESS;
         }
     }
 
     nh_dom_Node *TargetNode_p = nh_dom_getNode(Target_p);
-    NH_HTML_CHECK_NULL(TargetNode_p)
+    NH_CORE_CHECK_NULL(TargetNode_p)
 
     nh_dom_Text *Text_p = nh_dom_createText(*Data_p, nh_dom_getNodeDocument(TargetNode_p)); 
-    NH_HTML_CHECK_MEM(Text_p)
+    NH_CORE_CHECK_MEM(Text_p)
 
-    NH_DOM_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(TargetNode_p, (nh_webidl_Object*)Text_p, adjustedInsertionLocation))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(TargetNode_p, (nh_webidl_Object*)Text_p, adjustedInsertionLocation))
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#generic-rcdata-element-parsing-algorithm
 NH_API_RESULT nh_html_parseRAWTEXTOrRCDATA(
     nh_html_Parser *Parser_p, nh_html_Token *Token_p, bool RAWTEXT)
 {
-NH_HTML_BEGIN()
-
-    NH_HTML_CHECK_MEM(nh_html_insertHTMLElement(Parser_p, Token_p))
+    NH_CORE_CHECK_MEM(nh_html_insertHTMLElement(Parser_p, Token_p))
 
     Parser_p->Tokenizer_p->state = RAWTEXT ? NH_HTML_TOKENIZATION_STATE_RAWTEXT : NH_HTML_TOKENIZATION_STATE_RCDATA;
     Parser_p->originalInsertionMode = Parser_p->insertionMode;
     Parser_p->insertionMode = NH_HTML_INSERTION_MODE_TEXT;
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 nh_html_Token *nh_html_getEmptyStartTagToken(
     NH_HTML_TAG tag)
 {
-NH_HTML_BEGIN()
-
-    if (tag >= 255) {NH_HTML_END(NULL)}
+    if (tag >= 255) {return NULL;}
 
     static nh_html_Token Tokens_p[255];
 
@@ -219,7 +201,7 @@ NH_HTML_BEGIN()
     Tokens_p[tag].StartOrEndTag.Attributes      = nh_core_initArray(1, 1);
     Tokens_p[tag].StartOrEndTag.selfClosing     = false;
 
-NH_HTML_END(&Tokens_p[tag])
+    return &Tokens_p[tag];
 }
 
 // ACTIVE FORMATTING ELEMENTS ======================================================================
@@ -229,43 +211,37 @@ NH_HTML_END(&Tokens_p[tag])
 NH_API_RESULT nh_html_pushActiveFormattingElement(
     nh_html_Parser *Parser_p, nh_webidl_Object *Element_p)
 {
-NH_HTML_BEGIN()
-
     // TODO
 
     nh_core_appendToList(&Parser_p->ActiveFormattingElements, Element_p);
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_html_insertMarker(
     nh_html_Parser *Parser_p)
 {
-NH_HTML_BEGIN()
-
     nh_core_appendToList(&Parser_p->ActiveFormattingElements, NULL);
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#reconstruct-the-active-formatting-elements
 NH_API_RESULT nh_html_reconstructActiveFormattingElements(
     nh_html_Parser *Parser_p)
 {
-NH_HTML_BEGIN()
-
     if (Parser_p->ActiveFormattingElements.size == 0) {
-        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+        return NH_API_SUCCESS;
     }
 
     int index = Parser_p->ActiveFormattingElements.size - 1;
     nh_webidl_Object *Entry_p = Parser_p->ActiveFormattingElements.pp[index];
 
     if (Entry_p == NULL) { // marker
-        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+        return NH_API_SUCCESS;
     }
-    if (nh_inList(&Parser_p->OpenElements, Entry_p)) {
-        NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    if (nh_core_inList(&Parser_p->OpenElements, Entry_p)) {
+        return NH_API_SUCCESS;
     }
 
     RECONSTRUCT_REWIND: {
@@ -273,7 +249,7 @@ NH_HTML_BEGIN()
     
         Entry_p = Parser_p->ActiveFormattingElements.pp[--index];
        
-        if (Entry_p != NULL && !nh_inList(&Parser_p->OpenElements, Entry_p)) {
+        if (Entry_p != NULL && !nh_core_inList(&Parser_p->OpenElements, Entry_p)) {
             goto RECONSTRUCT_REWIND;
         }
     }
@@ -285,14 +261,14 @@ NH_HTML_BEGIN()
     RECONSTRUCT_CREATE: {
         nh_html_Token *Token_p = nh_html_getToken(nh_html_getHTMLElement(Entry_p)); 
         nh_webidl_Object *NewElement_p = nh_html_insertHTMLElement(Parser_p, Token_p);
-        NH_HTML_CHECK_NULL(NewElement_p)
+        NH_CORE_CHECK_NULL(NewElement_p)
       
         Parser_p->ActiveFormattingElements.pp[index] = NewElement_p;
     
         if (index > 0) {goto RECONSTRUCT_ADVANCE;}
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // IMPLIED END TAGS ================================================================================
@@ -300,8 +276,6 @@ NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 NH_API_RESULT nh_html_generateImpliedEndTags(
     nh_html_Parser *Parser_p, char *exclude_p)
 {
-NH_HTML_BEGIN()
-
     static char *elements_pp[] = 
     {
         "dd",
@@ -338,14 +312,12 @@ NH_HTML_BEGIN()
         CurrentNode_p = nh_html_getCurrentNode(Parser_p);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_html_generateAllImpliedEndTags(
     nh_html_Parser *Parser_p)
 {
-NH_HTML_BEGIN()
-
     static char *elements_pp[] = 
     {
         "caption",
@@ -388,7 +360,7 @@ NH_HTML_BEGIN()
         CurrentNode_p = nh_html_getCurrentNode(Parser_p);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // STACK OF OPEN ELEMENTS ==========================================================================
@@ -397,54 +369,45 @@ NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 nh_webidl_Object *nh_html_getCurrentNode(
     nh_html_Parser *Parser_p)
 {
-NH_HTML_BEGIN()
-NH_HTML_END(nh_peekStack(&Parser_p->OpenElements))
+    return nh_core_peekStack(&Parser_p->OpenElements);
 }
 
 nh_webidl_Object *nh_html_getAdjustedCurrentNode(
     nh_html_Parser *Parser_p)
 {
-NH_HTML_BEGIN()
-
     // TODO
 
-NH_HTML_END(nh_html_getCurrentNode(Parser_p))
+    return nh_html_getCurrentNode(Parser_p);
 }
 
 NH_API_RESULT nh_html_pushOpenElement(
     nh_html_Parser *Parser_p, nh_webidl_Object *Object_p)
 {
-NH_HTML_BEGIN()
-
-    nh_pushStack(&Parser_p->OpenElements, Object_p);
-
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    nh_core_pushStack(&Parser_p->OpenElements, Object_p);
+    return NH_API_SUCCESS;
 }
 
 nh_webidl_Object *nh_html_popCurrentNode(
     nh_html_Parser *Parser_p)
 {
-NH_HTML_BEGIN()
-
-    nh_webidl_Object *Object_p = nh_popStack(&Parser_p->OpenElements);
-
+    nh_webidl_Object *Object_p = nh_core_popStack(&Parser_p->OpenElements);
     nh_webidl_DOMString *TagName_p = nh_dom_getTagName(nh_dom_getElement(Object_p));
 
     if (!strcmp(TagName_p->p, "STYLE")) {
+        // ... must run the update a style block algorithm whenever ...
+        // ... The element is popped off the stack of open elements ...
         nh_html_updateAStyleBlock(Object_p);
     }
 
-NH_HTML_END(Object_p)
+    return Object_p;
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#special
 bool nh_html_inSpecialCategory(
     nh_webidl_Object *Node_p)
 {
-NH_HTML_BEGIN()
-
     nh_dom_Element *Element_p = nh_dom_getElement(Node_p);
-    if (!Element_p) {NH_HTML_END(false)}
+    if (!Element_p) {return false;}
 
     nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(Element_p);
     int tag = nh_html_getTagIndex(LocalName_p->p);
@@ -534,43 +497,39 @@ NH_HTML_BEGIN()
             case NH_HTML_TAG_TRACK      :
             case NH_HTML_TAG_UL         :
             case NH_HTML_TAG_WBR        :
-            case NH_HTML_TAG_XMP        : NH_HTML_END(true)
+            case NH_HTML_TAG_XMP        : return true;
             default                     : break;
         }
     }
 
     // TODO MathML, SVG
 
-NH_HTML_END(false)
+    return false;
 }
 
 static bool nh_html_hasElementInSpecificScope(
     nh_html_Parser *Parser_p, char *target_p, char **scope_pp, unsigned int items)
 {
-NH_HTML_BEGIN()
-
     for (int i = Parser_p->OpenElements.size - 1; i >= 0; --i)
     {
         nh_webidl_Object *Node_p = nh_core_getFromList(&Parser_p->OpenElements, i);
         nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(nh_dom_getElement(Node_p));
 
-        if (!strcmp(LocalName_p->p, target_p)) {NH_HTML_END(true)}
+        if (!strcmp(LocalName_p->p, target_p)) {return true;}
 
         for (int j = 0; j < items; ++j) {
             if (!strcmp(LocalName_p->p, scope_pp[j])) {
-                NH_HTML_END(false)
+                return false;
             }
         }
     }
 
-NH_HTML_END(false)
+    return false;
 }
 
 bool nh_html_hasElementInScope(
     nh_html_Parser *Parser_p, char *target_p)
 {
-NH_HTML_BEGIN()
-
     static char *defaultScope_pp[] =
     {
         "applet",
@@ -593,14 +552,12 @@ NH_HTML_BEGIN()
         "title",
     };
 
-NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, defaultScope_pp, sizeof(defaultScope_pp)/sizeof(defaultScope_pp[0])))
+    return nh_html_hasElementInSpecificScope(Parser_p, target_p, defaultScope_pp, sizeof(defaultScope_pp)/sizeof(defaultScope_pp[0]));
 }
 
 bool nh_html_hasElementInListItemScope(
     nh_html_Parser *Parser_p, char *target_p)
 {
-NH_HTML_BEGIN()
-
     static char *listItemScope_pp[] =
     {
         "applet",
@@ -625,14 +582,12 @@ NH_HTML_BEGIN()
         "ul",
     };
 
-NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, listItemScope_pp, sizeof(listItemScope_pp)/sizeof(listItemScope_pp[0])))
+    return nh_html_hasElementInSpecificScope(Parser_p, target_p, listItemScope_pp, sizeof(listItemScope_pp)/sizeof(listItemScope_pp[0]));
 }
 
 bool nh_html_hasElementInButtonScope(
     nh_html_Parser *Parser_p, char *target_p)
 {
-NH_HTML_BEGIN()
-
     static char *buttonScope_pp[] =
     {
         "applet",
@@ -656,14 +611,12 @@ NH_HTML_BEGIN()
         "button",
     };
 
-NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, buttonScope_pp, sizeof(buttonScope_pp)/sizeof(buttonScope_pp[0])))
+    return nh_html_hasElementInSpecificScope(Parser_p, target_p, buttonScope_pp, sizeof(buttonScope_pp)/sizeof(buttonScope_pp[0]));
 }
 
 bool nh_html_hasElementInTableScope(
     nh_html_Parser *Parser_p, char *target_p)
 {
-NH_HTML_BEGIN()
-
     static char *tableScope_pp[] =
     {
         "html",
@@ -671,20 +624,18 @@ NH_HTML_BEGIN()
         "template",
     };
 
-NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, tableScope_pp, sizeof(tableScope_pp)/sizeof(tableScope_pp[0])))
+    return nh_html_hasElementInSpecificScope(Parser_p, target_p, tableScope_pp, sizeof(tableScope_pp)/sizeof(tableScope_pp[0]));
 }
 
 bool nh_html_hasElementInSelectScope(
     nh_html_Parser *Parser_p, char *target_p)
 {
-NH_HTML_BEGIN()
-
     static char *selectScope_pp[] =
     {
         "optgroup",
         "option",
     };
 
-NH_HTML_END(nh_html_hasElementInSpecificScope(Parser_p, target_p, selectScope_pp, sizeof(selectScope_pp)/sizeof(selectScope_pp[0])))
+    return nh_html_hasElementInSpecificScope(Parser_p, target_p, selectScope_pp, sizeof(selectScope_pp)/sizeof(selectScope_pp[0]));
 }
 

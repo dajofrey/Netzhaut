@@ -15,7 +15,6 @@
 #include "../Layout/Depth.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/Array.h"
@@ -35,36 +34,32 @@
 static nh_css_Canvas *nh_css_createCanvas(
     nh_api_CanvasType Type)
 {
-NH_CSS_BEGIN()
-
     nh_css_Canvas *Canvas_p = nh_core_allocate(sizeof(nh_css_Canvas));
-    NH_CSS_CHECK_MEM_2(NULL, Canvas_p)
+    NH_CORE_CHECK_MEM_2(NULL, Canvas_p)
 
     Canvas_p->render = false;
     Canvas_p->FragmentTree.Root_p = NULL;
     Canvas_p->Type = Type;
 
-NH_CSS_END(Canvas_p)
+    return Canvas_p;
 }
 
 nh_css_Canvas *nh_css_addCanvas(
     nh_css_Layout *Layout_p, nh_api_CanvasType Type)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < Layout_p->Canvases.size; ++i) {
         nh_css_Canvas *Canvas_p = Layout_p->Canvases.pp[i];
         if (Canvas_p->Type.Size.width == Type.Size.width && Canvas_p->Type.Size.height == Type.Size.height) {
-            NH_CSS_END(NULL)
+            return NULL;
         }
     }
 
     nh_css_Canvas *Canvas_p = nh_css_createCanvas(Type);
-    NH_CSS_CHECK_NULL_2(NULL, Canvas_p)
+    NH_CORE_CHECK_NULL_2(NULL, Canvas_p)
 
     nh_core_appendToList(&Layout_p->Canvases, Canvas_p);
 
-NH_CSS_END(Canvas_p)
+    return Canvas_p;
 }
 
 // COMPUTE =========================================================================================
@@ -72,31 +67,29 @@ NH_CSS_END(Canvas_p)
 NH_API_RESULT nh_css_computeCanvas(
     nh_css_Canvas *Canvas_p, nh_webidl_Object *HTMLElement_p, nh_css_StyleSheetListObject *StyleSheets_p)
 {
-NH_CSS_BEGIN()
-
     Canvas_p->_float = false;
     Canvas_p->Floats = nh_core_initList(8);
     Canvas_p->LineBoxes = nh_core_initArray(sizeof(nh_css_LineBox), 8);
 
-    Canvas_p->SourceTree = nh_css_createSourceTree(HTMLElement_p, StyleSheets_p, true, Canvas_p);
-    NH_CSS_CHECK(nh_css_logSourceTree(Canvas_p, Canvas_p->SourceTree.Root_p))
+    NH_CORE_CHECK(nh_css_createSourceTree(HTMLElement_p, StyleSheets_p, true, Canvas_p, &Canvas_p->SourceTree))
+    NH_CORE_CHECK(nh_css_logSourceTree(Canvas_p, Canvas_p->SourceTree.Root_p))
 
     Canvas_p->BoxTree = nh_css_createBoxTree(Canvas_p->SourceTree.Root_p);
-    NH_CSS_CHECK_NULL(Canvas_p->BoxTree.Root_p)
-    NH_CSS_CHECK(nh_css_logBoxTree(Canvas_p, Canvas_p->BoxTree))
+    NH_CORE_CHECK_NULL(Canvas_p->BoxTree.Root_p)
+    NH_CORE_CHECK(nh_css_logBoxTree(Canvas_p, Canvas_p->BoxTree))
 
     Canvas_p->FragmentTree = nh_css_createFragmentTree(Canvas_p->BoxTree.Root_p, &Canvas_p->Type);
-    NH_CSS_CHECK_NULL(Canvas_p->FragmentTree.Root_p)
+    NH_CORE_CHECK_NULL(Canvas_p->FragmentTree.Root_p)
 
-    NH_CSS_CHECK(nh_css_arrangeBlockFormattingContext(Canvas_p, Canvas_p->FragmentTree.Root_p, NULL))
+    NH_CORE_CHECK(nh_css_arrangeBlockFormattingContext(Canvas_p, Canvas_p->FragmentTree.Root_p, NULL))
     nh_css_getFragmentDepth(Canvas_p->FragmentTree.Root_p);
 
-    NH_CSS_CHECK(nh_css_logFragmentTree(Canvas_p, Canvas_p->FragmentTree))
+    NH_CORE_CHECK(nh_css_logFragmentTree(Canvas_p, Canvas_p->FragmentTree))
 
     nh_core_freeList(&Canvas_p->Floats, false);
     nh_core_freeArray(&Canvas_p->LineBoxes);
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // CANVAS TYPE =====================================================================================
@@ -104,31 +97,26 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 nh_api_CanvasType nh_css_createCanvasType(
     nh_api_PixelSize Size)
 {
-NH_CSS_BEGIN()
-
     nh_api_CanvasType Type;
     Type.Size = Size;
-
-NH_CSS_END(Type)
+    return Type;
 }
 
 NH_API_RESULT nh_css_addCanvasType(
     nh_css_LayoutEngine *LayoutEngine_p, nh_api_CanvasType Type)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < LayoutEngine_p->CanvasTypes.length; ++i) {
         nh_api_CanvasType *Type_p = ((nh_api_CanvasType*)LayoutEngine_p->CanvasTypes.p)+i;
         if (Type_p->Size.width == Type.Size.width && Type_p->Size.height == Type.Size.height) {
-            NH_CSS_END(NH_API_SUCCESS)
+            return NH_API_SUCCESS;
         }
     }
  
     nh_api_CanvasType *Type_p = nh_core_incrementArray(&LayoutEngine_p->CanvasTypes);
-    NH_CSS_CHECK_MEM(Type_p)
+    NH_CORE_CHECK_MEM(Type_p)
 
     *Type_p = Type;
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

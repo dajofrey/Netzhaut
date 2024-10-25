@@ -10,7 +10,6 @@
 
 #include "Terminate.h"
 #include "IndexMap.h"
-#include "Macros.h"
 
 #include "../Fonts/FontManager.h"
 #include "../Base/Surface.h"
@@ -21,12 +20,10 @@
 #include <string.h>
 #include <stdio.h>
 
-// DEBUG ===========================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_gfx_terminate()
 {
-NH_GFX_BEGIN()
-
     nh_gfx_freeIndexMap();
     nh_gfx_terminateFontManager();
     nh_gfx_freeSurfaceRequirements();
@@ -34,6 +31,6 @@ NH_GFX_BEGIN()
 //    nh_vk_terminateVulkan();
     nh_opengl_terminateOpenGL();
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

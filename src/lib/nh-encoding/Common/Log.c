@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Log.h"
-#include "Macros.h"
 
 #include "../Base/UnicodeData.gen.h"
 #include "../../nh-core/System/Logger.h"
@@ -45,12 +44,9 @@ NH_API_RESULT _nh_encoding_logDiagnosticEnd(
 
 NH_API_RESULT nh_encoding_logUnicodeCodepointDescriptions()
 {
-NH_ENCODING_BEGIN()
-
     for (int i = 0; i < NH_ENCODING_UNICODE_DATA_COUNT; ++i) {
         nh_core_sendLogMessage("nh-encoding:Unicode", NULL, (char*)NH_ENCODING_UNICODE_DATA_PP[i]);
     }
-
-NH_ENCODING_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

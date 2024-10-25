@@ -10,8 +10,6 @@
 
 #include "Interface.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 
 #include <stddef.h>
@@ -25,19 +23,14 @@
 static NH_API_RESULT nh_webidl_createInterfaceObject(
     nh_webidl_Interface *Interface_p, nh_ecmascript_Realm *Realm_p)
 {
-NH_WEBIDL_BEGIN()
-
     nh_ecmascript_Object *Object_p = &Realm_p->Intrinsics.Function.Prototype;
-
-NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // https://heycam.github.io/webidl/#new
 NH_API_RESULT nh_webidl_createInterfaceObjects(
     nh_ecmascript_Realm *Realm_p)
 {
-NH_WEBIDL_BEGIN()
-
     for (int spec = 0; spec < NH_WEBIDL_RUNTIME.Specifications.length; ++spec) 
     {
         nh_webidl_Specification *Specification_p = &((nh_webidl_Specification*)NH_WEBIDL_RUNTIME.Specifications.p)[spec];
@@ -47,11 +40,11 @@ NH_WEBIDL_BEGIN()
             nh_webidl_Fragment *Fragment_p = &((nh_webidl_Fragment*)Specification_p->Fragments.p)[frag];
 
             for (int intf = 0; intf < Fragment_p->Interfaces.length; ++intf) {
-                NH_WEBIDL_CHECK_2(nh_webidl_createInterfaceObject(&((nh_webidl_Interface*)Fragment_p->Interfaces.p)[intf], Realm_p))
+                NH_CORE_CHECK_2(nh_webidl_createInterfaceObject(&((nh_webidl_Interface*)Fragment_p->Interfaces.p)[intf], Realm_p))
             }
         }
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

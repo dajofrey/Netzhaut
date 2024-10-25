@@ -11,6 +11,7 @@
 
 // Include public API.
 #include "../../nh-api/nh-core.h"
+#include "../../nh-core/Util/Debug.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

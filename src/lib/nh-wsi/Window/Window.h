@@ -112,7 +112,7 @@
         void *surface_p;
         nh_api_windowCallback_f callback_f;
         nh_x11_Window X11;
-        nh_RingBuffer Events;
+        nh_core_RingBuffer Events;
         NH_WSI_CURSOR_E cursor;
     } nh_wsi_Window;
 

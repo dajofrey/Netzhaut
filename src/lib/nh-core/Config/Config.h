@@ -32,12 +32,12 @@
         char *name_p;
         char namespace_p[255];
         struct nh_RawConfigSetting *Default_p;
-        nh_List Values;
+        nh_core_List Values;
         bool mark;
     } nh_RawConfigSetting;
 
     typedef struct nh_RawConfig {
-        nh_List Settings;
+        nh_core_List Settings;
     } nh_RawConfig;
 
 /** @} */
@@ -55,7 +55,7 @@
     nh_RawConfig *nh_core_getGlobalConfig(
     );
 
-    nh_List *nh_core_getGlobalConfigSetting(
+    nh_core_List *nh_core_getGlobalConfigSetting(
         char *namespace_p, int _module, const char *name_p
     );
 

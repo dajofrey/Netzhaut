@@ -16,13 +16,11 @@
 #include "Evaluation.h"
 #include "Agent.h"
 
-#include "../../nh-core/System/Memory.h"
+#include "../Common/Log.h"
 
+#include "../../nh-core/System/Memory.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
 #include "../../nh-encoding/Encodings/UTF8.h"
-
-#include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -31,10 +29,8 @@
 
 static NH_API_RESULT nh_ecmascript_prepareText(
     nh_ecmascript_Script *Script_p, nh_encoding_UTF32String *UnicodeCodepoints_p, 
-    nh_Array *DirtyInputElements_p, nh_Array *CleanInputElements_p)
+    nh_core_Array *DirtyInputElements_p, nh_core_Array *CleanInputElements_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // https://tc39.es/ecma262/#sec-ecmascript-language-lexical-grammar
     nh_ecmascript_logDecoder(Script_p, UnicodeCodepoints_p);
 
@@ -44,17 +40,15 @@ NH_ECMASCRIPT_BEGIN()
     *CleanInputElements_p = nh_ecmascript_discardRedundantInputElements(*DirtyInputElements_p);
     nh_ecmascript_logLexer(Script_p, CleanInputElements_p, false);
 
-NH_ECMASCRIPT_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // https://tc39.es/ecma262/#sec-parse-script
 nh_ecmascript_Script *nh_ecmascript_parseScript(
     char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding)
 {
-NH_ECMASCRIPT_BEGIN()
-
     nh_ecmascript_Script *Script_p = nh_core_allocate(sizeof(nh_ecmascript_Script));
-    NH_ECMASCRIPT_CHECK_MEM_2(NULL, Script_p)
+    NH_CORE_CHECK_MEM_2(NULL, Script_p)
 
     Script_p->Realm_p = Realm_p;
     Script_p->Environment_p = NULL;
@@ -70,23 +64,23 @@ NH_ECMASCRIPT_BEGIN()
 
     if (UnicodeCodepoints.length <= 0) {
         nh_core_free(Script_p);
-        NH_ECMASCRIPT_END(NULL)
+        return NULL;
     }
 
-    nh_Array DirtyInputElements, CleanInputElements;
-    NH_ECMASCRIPT_CHECK_2(NULL, nh_ecmascript_prepareText(Script_p, &UnicodeCodepoints, &DirtyInputElements, &CleanInputElements))
+    nh_core_Array DirtyInputElements, CleanInputElements;
+    NH_CORE_CHECK_2(NULL, nh_ecmascript_prepareText(Script_p, &UnicodeCodepoints, &DirtyInputElements, &CleanInputElements))
 
     nh_ecmascript_ParseResult Result = nh_ecmascript_parseText(CleanInputElements, NH_ECMASCRIPT_PARSE_NODE_SCRIPT);
     if (Result.Node_p == NULL || Result.SyntaxErrors.size > 0) {
         nh_core_free(Script_p);
-        NH_ECMASCRIPT_END(NULL);
+        return NULL;;
     }
 
     bool branch_p[1024] = {0};
     nh_ecmascript_logParseTree(Script_p, Result.Node_p, NULL, 0, branch_p);
     Script_p->ECMAScriptCode_p = Result.Node_p;
 
-NH_ECMASCRIPT_END(Script_p)
+    return Script_p;
 }
 
 // EVALUATE ========================================================================================
@@ -95,12 +89,10 @@ NH_ECMASCRIPT_END(Script_p)
 nh_ecmascript_Completion nh_ecmascript_evaluateScript(
     nh_ecmascript_Script *Script_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     nh_ecmascript_Environment *GlobalEnvironment_p = Script_p->Realm_p->GlobalEnvironment_p;
 
     nh_ecmascript_ExecutionContext *ScriptContext_p = nh_ecmascript_allocateExecutionContext();
-//    NH_ECMASCRIPT_CHECK_MEM(NewContext_p)
+//    NH_CORE_CHECK_MEM(NewContext_p)
 
     ScriptContext_p->Function_p = NULL;
     ScriptContext_p->Realm_p    = Script_p->Realm_p;
@@ -112,7 +104,7 @@ NH_ECMASCRIPT_BEGIN()
     ScriptContext_p->LexicalEnvironment_p  = GlobalEnvironment_p; 
 // TODO Suspend the currently running execution context. 
 
-    nh_pushStack(&nh_ecmascript_getCurrentAgent()->ExecutionContextStack, ScriptContext_p);
+    nh_core_pushStack(&nh_ecmascript_getCurrentAgent()->ExecutionContextStack, ScriptContext_p);
 
     nh_ecmascript_ParseNode *ScriptBody_p = Script_p->ECMAScriptCode_p->Children.pp[0];
     nh_ecmascript_Completion Result = nh_ecmascript_globalDeclarationInstantiation(ScriptBody_p, GlobalEnvironment_p);
@@ -121,6 +113,6 @@ NH_ECMASCRIPT_BEGIN()
         Result = nh_ecmascript_evaluateScriptBody(ScriptBody_p);
     }
 
-NH_ECMASCRIPT_END(Result)
+    return Result;
 }
 

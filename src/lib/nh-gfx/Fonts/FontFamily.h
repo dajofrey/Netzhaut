@@ -1,5 +1,5 @@
-#ifndef NH_GFX_FONT_FAMILY_H
-#define NH_GFX_FONT_FAMILY_H
+#ifndef NH_GFX_FONTS_FONT_FAMILY_H
+#define NH_GFX_FONTS_FONT_FAMILY_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -73,4 +73,4 @@
 
 /** @} */
 
-#endif 
+#endif // NH_GFX_FONTS_FONT_FAMILY_H 

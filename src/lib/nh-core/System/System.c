@@ -17,7 +17,6 @@
 
 #include "../Util/String.h"
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include <unistd.h>
 #include <string.h>
@@ -33,11 +32,9 @@ nh_System NH_SYSTEM;
 
 // CPU =============================================================================================
 
-static NH_API_RESULT getCPUAttr(
+static NH_API_RESULT nh_core_getCPUAttr(
     char *src, char *dest) 
 {
-NH_CORE_BEGIN()
-
     if (src != NULL) {
         char delim[] = ":";
         strtok(src, delim);
@@ -46,15 +43,13 @@ NH_CORE_BEGIN()
         char *src3 = strtok(src2, delim2); 
         strcpy(dest, src3 + 1);
     }
-    else {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    else {return NH_API_ERROR_BAD_STATE;}
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_core_getCPUInfo()
 {
-NH_CORE_BEGIN()
-
     char name_p[255];
     int cores = 0;
     bool ht   = false;
@@ -72,19 +67,19 @@ NH_CORE_BEGIN()
     
     // name
         char *ptr = strstr(arg, "model name");
-        NH_CORE_CHECK(getCPUAttr(ptr, name_p))
+        NH_CORE_CHECK(nh_core_getCPUAttr(ptr, name_p))
 
     // cores
         char *ptr2 = strstr(arg2, "cpu cores");
         char tmp[8];
-        NH_CORE_CHECK(getCPUAttr(ptr2, tmp))
+        NH_CORE_CHECK(nh_core_getCPUAttr(ptr2, tmp))
         cores = atoi(tmp);
 
     // ht
         char *ptr3 = strstr(arg3, "flags");
         char flags[2048];
         
-        NH_CORE_CHECK(getCPUAttr(ptr3, flags))
+        NH_CORE_CHECK(nh_core_getCPUAttr(ptr3, flags))
             
         ht = strstr(flags, "ht") != NULL;
     }
@@ -99,24 +94,19 @@ NH_CORE_BEGIN()
     NH_SYSTEM.CPU.ht    = ht;
     strcpy(NH_SYSTEM.CPU.name_p, name_p);
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // OTHER ===========================================================================================
 
-static bool nh_littleEndian()
+static bool nh_core_littleEndian()
 {
-NH_CORE_BEGIN()
-
     unsigned int x = 1;
-
-NH_CORE_END((int)(((char *)&x)[0] == 1))
+    return (int)(((char *)&x)[0] == 1);
 }
 
 static NH_API_RESULT nh_core_getOtherInfo()
 {
-NH_CORE_BEGIN()
-
     unsigned long total = 0;
     unsigned long free  = 0;
     long uptime = 0;
@@ -135,19 +125,17 @@ NH_CORE_BEGIN()
 
     NH_SYSTEM.LocalTime    = nh_core_getLocalTime(); 
     NH_SYSTEM.uptime       = uptime;
-    NH_SYSTEM.littleEndian = nh_littleEndian();
+    NH_SYSTEM.littleEndian = nh_core_littleEndian();
     NH_SYSTEM.RAM.total    = total;
     NH_SYSTEM.RAM.free     = free;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // SYSTEM ==========================================================================================
 
 static void nh_core_logSystem()
 {
-NH_CORE_BEGIN()
-
     nh_DataStorageUnits Total = nh_humanizeBytes(NH_SYSTEM.RAM.total);
     nh_DataStorageUnits Free = nh_humanizeBytes(NH_SYSTEM.RAM.free);
     nh_GeneralTime Uptime = nh_humanizeSeconds(NH_SYSTEM.uptime);
@@ -170,25 +158,21 @@ NH_CORE_BEGIN()
     );
     nh_core_logSystemInfo(log_p, 4);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static NH_API_RESULT nh_core_updateSystem()
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK(nh_core_getCPUInfo())
     NH_CORE_CHECK(nh_core_getOtherInfo())
 
     nh_core_logSystem();
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_initSystem()
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK(nh_core_updateSystem())
 
     NH_SYSTEM.Updater.updateIntervalInSeconds = 1;
@@ -207,14 +191,12 @@ NH_CORE_BEGIN()
     sprintf(log_p, NH_SYSTEM.littleEndian ? "ENDIANNESS Little-Endian (LE)" : "ENDIANNESS Big-Endian (BE)");
     nh_core_logSystemInfo(log_p, 1);
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_freeSystem()
 {
-NH_CORE_BEGIN()
-
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // UPDATER =========================================================================================
@@ -222,8 +204,6 @@ NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 void *nh_core_initSystemUpdater(
     nh_core_Workload *Workload_p)
 {
-NH_CORE_BEGIN()
-
     static char *name_p = "System Updater";
     static char *path_p = "nh-core/System/System.c";
 
@@ -231,21 +211,18 @@ NH_CORE_BEGIN()
     Workload_p->path_p = path_p;
     Workload_p->module = NH_MODULE_CORE;
 
-NH_CORE_END(NH_SIGNAL_OK)
+    return NH_SIGNAL_OK;
 }
 
 NH_SIGNAL nh_core_runSystemUpdater(
     void *args_p)
 {
-NH_CORE_BEGIN()
-
     if (nh_core_getSystemTimeDiffInSeconds(NH_SYSTEM.Updater.LastUpdate, nh_core_getSystemTime()) < NH_SYSTEM.Updater.updateIntervalInSeconds) {
-        NH_CORE_END(NH_SIGNAL_IDLE)
+        return NH_SIGNAL_IDLE;
     }
 
     NH_CORE_CHECK(nh_core_updateSystem())
     NH_SYSTEM.Updater.LastUpdate = nh_core_getSystemTime();
 
-NH_CORE_END(NH_SIGNAL_OK)
+    return NH_SIGNAL_OK;
 }
-

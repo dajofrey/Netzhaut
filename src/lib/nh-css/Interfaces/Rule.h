@@ -1,7 +1,7 @@
-#ifndef NH_CSS_RULE_H
-#define NH_CSS_RULE_H
+#ifndef NH_CSS_INTERFACES_RULE_H
+#define NH_CSS_INTERFACES_RULE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE NOTICE ==================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,28 +9,23 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "../Common/Includes.h"
+// INCLUDES ========================================================================================
 
+#include "../Common/Includes.h"
 #include "../Parser/Parser.h"
 
-#endif
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-css_functions
- *  @{
- */
+nh_css_RuleObject *nh_css_getRule(
+    nh_webidl_Object *Object_p
+);
 
-    nh_css_RuleObject *nh_css_getRule(
-        nh_webidl_Object *Object_p
-    );
-    
-    void nh_css_setRuleData(
-        nh_css_RuleObject *Rule_p, nh_css_Rule Rule
-    );
-    
-    nh_css_Rule *nh_css_getRuleData(
-        nh_css_RuleObject *Rule_p
-    );
+void nh_css_setRuleData(
+    nh_css_RuleObject *Rule_p, nh_css_Rule Rule
+);
 
-/** @} */
+nh_css_Rule *nh_css_getRuleData(
+    nh_css_RuleObject *Rule_p
+);
 
-#endif
+#endif // NH_CSS_INTERFACES_RULE_H

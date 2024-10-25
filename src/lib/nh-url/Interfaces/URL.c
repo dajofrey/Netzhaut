@@ -28,7 +28,7 @@
 typedef struct nh_css_Rule {
     NH_CSS_RULE type;
     nh_encoding_UTF32String *Name_p;
-    nh_Array Prelude;
+    nh_core_Array Prelude;
     nh_css_SimpleBlock Block;
 } nh_css_Rule;
 
@@ -40,7 +40,7 @@ NH_API_RESULT nh_css_initializeCSSRule(
 NH_CSS_BEGIN()
 
     CSSRule_p->internal_p = nh_core_allocate(sizeof(nh_css_Rule));
-    NH_CSS_CHECK_MEM(CSSRule_p->internal_p)
+    NH_CORE_CHECK_MEM(CSSRule_p->internal_p)
 
 NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
@@ -75,7 +75,7 @@ NH_CSS_SILENT_END()
 }
 
 void nh_css_setCSSRulePrelude(
-    nh_css_RuleObject *CSSRule_p, nh_Array Prelude)
+    nh_css_RuleObject *CSSRule_p, nh_core_Array Prelude)
 {
 NH_CSS_BEGIN()
 
@@ -108,7 +108,7 @@ NH_CSS_BEGIN()
 NH_CSS_END(((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Name_p)
 }
 
-nh_Array *nh_css_getCSSRulePrelude(
+nh_core_Array *nh_css_getCSSRulePrelude(
     nh_css_RuleObject *CSSRule_p)
 {
 NH_CSS_BEGIN()

@@ -135,7 +135,7 @@
         NH_HTML_TOKEN type;
         nh_webidl_DOMString TagName;
         bool selfClosing;
-        nh_Array Attributes;
+        nh_core_Array Attributes;
         int tag;
     } nh_html_StartOrEndTagToken;
 
@@ -155,8 +155,8 @@
         NH_HTML_TOKENIZATION_STATE state;
         NH_HTML_TOKENIZATION_STATE returnState;
         nh_webidl_USVString InputStream;
-        nh_ArrayList Tokens;
-        nh_List Emits;
+        nh_core_ArrayList Tokens;
+        nh_core_List Emits;
         unsigned long index;
         NH_ENCODING_UTF32 codepoint;
         nh_html_Token *Token_p;

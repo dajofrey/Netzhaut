@@ -37,8 +37,6 @@
 static nh_gfx_FontInstance *nh_gfx_getAnyFontInstance(
     NH_ENCODING_UTF32 codepoint, int fontSize)
 {
-NH_GFX_BEGIN()
-
     for (int i = 0; i < NH_GFX_FONT_MANAGER.Fonts.size; ++i)
     {
         nh_gfx_Font *Font_p = NH_GFX_FONT_MANAGER.Fonts.pp[i];
@@ -47,19 +45,17 @@ NH_GFX_BEGIN()
         if (!Instance_p) {continue;}
 
         if (nh_gfx_hasGlyph(Instance_p, codepoint)) {
-            if (nh_gfx_loadGlyphs(Instance_p, &codepoint, 1) == NH_API_SUCCESS) {NH_GFX_END(Instance_p)}
+            if (nh_gfx_loadGlyphs(Instance_p, &codepoint, 1) == NH_API_SUCCESS) {return Instance_p;}
         }
     }
 
-NH_GFX_END(NULL)
+    return NULL;
 }
 
 NH_API_RESULT nh_gfx_createText(
     nh_gfx_Text *Text_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length, int fontSize, 
-    nh_Array *FontFamilies_p, nh_gfx_FontStyle FontStyle)
+    nh_core_Array *FontFamilies_p, nh_gfx_FontStyle FontStyle)
 {
-NH_GFX_BEGIN()
-
     Text_p->Segments = nh_core_initArray(sizeof(nh_gfx_TextSegment), 1);
     nh_gfx_FontInstance *PrevInstance_p = NULL;
 
@@ -72,14 +68,14 @@ NH_GFX_BEGIN()
         for (int j = 0; j < FontFamilies_p->length; ++j)
         {
             nh_gfx_FontFamily *FontFamily_p = &((nh_gfx_FontFamily*)FontFamilies_p->p)[j];
-            nh_List Fonts = nh_gfx_getFonts(*FontFamily_p, FontStyle, false);
+            nh_core_List Fonts = nh_gfx_getFonts(*FontFamily_p, FontStyle, false);
 
             for (int k = 0; k < Fonts.size; ++k) 
             {
                 nh_gfx_Font *Font_p = Fonts.pp[k];
 
                 Instance_p = nh_gfx_claimFontInstance(Font_p, fontSize);
-                NH_GFX_CHECK_NULL(Instance_p)
+                NH_CORE_CHECK_NULL(Instance_p)
 
                 if (nh_gfx_hasGlyph(Instance_p, codepoint)) {
                     if (nh_gfx_loadGlyphs(Instance_p, &codepoint, 1) == NH_API_SUCCESS) {break;}
@@ -96,9 +92,9 @@ NH_GFX_BEGIN()
         if (!Instance_p) {Instance_p = nh_gfx_getAnyFontInstance(codepoint, fontSize);}
         if (!Instance_p) {
             Instance_p = Fallback_p;
-            NH_GFX_CHECK(nh_gfx_loadGlyphs(Instance_p, &codepoint, 1))
+            NH_CORE_CHECK(nh_gfx_loadGlyphs(Instance_p, &codepoint, 1))
         }
-        if (!Instance_p) {NH_GFX_END(NH_API_ERROR_BAD_STATE)}
+        if (!Instance_p) {return NH_API_ERROR_BAD_STATE;}
 
         if (Instance_p != PrevInstance_p) {
             nh_gfx_TextSegment *Segment_p = nh_core_incrementArray(&Text_p->Segments);
@@ -114,22 +110,20 @@ NH_GFX_BEGIN()
         PrevInstance_p = Instance_p;
     }
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_gfx_createTextFromFont(
     nh_gfx_Text *Text_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length, int fontSize, 
     nh_gfx_Font *Font_p)
 {
-NH_GFX_BEGIN()
-
     nh_gfx_FontInstance *Instance_p = nh_gfx_claimFontInstance(Font_p, fontSize);
-    NH_GFX_CHECK_NULL(Instance_p)
+    NH_CORE_CHECK_NULL(Instance_p)
 
     Text_p->Segments = nh_core_initArray(sizeof(nh_gfx_TextSegment), 1);
 
     nh_gfx_TextSegment *Segment_p = nh_core_incrementArray(&Text_p->Segments);
-    NH_GFX_CHECK_MEM(Segment_p)
+    NH_CORE_CHECK_MEM(Segment_p)
 
     Segment_p->FontInstance_p = Instance_p;
     Segment_p->length = 0;
@@ -140,23 +134,20 @@ NH_GFX_BEGIN()
         NH_ENCODING_UTF32 codepoint = codepoints_p[i];
 
         if (!nh_gfx_hasGlyph(Instance_p, codepoint) || nh_gfx_loadGlyphs(Instance_p, &codepoint, 1)) {
-            NH_GFX_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
         }
 
         Segment_p->length++;
     }
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_gfx_freeText(
     nh_gfx_Text *Text_p)
 {
-NH_GFX_BEGIN()
-
     nh_core_freeArray(&Text_p->Segments);
-
-NH_GFX_SILENT_END()
+    return;
 }
 
 // MEASURE =========================================================================================
@@ -164,8 +155,6 @@ NH_GFX_SILENT_END()
 int nh_gfx_getTextWidth(
     nh_gfx_Text *Text_p)
 {
-NH_GFX_BEGIN()
-
     int width = 0;
 
     for (int s = 0; s < Text_p->Segments.length; ++s)
@@ -186,14 +175,12 @@ NH_GFX_BEGIN()
         nh_gfx_destroyHarfBuzzBuffer(Buffer);
     }
 
-NH_GFX_END(width)
+    return width;
 }
 
 int nh_gfx_getTextHeight(
     nh_gfx_Text *Text_p)
 {
-NH_GFX_BEGIN()
-
     int fontSize = 0;
 
     for (int i = 0; i < Text_p->Segments.length; ++i)
@@ -202,14 +189,12 @@ NH_GFX_BEGIN()
         if (Segment_p->FontInstance_p->fontSize > fontSize) {fontSize = Segment_p->FontInstance_p->fontSize;}
     }
 
-NH_GFX_END(fontSize)
+    return fontSize;
 }
 
 unsigned int nh_gfx_getFittingTextLength(
     nh_gfx_Text *Text_p, int maxWidth)
 {
-NH_GFX_BEGIN()
-
     unsigned int fittingGlyphs = 0;
 
     for (int s = 0; s < Text_p->Segments.length; ++s) 
@@ -234,6 +219,6 @@ NH_GFX_BEGIN()
 
     // TODO this is problematic for complex fonts
 
-NH_GFX_END(fittingGlyphs)
+    return fittingGlyphs;
 }
 

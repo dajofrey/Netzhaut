@@ -9,10 +9,8 @@
 // INCLUDES ========================================================================================
 
 #include "Viewport.h"
-
-#include "../Base/Viewport.h"
 #include "../Common/Macros.h"
-
+#include "../Base/Viewport.h"
 #include "../../nh-core/System/Thread.h"
 
 #include <string.h>
@@ -22,9 +20,7 @@
 NH_API_RESULT nh_vk_createViewport(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
-    nh_vk_Driver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
+    nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
 
     VkCommandBufferAllocateInfo AllocateInfo = {
         .sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
@@ -37,15 +33,13 @@ NH_GFX_BEGIN()
         Driver_p->Device, &AllocateInfo, Viewport_p->Vulkan.CommandBuffers_p
     ))
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_vk_destroyViewport(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
-    nh_vk_Driver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
+    nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
   
     Driver_p->Functions.vkFreeCommandBuffers(
         Driver_p->Device, 
@@ -54,7 +48,7 @@ NH_GFX_BEGIN()
         Viewport_p->Vulkan.CommandBuffers_p
     );
 
-NH_GFX_SILENT_END()
+    return;
 }
 
 // RECORD ==========================================================================================
@@ -62,8 +56,6 @@ NH_GFX_SILENT_END()
 static VkRect2D nh_vk_getDefaultScissor(
     nh_api_PixelSize Size)
 {
-NH_GFX_BEGIN()
-
     VkOffset2D Offset = {
         .x = 0,
         .y = 0,
@@ -78,15 +70,13 @@ NH_GFX_BEGIN()
         .extent = Extent, 
     };
 
-NH_GFX_END(Scissor)
+    return Scissor;
 }
 
 NH_API_RESULT nh_vk_beginRecording(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
-    nh_vk_Driver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
+    nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
 
     for (int i = 0; i < Viewport_p->Vulkan.images; ++i)
     {
@@ -162,19 +152,17 @@ NH_GFX_BEGIN()
         Driver_p->Functions.vkCmdClearAttachments(*CommandBuffer_p, 1, &ClearAttachment, 1, &ClearRect);
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_vk_endRecording(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
     for (int i = 0; i < Viewport_p->Vulkan.images; ++i) {
         Viewport_p->Surface_p->Vulkan.GPU_p->Driver.Functions.vkCmdEndRenderPass(*Viewport_p->Vulkan.CommandBuffers_pp[i]);
         Viewport_p->Surface_p->Vulkan.GPU_p->Driver.Functions.vkEndCommandBuffer(*Viewport_p->Vulkan.CommandBuffers_pp[i]);
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

@@ -123,7 +123,7 @@ NH_NETWORK_BEGIN()
         if (Info_p->ai_addr == NULL) {continue;}
         
         nh_network_Socket *Socket_p = nh_core_allocate(sizeof(nh_network_Socket));
-        NH_NETWORK_CHECK_MEM(Socket_p)
+        NH_CORE_CHECK_MEM(Socket_p)
 
         *Socket_p = nh_network_initSocket();
 
@@ -219,7 +219,7 @@ NH_NETWORK_BEGIN()
 #endif
 
     nh_network_ClientSocket *Socket_p = nh_core_allocate(sizeof(nh_network_ClientSocket));
-    NH_NETWORK_CHECK_NULL_2(NULL, Socket_p)
+    NH_CORE_CHECK_NULL_2(NULL, Socket_p)
 
     Socket_p->count = 0;
     Socket_p->fd = fd;
@@ -395,11 +395,11 @@ NH_NETWORK_BEGIN()
     switch (port)
     {
         case NH_NETWORK_PORT_HTTP  :  
-        case NH_NETWORK_PORT_HTTPS : NH_NETWORK_CHECK_2(Data, nh_network_sendDataRequestViaHTTP(Socket_p, hostName_p, pathName_p, secure)) break; 
+        case NH_NETWORK_PORT_HTTPS : NH_CORE_CHECK_2(Data, nh_network_sendDataRequestViaHTTP(Socket_p, hostName_p, pathName_p, secure)) break; 
         default : NH_NETWORK_END(Data)
     }
 
-    nh_String String = nh_core_initString(512); 
+    nh_core_String String = nh_core_initString(512); 
 
     ssize_t size = 0;
     do {
@@ -424,7 +424,7 @@ void nh_network_stringifySocketAddress(
 {
 NH_NETWORK_BEGIN()
     
-    nh_String String = nh_core_initString(128); 
+    nh_core_String String = nh_core_initString(128); 
 
     switch (Socket_p->family)
     {
@@ -457,7 +457,7 @@ void nh_network_stringifySocket(
 {
 NH_NETWORK_BEGIN()
 
-    nh_String String = nh_core_initString(128); 
+    nh_core_String String = nh_core_initString(128); 
 
     char addr_p[255] = {'\0'};
     nh_network_stringifySocketAddress(Socket_p, addr_p);

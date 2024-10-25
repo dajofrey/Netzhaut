@@ -1,7 +1,7 @@
-#ifndef NH_VK_DRIVER_H
-#define NH_VK_DRIVER_H
+#ifndef NH_VULKAN_DRIVER_H
+#define NH_VULKAN_DRIVER_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,53 +9,44 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "Host.h"
+// INCLUDES ========================================================================================
 
+#include "Host.h"
 #include "../Common/Includes.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+typedef struct nh_gfx_VulkanDriverInfo {
+    uint32_t major;
+    uint32_t minor;
+    uint32_t patch;
+    uint32_t vendorId;
+    uint32_t deviceId;
+} nh_gfx_VulkanDriverInfo;
 
-    typedef struct nh_vk_DriverInfo {
-        uint32_t major;
-        uint32_t minor;
-        uint32_t patch;
-        uint32_t vendorId;
-        uint32_t deviceId;
-    } nh_vk_DriverInfo;
+typedef struct nh_gfx_VulkanDriver {
+    nh_gfx_VulkanDriverInfo Info;
+    VkPhysicalDevice PhysicalDevice;
+    VkDevice Device;
+    struct VolkDeviceTable Functions;
+    VkCommandPool *ComputeCommandPools_p;
+    VkCommandPool *GraphicsCommandPools_p;
+    VkDescriptorPool *DescriptorPool_p;
+    VkRenderPass *RenderPass_p;
+    VkQueue GraphicsQueue;
+    VkQueue ComputeQueue;
+    unsigned int descriptorPoolCount;
+    unsigned int renderPassCount;
+} nh_gfx_VulkanDriver;
 
-    typedef struct nh_vk_Driver {
-        nh_vk_DriverInfo Info;
-        VkPhysicalDevice PhysicalDevice;
-        VkDevice Device;
-        struct VolkDeviceTable Functions;
-        VkCommandPool *ComputeCommandPools_p;
-        VkCommandPool *GraphicsCommandPools_p;
-        VkDescriptorPool *DescriptorPool_p;
-        VkRenderPass *RenderPass_p;
-        VkQueue GraphicsQueue;
-        VkQueue ComputeQueue;
-        unsigned int descriptorPoolCount;
-        unsigned int renderPassCount;
-    } nh_vk_Driver;
+// FUNCTIONS =======================================================================================
 
-/** @} */
+NH_API_RESULT nh_gfx_createVulkanDriver(
+    nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, char *name_p
+);
 
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
+void nh_gfx_destroyVulkanDriver(
+    nh_gfx_VulkanDriver *Driver_p
+);
 
-    NH_API_RESULT nh_vk_createDriver(
-        nh_vk_Host *Host_p, nh_vk_Driver *Driver_p, char *name_p
-    );
-
-    void nh_vk_destroyDriver(
-        nh_vk_Driver *Driver_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_VULKAN_DRIVER_H

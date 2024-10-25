@@ -9,10 +9,12 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "../Common/Includes.h"
-
 #include "Object.h"
 #include "Parser.h"
+
+#include "../Common/Includes.h"
+
+#include "../../nh-core/Util/BigInt.h"
 
 #endif
 
@@ -67,9 +69,9 @@ typedef long long NH_WEBIDL_LONG_LONG;
 typedef unsigned long long NH_WEBIDL_UNSIGNED_LONG_LONG; 
 
 typedef nh_encoding_UTF8String nh_webidl_DOMString; 
-typedef nh_String nh_webidl_ByteString; 
+typedef nh_core_String nh_webidl_ByteString; 
 typedef nh_encoding_UTF32String nh_webidl_USVString; 
-typedef nh_BigInt nh_webidl_BigInt; 
+typedef nh_core_BigInt nh_webidl_BigInt; 
 
 /** @addtogroup lib_nh-webidl_functions Functions
  *  @{

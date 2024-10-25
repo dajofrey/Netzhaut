@@ -72,10 +72,10 @@ void *nh_network_connectViaSSL(
 {
 NH_NETWORK_BEGIN()
 
-    if (nh_network_getNetwork()->SSL_p == NULL) {NH_NETWORK_CHECK(NULL, nh_network_createSSLContext())}
+    if (nh_network_getNetwork()->SSL_p == NULL) {NH_CORE_CHECK(NULL, nh_network_createSSLContext())}
 
     SSL *Connection_p = SSL_new(nh_network_getNetwork()->SSL_p);
-    NH_NETWORK_CHECK_NULL(NULL, Connection_p)
+    NH_CORE_CHECK_NULL(NULL, Connection_p)
 
     if (SSL_set_fd(Connection_p, fd) != 1) {
         SSL_free(Connection_p); 

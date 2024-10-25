@@ -10,8 +10,6 @@
 
 #include "Memory.h"
 
-#include "../Common/Macros.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -26,8 +24,7 @@ void* nh_core_allocate(
 void* nh_core_reallocate(
     void *ptr, size_t size)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(realloc(ptr, size))
+    return realloc(ptr, size);
 }
 
 void nh_core_free(
@@ -38,12 +35,10 @@ void nh_core_free(
 
 NH_API_RESULT nh_core_initMemory()
 {
-NH_CORE_BEGIN()
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_initThreadMemory()
 {
-NH_CORE_BEGIN()
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }

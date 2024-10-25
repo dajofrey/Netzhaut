@@ -11,7 +11,6 @@
 #include "API.h"
 
 #include "../Common/IndexMap.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/Util/HashMap.h"
 
@@ -750,18 +749,14 @@ size_t NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P_COUNT =
 NH_GFX_OPENGL_COMMAND_E nh_opengl_getCommandType(
     char *name_p)
 {
-NH_GFX_BEGIN()
-
     NH_GFX_OPENGL_COMMAND_E *index_p = nh_core_getFromHashMap(&NH_GFX_INDEXMAP.OpenGLCommandNames, name_p);
-    if (index_p == NULL) {NH_GFX_END(NH_GFX_OPENGL_COMMAND_UNDEFINED)}
-   
-NH_GFX_END(*index_p)
+    if (index_p == NULL) {return NH_GFX_OPENGL_COMMAND_UNDEFINED;}
+    return *index_p;
 }
 
 int nh_opengl_getCommandParameterCount(
     NH_GFX_OPENGL_COMMAND_E type)
 {
-NH_GFX_BEGIN()
-NH_GFX_END(NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P[type])
+    return NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P[type];
 }
 

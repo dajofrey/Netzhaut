@@ -12,8 +12,6 @@
 #include "AdoptionAgencyAlgorithm.h"
 #include "Algorithms.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-dom/Interfaces/Attr.h"
 #include "../../nh-dom/Interfaces/Element.h"
 #include "../../nh-dom/Interfaces/Node.h"
@@ -22,7 +20,6 @@
 #include "../../nh-dom/Interfaces/Document.h"
 #include "../../nh-dom/Interfaces/DocumentType.h"
 #include "../../nh-dom/Interfaces/Text.h"
-#include "../../nh-dom/Common/Macros.h"
 
 #include "../../nh-core/Util/Array.h"
 #include "../../nh-webidl/Runtime/Object.h"
@@ -44,8 +41,6 @@ static void nh_html_runAdoptionAgencyAlgorithmInnerLoop(
     nh_html_Parser *Parser_p, nh_webidl_Object *FormattingElement_p, nh_webidl_Object *FurthestBlock_p, 
     nh_html_AdoptionAgencyBookmark *Bookmark_p)
 {
-NH_HTML_BEGIN()
-
     nh_webidl_Object *Node_p = FurthestBlock_p;
     nh_webidl_Object *LastNode_p = Node_p;
 
@@ -57,14 +52,12 @@ NH_HTML_BEGIN()
         exit(0);
     }
 
-NH_HTML_SILENT_END()
+    return;
 }
 
 static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
     nh_html_Parser *Parser_p, nh_webidl_DOMString *Subject_p)
 {
-NH_HTML_BEGIN()
-
     int counter = 0;
 
     while (true) 
@@ -89,7 +82,7 @@ NH_HTML_BEGIN()
             break;
         }
 
-        if (!nh_inList(&Parser_p->OpenElements, FormattingElement_p)) {
+        if (!nh_core_inList(&Parser_p->OpenElements, FormattingElement_p)) {
             // parse error
             nh_core_removeFromList2(&Parser_p->ActiveFormattingElements, false, FormattingElement_p);
             break; 
@@ -144,31 +137,29 @@ NH_HTML_BEGIN()
         exit(0);
     }
 
-NH_HTML_SILENT_END()
+    return;
 }
 
 void nh_html_runAdoptionAgencyAlgorithm(
     nh_html_Parser *Parser_p, nh_html_Token *Token_p)
 {
-NH_HTML_BEGIN()
-
     nh_webidl_DOMString *Subject_p = &Token_p->StartOrEndTag.TagName;
     nh_webidl_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
     nh_dom_Element *Element_p = nh_dom_getElement(CurrentNode_p);
 
 
-if (!strcmp(Subject_p->p, "b")) {inB = true;}
+    if (!strcmp(Subject_p->p, "b")) {inB = true;}
 
 
     if (Element_p && !strcmp(nh_dom_getLocalName(Element_p)->p, Subject_p->p)) {
-        if (!nh_inList(&Parser_p->ActiveFormattingElements, CurrentNode_p)) {
+        if (!nh_core_inList(&Parser_p->ActiveFormattingElements, CurrentNode_p)) {
             nh_html_popCurrentNode(Parser_p);
-            NH_HTML_SILENT_END()
+            return;
         }
     }
 
     nh_html_runAdoptionAgencyAlgorithmOuterLoop(Parser_p, Subject_p);
 
-NH_HTML_SILENT_END()
+    return;
 }
 

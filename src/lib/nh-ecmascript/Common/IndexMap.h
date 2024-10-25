@@ -19,8 +19,8 @@
  */
 
     typedef struct nh_ecmascript_IndexMap {
-        nh_HashMap ParseNodeNames;
-        nh_HashMap ReservedWords;
+        nh_core_HashMap ParseNodeNames;
+        nh_core_HashMap ReservedWords;
     } nh_ecmascript_IndexMap;
 
 /** @} */

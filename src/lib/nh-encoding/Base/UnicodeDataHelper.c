@@ -14,8 +14,6 @@
 #include "UnicodeData.gen.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>
@@ -31,16 +29,14 @@
     #include <sys/wait.h>
 #endif
 
-// LOOKUP ==========================================================================================
+// FUNCTIONS =======================================================================================
 
 static int nh_encoding_getUnicodeDataIndex(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_ENCODING_BEGIN()
-
     for (int i = 0; i < sizeof(NH_ENCODING_UNICODE_DATA_UNDEFINED_RANGES_PP) / sizeof(NH_ENCODING_UNICODE_DATA_UNDEFINED_RANGES_PP[0]); ++i) {
         if (codepoint > NH_ENCODING_UNICODE_DATA_UNDEFINED_RANGES_PP[i][0] && codepoint < NH_ENCODING_UNICODE_DATA_UNDEFINED_RANGES_PP[i][1]) {
-            NH_ENCODING_END(-1)
+            return -1;
         }
     }
 
@@ -51,25 +47,21 @@ NH_ENCODING_BEGIN()
         else {break;}
     }
 
-NH_ENCODING_END(codepoint)
+    return codepoint;
 }
 
 const char *nh_encoding_getDescription(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_ENCODING_BEGIN()
-
     codepoint = nh_encoding_getUnicodeDataIndex(codepoint);
-    if (codepoint == -1) {NH_ENCODING_END(NULL)}
+    if (codepoint == -1) {return NULL;}
 
-NH_ENCODING_END(NH_ENCODING_UNICODE_DATA_PP[codepoint])
+    return NH_ENCODING_UNICODE_DATA_PP[codepoint];
 }
 
 static bool nh_encoding_inCategory(
     const char *codepointDescription_p, const char *categoryAbbreviation_p)
 {
-NH_ENCODING_BEGIN()
-
     char copy_p[512] = {'\0'};
     strcpy(copy_p, codepointDescription_p);
 
@@ -78,61 +70,55 @@ NH_ENCODING_BEGIN()
         if (copy_p[i] == ';') {
             copy_p[i] = '\0';
             if (!strcmp(p, categoryAbbreviation_p)) {
-                NH_ENCODING_END(true)
+                return true;
             }
             copy_p[i] = ';';
             p = &copy_p[i + 1];
         }
     }
 
-NH_ENCODING_END(false)
+    return false;
 }
 
 // https://www.unicode.org/reports/tr41/tr41-26.html#UAX31
 bool nh_encoding_inIDSTART(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_ENCODING_BEGIN()
-
     const char *description_p = nh_encoding_getDescription(codepoint);
-    if (description_p == NULL) {NH_ENCODING_END(false)}
+    if (description_p == NULL) {return false;}
 
     if (nh_encoding_inCategory(description_p, "L")
     ||  nh_encoding_inCategory(description_p, "Nl")) {
-        NH_ENCODING_END(true)
+        return true;
     }
 
-NH_ENCODING_END(false)
+    return false;
 }
 
 // https://www.unicode.org/reports/tr41/tr41-26.html#UAX31
 bool nh_encoding_inIDCONTINUE(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_ENCODING_BEGIN()
-
     if (nh_encoding_inIDSTART(codepoint)) {
-        NH_ENCODING_END(true)
+        return true;
     }
 
     const char *description_p = nh_encoding_getDescription(codepoint);
-    if (description_p == NULL) {NH_ENCODING_END(false)}
+    if (description_p == NULL) {return false;}
 
     if (nh_encoding_inCategory(description_p, "Mn")
     ||  nh_encoding_inCategory(description_p, "Mc")
     ||  nh_encoding_inCategory(description_p, "Nd")
     ||  nh_encoding_inCategory(description_p, "Pc")) {
-        NH_ENCODING_END(true)
+        return true;
     }
 
-NH_ENCODING_END(false)
+    return false;
 }
 
 static char *nh_encoding_getUnicodeDataProperty(
     const char *codepointDescription_p, NH_ENCODING_UNICODE_DATA_PROPERTY property)
 {
-NH_ENCODING_BEGIN()
-
     char copy_p[512] = {'\0'};
     strcpy(copy_p, codepointDescription_p);
 
@@ -144,51 +130,47 @@ NH_ENCODING_BEGIN()
                 copy_p[i] = '\0';
                 char *allocated_p = nh_core_allocate(sizeof(char)*(strlen(p)+1));
                 strcpy(allocated_p, p);
-                NH_ENCODING_END(allocated_p)
+                return allocated_p;
             }
             p = &copy_p[i + 1];
             counter++;
         }
     }
 
-NH_ENCODING_END(NULL)
+    return NULL;
 }
 
 NH_ENCODING_UTF32 nh_encoding_getUnicodeDataSimpleLowerCase(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_ENCODING_BEGIN()
-
     const char *description_p = nh_encoding_getDescription(codepoint);
-    if (description_p == NULL) {NH_ENCODING_END(0)}
+    if (description_p == NULL) {return 0;}
 
     char *property_p = nh_encoding_getUnicodeDataProperty(
         description_p, NH_ENCODING_UNICODE_DATA_PROPERTY_SIMPLE_LOWERCASE_MAPPING);
-    if (property_p == NULL) {NH_ENCODING_END(0)}
+    if (property_p == NULL) {return 0;}
 
     codepoint = strtol(property_p, NULL, 16);
 
     nh_core_free(property_p);
 
-NH_ENCODING_END(codepoint)
+    return codepoint;
 }
 
 NH_ENCODING_UTF32 nh_encoding_getUnicodeDataSimpleUpperCase(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_ENCODING_BEGIN()
-
     const char *description_p = nh_encoding_getDescription(codepoint);
-    if (description_p == NULL) {NH_ENCODING_END(0)}
+    if (description_p == NULL) {return 0;}
 
     char *property_p = nh_encoding_getUnicodeDataProperty(
         description_p, NH_ENCODING_UNICODE_DATA_PROPERTY_SIMPLE_UPPERCASE_MAPPING);
-    if (property_p == NULL) {NH_ENCODING_END(0)}
+    if (property_p == NULL) {return 0;}
 
     codepoint = strtol(property_p, NULL, 16);
 
     nh_core_free(property_p);
 
-NH_ENCODING_END(codepoint)
+    return codepoint;
 }
 

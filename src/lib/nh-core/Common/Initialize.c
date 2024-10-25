@@ -11,7 +11,6 @@
 #include "Initialize.h"
 #include "IndexMap.h"
 #include "Config.h"
-#include "Macros.h"
 
 #include "../System/System.h"
 #include "../System/Memory.h"
@@ -32,15 +31,13 @@
 
 static NH_API_RESULT nh_core_startWorkloads()
 {
-NH_CORE_BEGIN()
-
     nh_core_activateWorkload(nh_core_initSystemUpdater, nh_core_runSystemUpdater, NULL, NULL, NULL, false);
     NH_CORE_CHECK(nh_core_startConfigUpdater())
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-nh_Loader *nh_core_initialize(
+nh_core_Loader *nh_core_initialize(
     char *path_p, char *config_p, int length)
 {
     nh_core_initGlobalConfig();
@@ -59,4 +56,3 @@ nh_Loader *nh_core_initialize(
 
     return nh_core_initLoader(false, false);
 }
-

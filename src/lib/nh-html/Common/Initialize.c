@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "Macros.h"
 #include "IndexMap.h"
 
 #include "../Main/DocumentContext.h"
@@ -24,11 +23,8 @@
 
 NH_API_RESULT nh_html_initialize()
 {
-NH_HTML_BEGIN()
-
     NH_HTML_DOCUMENT_CONTEXTS = nh_core_initList(16);
-    NH_HTML_CHECK(nh_html_createIndexMap())
-
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    NH_CORE_CHECK(nh_html_createIndexMap())
+    return NH_API_SUCCESS;
 }
 

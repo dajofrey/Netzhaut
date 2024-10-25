@@ -9,10 +9,8 @@
 // INCLUDES ========================================================================================
 
 #include "Log.h"
-#include "Macros.h"
 
 #include "../Engine/Lexer.h"
-
 #include "../../nh-core/System/Logger.h"
 
 #include <stdio.h>
@@ -48,22 +46,18 @@ NH_API_RESULT _nh_ecmascript_logDiagnosticEnd(
 }
 
 //NH_API_RESULT nh_ecmascript_finishLogging(
-//    nh_ecmascript_Script *Script_p, nh_Array *UnicodeCodePoints_p)
+//    nh_ecmascript_Script *Script_p, nh_core_Array *UnicodeCodePoints_p)
 //{
-//NH_ECMASCRIPT_BEGIN()
-//
 //    char message_p[127] = {'\0'};
 //    sprintf(message_p, "[%s:%d:%s](FINISH)", NH_ECMASCRIPT_LOG_PREFIX, NH_ECMASCRIPT_LOG_CATEGORY_LOGGING);
 //    nh_core_sendLogMessage(message_p);
 //
-//NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+//return NH_API_SUCCESS;
 //}
 
 NH_API_RESULT nh_ecmascript_logDecoder(
     void *handle_p, nh_encoding_UTF32String *Codepoints_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
 //    for (int i = 0; i < Codepoints_p->length; ++i) 
 //    {
 //        char message_p[512] = {'\0'};
@@ -74,20 +68,18 @@ NH_ECMASCRIPT_BEGIN()
 //        nh_core_sendLogMessage(message_p);
 //    }
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_ecmascript_logLexer(
-    void *handle_p, nh_Array *InputElements_p, bool dirty)
+    void *handle_p, nh_core_Array *InputElements_p, bool dirty)
 {
-NH_ECMASCRIPT_BEGIN()
-
 //    for (int i = 0; i < InputElements_p->length; ++i) 
 //    {
 //        nh_ecmascript_InputElement *InputElement_p = &((nh_ecmascript_InputElement*)InputElements_p->p)[i];
 //        char message_p[512] = {'\0'};
 //
-//        nh_String String = nh_core_initString(64);
+//        nh_core_String String = nh_core_initString(64);
 //        nh_core_appendToString(&String, InputElement_p->String.p, InputElement_p->String.length);
 //
 //        for (int i = 0; i < String.length; ++i) {
@@ -103,14 +95,12 @@ NH_ECMASCRIPT_BEGIN()
 //        nh_core_freeString(&String);
 //    }
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_ecmascript_logParseTree(
     void *handle_p, nh_ecmascript_ParseNode *ParseNode_p, nh_ecmascript_ParseNode *Parent_p, int depth, bool *branch_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     char message_p[1200] = {'\0'};
     char indent_p[1024] = {'\0'};
 
@@ -139,6 +129,6 @@ NH_ECMASCRIPT_BEGIN()
         nh_ecmascript_logParseTree(handle_p, ParseNode_p->Children.pp[i], ParseNode_p, depth + 1, branch_p);
     }
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

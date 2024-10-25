@@ -10,8 +10,6 @@
 
 #include "Type.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 
 #include <stddef.h>
@@ -24,19 +22,17 @@
 NH_WEBIDL_TYPE nh_webidl_getType(
     nh_webidl_ParseNode *Type_p)
 {
-NH_WEBIDL_BEGIN()
-
-    if (!Type_p || Type_p->type != NH_WEBIDL_PARSE_NODE_TYPE) {NH_WEBIDL_END(-1)}
+    if (!Type_p || Type_p->type != NH_WEBIDL_PARSE_NODE_TYPE) {return -1;}
 
     if (((nh_webidl_ParseNode*)Type_p->Children.pp[0])->type == NH_WEBIDL_PARSE_NODE_SINGLE_TYPE)
     {
         nh_webidl_ParseNode *SingleType_p = Type_p->Children.pp[0];
 
         if (SingleType_p->Token_p != NULL && SingleType_p->Token_p->String.p[0] == '*') {
-            NH_WEBIDL_END(NH_WEBIDL_TYPE_WILDCARD)
+            return NH_WEBIDL_TYPE_WILDCARD;
         }
         if (SingleType_p->Token_p != NULL && !strcmp(SingleType_p->Token_p->String.p, "any")) {
-            NH_WEBIDL_END(NH_WEBIDL_TYPE_ANY)
+            return NH_WEBIDL_TYPE_ANY;
         }
 
         if (SingleType_p->Children.size > 0) {
@@ -50,19 +46,19 @@ NH_WEBIDL_BEGIN()
                         nh_webidl_ParseNode *PrimitiveType_p = DistinguishableType_p->Children.pp[0];
 
                         if (PrimitiveType_p->Token_p != NULL && !strcmp(PrimitiveType_p->Token_p->String.p, "undefined")) {
-                            NH_WEBIDL_END(NH_WEBIDL_TYPE_UNDEFINED)
+                            return NH_WEBIDL_TYPE_UNDEFINED;
                         }
                         if (PrimitiveType_p->Token_p != NULL && !strcmp(PrimitiveType_p->Token_p->String.p, "boolean")) {
-                            NH_WEBIDL_END(NH_WEBIDL_TYPE_BOOLEAN)
+                            return NH_WEBIDL_TYPE_BOOLEAN;
                         }
                         if (PrimitiveType_p->Token_p != NULL && !strcmp(PrimitiveType_p->Token_p->String.p, "byte")) {
-                            NH_WEBIDL_END(NH_WEBIDL_TYPE_BYTE)
+                            return NH_WEBIDL_TYPE_BYTE;
                         }
                         if (PrimitiveType_p->Token_p != NULL && !strcmp(PrimitiveType_p->Token_p->String.p, "octet")) {
-                            NH_WEBIDL_END(NH_WEBIDL_TYPE_OCTET)
+                            return NH_WEBIDL_TYPE_OCTET;
                         }
                         if (PrimitiveType_p->Token_p != NULL && !strcmp(PrimitiveType_p->Token_p->String.p, "bigint")) {
-                            NH_WEBIDL_END(NH_WEBIDL_TYPE_BIGINT)
+                            return NH_WEBIDL_TYPE_BIGINT;
                         }
 
                     }
@@ -75,14 +71,12 @@ NH_WEBIDL_BEGIN()
 
     }
 
-NH_WEBIDL_END(-1)
+    return -1;
 }
 
 size_t nh_webidl_getAllocationSize(
     NH_WEBIDL_TYPE type)
 {
-NH_WEBIDL_BEGIN()
-
     size_t typeSize = 0;
 
     switch (type)
@@ -111,6 +105,6 @@ NH_WEBIDL_BEGIN()
         case NH_WEBIDL_TYPE_SYMBOL              : typeSize = 0; break;
     }
 
-NH_WEBIDL_END(typeSize > sizeof(void*) ? typeSize : 0)
+    return typeSize > sizeof(void*) ? typeSize : 0;
 }
 

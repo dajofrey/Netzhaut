@@ -11,7 +11,6 @@
 #include "FontFamily.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/Util/File.h"
 #include "../../nh-core/Util/String.h"
@@ -291,15 +290,13 @@ static char *monospace_pp[] = {
     "um typewriter",
 };
 
-// PARSE ===========================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_gfx_parseFontFamily(
     nh_gfx_FontFamily *FontFamily_p, char *name_p)
 {
-NH_GFX_BEGIN()
-
     FontFamily_p->name_p = nh_core_allocateBytes(name_p);
-    NH_GFX_CHECK_MEM(FontFamily_p->name_p)
+    NH_CORE_CHECK_MEM(FontFamily_p->name_p)
     for (int i = 0; i < strlen(FontFamily_p->name_p); ++i) {
         FontFamily_p->name_p[i] = tolower(FontFamily_p->name_p[i]);
     }
@@ -334,30 +331,22 @@ NH_GFX_BEGIN()
         }
     }
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_gfx_freeFontFamily(
     nh_gfx_FontFamily *Family_p)
 {
-NH_GFX_BEGIN()
-
     nh_core_free(Family_p->name_p);
-
-NH_GFX_SILENT_END()
+    return;
 }
-
-// INIT ============================================================================================
 
 nh_gfx_FontFamily nh_gfx_initFontFamily(
     char *name_p)
 {
-NH_GFX_BEGIN()
-
     nh_gfx_FontFamily Family;
     Family.name_p = name_p;
     memset(Family.generic_p, false, sizeof(bool)*NH_GFX_GENERIC_FONT_FAMILY_COUNT);
-
-NH_GFX_END(Family)
+    return Family;
 }
 

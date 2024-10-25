@@ -1,7 +1,7 @@
-#ifndef NH_RENDERER_TERMINATE_H
-#define NH_RENDERER_TERMINATE_H
+#ifndef NH_RENDERER_COMMON_TERMINATE_H
+#define NH_RENDERER_COMMON_TERMINATE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,17 +9,13 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "Includes.h"
 
-#endif
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-renderer_functions
- *  @{
- */
+NH_API_RESULT nh_renderer_terminate(
+);
 
-    NH_API_RESULT nh_renderer_terminate(
-    );
-    
-/** @} */
-
-#endif 
+#endif // NH_RENDERER_COMMON_TERMINATE_H 

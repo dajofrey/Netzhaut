@@ -19,8 +19,8 @@
  */
 
     typedef struct nh_css_IndexMap {
-        nh_HashMap Colors;
-        nh_HashMap Properties;
+        nh_core_HashMap Colors;
+        nh_core_HashMap Properties;
     } nh_css_IndexMap;
 
 /** @} */

@@ -13,6 +13,8 @@
 #include "../../nh-api/nh-encoding.h" 
 #include "../../nh-api/nh-url.h"
 
+#include "../../nh-core/Util/Debug.h"
+
 #include "../../nh-encoding/Base/Encodings.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
 

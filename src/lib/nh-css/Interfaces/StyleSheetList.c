@@ -10,8 +10,6 @@
 
 #include "StyleSheetList.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
 
@@ -19,37 +17,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// INITIALIZE ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_initializeStyleSheetList(
     nh_webidl_Object *StyleSheetList_p)
 {
-NH_CSS_BEGIN()
+    StyleSheetList_p->internal_p = nh_core_allocate(sizeof(nh_core_List));
+    NH_CORE_CHECK_MEM(StyleSheetList_p->internal_p)
 
-    StyleSheetList_p->internal_p = nh_core_allocate(sizeof(nh_List));
-    NH_CSS_CHECK_MEM(StyleSheetList_p->internal_p)
+    *((nh_core_List*)StyleSheetList_p->internal_p) = nh_core_initList(8);
 
-    *((nh_List*)StyleSheetList_p->internal_p) = nh_core_initList(8);
-
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// API =============================================================================================
 
 NH_API_RESULT nh_css_appendToStyleSheetList(
     nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_StyleSheetObject *StyleSheet_p)
 {
-NH_CSS_BEGIN()
-
     nh_core_appendToList(((nh_webidl_Object*)StyleSheetList_p)->internal_p, StyleSheet_p);
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-nh_List *nh_css_getStyleSheetListData(
+nh_core_List *nh_css_getStyleSheetListData(
     nh_css_StyleSheetListObject *StyleSheetList_p)
 {
-NH_CSS_BEGIN()
-NH_CSS_END(((nh_webidl_Object*)StyleSheetList_p)->internal_p)
+    return ((nh_webidl_Object*)StyleSheetList_p)->internal_p;
 }
 

@@ -11,8 +11,6 @@
 #include "UTF8.h"
 #include "UTF32.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/Util/String.h"
 
 #include <stddef.h>
@@ -34,8 +32,6 @@ typedef struct nh_encoding_UTF8Decoder {
 
 static nh_encoding_UTF8Decoder nh_encoding_initUTF8Decoder()
 {
-NH_ENCODING_BEGIN()
-
     nh_encoding_UTF8Decoder Decoder;
     
     Decoder.codepoint     = 0;
@@ -44,20 +40,18 @@ NH_ENCODING_BEGIN()
     Decoder.lowerBoundary = 0x80;
     Decoder.upperBoundary = 0xBF;
 
-NH_ENCODING_END(Decoder)
+    return Decoder;
 }
 
 // https://encoding.spec.whatwg.org/#utf-8-encoder
 static int nh_encoding_decodeUTF8Codepoint(
     nh_encoding_UTF8Decoder *Decoder_p, unsigned char byte) 
 {
-NH_ENCODING_BEGIN()
-
     if (Decoder_p->bytesNeeded == 0) 
     {
         if (byte <= 0x7F) {
             Decoder_p->codepoint = byte;
-            NH_ENCODING_END(1)
+            return 1;
         }
         else if (byte >= 0xC2 && byte <= 0xDF) {
             Decoder_p->bytesNeeded = 1;
@@ -76,16 +70,16 @@ NH_ENCODING_BEGIN()
             Decoder_p->codepoint   = byte & 0x7;
         }
         else {
-            NH_ENCODING_END(2)
+            return 2;
         }
 
-        NH_ENCODING_END(0)
+        return 0;
     }
 
     if (byte < Decoder_p->lowerBoundary || byte > Decoder_p->upperBoundary) 
     {
         *Decoder_p = nh_encoding_initUTF8Decoder();
-        NH_ENCODING_END(2)
+        return 2;
     }
 
     Decoder_p->lowerBoundary = 0x80;
@@ -94,17 +88,15 @@ NH_ENCODING_BEGIN()
     Decoder_p->bytesSeen++;
 
     if (Decoder_p->bytesSeen != Decoder_p->bytesNeeded) {
-        NH_ENCODING_END(0)
+        return 0;
     }
     
-NH_ENCODING_END(1)
+    return 1;
 }
 
 nh_encoding_UTF32String nh_encoding_decodeUTF8(
     unsigned char *p, unsigned long bytes, unsigned long *read_p)
 {
-NH_ENCODING_BEGIN()
-
     nh_encoding_UTF32String Result = nh_encoding_initUTF32(64);
     nh_encoding_UTF8Decoder Decoder = nh_encoding_initUTF8Decoder();
 
@@ -125,14 +117,12 @@ NH_ENCODING_BEGIN()
         }
     }
 
-NH_ENCODING_END(Result)
+    return Result;
 }
 
 NH_ENCODING_UTF32 nh_encoding_decodeUTF8Single(
     unsigned char *p, unsigned long bytes, unsigned long *read_p)
 {
-NH_ENCODING_BEGIN()
-
     nh_encoding_UTF8Decoder Decoder = nh_encoding_initUTF8Decoder();
     NH_ENCODING_UTF32 codepoint = 0;
 
@@ -146,7 +136,7 @@ NH_ENCODING_BEGIN()
         }
     }
 
-NH_ENCODING_END(codepoint)
+    return codepoint;
 }
 
 // ENCODER =========================================================================================
@@ -155,8 +145,6 @@ NH_ENCODING_END(codepoint)
 NH_API_RESULT nh_encoding_appendUTF8(
     nh_encoding_UTF8String *String_p, NH_ENCODING_UTF32 *codepoints_p, unsigned long length)
 {
-NH_ENCODING_BEGIN()
-
     for (unsigned long i = 0; i < length; ++i) 
     {
         if (nh_encoding_isASCIICodepoint(codepoints_p[i])) {
@@ -194,41 +182,35 @@ NH_ENCODING_BEGIN()
         nh_core_appendToString(String_p, p, bytes);
     }
 
-NH_ENCODING_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_encoding_appendUTF8Single(
     nh_encoding_UTF8String *String_p, NH_ENCODING_UTF32 codepoint)
 {
-NH_ENCODING_BEGIN()
+    NH_CORE_CHECK(nh_encoding_appendUTF8(String_p, &codepoint, 1))
 
-    NH_ENCODING_CHECK(nh_encoding_appendUTF8(String_p, &codepoint, 1))
-
-NH_ENCODING_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 nh_encoding_UTF8String nh_encoding_encodeUTF8(
     NH_ENCODING_UTF32 *codepoints_p, unsigned long length)
 {
-NH_ENCODING_BEGIN()
-
     nh_encoding_UTF8String Result = nh_core_initString(64);
     nh_encoding_appendUTF8(&Result, codepoints_p, length);
 
-NH_ENCODING_END(Result)
+    return Result;
 }
 
 int nh_encoding_encodeUTF8Single(
     NH_ENCODING_UTF32 codepoint, char *p)
 {
-NH_ENCODING_BEGIN()
-
     nh_encoding_UTF8String String = nh_encoding_encodeUTF8(&codepoint, 1);
     int count = String.length;
     if (p) {for (int i = 0; i < String.length; ++i) {p[i] = String.p[i];}}
     nh_core_freeString(&String);
 
-NH_ENCODING_END(count)
+    return count;
 }
 
 // INIT/FREE =======================================================================================
@@ -236,17 +218,13 @@ NH_ENCODING_END(count)
 nh_encoding_UTF8String nh_encoding_initUTF8(
     int length)
 {
-NH_ENCODING_BEGIN()
-NH_ENCODING_END(nh_core_initString(length))
+    return nh_core_initString(length);
 }
 
 void nh_encoding_freeUTF8(
     nh_encoding_UTF8String *String_p)
 {
-NH_ENCODING_BEGIN()
-
     nh_core_freeString(String_p);
-
-NH_ENCODING_SILENT_END()
+    return;
 }
 

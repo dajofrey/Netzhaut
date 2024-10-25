@@ -11,7 +11,6 @@
 #include "BigInt.h"
 
 #include "../System/Memory.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdlib.h>

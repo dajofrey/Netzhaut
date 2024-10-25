@@ -12,8 +12,6 @@
 #include "Host.h"
 #include "Driver.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
 
@@ -21,26 +19,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// GPU =============================================================================================
+// FUNCTIONS =======================================================================================
 
 static NH_API_RESULT nh_vk_prepareDetectedGPUs(
-    nh_List *GPUs_p, nh_vk_Host *Host_p)
+    nh_core_List *GPUs_p, nh_gfx_VulkanHost *Host_p)
 {
-NH_GFX_BEGIN()
-
     int detectedCount = 0;
     Host_p->Functions.vkEnumeratePhysicalDevices(Host_p->Instance, &detectedCount, VK_NULL_HANDLE);
-    if (detectedCount <= 0) {NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (detectedCount <= 0) {return NH_API_SUCCESS;}
 
     VkPhysicalDevice *Physical_p = nh_core_allocate(sizeof(VkPhysicalDevice) * detectedCount);
-    NH_GFX_CHECK_MEM(Physical_p)
+    NH_CORE_CHECK_MEM(Physical_p)
 
     Host_p->Functions.vkEnumeratePhysicalDevices(Host_p->Instance, &detectedCount, Physical_p);
 
     for (int i = 0; i < detectedCount; i++) 
     {
-        nh_vk_GPU *GPU_p = nh_core_allocate(sizeof(nh_vk_GPU));
-        NH_GFX_CHECK_MEM(GPU_p)
+        nh_gfx_VulkanGPU *GPU_p = nh_core_allocate(sizeof(nh_gfx_VulkanGPU));
+        NH_CORE_CHECK_MEM(GPU_p)
 
         GPU_p->Textures = nh_core_initList(128);
         GPU_p->Renderer.Pipelines_p = NULL;
@@ -50,7 +46,7 @@ NH_GFX_BEGIN()
         Host_p->Functions.vkGetPhysicalDeviceProperties(Physical_p[i], &Properties);
 
         GPU_p->name_p = nh_core_allocate(strlen(Properties.deviceName) + 1);
-        NH_GFX_CHECK_MEM(GPU_p->name_p)
+        NH_CORE_CHECK_MEM(GPU_p->name_p)
 
         strcpy(GPU_p->name_p, Properties.deviceName);
 
@@ -59,39 +55,35 @@ NH_GFX_BEGIN()
 
     nh_core_free(Physical_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_vk_initGPUs(
-    nh_List *GPUs_p, nh_vk_Host *Host_p)
+NH_API_RESULT nh_gfx_initVulkanGPUs(
+    nh_core_List *GPUs_p, nh_gfx_VulkanHost *Host_p)
 {
-NH_GFX_BEGIN()
-
-    NH_GFX_CHECK(nh_vk_prepareDetectedGPUs(GPUs_p, Host_p))
+    NH_CORE_CHECK(nh_vk_prepareDetectedGPUs(GPUs_p, Host_p))
 
     for (int i = 0; i < GPUs_p->size; i++) 
     {
-        nh_vk_GPU *GPU_p = GPUs_p->pp[i];
-        NH_GFX_CHECK(nh_vk_createDriver(Host_p, &GPU_p->Driver, GPU_p->name_p))
+        nh_gfx_VulkanGPU *GPU_p = GPUs_p->pp[i];
+        NH_CORE_CHECK(nh_gfx_createVulkanDriver(Host_p, &GPU_p->Driver, GPU_p->name_p))
     }
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-void nh_vk_freeGPUs(
-    nh_List *GPUs_p)
+void nh_gfx_freeVulkanGPUs(
+    nh_core_List *GPUs_p)
 {
-NH_GFX_BEGIN()
-
     for (int i = 0; i < GPUs_p->size; i++) 
     {
-        nh_vk_GPU *GPU_p = GPUs_p->pp[i];
+        nh_gfx_VulkanGPU *GPU_p = GPUs_p->pp[i];
         nh_core_free(GPU_p->name_p);
-        nh_vk_destroyDriver(&GPU_p->Driver);
+        nh_gfx_destroyVulkanDriver(&GPU_p->Driver);
     }
 
     nh_core_freeList(GPUs_p, true);
 
-NH_GFX_SILENT_END()
+    return;
 }
 

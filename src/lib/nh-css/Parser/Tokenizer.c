@@ -10,8 +10,6 @@
 
 #include "Tokenizer.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/Array.h"
 
@@ -27,8 +25,6 @@
 const char *nh_css_getTokenName(
     NH_CSS_TOKEN token)
 {
-NH_CSS_BEGIN()
-
     static const char *tokenNames_pp[] =
     {
         "<ident-token>", 
@@ -58,13 +54,13 @@ NH_CSS_BEGIN()
         "<EOF-token>",
     };
     
-NH_CSS_END(tokenNames_pp[token])
+    return tokenNames_pp[token];
 }
 
 // TOKENIZER =======================================================================================
 
 typedef struct nh_css_Tokenizer {
-    nh_Array Tokens;
+    nh_core_Array Tokens;
     NH_ENCODING_UTF32 *codepoints_p;
     unsigned long long length;
 } nh_css_Tokenizer;
@@ -72,14 +68,12 @@ typedef struct nh_css_Tokenizer {
 static nh_css_Tokenizer nh_css_initTokenizer(
     nh_encoding_UTF32String String)
 {
-NH_CSS_BEGIN()
-
     nh_css_Tokenizer Tokenizer;
     Tokenizer.Tokens       = nh_core_initArray(sizeof(nh_css_Token), 255);
     Tokenizer.codepoints_p = String.p;
     Tokenizer.length       = String.length;
 
-NH_CSS_END(Tokenizer)
+    return Tokenizer;
 }
 
 // HELPER ==========================================================================================
@@ -87,109 +81,93 @@ NH_CSS_END(Tokenizer)
 static void nh_css_advanceTokenizer(
     nh_css_Tokenizer *Tokenizer_p, unsigned long long advance)
 {
-NH_CSS_BEGIN()
-
     Tokenizer_p->codepoints_p = Tokenizer_p->codepoints_p + advance;
     Tokenizer_p->length -= advance; 
 
-NH_CSS_SILENT_END()
+    return;
 }
 
 static bool nh_css_isWhitespace(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_CSS_BEGIN()
-
     if (codepoint == 0x0A || codepoint == 0x09 || codepoint == 0x20) {
-        NH_CSS_END(true)
+        return true;
     }
 
-NH_CSS_END(false)
+    return false;
 }
 
 static bool nh_css_isNameStart(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_CSS_BEGIN()
-
     if (nh_encoding_isASCIIAlpha(codepoint) || codepoint >= 0x80 || codepoint == 0x5F) {
-        NH_CSS_END(true)
+        return true;
     }
 
-NH_CSS_END(false)
+    return false;
 }
 
 static bool nh_css_isName(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_CSS_BEGIN()
-
     if (nh_css_isNameStart(codepoint) || nh_encoding_isASCIIDigit(codepoint) || codepoint == 0x2D) {
-        NH_CSS_END(true)
+        return true;
     }
 
-NH_CSS_END(false)
+    return false;
 }
 
 static bool nh_css_isValidEscape(
     NH_ENCODING_UTF32 *codepoints_p)
 {
-NH_CSS_BEGIN()
+    if (codepoints_p[0] != 0x5C) {return false;}
+    if (codepoints_p[1] == 0x0A) {return false;}
 
-    if (codepoints_p[0] != 0x5C) {NH_CSS_END(false)}
-    if (codepoints_p[1] == 0x0A) {NH_CSS_END(false)}
-
-NH_CSS_END(true)
+    return true;
 }
 
 static bool nh_css_startsWithIdentifier(
     NH_ENCODING_UTF32 *codepoints_p)
 {
-NH_CSS_BEGIN()
-
     if (codepoints_p[0] == 0x2D) {
         if (nh_css_isNameStart(codepoints_p[1]) || codepoints_p[0] == 0x2D || nh_css_isValidEscape(&codepoints_p[1])) {
-            NH_CSS_END(true)
+            return true;
         }
     }
     else if (nh_css_isNameStart(codepoints_p[0])) {
-        NH_CSS_END(true)
+        return true;
     }
     else if (codepoints_p[0] == 0x5C) {
-        if (nh_css_isValidEscape(codepoints_p)) {NH_CSS_END(true)}
+        if (nh_css_isValidEscape(codepoints_p)) {return true;}
     }
 
-NH_CSS_END(false)
+    return false;
 }
 
 static bool nh_css_startsWithNumber(
     NH_ENCODING_UTF32 *codepoints_p)
 {
-NH_CSS_BEGIN()
-
     if (codepoints_p[0] == 0x2B || codepoints_p[0] == 0x2D) {
         if (nh_encoding_isASCIIDigit(codepoints_p[1])) {
-            NH_CSS_END(true)
+            return true;
         }
         else if (codepoints_p[1] == 0x2E && nh_encoding_isASCIIDigit(codepoints_p[2])) {
-            NH_CSS_END(true)
+            return true;
         }
     }
     else if (codepoints_p[0] == 0x2E && nh_encoding_isASCIIDigit(codepoints_p[1])) {
-        NH_CSS_END(true)
+        return true;
     }
     else if (nh_encoding_isASCIIDigit(codepoints_p[0])) {
-        NH_CSS_END(true)
+        return true;
     }
 
-NH_CSS_END(false)
+    return false;
 }
 
 static NH_WEBIDL_DOUBLE nh_css_convertToNumber(
     nh_encoding_UTF32String *String_p)
 {
-NH_CSS_BEGIN()
-
     int index = 0;
 
     NH_WEBIDL_DOUBLE s = 1;
@@ -230,7 +208,7 @@ NH_CSS_BEGIN()
     }
     if (tmp > 0) {e = atoi(num_p);}
 
-NH_CSS_END(s * (i + f * pow(10, -d)) * pow(10, t * e))
+    return s * (i + f * pow(10, -d)) * pow(10, t * e);
 }
 
 // CONSUME =========================================================================================
@@ -246,8 +224,6 @@ static NH_API_RESULT nh_css_consumeToken(
 static NH_API_RESULT nh_css_consumeComments(
     nh_css_Tokenizer *Tokenizer_p)
 {
-NH_CSS_BEGIN()
-
     if (Tokenizer_p->length > 1 && Tokenizer_p->codepoints_p[0] == 0x2F && Tokenizer_p->codepoints_p[1] == 0x2A) 
     {
         nh_css_advanceTokenizer(Tokenizer_p, 2);
@@ -259,14 +235,12 @@ NH_CSS_BEGIN()
         nh_css_advanceTokenizer(Tokenizer_p, 2);
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static nh_css_Token *nh_css_consumeString(
     nh_css_Tokenizer *Tokenizer_p, nh_css_Token *Token_p)
 {
-NH_CSS_BEGIN()
-
     NH_ENCODING_UTF32 endingCodepoint = Tokenizer_p->codepoints_p[0];
 
     Token_p->type = NH_CSS_TOKEN_STRING;
@@ -291,14 +265,12 @@ NH_CSS_BEGIN()
 
     nh_css_advanceTokenizer(Tokenizer_p, 1);
 
-NH_CSS_END(Token_p)
+    return Token_p;
 }
 
 static NH_ENCODING_UTF32 nh_css_consumeEscaped(
     nh_css_Tokenizer *Tokenizer_p)
 {
-NH_CSS_BEGIN()
-
     NH_ENCODING_UTF32 codepoint = 0xFFFD;
 
     if (Tokenizer_p->length <= 0) {
@@ -325,14 +297,12 @@ NH_CSS_BEGIN()
         codepoint = Tokenizer_p->codepoints_p[0];
     }
 
-NH_CSS_END(codepoint)
+    return codepoint;
 }
 
 static nh_encoding_UTF32String nh_css_consumeName(
     nh_css_Tokenizer *Tokenizer_p)
 {
-NH_CSS_BEGIN()
-
     nh_encoding_UTF32String String = nh_encoding_initUTF32(16);
 
     while (Tokenizer_p->length)
@@ -349,14 +319,12 @@ NH_CSS_BEGIN()
         else {break;}
     }
 
-NH_CSS_END(String)
+    return String;
 }
 
 static NH_WEBIDL_DOUBLE nh_css_consumeNumber(
     nh_css_Tokenizer *Tokenizer_p, bool *isInteger_p)
 {
-NH_CSS_BEGIN()
-
     *isInteger_p = true;
     nh_encoding_UTF32String Representation = nh_encoding_initUTF32(8);
 
@@ -409,14 +377,12 @@ NH_CSS_BEGIN()
 
     nh_encoding_freeUTF32(&Representation);
 
-NH_CSS_END(number)
+    return number;
 }
 
 static nh_css_Token *nh_css_consumeNumericToken(
     nh_css_Tokenizer *Tokenizer_p, nh_css_Token *Token_p)
 {
-NH_CSS_BEGIN()
-
     bool isInteger;
     NH_WEBIDL_DOUBLE number = nh_css_consumeNumber(Tokenizer_p, &isInteger);
 
@@ -437,14 +403,12 @@ NH_CSS_BEGIN()
         Token_p->Number.isInteger = isInteger; 
     }
 
-NH_CSS_END(Token_p)
+    return Token_p;
 }
 
 static nh_css_Token *nh_css_consumeURLToken(
     nh_css_Tokenizer *Tokenizer_p, nh_css_Token *Token_p)
 {
-NH_CSS_BEGIN()
-
     Token_p->type = NH_CSS_TOKEN_URL;
     Token_p->Other.Value = nh_encoding_initUTF32(16);
 
@@ -462,10 +426,10 @@ NH_CSS_BEGIN()
         {
             case 0x29 :
                 nh_css_advanceTokenizer(Tokenizer_p, 1);
-                NH_CSS_END(Token_p)
+                return Token_p;
             case 0 :
                 // parse error 
-                NH_CSS_END(Token_p)
+                return Token_p;
             case 0x22 :
             case 0x27 :
             case 0x28 :
@@ -478,14 +442,12 @@ NH_CSS_BEGIN()
         nh_css_advanceTokenizer(Tokenizer_p, 1);
     }
 
-NH_CSS_END(Token_p)
+    return Token_p;
 }
 
 static nh_css_Token *nh_css_consumeIdentLikeToken(
     nh_css_Tokenizer *Tokenizer_p, nh_css_Token *Token_p)
 {
-NH_CSS_BEGIN()
-
     nh_encoding_UTF32String String = nh_css_consumeName(Tokenizer_p);
 
     if (String.length > 2 
@@ -503,7 +465,7 @@ NH_CSS_BEGIN()
         }
         else {
             nh_encoding_freeUTF32(&String);
-            NH_CSS_END(nh_css_consumeURLToken(Tokenizer_p, Token_p))
+            return nh_css_consumeURLToken(Tokenizer_p, Token_p);
         } 
     }
     else if (Tokenizer_p->codepoints_p[0] == 0x28) {
@@ -516,28 +478,26 @@ NH_CSS_BEGIN()
         Token_p->Other.Value = String;
     }
 
-NH_CSS_END(Token_p)
+    return Token_p;
 }
 
 static nh_css_Token *nh_css_getToken(
     nh_css_Tokenizer *Tokenizer_p, nh_css_Token *Token_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_consumeComments(Tokenizer_p);
 
     if (nh_css_isWhitespace(Tokenizer_p->codepoints_p[0])) {
         while (nh_css_isWhitespace(Tokenizer_p->codepoints_p[0])) {nh_css_advanceTokenizer(Tokenizer_p, 1);}
         Token_p->type = NH_CSS_TOKEN_WHITESPACE;
-        NH_CSS_END(Token_p)
+        return Token_p;
     }
 
     if (nh_encoding_isASCIIDigit(Tokenizer_p->codepoints_p[0])) {
-        NH_CSS_END(nh_css_consumeNumericToken(Tokenizer_p, Token_p))
+        return nh_css_consumeNumericToken(Tokenizer_p, Token_p);
     }
 
     if (nh_css_isNameStart(Tokenizer_p->codepoints_p[0])) {
-        NH_CSS_END(nh_css_consumeIdentLikeToken(Tokenizer_p, Token_p))
+        return nh_css_consumeIdentLikeToken(Tokenizer_p, Token_p);
     }
 
     switch (Tokenizer_p->codepoints_p[0])
@@ -546,7 +506,7 @@ NH_CSS_BEGIN()
             Token_p->type = NH_CSS_TOKEN_EOF;
             break;
         case 0x22 :
-            NH_CSS_END(nh_css_consumeString(Tokenizer_p, Token_p))
+            return nh_css_consumeString(Tokenizer_p, Token_p);
             break;
         case 0x23 :
             if (nh_css_isName(Tokenizer_p->codepoints_p[1]) || (Tokenizer_p->length > 2 && nh_css_isValidEscape(&Tokenizer_p->codepoints_p[1]))) {
@@ -565,7 +525,7 @@ NH_CSS_BEGIN()
             }
             break;
         case 0x27 :
-            NH_CSS_END(nh_css_consumeString(Tokenizer_p, Token_p))
+            return nh_css_consumeString(Tokenizer_p, Token_p);
             break;
         case 0x28 :
             Token_p->type = NH_CSS_TOKEN_LEFT_PARENTHESIS;
@@ -577,7 +537,7 @@ NH_CSS_BEGIN()
             break;
         case 0x2B :
             if (nh_css_startsWithNumber(Tokenizer_p->codepoints_p)) {
-                NH_CSS_END(nh_css_consumeNumericToken(Tokenizer_p, Token_p))
+                return nh_css_consumeNumericToken(Tokenizer_p, Token_p);
             }
             else {
                 Token_p->type = NH_CSS_TOKEN_DELIM;
@@ -591,14 +551,14 @@ NH_CSS_BEGIN()
             break;
         case 0x2D :
             if (nh_css_startsWithNumber(Tokenizer_p->codepoints_p)) {
-                NH_CSS_END(nh_css_consumeNumericToken(Tokenizer_p, Token_p))
+                return nh_css_consumeNumericToken(Tokenizer_p, Token_p);
             }
             else if (Tokenizer_p->length > 1 && Tokenizer_p->codepoints_p[0] == 0x2D && Tokenizer_p->codepoints_p[1] == 0x3E) {
                 Token_p->type = NH_CSS_TOKEN_CDC;
                 nh_css_advanceTokenizer(Tokenizer_p, 2);
             }
             else if (nh_css_startsWithIdentifier(Tokenizer_p->codepoints_p)) {
-                NH_CSS_END(nh_css_consumeIdentLikeToken(Tokenizer_p, Token_p))
+                return nh_css_consumeIdentLikeToken(Tokenizer_p, Token_p);
             }
             else {
                 Token_p->type = NH_CSS_TOKEN_DELIM;
@@ -608,7 +568,7 @@ NH_CSS_BEGIN()
             break;
         case 0x2E :
             if (nh_css_startsWithNumber(Tokenizer_p->codepoints_p)) {
-                NH_CSS_END(nh_css_consumeNumericToken(Tokenizer_p, Token_p))
+                return nh_css_consumeNumericToken(Tokenizer_p, Token_p);
             }
             else {
                 Token_p->type = NH_CSS_TOKEN_DELIM;
@@ -628,9 +588,9 @@ NH_CSS_BEGIN()
             if (Tokenizer_p->codepoints_p[1] == 0x21 && Tokenizer_p->codepoints_p[2] == 0x2D && Tokenizer_p->codepoints_p[3] == 0x2D) {
 exit(0);
 //                nh_css_advanceTokenizer(Tokenizer_p, 1);
-//                NH_CSS_CHECK(NULL, nh_css_consumeToken(Tokenizer_p))
-//                NH_CSS_CHECK(NULL, nh_css_consumeToken(Tokenizer_p))
-//                NH_CSS_CHECK(NULL, nh_css_consumeToken(Tokenizer_p))
+//                NH_CORE_CHECK(NULL, nh_css_consumeToken(Tokenizer_p))
+//                NH_CORE_CHECK(NULL, nh_css_consumeToken(Tokenizer_p))
+//                NH_CORE_CHECK(NULL, nh_css_consumeToken(Tokenizer_p))
 //                Token_p->type == NH_CSS_TOKEN_CDO;
             }
             else {
@@ -658,7 +618,7 @@ exit(0);
             break;
         case 0x5C :
             if (nh_css_isValidEscape(Tokenizer_p->codepoints_p)) {
-                NH_CSS_END(nh_css_consumeIdentLikeToken(Tokenizer_p, Token_p))
+                return nh_css_consumeIdentLikeToken(Tokenizer_p, Token_p);
             }
             else {
                 // parse error
@@ -686,30 +646,25 @@ exit(0);
             break;
     }
 
-NH_CSS_END(Token_p)
+    return Token_p;
 }
 
 static NH_API_RESULT nh_css_consumeToken(
     nh_css_Tokenizer *Tokenizer_p) 
 {
-NH_CSS_BEGIN()
-
     nh_css_Token *Token_p = nh_core_incrementArray(&Tokenizer_p->Tokens);
-    NH_CSS_CHECK_MEM(Token_p)
+    NH_CORE_CHECK_MEM(Token_p)
 
-    NH_CSS_CHECK_NULL(nh_css_getToken(Tokenizer_p, Token_p))
+    NH_CORE_CHECK_NULL(nh_css_getToken(Tokenizer_p, Token_p))
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static nh_css_Token *nh_css_reconsumeToken(
     nh_css_Tokenizer *Tokenizer_p, nh_css_Token *Token_p) 
 {
-NH_CSS_BEGIN()
-
-    NH_CSS_CHECK_NULL_2(NULL, nh_css_getToken(Tokenizer_p, Token_p))
-
-NH_CSS_DIAGNOSTIC_END(nh_core_incrementArray(&Tokenizer_p->Tokens))
+    NH_CORE_CHECK_NULL_2(NULL, nh_css_getToken(Tokenizer_p, Token_p))
+    return nh_core_incrementArray(&Tokenizer_p->Tokens);
 }
 
 // TOKENIZE ========================================================================================
@@ -717,8 +672,6 @@ NH_CSS_DIAGNOSTIC_END(nh_core_incrementArray(&Tokenizer_p->Tokens))
 static nh_encoding_UTF32String nh_css_preprocessInputStream(
     NH_ENCODING_UTF32 *codepoints_p, unsigned long long length)
 {
-NH_CSS_BEGIN()
-
     nh_encoding_UTF32String String = nh_encoding_initUTF32(length + 1);
 
     NH_ENCODING_UTF32 linefeed = 0x0A;
@@ -746,14 +699,12 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_END(String)
+    return String;
 }
 
-nh_Array nh_css_tokenize(
+nh_core_Array nh_css_tokenize(
     nh_encoding_UTF32String *String_p)
 {
-NH_CSS_BEGIN()
-
     nh_encoding_UTF32String String = nh_css_preprocessInputStream(String_p->p, String_p->length);
     nh_css_Tokenizer Tokenizer = nh_css_initTokenizer(String);
 
@@ -765,6 +716,5 @@ NH_CSS_BEGIN()
 
     nh_encoding_freeUTF32(&String);
 
-NH_CSS_END(Tokenizer.Tokens)
+    return Tokenizer.Tokens;
 }
-

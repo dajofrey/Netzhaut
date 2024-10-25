@@ -35,7 +35,7 @@
         nh_dom_NodeList *NodeList_p
     );
 
-    nh_List *nh_dom_getNodeList(
+    nh_core_List *nh_dom_getNodeList(
         nh_dom_NodeList *NodeList_p
     );
 

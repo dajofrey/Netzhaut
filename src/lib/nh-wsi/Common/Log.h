@@ -22,18 +22,6 @@
         nh_wsi_Window *Window_p, nh_api_WSIEvent *Event_p
     );
 
-    NH_API_RESULT _nh_wsi_logBegin(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_wsi_logEnd(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_wsi_logDiagnosticEnd(
-        const char *file_p, const char *function_p, NH_API_RESULT result, int line
-    );
-
 /** @} */
 
 #endif 

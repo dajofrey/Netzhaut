@@ -9,7 +9,6 @@
 // INCLUDES =======================================================================================
 
 #include "IndexMap.h"
-#include "Macros.h"
 
 #include "../Parser/Elements.h"
 #include "../../nh-core/System/Memory.h"
@@ -34,8 +33,6 @@ static bool allocated = false;
 static NH_API_RESULT nh_html_getNames(
     NH_HTML_INDEXMAP_E type, char ***array_ppp, int *count_p)
 {
-NH_HTML_BEGIN()
-
     switch (type)
     {
         case NH_HTML_INDEXMAP_TAGS :
@@ -44,21 +41,19 @@ NH_HTML_BEGIN()
             *count_p = NH_HTML_TAG_NAMES_PP_COUNT; 
             break;
         }
-        default : NH_HTML_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        default : return NH_API_ERROR_BAD_STATE;
     }
 
-    if (*array_ppp == NULL) {NH_HTML_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    if (*array_ppp == NULL) {return NH_API_ERROR_BAD_STATE;}
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_createSingleIndexMap(
-    NH_HTML_INDEXMAP_E type, nh_HashMap *map_p)
+    NH_HTML_INDEXMAP_E type, nh_core_HashMap *map_p)
 {
-NH_HTML_BEGIN()
-
     int count = 0; char **names_pp = NULL;
-    NH_HTML_CHECK(nh_html_getNames(type, &names_pp, &count))
+    NH_CORE_CHECK(nh_html_getNames(type, &names_pp, &count))
 
     *map_p = nh_core_createHashMap();
 
@@ -66,43 +61,39 @@ NH_HTML_BEGIN()
         nh_core_addToHashMap(map_p, names_pp[i], &indices_pp[type][i]);
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_html_createIndexMap()
 {
-NH_HTML_BEGIN()
-
-    if (allocated) {NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (allocated) {return NH_API_SUCCESS;}
 
     for (int type = 0; type < NH_HTML_INDEXMAP_COUNT; ++type)  
     {
         int count = 0;
         const char **names_pp = NULL;
         if (nh_html_getNames(type, (char***)&names_pp, &count) != NH_API_SUCCESS) {
-            NH_HTML_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
         }
 
         indices_pp[type] = nh_core_allocate(sizeof(unsigned int) * count);
-        NH_HTML_CHECK_MEM(indices_pp[type])
+        NH_CORE_CHECK_MEM(indices_pp[type])
         
         for (int i = 0; i < count; ++i) {
             indices_pp[type][i] = i;
         }
     }    
 
-    NH_HTML_CHECK(nh_html_createSingleIndexMap(NH_HTML_INDEXMAP_TAGS, &NH_HTML_INDEXMAP.Tags))
+    NH_CORE_CHECK(nh_html_createSingleIndexMap(NH_HTML_INDEXMAP_TAGS, &NH_HTML_INDEXMAP.Tags))
 
     allocated = true;
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_html_freeIndexMap()
 {
-NH_HTML_BEGIN()
-
-    if (allocated) {NH_HTML_SILENT_END()}
+    if (allocated) {return;}
 
     for (int type = 0; type < NH_HTML_INDEXMAP_COUNT; ++type)  
     {
@@ -113,7 +104,5 @@ NH_HTML_BEGIN()
     nh_core_freeHashMap(NH_HTML_INDEXMAP.Tags);
 
     allocated = false;
-
-NH_HTML_SILENT_END()
 }
 

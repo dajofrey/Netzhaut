@@ -13,8 +13,6 @@
 #include "Process.h"
 #include "Memory.h"
 
-#include "../Common/Macros.h"
-
 #include <string.h>
 #include <stdio.h>
 
@@ -26,8 +24,6 @@ static nh_api_logCallback_f callbacks_pp[NH_MAX_LOGGER_CALLBACKS] = {NULL};
 NH_API_RESULT nh_core_addLogCallback(
     nh_api_logCallback_f logCallback_f)
 {
-NH_CORE_BEGIN()
-
     NH_API_RESULT result = NH_API_ERROR_BAD_STATE;
     for (int i = 0; i < NH_MAX_LOGGER_CALLBACKS; ++i) {
         if (callbacks_pp[i] == NULL) {
@@ -37,7 +33,7 @@ NH_CORE_BEGIN()
         }
     }
  
-NH_CORE_END(result)
+    return result;
 }
 
 // INIT/DESTROY ====================================================================================
@@ -46,8 +42,6 @@ nh_core_Logger NH_LOGGER;
 
 NH_API_RESULT nh_core_initLogger()
 {
-NH_CORE_BEGIN()
-
     NH_LOGGER.Root.name_p   = NULL;
     NH_LOGGER.Root.Parent_p = NULL;
     NH_LOGGER.Root.Children = nh_core_initList(8);
@@ -57,14 +51,12 @@ NH_CORE_BEGIN()
         callbacks_pp[i] = NULL;
     }
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static void nh_core_freeLoggerNode(
     nh_core_LoggerNode *Node_p)
 {
-NH_CORE_BEGIN()
-
     nh_core_free(Node_p->name_p);
     nh_core_freeList(&Node_p->Messages, true);
 
@@ -74,23 +66,21 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&Node_p->Children, true);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 NH_API_RESULT nh_core_freeLogger()
 {
-NH_CORE_BEGIN()
-
     nh_core_freeLoggerNode(&NH_LOGGER.Root);
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // LOGGER ==========================================================================================
 
 typedef struct nh_core_LoggerOption {
-    nh_String Name;
-    nh_String Value;
+    nh_core_String Name;
+    nh_core_String Value;
 } nh_core_LoggerOption;
 
 typedef struct nh_core_LoggerOptions {
@@ -139,12 +129,12 @@ static nh_core_LoggerNode *nh_core_getLoggerNode(
 }
 
 static void nh_core_parseLoggerOptions(
-    char *options_p, nh_Array *Options_p)
+    char *options_p, nh_core_Array *Options_p)
 {
     if (!options_p) {return;}
 
-    nh_String Name = nh_core_initString(15);
-    nh_String Value = nh_core_initString(15);
+    nh_core_String Name = nh_core_initString(15);
+    nh_core_String Value = nh_core_initString(15);
 
     while (*options_p && *options_p != '=' && *options_p != ';') {
         nh_core_appendToString(&Name, options_p, 1);
@@ -175,7 +165,7 @@ static void nh_core_parseLoggerOptions(
 }
 
 static nh_core_LoggerOptions nh_processLoggerOptions(
-    nh_Array *Options_p)
+    nh_core_Array *Options_p)
 {
     nh_core_LoggerOptions Options;
     Options.replace = -1;
@@ -217,7 +207,7 @@ static NH_API_RESULT nh_core_updateLogger(
     nh_core_LoggerNode *Node_p = nh_core_getLoggerNode(&NH_LOGGER.Root, node_p);
     if (Node_p == NULL) {return NH_API_ERROR_BAD_STATE;}
 
-    nh_Array ParsedOptions = nh_core_initArray(sizeof(nh_core_LoggerOption), 1);
+    nh_core_Array ParsedOptions = nh_core_initArray(sizeof(nh_core_LoggerOption), 1);
     nh_core_parseLoggerOptions(options_p, &ParsedOptions);
 
     nh_core_LoggerOptions Options = nh_processLoggerOptions(&ParsedOptions);
@@ -276,7 +266,7 @@ NH_API_RESULT nh_core_sendLogMessage(
 NH_API_RESULT _nh_begin(
     const char *file_p, const char *function_p)
 {
-    nh_Thread *Thread_p = nh_core_getThread();
+    nh_core_Thread *Thread_p = nh_core_getThread();
     if (Thread_p == NULL) {return NH_API_ERROR_BAD_STATE;}
 
     char message_p[1024] = {'\0'};
@@ -294,7 +284,7 @@ NH_API_RESULT _nh_begin(
 NH_API_RESULT _nh_end(
     const char *file_p, const char *function_p)
 {
-    nh_Thread *Thread_p = nh_core_getThread();
+    nh_core_Thread *Thread_p = nh_core_getThread();
     if (Thread_p == NULL) {return NH_API_ERROR_BAD_STATE;}
 
     Thread_p->depth--;
@@ -312,7 +302,7 @@ NH_API_RESULT _nh_end(
 NH_API_RESULT _nh_diagnosticEnd(
     const char *file_p, const char *function_p, const char *result_p, int line, bool success)
 {
-    nh_Thread *Thread_p = nh_core_getThread();
+    nh_core_Thread *Thread_p = nh_core_getThread();
     if (Thread_p == NULL) {return NH_API_ERROR_BAD_STATE;}
 
     Thread_p->depth--;
@@ -338,11 +328,9 @@ NH_API_RESULT _nh_diagnosticEnd(
 void nh_core_getUniqueLogId(
     char *logId_p)
 {
-NH_CORE_BEGIN()
-
     int thread = nh_core_getThreadIndex();
-    nh_SystemTime SystemTime = nh_core_getSystemTime();
+    nh_core_SystemTime SystemTime = nh_core_getSystemTime();
     sprintf(logId_p, "THREAD<%d>TIME<%lus,%lums>", thread, SystemTime.seconds, SystemTime.milliseconds);
 
-NH_CORE_SILENT_END()
+    return;
 }

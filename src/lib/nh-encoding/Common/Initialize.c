@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "Macros.h"
 #include "IndexMap.h"
 #include "Log.h"
 
@@ -21,11 +20,8 @@
 
 NH_API_RESULT nh_encoding_initialize()
 {
-NH_ENCODING_BEGIN()
-
-    NH_ENCODING_CHECK(nh_encoding_logUnicodeCodepointDescriptions())
-    NH_ENCODING_CHECK(nh_encoding_createIndexMap())
-
-NH_ENCODING_DIAGNOSTIC_END(NH_API_SUCCESS)
+    NH_CORE_CHECK(nh_encoding_logUnicodeCodepointDescriptions())
+    NH_CORE_CHECK(nh_encoding_createIndexMap())
+    return NH_API_SUCCESS;
 }
 

@@ -71,7 +71,7 @@
         nh_ecmascript_Object *This_p, nh_ecmascript_Any PropertyKey
     );
     
-    nh_List nh_ecmascript_ordinaryOwnPropertyKeys(
+    nh_core_List nh_ecmascript_ordinaryOwnPropertyKeys(
         nh_ecmascript_Object *This_p
     );
 

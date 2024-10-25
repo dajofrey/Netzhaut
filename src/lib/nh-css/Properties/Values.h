@@ -123,7 +123,7 @@
 
     NH_API_RESULT nh_css_setSpecifiedValues(
         nh_css_LogContext *LogContext_p, nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, 
-        nh_List UserStyleSheets
+        nh_core_List UserStyleSheets
     );
 
     NH_API_RESULT nh_css_freeSpecifiedValues(

@@ -11,6 +11,7 @@
 
 #include "../../nh-api/nh-gfx.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
+#include "../../nh-core/Util/Debug.h"
 
 #ifndef VOLK_VULKAN_H_PATH
     #define VOLK_VULKAN_H_PATH "Vulkan-Headers/include/vulkan/vulkan.h"

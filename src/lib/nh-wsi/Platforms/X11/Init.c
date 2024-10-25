@@ -11,7 +11,6 @@
 #include "Init.h"
 
 #include "../../Common/Log.h"
-#include "../../Common/Macros.h"
 
 #include <fcntl.h>
 #include <time.h>
@@ -66,14 +65,12 @@ static Atom nh_x11_getAtomIfSupported(
 //
 static void nh_x11_detectEWMH()
 {
-NH_WSI_BEGIN()
-
     // First we read the _NET_SUPPORTING_WM_CHECK property on the root window
 
     Window* windowFromRoot = NULL;
     if (!nh_x11_getWindowProperty(NH_WSI_X11.root, NH_WSI_X11.Atoms.NET_SUPPORTING_WM_CHECK,
         XA_WINDOW, (unsigned char**) &windowFromRoot)) {
-        NH_WSI_SILENT_END()
+        return;
     }
 
     // If it exists, it should be the XID of a top-level window
@@ -84,7 +81,7 @@ NH_WSI_BEGIN()
         XA_WINDOW, (unsigned char**) &windowFromChild))
     {
         XFree(windowFromRoot);
-        NH_WSI_SILENT_END() 
+        return;
     }
 
     // If the property exists, it should contain the XID of the window
@@ -93,7 +90,7 @@ NH_WSI_BEGIN()
     {
         XFree(windowFromRoot);
         XFree(windowFromChild);
-        NH_WSI_SILENT_END() 
+        return;
     }
 
     XFree(windowFromRoot);
@@ -132,15 +129,13 @@ NH_WSI_BEGIN()
     if (supportedAtoms)
         XFree(supportedAtoms);
 
-NH_WSI_SILENT_END()
+    return;
 }
 
 // Look for and initialize supported X11 extensions
 //
 static NH_API_RESULT nh_x11_initAtoms()
 {
-NH_WSI_BEGIN()
-
     // String format atoms
     NH_WSI_X11.Atoms.NULL_       = XInternAtom(NH_WSI_X11.Display_p, "NULL", False);
     NH_WSI_X11.Atoms.UTF8_STRING = XInternAtom(NH_WSI_X11.Display_p, "UTF8_STRING", False);
@@ -203,13 +198,11 @@ NH_WSI_BEGIN()
     // Detect whether an EWMH-conformant window manager is running
     nh_x11_detectEWMH();
 
-NH_WSI_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_x11_initExtensions()
 {
-NH_WSI_BEGIN()
-
     // XKB (X keyboard extension)
 
     NH_WSI_X11.XKB.Connection_p = XGetXCBConnection(NH_WSI_X11.Display_p);
@@ -231,35 +224,31 @@ NH_WSI_BEGIN()
         NH_WSI_X11.XKB.Keymap_p, NH_WSI_X11.XKB.Connection_p, NH_WSI_X11.XKB.keyboardDeviceID
     );
 
-NH_WSI_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_x11_initialize()
 {
-NH_WSI_BEGIN()
-
     NH_WSI_X11.Display_p = XOpenDisplay(NULL);
-    if (!NH_WSI_X11.Display_p) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+    if (!NH_WSI_X11.Display_p) {return NH_API_ERROR_BAD_STATE;}
 
     NH_WSI_X11.screen = DefaultScreen(NH_WSI_X11.Display_p);
     NH_WSI_X11.root   = RootWindow(NH_WSI_X11.Display_p, NH_WSI_X11.screen);
 
-    NH_WSI_CHECK(nh_x11_initExtensions())
-    NH_WSI_CHECK(nh_x11_initAtoms())
+    NH_CORE_CHECK(nh_x11_initExtensions())
+    NH_CORE_CHECK(nh_x11_initAtoms())
 
-NH_WSI_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_x11_close()
 {
-NH_WSI_BEGIN()
-
     xkb_state_unref(NH_WSI_X11.XKB.State_p);
     xkb_keymap_unref(NH_WSI_X11.XKB.Keymap_p);
     xkb_context_unref(NH_WSI_X11.XKB.Context_p);
 
     XCloseDisplay(NH_WSI_X11.Display_p);
  
-NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

@@ -19,7 +19,7 @@
  */
 
     nh_ecmascript_Object *nh_ecmascript_createBuiltinFunctionObject(
-        nh_ecmascript_Object *FunctionObject_p, nh_ecmascript_Any (*call_f)(nh_ecmascript_Object *This_p, nh_List Arguments),
+        nh_ecmascript_Object *FunctionObject_p, nh_ecmascript_Any (*call_f)(nh_ecmascript_Object *This_p, nh_core_List Arguments),
         int *lookup_p, int lookupLength, nh_ecmascript_Realm *Realm_p, nh_ecmascript_Object *Prototype_p
     );
 

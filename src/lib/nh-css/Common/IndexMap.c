@@ -9,7 +9,6 @@
 // INCLUDES =======================================================================================
 
 #include "IndexMap.h"
-#include "Macros.h"
 
 #include "../Properties/Properties.h"
 #include "../Properties/Color.h"
@@ -37,8 +36,6 @@ static bool allocated = false;
 static NH_API_RESULT nh_css_getNames(
     NH_CSS_INDEXMAP_E type, char ***array_ppp, int *count_p)
 {
-NH_CSS_BEGIN()
-
     switch (type)
     {
         case NH_CSS_INDEXMAP_COLORS :
@@ -54,21 +51,19 @@ NH_CSS_BEGIN()
             break;
         }
 
-        default : NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        default : return NH_API_ERROR_BAD_STATE;
     }
 
-    if (*array_ppp == NULL) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    if (*array_ppp == NULL) {return NH_API_ERROR_BAD_STATE;}
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_css_createSingleIndexMap(
-    NH_CSS_INDEXMAP_E type, nh_HashMap *map_p)
+    NH_CSS_INDEXMAP_E type, nh_core_HashMap *map_p)
 {
-NH_CSS_BEGIN()
-
     int count = 0; char **names_pp = NULL;
-    NH_CSS_CHECK(nh_css_getNames(type, &names_pp, &count))
+    NH_CORE_CHECK(nh_css_getNames(type, &names_pp, &count))
 
     *map_p = nh_core_createHashMap();
 
@@ -76,44 +71,40 @@ NH_CSS_BEGIN()
         nh_core_addToHashMap(map_p, names_pp[i], &indices_pp[type][i]);
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_createIndexMap()
 {
-NH_CSS_BEGIN()
-
-    if (allocated) {NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (allocated) {return NH_API_SUCCESS;}
 
     for (int type = 0; type < NH_CSS_INDEXMAP_COUNT; ++type)  
     {
         int count = 0;
         const char **names_pp = NULL;
         if (nh_css_getNames(type, (char***)&names_pp, &count) != NH_API_SUCCESS) {
-            NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
         }
 
         indices_pp[type] = nh_core_allocate(sizeof(unsigned int) * count);
-        NH_CSS_CHECK_MEM(indices_pp[type])
+        NH_CORE_CHECK_MEM(indices_pp[type])
         
         for (int i = 0; i < count; ++i) {
             indices_pp[type][i] = i;
         }
     }    
 
-    NH_CSS_CHECK(nh_css_createSingleIndexMap(NH_CSS_INDEXMAP_COLORS, &NH_CSS_INDEXMAP.Colors))
-    NH_CSS_CHECK(nh_css_createSingleIndexMap(NH_CSS_INDEXMAP_PROPERTIES, &NH_CSS_INDEXMAP.Properties))
+    NH_CORE_CHECK(nh_css_createSingleIndexMap(NH_CSS_INDEXMAP_COLORS, &NH_CSS_INDEXMAP.Colors))
+    NH_CORE_CHECK(nh_css_createSingleIndexMap(NH_CSS_INDEXMAP_PROPERTIES, &NH_CSS_INDEXMAP.Properties))
 
     allocated = true;
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_css_freeIndexMap()
 {
-NH_CSS_BEGIN()
-
-    if (allocated) {NH_CSS_SILENT_END()}
+    if (allocated) {return;}
 
     for (int type = 0; type < NH_CSS_INDEXMAP_COUNT; ++type)  
     {
@@ -126,6 +117,6 @@ NH_CSS_BEGIN()
 
     allocated = false;
 
-NH_CSS_SILENT_END()
+    return;
 }
 

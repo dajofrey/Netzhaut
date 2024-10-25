@@ -9,7 +9,6 @@
 // INCLUDES =======================================================================================
 
 #include "Memory.h"
-#include "../Header/Macros.h"
 
 #include "../../DOM/Header/HTMLCollection.h"
 #include "../../DOM/Header/Event.h"
@@ -24,15 +23,13 @@
 
 #include <string.h>
 
-// MEMORY ==========================================================================================
+// FUNCTIONS =======================================================================================
 
-nh_List nh_ecmascript_eventSet(
+nh_core_List nh_ecmascript_eventSet(
     nh_ecmascript_CandidateExecution *CandidateExecution_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // step 1
-    nh_List Events = nh_core_initList(16);
+    nh_core_List Events = nh_core_initList(16);
     
     // step 2 
     for (int i = 0; i < CandidateExecution_p->EventsRecords.length; i++) 
@@ -50,17 +47,15 @@ NH_ECMASCRIPT_BEGIN()
         }
     }
 
-NH_ECMASCRIPT_END(Events)
+    return Events;
 }
 
-nh_List nh_ecmascript_sharedDataBlockEventSet(
+nh_core_List nh_ecmascript_sharedDataBlockEventSet(
     nh_ecmascript_CandidateExecution *CandidateExecution_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // step 1
-    nh_List Events = nh_core_initList(16);
-    nh_List Tmp = nh_ecmascript_eventSet(CandidateExecution_p); 
+    nh_core_List Events = nh_core_initList(16);
+    nh_core_List Tmp = nh_ecmascript_eventSet(CandidateExecution_p); 
 
     // step 2 
     for (int i = 0; i < Tmp.size; i++) 
@@ -77,18 +72,16 @@ NH_ECMASCRIPT_BEGIN()
 
     nh_core_freeList(&Tmp, false);
 
-NH_ECMASCRIPT_END(Events)
+    return Events;
 }
 
-nh_List nh_ecmascript_hostEventSet(
+nh_core_List nh_ecmascript_hostEventSet(
     nh_ecmascript_CandidateExecution *CandidateExecution_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // step 1
-    nh_List Events = nh_core_initList(16);
-    nh_List Tmp1 = nh_ecmascript_eventSet(CandidateExecution_p); 
-    nh_List Tmp2 = nh_ecmascript_sharedDataBlockEventSet(CandidateExecution_p); 
+    nh_core_List Events = nh_core_initList(16);
+    nh_core_List Tmp1 = nh_ecmascript_eventSet(CandidateExecution_p); 
+    nh_core_List Tmp2 = nh_ecmascript_sharedDataBlockEventSet(CandidateExecution_p); 
 
     // step 2 
     for (int i = 0; i < Tmp.size; i++) 
@@ -104,43 +97,39 @@ NH_ECMASCRIPT_BEGIN()
     nh_core_freeList(&Tmp1, false);
     nh_core_freeList(&Tmp2, false);
 
-NH_ECMASCRIPT_END(Events)
+    return Events;
 }
 
-nh_Array nh_ecmascript_composeWriteEventBytes(
-    nh_ecmascript_CandidateExecution *CandidateExecution_p, unsigned int byteIndex, nh_List WriteEvents)
+nh_core_Array nh_ecmascript_composeWriteEventBytes(
+    nh_ecmascript_CandidateExecution *CandidateExecution_p, unsigned int byteIndex, nh_core_List WriteEvents)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // step 1
     unsigned int byteLocation = byteIndex;
 
     // step 2
-    nh_Array BytesRead = nh_core_initArray(1, 255);
+    nh_core_Array BytesRead = nh_core_initArray(1, 255);
 
     // step3
     for (int i = 0; i < WriteEvents.size; ++i) {
         // TODO
     }
 
-NH_ECMASCRIPT_END(BytesRead)
+    return BytesRead;
 }
 
-nh_Array nh_ecmascript_valueOfReadEvent(
+nh_core_Array nh_ecmascript_valueOfReadEvent(
     nh_ecmascript_CandidateExecution *CandidateExecution_p, nh_ecmascript_SharedDataBlockEvent ReadEvent)
 {
-NH_ECMASCRIPT_BEGIN()
-
-    nh_Array Result = nh_core_initArray(1, 255);
+    nh_core_Array Result = nh_core_initArray(1, 255);
     
     // step 1
     if (ReadEvent.type != NH_ECMASCRIPT_SHARED_DATA_BLOCK_EVENT_READ_SHARED_MEMORY
     &&  ReadEvent.type != NH_ECMASCRIPT_SHARED_DATA_BLOCK_EVENT_READ_MODIFY_WRITE_SHARED_MEMORY) {
-        NH_ECMASCRIPT_END(Result)
+        return Result;
     }
 
     // TODO
 
-NH_ECMASCRIPT_END(Result)
+    return Result;
 }
 

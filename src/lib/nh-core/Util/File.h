@@ -39,7 +39,7 @@
         char *set_p, int size
     );
 
-    nh_List nh_core_getDirContentPaths(
+    nh_core_List nh_core_getDirContentPaths(
         char *dirPath_p
     );
 

@@ -9,9 +9,7 @@
 // INCLUDES ========================================================================================
 
 #include "Encodings.h"
-
 #include "../Common/IndexMap.h"
-#include "../Common/Macros.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -262,8 +260,6 @@ int NH_ENCODING_LABELS_PP_COUNT = sizeof(NH_ENCODING_LABELS_PP)/sizeof(NH_ENCODI
 NH_ENCODING_NAME nh_encoding_getEncoding(
     char *label_p)
 {
-NH_ENCODING_BEGIN()
-
     char lowerlabel_p[255] = {'\0'};
     strcpy(lowerlabel_p, label_p);
 
@@ -274,7 +270,7 @@ NH_ENCODING_BEGIN()
     NH_ENCODING_NAME name = NH_ENCODING_NAME_UNDEFINED;
 
     unsigned int *labelIndex_p = nh_core_getFromHashMap(&NH_ENCODING_INDEXMAP.Labels, lowerlabel_p);
-    if (!labelIndex_p) {NH_ENCODING_END(name)}
+    if (!labelIndex_p) {return name;}
 
     switch (*labelIndex_p)
     {
@@ -508,19 +504,17 @@ NH_ENCODING_BEGIN()
         case NH_ENCODING_LABEL_X_USER_DEFINED      : name = NH_ENCODING_NAME_X_USER_DEFINED; break;
     }
 
-NH_ENCODING_END(name)
+    return name;
 }
 
 // https://encoding.spec.whatwg.org/#output-encodings
 NH_ENCODING_NAME nh_encoding_getOutputEncoding(
     NH_ENCODING_NAME encoding)
 {
-NH_ENCODING_BEGIN()
-
     if (encoding == NH_ENCODING_NAME_REPLACEMENT || encoding == NH_ENCODING_NAME_UTF_16BE || encoding == NH_ENCODING_NAME_UTF_16LE) {
-        NH_ENCODING_END(NH_ENCODING_NAME_UTF_8)
+        return NH_ENCODING_NAME_UTF_8;
     }
 
-NH_ENCODING_END(encoding)
+    return encoding;
 }
 

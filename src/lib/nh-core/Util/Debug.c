@@ -8,18 +8,15 @@
 
 // INCLUDES ========================================================================================
 
-#include "Terminate.h"
-#include "IndexMap.h"
+#include "Debug.h"
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-// DEBUG ===========================================================================================
+// FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_encoding_terminate()
+void nh_core_debug(
+    char *message_p)
 {
-    nh_encoding_freeIndexMap();
-    return NH_API_SUCCESS;
+    puts(message_p);
 }
-

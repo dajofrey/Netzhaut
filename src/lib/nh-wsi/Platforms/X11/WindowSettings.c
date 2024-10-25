@@ -15,7 +15,6 @@
 #include "../../Window/Event.h"
 
 #include "../../Common/Log.h"
-#include "../../Common/Macros.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -32,10 +31,8 @@
 // Functions for setting X11 window properties.
 
 NH_API_RESULT nh_x11_setWindowBackgroundColor(
-    nh_x11_Window *Window_p, nh_Color Color)
+    nh_x11_Window *Window_p, nh_css_Color Color)
 {
-NH_WSI_BEGIN()
-
 #ifdef __unix__
 
     uint16_t rgba_p[4] = {
@@ -52,26 +49,25 @@ NH_WSI_BEGIN()
     Attributes.background_pixel = color;
     XChangeWindowAttributes(NH_WSI_X11.Display_p, Window_p->Handle, CWBackPixel, &Attributes);
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_x11_setWindowTitle(
     nh_x11_Window *Window_p, char *title_p)
 {
-NH_WSI_BEGIN()
-
 #ifdef __unix__
 
     XStoreName(NH_WSI_X11.Display_p, Window_p->Handle, title_p);
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 /**
@@ -80,8 +76,6 @@ NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 NH_API_RESULT nh_x11_setWindowDecorated(
     nh_x11_Window *Window_p, bool decorated)
 {
-NH_WSI_BEGIN()
-
 #ifdef __unix__
 
     XUnmapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
@@ -107,11 +101,11 @@ NH_WSI_BEGIN()
 
     XMapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 /**
@@ -121,14 +115,12 @@ NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 NH_API_RESULT nh_x11_setWindowState(
     nh_x11_Window *Window_p, bool *state_p)
 {
-NH_WSI_BEGIN()
-
 #ifdef __unix__
 
     XUnmapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
 
     if (NH_WSI_X11.Atoms.NET_WM_STATE == 0) {
-        NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
 
     Atom states_p[3];
@@ -151,7 +143,7 @@ NH_WSI_BEGIN()
     
         if (XGetWindowProperty(NH_WSI_X11.Display_p, NH_WSI_X11.root, net_workarea, 0, 4, False, XA_CARDINAL,
                                &actual_type, &actual_format, &nitems, &bytes_after, &prop_value) != Success) {
-            NH_WSI_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
         }
 
         if (actual_format == 32 && nitems == 4) {
@@ -161,7 +153,7 @@ NH_WSI_BEGIN()
             nh_x11_getWindowSize(Window_p, &Window_p->oldX, &Window_p->oldY);
             XResizeWindow(NH_WSI_X11.Display_p, Window_p->Handle, max_width, max_height);
         } else {
-            NH_WSI_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
         }
     }
     else {
@@ -175,11 +167,11 @@ NH_WSI_BEGIN()
 
     XMapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 /**
@@ -189,8 +181,6 @@ NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 NH_API_RESULT nh_x11_setWindowType(
     nh_x11_Window *Window_p, NH_WSI_WINDOW_TYPE_E type)
 {
-NH_WSI_BEGIN()
-
 #ifdef __unix__
 
     XUnmapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
@@ -207,11 +197,11 @@ NH_WSI_BEGIN()
 
     XMapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 /**
@@ -221,8 +211,6 @@ NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 NH_API_RESULT nh_x11_setMouseCursor(
     nh_x11_Window *Window_p, NH_WSI_CURSOR_E type)
 {
-NH_WSI_BEGIN()
-
 #ifdef __unix__
 
     Cursor C;
@@ -309,10 +297,10 @@ NH_WSI_BEGIN()
 
     XDefineCursor(NH_WSI_X11.Display_p, Window_p->Handle, C);
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 

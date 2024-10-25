@@ -9,8 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "Macros.h"
-
 #include "../Interfaces/Document.h"
 
 #include <stdlib.h>
@@ -21,10 +19,7 @@
 
 NH_API_RESULT nh_dom_initialize()
 {
-NH_DOM_BEGIN()
-
-    NH_DOM_CHECK(nh_dom_initDocumentModes())
-
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    NH_CORE_CHECK(nh_dom_initDocumentModes())
+    return NH_API_SUCCESS;
 }
 

@@ -39,7 +39,7 @@
         struct nh_html_BrowsingContext *OpenerBrowsingContext_p;
         bool disowned;
         bool isClosing;
-        nh_List SessionHistory;
+        nh_core_List SessionHistory;
         int virtualBrowsingContextGroupID;
         nh_url *InitialURL_p;
         nh_html_Origin *OpenerOriginAtCreation_p;
@@ -93,9 +93,9 @@
     } nh_html_HistoricalAgentClusterKeyMapEntry;
 
     typedef struct nh_html_BrowsingContextGroup {
-        nh_List BrowsingContexts;
-        nh_List AgentClusterMap;
-        nh_List HistoricalAgentClusterKeyMap;
+        nh_core_List BrowsingContexts;
+        nh_core_List AgentClusterMap;
+        nh_core_List HistoricalAgentClusterKeyMap;
         NH_HTML_CROSS_ORIGIN_ISOLATION_MODE crossOriginIsolationMode;
     } nh_html_BrowsingContextGroup;
 
@@ -105,7 +105,7 @@
  *  @{
  */
 
-    extern nh_List NH_HTML_BROWSING_CONTEXT_GROUPS;
+    extern nh_core_List NH_HTML_BROWSING_CONTEXT_GROUPS;
 
 /** @} */
 

@@ -13,22 +13,18 @@
 #include "Descriptor.h"
 #include "Buffer.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-gfx/Base/Viewport.h"
 #include "../../nh-gfx/Vulkan/GPU.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-//// TEXTURE =========================================================================================
-//
+// FUNCTIONS =======================================================================================
+
 //static bool nh_vk_recordImage(
-//    nh_Content *Content_p, nh_html_Node *Node_p, nh_vk_Pipeline *Pipelines_p, nh_vk_Driver *Driver_p,
+//    nh_Content *Content_p, nh_html_Node *Node_p, nh_gfx_VulkanPipeline *Pipelines_p, nh_gfx_VulkanDriver *Driver_p,
 //    VkCommandBuffer *CommandBuffer_p)
 //{
-//NH_RENDERER_BEGIN()
-//
 //    if (Node_p->tag == NH_HTML_TAG_IMG && nh_gfx_textureLoaded(Content_p, nh_html_getSrc(Node_p), NULL))
 //    {
 //        VkDeviceSize size_p[1] = {0};
@@ -59,13 +55,9 @@
 //NH_CORE_END(false)
 //}
 
-// BACKGROUND ======================================================================================
-
-static void nh_renderer_vk_recordBackground(
-    nh_css_Fragment *Fragment_p, nh_vk_GPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
+static void nh_renderer_recordVulkanBackground(
+    nh_css_Fragment *Fragment_p, nh_gfx_VulkanGPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
 {
-NH_RENDERER_BEGIN()
-
     VkDeviceSize size_p[1] = {0};
 
     GPU_p->Driver.Functions.vkCmdBindPipeline(
@@ -76,29 +68,23 @@ NH_RENDERER_BEGIN()
     GPU_p->Driver.Functions.vkCmdBindDescriptorSets(
         *CommandBuffer_p, VK_PIPELINE_BIND_POINT_GRAPHICS, 
         GPU_p->Renderer.Pipelines_p[NH_RENDERER_VK_PIPELINE_COLOR].PipelineLayout, 0, 1, 
-        &nh_renderer_vk_getDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_BACKGROUND)->DescriptorSet,
+        &nh_renderer_getVulkanDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_BACKGROUND)->DescriptorSet,
         0, VK_NULL_HANDLE
     );
 
     GPU_p->Driver.Functions.vkCmdBindVertexBuffers(
         *CommandBuffer_p, 0, 1, 
-        &nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_BACKGROUND)->Buffer, 
+        &nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_BACKGROUND)->Buffer, 
         size_p
     );
    
-    GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_BACKGROUND)->size / 3, 1, 0, 0);
-
-NH_RENDERER_SILENT_END()
+    GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_BACKGROUND)->size / 3, 1, 0, 0);
 }
 
-//// BACKGROUND IMAGE ================================================================================
-//
 //static void nh_vk_recordBackgroundImage(
-//    nh_Content *Content_p, nh_html_Node *Node_p, nh_vk_Pipeline *Pipelines_p, nh_vk_Driver *Driver_p, 
+//    nh_Content *Content_p, nh_html_Node *Node_p, nh_gfx_VulkanPipeline *Pipelines_p, nh_gfx_VulkanDriver *Driver_p, 
 //    VkCommandBuffer *CommandBuffer_p, VkViewport *Viewport_p)
 //{
-//NH_RENDERER_BEGIN()
-//
 //    for (int i = 0; i < Node_p->Properties.Background.Images.count; ++i)
 //    {
 //        NH_RENDERER_Image *Image_p = nh_renderer_getImage(&Node_p->Properties.Background.Images, i);
@@ -148,17 +134,11 @@ NH_RENDERER_SILENT_END()
 //        Scissor = nh_vk_getDefaultScissor(Content_p); 
 //        Driver_p->Functions.vkCmdSetScissor(*CommandBuffer_p, 0, 1, &Scissor);
 //    }
-//
-//NH_RENDERER_SILENT_END()
 //}
-//
-// TEXT ============================================================================================
 
-static void nh_renderer_vk_recordText(
-    nh_css_Fragment *Fragment_p, nh_vk_GPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
+static void nh_renderer_recordVulkanText(
+    nh_css_Fragment *Fragment_p, nh_gfx_VulkanGPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
 {
-NH_RENDERER_BEGIN()
-
     GPU_p->Driver.Functions.vkCmdBindPipeline(
         *CommandBuffer_p, VK_PIPELINE_BIND_POINT_GRAPHICS, 
         GPU_p->Renderer.Pipelines_p[NH_RENDERER_VK_PIPELINE_TEXT_SDF].Pipeline
@@ -172,7 +152,7 @@ NH_RENDERER_BEGIN()
 
         GPU_p->Driver.Functions.vkCmdBindVertexBuffers(
             *CommandBuffer_p, 0, 1,
-            &(nh_renderer_vk_getBufferFromIndex(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_TEXT_SDF, i)->Buffer), 
+            &(nh_renderer_getVulkanBufferFromIndex(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_TEXT_SDF, i)->Buffer), 
             size_p
         );
         
@@ -180,13 +160,13 @@ NH_RENDERER_BEGIN()
             *CommandBuffer_p, VK_PIPELINE_BIND_POINT_GRAPHICS, 
             GPU_p->Renderer.Pipelines_p[NH_RENDERER_VK_PIPELINE_TEXT_SDF].PipelineLayout, 
             0, 1, 
-            &(nh_renderer_vk_getDescriptorFromIndex(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_TEXT_SDF, i)->DescriptorSet),
+            &(nh_renderer_getVulkanDescriptorFromIndex(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_TEXT_SDF, i)->DescriptorSet),
             0, VK_NULL_HANDLE
         );
     
         GPU_p->Driver.Functions.vkCmdBindIndexBuffer(
             *CommandBuffer_p, 
-            nh_renderer_vk_getBufferFromIndex(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_TEXT_SDF_INDEX, i)->Buffer, 
+            nh_renderer_getVulkanBufferFromIndex(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_TEXT_SDF_INDEX, i)->Buffer, 
             0, VK_INDEX_TYPE_UINT32
         );
     
@@ -194,17 +174,11 @@ NH_RENDERER_BEGIN()
             *CommandBuffer_p, Segment_p->length * 6, 1, 0, 0, 0
         );
     }
-
-NH_RENDERER_SILENT_END()
 }
 
-// BORDER ==========================================================================================
-
-static void nh_renderer_vk_recordBorder(
-    nh_css_Fragment *Fragment_p, nh_vk_GPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
+static void nh_renderer_recordVulkanBorder(
+    nh_css_Fragment *Fragment_p, nh_gfx_VulkanGPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
 {
-NH_RENDERER_BEGIN()
-
     if (Fragment_p->Box.Values.borderTop > 0)
     {
         GPU_p->Driver.Functions.vkCmdBindPipeline(
@@ -216,17 +190,17 @@ NH_RENDERER_BEGIN()
         GPU_p->Driver.Functions.vkCmdBindDescriptorSets(
             *CommandBuffer_p, VK_PIPELINE_BIND_POINT_GRAPHICS, 
             GPU_p->Renderer.Pipelines_p[NH_RENDERER_VK_PIPELINE_COLOR].PipelineLayout, 0, 1, 
-            &nh_renderer_vk_getDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_TOP_BORDER)->DescriptorSet,
+            &nh_renderer_getVulkanDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_TOP_BORDER)->DescriptorSet,
             0, VK_NULL_HANDLE
         );
 
         GPU_p->Driver.Functions.vkCmdBindVertexBuffers(
             *CommandBuffer_p, 0, 1, 
-            &nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_TOP_BORDER_VERTICES)->Buffer, 
+            &nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_TOP_BORDER_VERTICES)->Buffer, 
             size_p
         );
 
-        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_TOP_BORDER_VERTICES)->size / 3, 1, 0, 0);
+        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_TOP_BORDER_VERTICES)->size / 3, 1, 0, 0);
     }
     if (Fragment_p->Box.Values.borderRight > 0)
     {
@@ -239,17 +213,17 @@ NH_RENDERER_BEGIN()
         GPU_p->Driver.Functions.vkCmdBindDescriptorSets(
             *CommandBuffer_p, VK_PIPELINE_BIND_POINT_GRAPHICS, 
             GPU_p->Renderer.Pipelines_p[NH_RENDERER_VK_PIPELINE_COLOR].PipelineLayout, 0, 1, 
-            &nh_renderer_vk_getDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_RIGHT_BORDER)->DescriptorSet,
+            &nh_renderer_getVulkanDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_RIGHT_BORDER)->DescriptorSet,
             0, VK_NULL_HANDLE
         );
 
         GPU_p->Driver.Functions.vkCmdBindVertexBuffers(
             *CommandBuffer_p, 0, 1, 
-            &nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_RIGHT_BORDER_VERTICES)->Buffer, 
+            &nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_RIGHT_BORDER_VERTICES)->Buffer, 
             size_p
         );
 
-        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_RIGHT_BORDER_VERTICES)->size / 3, 1, 0, 0);
+        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_RIGHT_BORDER_VERTICES)->size / 3, 1, 0, 0);
     }
     if (Fragment_p->Box.Values.borderBottom > 0)
     {
@@ -262,17 +236,17 @@ NH_RENDERER_BEGIN()
         GPU_p->Driver.Functions.vkCmdBindDescriptorSets(
             *CommandBuffer_p, VK_PIPELINE_BIND_POINT_GRAPHICS, 
             GPU_p->Renderer.Pipelines_p[NH_RENDERER_VK_PIPELINE_COLOR].PipelineLayout, 0, 1, 
-            &nh_renderer_vk_getDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_BOTTOM_BORDER)->DescriptorSet,
+            &nh_renderer_getVulkanDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_BOTTOM_BORDER)->DescriptorSet,
             0, VK_NULL_HANDLE
         );
 
         GPU_p->Driver.Functions.vkCmdBindVertexBuffers(
             *CommandBuffer_p, 0, 1, 
-            &nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_BOTTOM_BORDER_VERTICES)->Buffer, 
+            &nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_BOTTOM_BORDER_VERTICES)->Buffer, 
             size_p
         );
 
-        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_BOTTOM_BORDER_VERTICES)->size / 3, 1, 0, 0);
+        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_BOTTOM_BORDER_VERTICES)->size / 3, 1, 0, 0);
     }
     if (Fragment_p->Box.Values.borderLeft > 0)
     {
@@ -285,96 +259,72 @@ NH_RENDERER_BEGIN()
         GPU_p->Driver.Functions.vkCmdBindDescriptorSets(
             *CommandBuffer_p, VK_PIPELINE_BIND_POINT_GRAPHICS, 
             GPU_p->Renderer.Pipelines_p[NH_RENDERER_VK_PIPELINE_COLOR].PipelineLayout, 0, 1, 
-            &nh_renderer_vk_getDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_LEFT_BORDER)->DescriptorSet,
+            &nh_renderer_getVulkanDescriptor(Fragment_p->data_p, NH_RENDERER_VK_DESCRIPTOR_LEFT_BORDER)->DescriptorSet,
             0, VK_NULL_HANDLE
         );
 
         GPU_p->Driver.Functions.vkCmdBindVertexBuffers(
             *CommandBuffer_p, 0, 1, 
-            &nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_LEFT_BORDER_VERTICES)->Buffer, 
+            &nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_LEFT_BORDER_VERTICES)->Buffer, 
             size_p
         );
 
-        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_vk_getBuffer(Fragment_p->data_p, NH_RENDERER_VK_BUFFER_LEFT_BORDER_VERTICES)->size / 3, 1, 0, 0);
+        GPU_p->Driver.Functions.vkCmdDraw(*CommandBuffer_p, nh_renderer_getVulkanBuffer(Fragment_p->data_p, NH_RENDERER_VULKAN_BUFFER_LEFT_BORDER_VERTICES)->size / 3, 1, 0, 0);
     }
-
-NH_RENDERER_SILENT_END()
 }
 
-// RECORD ==========================================================================================
-
-static void nh_renderer_vk_recordTextFragment(
-    nh_css_Fragment *Fragment_p, nh_vk_GPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
+static void nh_renderer_recordVulkanTextFragment(
+    nh_css_Fragment *Fragment_p, nh_gfx_VulkanGPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
 {
-NH_RENDERER_BEGIN()
-
-    nh_renderer_vk_recordText(Fragment_p, GPU_p, CommandBuffer_p);
-
-NH_RENDERER_SILENT_END()
+    nh_renderer_recordVulkanText(Fragment_p, GPU_p, CommandBuffer_p);
 }
 
-static void nh_renderer_vk_recordBoxFragment(
-    nh_css_Fragment *Fragment_p, nh_vk_GPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
+static void nh_renderer_recordVulkanBoxFragment(
+    nh_css_Fragment *Fragment_p, nh_gfx_VulkanGPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
 {
-NH_RENDERER_BEGIN()
-
     if (Fragment_p->Box.Values.BackgroundColor.a > 0.0f) {
-        nh_renderer_vk_recordBackground(Fragment_p, GPU_p, CommandBuffer_p);
+        nh_renderer_recordVulkanBackground(Fragment_p, GPU_p, CommandBuffer_p);
     }
-    nh_renderer_vk_recordBorder(Fragment_p, GPU_p, CommandBuffer_p);
-
-NH_RENDERER_SILENT_END()
+    nh_renderer_recordVulkanBorder(Fragment_p, GPU_p, CommandBuffer_p);
 }
 
-static void nh_renderer_vk_recordTextFragments(
-    nh_css_Fragment *Fragment_p, nh_vk_GPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
+static void nh_renderer_recordVulkanTextFragments(
+    nh_css_Fragment *Fragment_p, nh_gfx_VulkanGPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
 {
-NH_RENDERER_BEGIN()
-
     if (Fragment_p->type == NH_CSS_FRAGMENT_TEXT) {
-        nh_renderer_vk_recordTextFragment(Fragment_p, GPU_p, CommandBuffer_p);
+        nh_renderer_recordVulkanTextFragment(Fragment_p, GPU_p, CommandBuffer_p);
     }
     for (int i = 0; i < Fragment_p->Children.size; ++i) {
-        nh_renderer_vk_recordTextFragments(Fragment_p->Children.pp[i], GPU_p, CommandBuffer_p);
+        nh_renderer_recordVulkanTextFragments(Fragment_p->Children.pp[i], GPU_p, CommandBuffer_p);
     }
-
-NH_RENDERER_SILENT_END()
 }
 
-static void nh_renderer_vk_recordBoxFragments(
-    nh_css_Fragment *Fragment_p, nh_vk_GPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
+static void nh_renderer_recordVulkanBoxFragments(
+    nh_css_Fragment *Fragment_p, nh_gfx_VulkanGPU *GPU_p, VkCommandBuffer *CommandBuffer_p)
 {
-NH_RENDERER_BEGIN()
-
     if (Fragment_p->type == NH_CSS_FRAGMENT_BOX) {
-        nh_renderer_vk_recordBoxFragment(Fragment_p, GPU_p, CommandBuffer_p);
+        nh_renderer_recordVulkanBoxFragment(Fragment_p, GPU_p, CommandBuffer_p);
     }
     for (int i = 0; i < Fragment_p->Children.size; ++i) {
-        nh_renderer_vk_recordBoxFragments(Fragment_p->Children.pp[i], GPU_p, CommandBuffer_p);
+        nh_renderer_recordVulkanBoxFragments(Fragment_p->Children.pp[i], GPU_p, CommandBuffer_p);
     }
-
-NH_RENDERER_SILENT_END()
 }
 
-void nh_renderer_vk_recordFragmentTree(
+void nh_renderer_recordVulkanFragmentTree(
     nh_css_FragmentTree *Tree_p, nh_gfx_Viewport *Viewport_p)
 {
-NH_RENDERER_BEGIN()
-
-    // render background first;
+    // render background first
     for (int i = 0; i < Viewport_p->Vulkan.images; ++i) {
-        nh_renderer_vk_recordBoxFragments(
+        nh_renderer_recordVulkanBoxFragments(
             Tree_p->Root_p, Viewport_p->Surface_p->Vulkan.GPU_p, Viewport_p->Vulkan.CommandBuffers_pp[i] 
         );
     }
 
-    // render text afterwards;
+    // render text afterwards
     for (int i = 0; i < Viewport_p->Vulkan.images; ++i) {
-        nh_renderer_vk_recordTextFragments(
+        nh_renderer_recordVulkanTextFragments(
             Tree_p->Root_p, Viewport_p->Surface_p->Vulkan.GPU_p, Viewport_p->Vulkan.CommandBuffers_pp[i] 
         );
     }
-
-NH_RENDERER_SILENT_END()
 }
 

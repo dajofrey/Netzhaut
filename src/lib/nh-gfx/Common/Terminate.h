@@ -1,7 +1,7 @@
 #ifndef NH_GFX_COMMON_TERMINATE_H
 #define NH_GFX_COMMON_TERMINATE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,17 +9,13 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "Includes.h"
 
-#endif // DOXYGEN_SHOULD_SKIP_THIS
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
-
-    NH_API_RESULT nh_gfx_terminate(
-    );
+NH_API_RESULT nh_gfx_terminate(
+);
     
-/** @} */
-
 #endif // NH_GFX_COMMON_TERMINATE_H 

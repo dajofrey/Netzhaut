@@ -20,7 +20,6 @@
 #include "../Config/Config.h"
 
 #include "IndexMap.h"
-#include "Macros.h"
 
 #include <dlfcn.h>
 #include <stddef.h>
@@ -28,13 +27,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TERMINATE =======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_core_terminate(
-    nh_Loader *Loader_p)
+    nh_core_Loader *Loader_p)
 {
-NH_CORE_BEGIN()
-
     // This also deactivates all workloads.
     nh_core_freeProcessPool();
 
@@ -51,5 +48,5 @@ NH_CORE_BEGIN()
     // Great. Now what remains to be done is for nh-api/nh-core.c to close this module aka the nh-core library
     // and Netzhaut should be terminated.
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }

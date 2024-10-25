@@ -1,7 +1,7 @@
-#ifndef NH_VK_VULKAN_H
-#define NH_VK_VULKAN_H
+#ifndef NH_GFX_VULKAN_VULKAN_H
+#define NH_GFX_VULKAN_VULKAN_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,41 +9,28 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "Host.h"
+// INCLUDES ========================================================================================
 
+#include "Host.h"
 #include "../Common/Includes.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+typedef struct nh_vk_Vulkan {
+    nh_gfx_VulkanHost Host;
+    nh_core_List GPUs;
+} nh_vk_Vulkan;
 
-    typedef struct nh_vk_Vulkan {
-        nh_vk_Host Host;
-        nh_List GPUs;
-    } nh_vk_Vulkan;
+// DATA ============================================================================================
 
-/** @} */
+extern nh_vk_Vulkan NH_VULKAN;
 
-/** @addtogroup lib_nh-gfx_vars
- *  @{
- */
+// FUNCTIONS =======================================================================================
 
-    extern nh_vk_Vulkan NH_VULKAN;
+NH_API_RESULT nh_vk_initVulkan(
+);
 
-/** @} */
+NH_API_RESULT nh_vk_terminateVulkan(
+);
 
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
-
-    NH_API_RESULT nh_vk_initVulkan(
-    );
-    
-    NH_API_RESULT nh_vk_terminateVulkan(
-    );
-
-/** @} */
-
-#endif 
+#endif // NH_GFX_VULKAN_VULKAN_H 

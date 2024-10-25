@@ -27,7 +27,7 @@ NH_NETWORK_BEGIN()
 
 //    if (NH_CONFIG.Flags.Log.receive == true)
 //    {
-//        nh_String String = nh_core_initString(128); 
+//        nh_core_String String = nh_core_initString(128); 
 //
 //        if (nh_core_appendFormatToString(&String, "%s\n", data_p) != NH_SUCCESS) {NH_NETWORK_SILENT_END()}
 //
@@ -45,7 +45,7 @@ NH_NETWORK_BEGIN()
 
 //    if (NH_CONFIG.Flags.Log.send == true)
 //    {
-//        nh_String String = nh_core_initString(128); 
+//        nh_core_String String = nh_core_initString(128); 
 //
 //        if (nh_core_appendFormatToString(&String, "%s\n", data_p) != NH_SUCCESS) {NH_NETWORK_SILENT_END()}
 //

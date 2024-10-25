@@ -1,7 +1,7 @@
-#ifndef NH_VK_GPU_H
-#define NH_VK_GPU_H
+#ifndef NH_VULKAN_GPU_H
+#define NH_VULKAN_GPU_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,42 +9,35 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "Helper.h"
 #include "Driver.h"
+
 #include "../../nh-core/Util/List.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+typedef struct nh_gfx_VulkanGPU {
+    char *name_p;                       
+    nh_gfx_VulkanDriver Driver;
+    nh_core_List Textures;
+    struct {
+        nh_gfx_VulkanPipeline *Pipelines_p;
+    } Renderer;
+    struct {
+        nh_gfx_VulkanPipeline *Pipelines_p;
+    } Term;
+} nh_gfx_VulkanGPU;
 
-    typedef struct nh_vk_GPU {
-        char *name_p;                       
-        nh_vk_Driver Driver;
-        nh_List Textures;
-        struct {
-            nh_vk_Pipeline *Pipelines_p;
-        } Renderer;
-        struct {
-            nh_vk_Pipeline *Pipelines_p;
-        } Term;
-    } nh_vk_GPU;
+// FUNCTIONS =======================================================================================
 
-/** @} */
+NH_API_RESULT nh_gfx_initVulkanGPUs(
+    nh_core_List *GPUs_p, nh_gfx_VulkanHost *Host_p
+);
 
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
+void nh_gfx_freeVulkanGPUs(
+    nh_core_List *GPUs_p
+);
 
-    NH_API_RESULT nh_vk_initGPUs(
-        nh_List *GPUs_p, nh_vk_Host *Host_p
-    );
-
-    void nh_vk_freeGPUs(
-        nh_List *GPUs_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_VULKAN_GPU_H

@@ -14,9 +14,6 @@
 #include "ExecutionContext.h"
 
 #include "../StaticSemantics/ParameterLists.h"
-
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>
@@ -24,11 +21,9 @@
 // ORDINARY FUNCTION OBJECT INTERNAL METHODS =======================================================
 
 nh_ecmascript_Completion nh_ecmascript_ordinaryCall(
-    nh_ecmascript_Object *This_p, nh_ecmascript_Any ThisArgument, nh_List ArgumentsList)
+    nh_ecmascript_Object *This_p, nh_ecmascript_Any ThisArgument, nh_core_List ArgumentsList)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
+    return nh_ecmascript_normalEmptyCompletion();
 }
 
 // DATA ============================================================================================
@@ -58,10 +53,8 @@ nh_ecmascript_Object *nh_ecmascript_ordinaryFunctionCreate(
     nh_ecmascript_Object *Prototype_p, void *SourceText_p, nh_ecmascript_ParseNode *ParameterList_p, 
     nh_ecmascript_ParseNode *Body_p, NH_ECMASCRIPT_THIS_MODE thisMode, nh_ecmascript_Environment *Scope_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     nh_ecmascript_Object *Function_p = nh_ecmascript_ordinaryObjectCreate(Prototype_p, lookup_p, 16);
-    NH_ECMASCRIPT_CHECK_NULL_2(NULL, Function_p)
+    NH_CORE_CHECK_NULL_2(NULL, Function_p)
 
     Function_p->InternalMethods_p = &InternalMethods;
 
@@ -90,26 +83,22 @@ NH_ECMASCRIPT_BEGIN()
     int len = nh_ecmascript_getExpectedArgumentCount(ParameterList_p);
     nh_ecmascript_setFunctionLength(Function_p, len);
 
-NH_ECMASCRIPT_END(Function_p)
+    return Function_p;
 }
 
 // https://tc39.es/ecma262/#sec-makeconstructor
 nh_ecmascript_Completion nh_ecmascript_makeConstructor(
     nh_ecmascript_Object *Function_p, bool writablePrototype, nh_ecmascript_Object *Prototype_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // TODO
 
-NH_ECMASCRIPT_END(nh_ecmascript_normalEmptyCompletion())
+    return nh_ecmascript_normalEmptyCompletion();
 }
 
 // https://tc39.es/ecma262/#sec-setfunctionname
 nh_ecmascript_Completion nh_ecmascript_setFunctionName(
     nh_ecmascript_Object *Function_p, nh_ecmascript_Any Name, char *prefix_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     char *propertyName_p = "name";
 
     nh_ecmascript_String PropertyName;
@@ -135,15 +124,13 @@ NH_ECMASCRIPT_BEGIN()
     Descriptor.Fields.Data.writable = false;
     Descriptor.Fields.Data.Value    = Name; 
 
-NH_ECMASCRIPT_END(nh_ecmascript_abstractDefinePropertyOrThrow(Function_p, nh_ecmascript_wrapString(&PropertyName), Descriptor))
+    return nh_ecmascript_abstractDefinePropertyOrThrow(Function_p, nh_ecmascript_wrapString(&PropertyName), Descriptor);
 }
 
 // https://tc39.es/ecma262/#sec-setfunctionlength
 nh_ecmascript_Completion nh_ecmascript_setFunctionLength(
     nh_ecmascript_Object *Function_p, NH_ECMASCRIPT_NUMBER len)
 {
-NH_ECMASCRIPT_BEGIN()
-
     char *propertyName_p = "length";
 
     nh_ecmascript_String PropertyName;
@@ -157,6 +144,6 @@ NH_ECMASCRIPT_BEGIN()
     Descriptor.Fields.Data.writable = false;
     Descriptor.Fields.Data.Value    = nh_ecmascript_wrapNumber(&len); 
 
-NH_ECMASCRIPT_END(nh_ecmascript_abstractDefinePropertyOrThrow(Function_p, nh_ecmascript_wrapString(&PropertyName), Descriptor))
+    return nh_ecmascript_abstractDefinePropertyOrThrow(Function_p, nh_ecmascript_wrapString(&PropertyName), Descriptor);
 }
 

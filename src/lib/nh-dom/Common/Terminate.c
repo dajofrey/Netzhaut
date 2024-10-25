@@ -9,8 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Terminate.h"
-#include "Macros.h"
-
 #include "../Interfaces/Document.h"
 
 #include <stdlib.h>
@@ -21,10 +19,7 @@
 
 NH_API_RESULT nh_dom_terminate()
 {
-NH_DOM_BEGIN()
-
-    NH_DOM_CHECK(nh_dom_freeDocumentModes())
-
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    NH_CORE_CHECK(nh_dom_freeDocumentModes())
+    return NH_API_SUCCESS;
 }
 

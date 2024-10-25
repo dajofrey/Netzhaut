@@ -19,7 +19,7 @@
  */
 
     typedef struct nh_IndexMap {
-        nh_HashMap MediaTypes;
+        nh_core_HashMap MediaTypes;
     } nh_IndexMap;
 
 /** @} */

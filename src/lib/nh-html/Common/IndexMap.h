@@ -19,7 +19,7 @@
  */
 
     typedef struct nh_html_IndexMap {
-        nh_HashMap Tags;
+        nh_core_HashMap Tags;
     } nh_html_IndexMap;
 
 /** @} */

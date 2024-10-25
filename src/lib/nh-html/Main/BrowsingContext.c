@@ -10,8 +10,6 @@
 
 #include "BrowsingContext.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-dom/Interfaces/Node.h"
 #include "../../nh-webidl/Runtime/Object.h"
 
@@ -21,15 +19,13 @@
 
 // DATA ============================================================================================
 
-nh_List NH_HTML_BROWSING_CONTEXT_GROUPS;
+nh_core_List NH_HTML_BROWSING_CONTEXT_GROUPS;
 
 // BROWSING CONTEXT ================================================================================
 
 static void nh_html_initBrowsingContext(
     nh_html_BrowsingContext *Context_p)
 {
-NH_HTML_BEGIN()
-
     nh_html_BrowsingContext BrowsingContext;
     BrowsingContext.WindowProxy_p = NULL;
     BrowsingContext.OpenerBrowsingContext_p = NULL;
@@ -43,16 +39,14 @@ NH_HTML_BEGIN()
     BrowsingContext.CreatorURL_p = NULL;
     BrowsingContext.CreatorBaseURL_p = NULL;
 
-NH_HTML_END(BrowsingContext)
+    return BrowsingContext;
 }
 
 nh_html_BrowsingContext *nh_html_createBrowsingContext(
     nh_webidl_Object *Creator_p, nh_webidl_Object *Embedder_p, nh_html_BrowsingContextGroup *Group_p)
 {
-NH_HTML_BEGIN()
-
     nh_html_BrowsingContext *NewContext_p = nh_core_allocate(sizeof(nh_html_BrowsingContext));
-    NH_HTML_CHECK_MEM(NULL, NewContext_p)
+    NH_CORE_CHECK_MEM(NULL, NewContext_p)
 
     *NewContext_p = nh_html_initBrowsingContext();
 
@@ -69,41 +63,37 @@ NH_HTML_BEGIN()
 
     nh_ecmascript_ExecutionContext *ExecutionContext_p = nh_html_createJavaScriptRealm(Agent_p, Window_p, WindowProxy_p);
 
-NH_HTML_END(NewContext_p)
+    return NewContext_p;
 }
 
 // BROWSING CONTEXT GROUP ==========================================================================
 
 static nh_html_BrowsingContextGroup nh_html_initBrowsingContextGroup()
 {
-NH_HTML_BEGIN()
-
     nh_html_BrowsingContextGroup Group;
     Group.BrowsingContexts = nh_core_initList(128);
     Group.AgentClusterMap = nh_core_initList(128);
     Group.HistoricalAgentClusterKeyMap = nh_core_initList(128);
     Group.crossOriginIsolationMode = NH_HTML_CROSS_ORIGIN_ISOLATION_MODE_NONE;
 
-NH_HTML_END(Group)
+    return Group;
 }
 
 // https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-browsing-context-group
 nh_html_BrowsingContextGroup *nh_html_createBrowsingContextGroup()
 {
-NH_HTML_BEGIN()
-
     nh_html_BrowsingContextGroup *NewGroup_p = nh_core_allocate(sizeof(nh_html_BrowsingContextGroup));
-    NH_HTML_CHECK_MEM_2(NULL, NewGroup_p)
+    NH_CORE_CHECK_MEM_2(NULL, NewGroup_p)
 
     *NewGroup_p = nh_html_initBrowsingContextGroup();
 
     nh_core_appendToList(&NH_HTML_BROWSING_CONTEXT_GROUPS, NewGroup_p);
 
     nh_html_BrowsingContext *NewContext_p = nh_html_createBrowsingContext(NULL, NULL, NewGroup_p);
-    NH_HTML_CHECK_MEM_2(NULL, NewContext_p)
+    NH_CORE_CHECK_MEM_2(NULL, NewContext_p)
 
     nh_core_appendToList(&NewGroup_p->BrowsingContexts, NewContext_p);
 
-NH_HTML_END(NewGroup_p)
+    return NewGroup_p;
 }
 

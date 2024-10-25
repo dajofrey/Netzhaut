@@ -1,48 +1,31 @@
 #ifndef NH_GFX_SURFACE_REQUIREMENTS_H
 #define NH_GFX_SURFACE_REQUIREMENTS_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-    
+// LICENSE NOTICE ==================================================================================
+ 
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "../Common/Includes.h"
 #include "../OpenGL/SurfaceRequirements.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+typedef struct nh_gfx_SurfaceRequirements {
+    nh_opengl_SurfaceRequirements OpenGL;
+} nh_gfx_SurfaceRequirements;
 
-    typedef struct nh_gfx_SurfaceRequirements {
-        nh_opengl_SurfaceRequirements OpenGL;
-    } nh_gfx_SurfaceRequirements;
+// FUNCTIONS =======================================================================================
 
-/** @} */
+NH_API_RESULT nh_gfx_createSurfaceRequirements(
+);
 
-/** @addtogroup lib_nh-gfx_typedefs
- *  @{
- */
+NH_API_RESULT nh_gfx_freeSurfaceRequirements(
+);
 
-    typedef nh_gfx_SurfaceRequirements *(*nh_gfx_getSurfaceRequirements_f)(
-    );
-
-/** @} */
-
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
-
-    NH_API_RESULT nh_gfx_createSurfaceRequirements(
-    );
-
-    NH_API_RESULT nh_gfx_freeSurfaceRequirements(
-    );
-
-/** @} */
-
-#endif 
+#endif // NH_GFX_SURFACE_REQUIREMENTS_H 

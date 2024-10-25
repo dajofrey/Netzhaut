@@ -204,12 +204,12 @@
     typedef struct nh_ecmascript_ParseNode {
         NH_ECMASCRIPT_PARSE_NODE type;
         nh_ecmascript_InputElement *Value_p;
-        nh_List Children;
+        nh_core_List Children;
     } nh_ecmascript_ParseNode;
 
     typedef struct nh_ecmascript_ParseResult {
         nh_ecmascript_ParseNode *Node_p;
-        nh_List SyntaxErrors;
+        nh_core_List SyntaxErrors;
     } nh_ecmascript_ParseResult;
 
 /** @} */
@@ -219,7 +219,7 @@
  */
 
     nh_ecmascript_ParseResult nh_ecmascript_parseText(
-        nh_Array InputElements, NH_ECMASCRIPT_PARSE_NODE goalSymbol
+        nh_core_Array InputElements, NH_ECMASCRIPT_PARSE_NODE goalSymbol
     );
 
 /** @} */

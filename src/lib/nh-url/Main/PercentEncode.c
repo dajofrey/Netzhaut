@@ -26,7 +26,7 @@
 // PERCENT ENCODE ==================================================================================
 
 void nh_url_percentEncodeByte(
-    char byte, nh_String *Output_p)
+    char byte, nh_core_String *Output_p)
 {
 NH_URL_BEGIN()
 
@@ -42,13 +42,13 @@ NH_URL_BEGIN()
 NH_URL_END()
 }
 
-nh_String nh_url_percentEncodeAfterEncoding(
+nh_core_String nh_url_percentEncodeAfterEncoding(
     NH_ENCODING_NAME encoding, nh_encoding_UTF32String Input, NH_URL_PERCENT_ENCODE_SET percentEncodeSet, 
     bool spaceAsPlus)
 {
 NH_URL_BEGIN()
 
-    nh_String Output = nh_core_initString(128);
+    nh_core_String Output = nh_core_initString(128);
 
     int potentialError = 0;
     nh_encoding_String EncodeOutput = nh_encoding_encode(encoding, Input.p, Input.length);
@@ -73,14 +73,14 @@ NH_URL_BEGIN()
 NH_URL_END(Output)
 }
 
-nh_String nh_url_percentEncodeAfterEncodingUTF8(
+nh_core_String nh_url_percentEncodeAfterEncodingUTF8(
     nh_encoding_UTF32String Input, NH_URL_PERCENT_ENCODE_SET percentEncodeSet)
 {
 NH_URL_BEGIN()
 NH_URL_END(nh_url_percentEncodeAfterEncoding(NH_ENCODING_NAME_UTF_8, Input, percentEncodeSet, false))
 }
 
-nh_String nh_url_percentEncodeCodepointAfterEncodingUTF8(
+nh_core_String nh_url_percentEncodeCodepointAfterEncodingUTF8(
     NH_ENCODING_UTF32 codepoint, NH_URL_PERCENT_ENCODE_SET percentEncodeSet)
 {
 NH_URL_BEGIN()
@@ -88,7 +88,7 @@ NH_URL_BEGIN()
     nh_encoding_UTF32String Input = nh_encoding_initUTF32(1);
     nh_encoding_appendUTF32(&Input, &codepoint, 1);
 
-    nh_String Output = nh_url_percentEncodeAfterEncoding(NH_ENCODING_NAME_UTF_8, Input, percentEncodeSet, false);
+    nh_core_String Output = nh_url_percentEncodeAfterEncoding(NH_ENCODING_NAME_UTF_8, Input, percentEncodeSet, false);
 
     nh_encoding_freeUTF32(&Input);
 
@@ -97,12 +97,12 @@ NH_URL_END(Output)
 
 // PERCENT DECODE ==================================================================================
 
-nh_String nh_url_percentDecode(
-    nh_String Input)
+nh_core_String nh_url_percentDecode(
+    nh_core_String Input)
 {
 NH_URL_BEGIN()
 
-    nh_String Output = nh_core_initString(128);
+    nh_core_String Output = nh_core_initString(128);
 
     for (int i = 0; i < Input.length; ++i)
     {
@@ -125,13 +125,13 @@ NH_URL_BEGIN()
 NH_URL_END(Output)
 }
 
-nh_String nh_url_percentDecodeUTF8(
+nh_core_String nh_url_percentDecodeUTF8(
     NH_ENCODING_UTF32 *codepoints_p, int length)
 {
 NH_URL_BEGIN()
 
-    nh_String String = nh_encoding_encodeUTF8(codepoints_p, length);
-    nh_String Output = nh_url_percentDecode(String);
+    nh_core_String String = nh_encoding_encodeUTF8(codepoints_p, length);
+    nh_core_String Output = nh_url_percentDecode(String);
     nh_core_freeString(&String);
 
 NH_URL_END(Output)

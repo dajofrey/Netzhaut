@@ -10,8 +10,6 @@
 
 #include "EventTarget.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/Util/List.h"
 #include "../../nh-core/System/Memory.h"
 
@@ -28,15 +26,10 @@
 NH_API_RESULT nh_dom_initializeEventTarget(
     nh_webidl_Object *EventTarget_p)
 {
-NH_DOM_BEGIN()
+    EventTarget_p->internal_p = nh_core_allocate(sizeof(nh_core_List));
+    NH_CORE_CHECK_MEM(EventTarget_p->internal_p)
 
-    EventTarget_p->internal_p = nh_core_allocate(sizeof(nh_List));
-    NH_DOM_CHECK_MEM(EventTarget_p->internal_p)
+    *((nh_core_List*)EVENT_LISTENERS) = nh_core_initList(16);
 
-    *((nh_List*)EVENT_LISTENERS) = nh_core_initList(16);
-
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// API =============================================================================================
-

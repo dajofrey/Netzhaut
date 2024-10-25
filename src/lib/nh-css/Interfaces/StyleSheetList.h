@@ -21,7 +21,7 @@
         nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_StyleSheetObject *StyleSheet_p
     );
 
-    nh_List *nh_css_getStyleSheetListData(
+    nh_core_List *nh_css_getStyleSheetListData(
         nh_css_StyleSheetListObject *StyleSheetList_p
     );
 

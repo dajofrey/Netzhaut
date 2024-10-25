@@ -20,7 +20,7 @@
  *  @{
  */
 
-    #define nh_HashMap map_t 
+    #define nh_core_HashMap map_t 
 
 /** @} */
 
@@ -28,19 +28,19 @@
  *  @{
  */
 
-    nh_HashMap nh_core_createHashMap(
+    nh_core_HashMap nh_core_createHashMap(
     );
     
     NH_API_RESULT nh_core_addToHashMap(
-        nh_HashMap *Map_p, char *key_p, void *value_p
+        nh_core_HashMap *Map_p, char *key_p, void *value_p
     );
     
     void nh_core_freeHashMap(
-        nh_HashMap Map
+        nh_core_HashMap Map
     );
 
     void *nh_core_getFromHashMap(
-        nh_HashMap *Map_p, char *key_p
+        nh_core_HashMap *Map_p, char *key_p
     );
 
 /** @} */

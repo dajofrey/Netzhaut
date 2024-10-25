@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Terminate.h"
-#include "Macros.h"
 #include "IndexMap.h"
 
 #include <stdlib.h>
@@ -20,10 +19,7 @@
 
 NH_API_RESULT nh_html_terminate()
 {
-NH_HTML_BEGIN()
-
     nh_html_freeIndexMap();
-
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

@@ -49,7 +49,7 @@
     } nh_GPU;
     
     typedef struct nh_SystemUpdater {
-        nh_SystemTime LastUpdate;
+        nh_core_SystemTime LastUpdate;
         double updateIntervalInSeconds;
     } nh_SystemUpdater;
 

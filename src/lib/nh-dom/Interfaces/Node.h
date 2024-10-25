@@ -29,7 +29,7 @@
         nh_dom_Node *Node_p, nh_webidl_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index
     );
 
-    nh_List *nh_dom_getNodeChildren(
+    nh_core_List *nh_dom_getNodeChildren(
         nh_dom_Node *Node_p
     );
 
@@ -42,18 +42,18 @@
     );
 
     NH_API_RESULT nh_dom_setSpecifiedPropertyValues(
-        nh_dom_Node *Node_p, nh_Array SpecifiedPropertyValues
+        nh_dom_Node *Node_p, nh_core_Array SpecifiedPropertyValues
     );
 
     NH_API_RESULT nh_dom_setComputedPropertyValues(
-        nh_dom_Node *Node_p, nh_List ComputedPropertyValues
+        nh_dom_Node *Node_p, nh_core_List ComputedPropertyValues
     );
 
-    nh_Array *nh_dom_getSpecifiedPropertyValues(
+    nh_core_Array *nh_dom_getSpecifiedPropertyValues(
         nh_dom_Node *Node_p
     );
 
-    nh_List *nh_dom_getComputedPropertyValues(
+    nh_core_List *nh_dom_getComputedPropertyValues(
         nh_dom_Node *Node_p
     );
 

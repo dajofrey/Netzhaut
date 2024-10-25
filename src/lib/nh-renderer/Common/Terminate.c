@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Terminate.h"
-#include "Macros.h"
 
 #include "../Vulkan/Pipeline.h"
 
@@ -21,19 +20,17 @@
 #include <string.h>
 #include <stdio.h>
 
-// DEBUG ===========================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_renderer_terminate()
 {
-NH_RENDERER_BEGIN()
-
     for (int i = 0; i < NH_VULKAN.GPUs.size; ++i) 
     {
-        nh_vk_GPU *GPU_p = NH_VULKAN.GPUs.pp[i];
-        nh_renderer_vk_destroyPipelines(&GPU_p->Driver, GPU_p->Renderer.Pipelines_p);
+        nh_gfx_VulkanGPU *GPU_p = NH_VULKAN.GPUs.pp[i];
+        nh_renderer_destroyVulkanPipelines(&GPU_p->Driver, GPU_p->Renderer.Pipelines_p);
         nh_core_free(GPU_p->Renderer.Pipelines_p);
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

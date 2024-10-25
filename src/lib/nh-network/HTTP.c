@@ -206,7 +206,7 @@ NH_NETWORK_BEGIN()
     for (int i = 0; i < Request.Headers.count; ++i) 
     {
         char headers_p[2048] = {'\0'};
-        NH_NETWORK_CHECK(nh_network_getHTTPHeader(nh_core_getFromLinkedList(&Request.Headers, i), headers_p))
+        NH_CORE_CHECK(nh_network_getHTTPHeader(nh_core_getFromLinkedList(&Request.Headers, i), headers_p))
         strcpy(set_p + index, headers_p);
         index += strlen(headers_p);
     }
@@ -223,8 +223,8 @@ static NH_API_RESULT nh_network_sendHTTPRequest(
 NH_NETWORK_BEGIN()
 
     char request_p[2048] = {'\0'};
-    NH_NETWORK_CHECK(nh_network_getHTTPRequest(Request, path_p == NULL ? "/" : path_p, request_p))
-    NH_NETWORK_CHECK(nh_network_send(ClientSocket_p, request_p, sizeof(char) * strlen(request_p), secure))
+    NH_CORE_CHECK(nh_network_getHTTPRequest(Request, path_p == NULL ? "/" : path_p, request_p))
+    NH_CORE_CHECK(nh_network_send(ClientSocket_p, request_p, sizeof(char) * strlen(request_p), secure))
  
 NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }
@@ -250,7 +250,7 @@ NH_API_RESULT nh_network_appendHTTPHeader(
 NH_NETWORK_BEGIN()
 
     nh_network_HTTPHeader *Header_p = nh_core_allocate(sizeof(nh_network_HTTPHeader));
-    NH_NETWORK_CHECK_MEM(Header_p)
+    NH_CORE_CHECK_MEM(Header_p)
 
     Header_p->type = type;
     Header_p->value_p = nh_core_allocateBytes(value_p);
@@ -290,7 +290,7 @@ static NH_API_RESULT nh_network_getHTTPHeader(
 {
 NH_NETWORK_BEGIN()
 
-    nh_String String = nh_core_initString(128); 
+    nh_core_String String = nh_core_initString(128); 
 
     NH_CHECK(NH_API_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, "\r\n"))
     NH_CHECK(NH_API_ERROR_BAD_STATE, nh_core_appendFormatToString(&String, (char*)headerNames_pp[Header_p->type]))
@@ -340,11 +340,11 @@ NH_NETWORK_BEGIN()
 
     nh_network_HTTPRequest Request = nh_network_initHTTPRequest(NH_NETWORK_HTTP_REQUEST_GET);
 
-    NH_NETWORK_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_HOST, host_p))
-    NH_NETWORK_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_CONNECTION, "close"))
-    NH_NETWORK_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"))
-    NH_NETWORK_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_ACCEPT_LANGUAGE, "*"))
-    NH_NETWORK_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_ACCEPT, "*/*"))
+    NH_CORE_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_HOST, host_p))
+    NH_CORE_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_CONNECTION, "close"))
+    NH_CORE_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"))
+    NH_CORE_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_ACCEPT_LANGUAGE, "*"))
+    NH_CORE_CHECK(nh_network_appendHTTPHeader(&Request, NH_NETWORK_HTTP_HEADER_ACCEPT, "*/*"))
  
     NH_API_RESULT result = nh_network_sendHTTPRequest(Socket_p, Request, path_p, secure);
 

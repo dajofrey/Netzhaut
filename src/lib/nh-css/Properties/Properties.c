@@ -11,8 +11,6 @@
 #include "Properties.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/Array.h"
 
@@ -434,12 +432,10 @@ static char *NH_CSS_INITIAL_PROPERTY_VALUES_PP[] =
 
 static nh_css_ComponentValueData NH_CSS_INITIAL_PROPERTY_VALUES_P[NH_CSS_PROPERTY_COUNT];
 
-// INIT INITIAL PROEPRTY VALUES ====================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_createInitialPropertyValues()
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) 
     {
         if (strlen(NH_CSS_INITIAL_PROPERTY_VALUES_PP[i]) == 0) {
@@ -455,13 +451,11 @@ NH_CSS_BEGIN()
         NH_CSS_INITIAL_PROPERTY_VALUES_P[i] = Data;
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 nh_css_ComponentValueData *nh_css_getInitialComponentValueData(
     NH_CSS_PROPERTY property)
 {
-NH_CSS_BEGIN()
-NH_CSS_END(&NH_CSS_INITIAL_PROPERTY_VALUES_P[property])
+    return &NH_CSS_INITIAL_PROPERTY_VALUES_P[property];
 }
-

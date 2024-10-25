@@ -43,9 +43,9 @@
  */
 
     typedef struct nh_css_Filter {
-        nh_Array DeclaredValues;
-        nh_List DeclaredValueLists;
-        nh_Array DeclaredValueListsArray;
+        nh_core_Array DeclaredValues;
+        nh_core_List DeclaredValueLists;
+        nh_core_Array DeclaredValueListsArray;
     } nh_css_Filter;
 
     typedef struct nh_css_DeclaredValue {
@@ -61,7 +61,7 @@
  */
 
     nh_css_Filter nh_css_filterDeclarations(
-        nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, nh_List UserStyleSheets
+        nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, nh_core_List UserStyleSheets
     );
 
 /** @} */

@@ -10,8 +10,6 @@
 
 #include "Channel.h"
 
-#include "../Common/Macros.h"
-
 #include <sys/time.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -23,69 +21,53 @@
 NH_API_RESULT nh_core_initChannel(
     nh_Channel *Channel_p)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
     Channel_p->rw_p[0] = 0;
     Channel_p->rw_p[1] = 0;
 #endif
-
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_openChannel(
     nh_Channel *Channel_p)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
     pipe(Channel_p->rw_p);
 #endif
-
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_closeChannelReadAccess(
     nh_Channel *Channel_p)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
     close(Channel_p->rw_p[0]);
 #endif
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 void nh_closeChannelWriteAccess(
     nh_Channel *Channel_p)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
     close(Channel_p->rw_p[1]);
 #endif
-
-NH_CORE_SILENT_END()
+    return;
 }
 
 int nh_core_writeToChannel(
     nh_Channel *Channel_p, char *bytes_p, int byteCount)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
     int result = write(Channel_p->rw_p[1], bytes_p, byteCount);
 #endif
-
-NH_CORE_END(result)
+    return result;
 }
 
 char *nh_readFromChannel(
     nh_Channel *Channel_p, size_t *size_p)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
 
     struct timeval timeout;
@@ -112,11 +94,10 @@ NH_CORE_BEGIN()
             buff_p = realloc(buff_p, offset + 128);
             memset(buff_p + offset, '\0', 128);
         }
-        NH_CORE_END(buff_p);
+        return buff_p;;
     }
 
 #endif
 
-NH_CORE_END(NULL)
+    return NULL;
 }
-

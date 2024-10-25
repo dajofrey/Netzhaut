@@ -9,13 +9,10 @@
 // INCLUDES ========================================================================================
 
 #include "Log.h"
-#include "Macros.h"
 
 #include "../Interfaces/StyleDeclaration.h"
 #include "../Interfaces/StyleRule.h"
-
 #include "../Main/FormattingContext.h"
-
 #include "../Parser/ComponentParser.h"
 
 #include "../../nh-encoding/Encodings/UTF8.h"
@@ -56,8 +53,6 @@ NH_API_RESULT _nh_css_logDiagnosticEnd(
 static NH_API_RESULT nh_css_stringifyToken(
     nh_css_Token *Token_p, char *token_p)
 {
-NH_CSS_BEGIN()
-
     if (Token_p->type == NH_CSS_TOKEN_IDENT 
     ||  Token_p->type == NH_CSS_TOKEN_FUNCTION 
     ||  Token_p->type == NH_CSS_TOKEN_AT_KEYWORD 
@@ -87,14 +82,12 @@ NH_CSS_BEGIN()
         sprintf(token_p, "%s", nh_css_getTokenName(Token_p->type)); 
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logTokens(
-    char *logId_p, nh_Array *Tokens_p)
+    char *logId_p, nh_core_Array *Tokens_p)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char node_p[255] = {'\0'};
     sprintf(node_p, "nh-css:Sheet:%s:Tokens", logId_p);
@@ -106,14 +99,14 @@ NH_CSS_BEGIN()
     for (int i = 0; i < Tokens_p->length; ++i)
     {
         nh_css_Token *Token_p = &((nh_css_Token*)Tokens_p->p)[i];
-        NH_CSS_CHECK(nh_css_stringifyToken(Token_p, message_p))
+        NH_CORE_CHECK(nh_css_stringifyToken(Token_p, message_p))
 
         nh_core_sendLogMessage(node_p, NULL, message_p);
 
         memset(message_p, 0, NH_CSS_MAX_MESSAGE);
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // LOG RULES =======================================================================================
@@ -123,8 +116,6 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_css_logComponentValue(
     char *node_p, nh_css_ComponentValue *Value_p, char *token_p, char *message_p, char *indent_p, int depth)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < depth * 2; ++i) {indent_p[i] = ' ';}
 
     if (Value_p->type == NH_CSS_COMPONENT_VALUE_PRESERVED_TOKEN) {
@@ -141,7 +132,7 @@ NH_CSS_BEGIN()
         memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 
         for (int i = 0; i < Value_p->Block.ComponentValues.length; ++i) {
-            NH_CSS_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Value_p->Block.ComponentValues.p)[i], token_p, message_p, indent_p, depth + 1))
+            NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Value_p->Block.ComponentValues.p)[i], token_p, message_p, indent_p, depth + 1))
         }
 
         for (int i = 0; i < depth * 2; ++i) {indent_p[i] = ' ';}
@@ -161,7 +152,7 @@ NH_CSS_BEGIN()
         nh_encoding_freeUTF8(&Name);
 
         for (int i = 0; i < Value_p->Function.ComponentValues.length; ++i) {
-            NH_CSS_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Value_p->Function.ComponentValues.p)[i], token_p, message_p, indent_p, depth + 1))
+            NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Value_p->Function.ComponentValues.p)[i], token_p, message_p, indent_p, depth + 1))
         }
     }
 
@@ -169,14 +160,12 @@ NH_CSS_BEGIN()
     memset(token_p, 0, NH_CSS_MAX_TOKEN);
     memset(indent_p, 0, NH_CSS_MAX_INDENT);
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logRules(
-    nh_css_StyleSheetObject *StyleSheet_p, nh_Array *Rules_p)
+    nh_css_StyleSheetObject *StyleSheet_p, nh_core_Array *Rules_p)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
@@ -208,16 +197,16 @@ NH_CSS_BEGIN()
 
         if (Rule_p->Prelude.length){nh_core_sendLogMessage(node_p, NULL, "  Prelude");}
         for (int k = 0; k < Rule_p->Prelude.length; ++k) {
-            NH_CSS_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Rule_p->Prelude.p)[k], token_p, message_p, indent_p, 4))
+            NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Rule_p->Prelude.p)[k], token_p, message_p, indent_p, 4))
         }
 
         if (Rule_p->Block.ComponentValues.length){nh_core_sendLogMessage(node_p, NULL, "  Block");}
         for (int k = 0; k < Rule_p->Block.ComponentValues.length; ++k) {
-            NH_CSS_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Rule_p->Block.ComponentValues.p)[k], token_p, message_p, indent_p, 4))
+            NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Rule_p->Block.ComponentValues.p)[k], token_p, message_p, indent_p, 4))
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // LOG STYLE RULES =================================================================================
@@ -225,13 +214,11 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_css_logSelectorParseNode(
     char *node_p, nh_css_SelectorParseNode *Node_p, int depth, char *message_p, char *indent_p)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < depth * 2; ++i) {indent_p[i] = ' ';}
 
     if (Node_p->Token_p != NULL) {
         char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
-        NH_CSS_CHECK(nh_css_stringifyToken(Node_p->Token_p, token_p))
+        NH_CORE_CHECK(nh_css_stringifyToken(Node_p->Token_p, token_p))
         sprintf(message_p, "%s%s", indent_p, token_p);
     }
     else {
@@ -244,21 +231,19 @@ NH_CSS_BEGIN()
     memset(indent_p, 0, NH_CSS_MAX_INDENT);
 
     for (int i = 0; i < Node_p->Children.size; ++i) {
-        NH_CSS_CHECK(nh_css_logSelectorParseNode(node_p, Node_p->Children.pp[i], depth + 1, message_p, indent_p))
+        NH_CORE_CHECK(nh_css_logSelectorParseNode(node_p, Node_p->Children.pp[i], depth + 1, message_p, indent_p))
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_css_logStyleRule(
     char *node_p, char *message_p, char *indent_p, nh_css_StyleRuleObject *Rule_p)
 {
-NH_CSS_BEGIN()
-
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
-    nh_Array *Declarations_p = nh_css_getStyleDeclarationData(nh_css_getStyleRuleDeclaration(Rule_p));
+    nh_core_Array *Declarations_p = nh_css_getStyleDeclarationData(nh_css_getStyleRuleDeclaration(Rule_p));
 
-    NH_CSS_CHECK(nh_css_logSelectorParseNode(node_p, nh_css_getStyleRuleSelectors(Rule_p), 1, message_p, indent_p))
+    NH_CORE_CHECK(nh_css_logSelectorParseNode(node_p, nh_css_getStyleRuleSelectors(Rule_p), 1, message_p, indent_p))
 
     for (int i = 0; i < Declarations_p->length; ++i) 
     {
@@ -271,18 +256,16 @@ NH_CSS_BEGIN()
         memset(token_p, 0, NH_CSS_MAX_TOKEN);
 
         for (int k = 0; k < Declaration_p->ComponentValues.length; ++k) {
-            NH_CSS_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Declaration_p->ComponentValues.p)[k], token_p, message_p, indent_p, 2))
+            NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Declaration_p->ComponentValues.p)[k], token_p, message_p, indent_p, 2))
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logRuleObjects(
-    nh_css_StyleSheetObject *StyleSheet_p, nh_List *Rules_p)
+    nh_css_StyleSheetObject *StyleSheet_p, nh_core_List *Rules_p)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
 
@@ -301,13 +284,13 @@ NH_CSS_BEGIN()
         }
 
         if (nh_css_getStyleRule(Rule_p)) {
-            NH_CSS_CHECK(nh_css_logStyleRule(node_p, message_p, indent_p, nh_css_getStyleRule(Rule_p)))
+            NH_CORE_CHECK(nh_css_logStyleRule(node_p, message_p, indent_p, nh_css_getStyleRule(Rule_p)))
         }
 
         memset(message_p, 0, NH_CSS_MAX_MESSAGE);
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // LOG FILTER ======================================================================================
@@ -315,8 +298,6 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_css_logDeclaredValue(
     char *node_p, char *message_p, char *indent_p, char *token_p, nh_css_DeclaredValue *Value_p)
 {
-NH_CSS_BEGIN()
-
     nh_core_sendLogMessage(node_p, NULL, "  {");
 
     sprintf(message_p, "    direct: %d", Value_p->direct);
@@ -330,19 +311,17 @@ NH_CSS_BEGIN()
     nh_core_sendLogMessage(node_p, NULL, "    value:");
 
     for (int i = 0; i < Value_p->Declaration_p->ComponentValues.length; ++i) {
-        NH_CSS_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Value_p->Declaration_p->ComponentValues.p)[i], token_p, message_p, indent_p, 6))
+        NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Value_p->Declaration_p->ComponentValues.p)[i], token_p, message_p, indent_p, 6))
     }
 
     nh_core_sendLogMessage(node_p, NULL, "  }");
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logFilter(
     nh_css_LogContext *LogContext_p, nh_css_Filter *Filter_p)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char node_p[1024] = {'\0'};
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
@@ -352,17 +331,17 @@ NH_CSS_BEGIN()
 
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i)
     {
-        nh_List *List_p = Filter_p->DeclaredValueLists.pp[i];
+        nh_core_List *List_p = Filter_p->DeclaredValueLists.pp[i];
 
         if (List_p) {
             nh_core_sendLogMessage(node_p, NULL, (char*)NH_CSS_PROPERTY_NAMES_PP[i]);
             for (int j = 0; j < List_p->size; ++j) {
-                NH_CSS_CHECK(nh_css_logDeclaredValue(node_p, message_p, indent_p, token_p, List_p->pp[j]))
+                NH_CORE_CHECK(nh_css_logDeclaredValue(node_p, message_p, indent_p, token_p, List_p->pp[j]))
             }
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // LOG SPECIFIED/COMPUTED VALUES ===================================================================
@@ -370,8 +349,6 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_css_logValue(
     char *node_p, char *message_p, nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
-
     if (!Value_p->Common.Origin_p) {
         sprintf(message_p, "  origin: initial");
     }
@@ -412,14 +389,12 @@ NH_CSS_BEGIN()
 
     nh_core_sendLogMessage(node_p, NULL, " ");
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logSpecifiedValues(
-    nh_css_LogContext *LogContext_p, nh_Array *SpecifiedValues_p)
+    nh_css_LogContext *LogContext_p, nh_core_Array *SpecifiedValues_p)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char node_p[1024] = {'\0'};
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
@@ -431,17 +406,15 @@ NH_CSS_BEGIN()
     {
         nh_css_Value *Value_p = &((nh_css_Value*)SpecifiedValues_p->p)[i];
         nh_core_sendLogMessage(node_p, NULL, (char*)NH_CSS_PROPERTY_NAMES_PP[i]);
-        NH_CSS_CHECK(nh_css_logValue(node_p, message_p, Value_p))
+        NH_CORE_CHECK(nh_css_logValue(node_p, message_p, Value_p))
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logComputedValues(
-    nh_css_LogContext *LogContext_p, nh_List *ComputedValues_p)
+    nh_css_LogContext *LogContext_p, nh_core_List *ComputedValues_p)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char node_p[1024] = {'\0'};
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
@@ -452,11 +425,11 @@ NH_CSS_BEGIN()
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {
         nh_core_sendLogMessage(node_p, NULL, (char*)NH_CSS_PROPERTY_NAMES_PP[i]);
         if (ComputedValues_p->pp[i]) {
-            NH_CSS_CHECK(nh_css_logValue(node_p, message_p, ComputedValues_p->pp[i]))
+            NH_CORE_CHECK(nh_css_logValue(node_p, message_p, ComputedValues_p->pp[i]))
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // SOURCE TREE ========================================================================================
@@ -464,8 +437,6 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_css_logSource(
     char *node_p, nh_css_Source *Source_p, char *message_p, char *indent_p, int depth)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < depth; ++i) {indent_p[i] = ' ';}
 
     if (Source_p->type == NH_CSS_SOURCE_TEXT_NODE) {
@@ -488,29 +459,27 @@ NH_CSS_BEGIN()
 
     if (Source_p->type == NH_CSS_SOURCE_ELEMENT) {
         for (int i = 0; i < Source_p->Element.Children.size; ++i) {
-            NH_CSS_CHECK(nh_css_logSource(node_p, Source_p->Element.Children.pp[i], message_p, indent_p, depth + 2))
+            NH_CORE_CHECK(nh_css_logSource(node_p, Source_p->Element.Children.pp[i], message_p, indent_p, depth + 2))
         }
     }
 
     memset(indent_p, 0, NH_CSS_MAX_INDENT);
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logSourceTree(
     nh_css_Canvas *Canvas_p, nh_css_Source *Root_p)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
     char node_p[1024] = {'\0'};
 
     sprintf(node_p, "nh-css:Canvas:%p:SourceTree", Canvas_p);
 
-    NH_CSS_CHECK(nh_css_logSource(node_p, Root_p, message_p, indent_p, 0))
+    NH_CORE_CHECK(nh_css_logSource(node_p, Root_p, message_p, indent_p, 0))
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // BOX TREE ========================================================================================
@@ -518,8 +487,6 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_css_getBoxTreeNodeInfo(
     nh_css_BoxTreeNode *Node_p, char *info_p)
 {
-NH_CSS_BEGIN()
-
     if (Node_p->FormattingContexts_pp[0] && Node_p->FormattingContexts_pp[1]) {
         sprintf(info_p, Node_p->Source_p ? "%s %p (%s %p, %s %p)" : "%s %p <anonymous> (%s %p, %s %p)", nh_css_getBoxTreeNodeName(Node_p->type), Node_p, nh_css_inPrimaryFormattingContextName(Node_p->FormattingContexts_pp[0]->type), Node_p->FormattingContexts_pp[0], nh_css_inPrimaryFormattingContextName(Node_p->FormattingContexts_pp[1]->type), Node_p->FormattingContexts_pp[1]);
     }
@@ -530,18 +497,16 @@ NH_CSS_BEGIN()
         sprintf(info_p, Node_p->Source_p ? "%s %p" : "%s %p <anonymous>", nh_css_getBoxTreeNodeName(Node_p->type), Node_p);
     }
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_css_logBoxTreeNode(
     char *node_p, nh_css_BoxTreeNode *Node_p, char *message_p, char *indent_p, int depth)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < depth; ++i) {indent_p[i] = ' ';}
 
     char info_p[512] = {0};
-    NH_CSS_CHECK(nh_css_getBoxTreeNodeInfo(Node_p, info_p))
+    NH_CORE_CHECK(nh_css_getBoxTreeNodeInfo(Node_p, info_p))
 
     if (Node_p->type == NH_CSS_BOX_TREE_NODE_TEXT_RUN) {
         nh_encoding_UTF8String UTF8 = nh_encoding_encodeUTF8(Node_p->Source_p->TextNode.String.p, Node_p->Source_p->TextNode.String.length);
@@ -562,7 +527,7 @@ NH_CSS_BEGIN()
 //            nh_encoding_freeUTF8(&UTF8);
 
     for (int i = 0; i < Node_p->Children.size; ++i) {
-        NH_CSS_CHECK(nh_css_logBoxTreeNode(node_p, Node_p->Children.pp[i], message_p, indent_p, depth + 2))
+        NH_CORE_CHECK(nh_css_logBoxTreeNode(node_p, Node_p->Children.pp[i], message_p, indent_p, depth + 2))
 
 //        sprintf(message_p, "%sValues   : margin-top:%d,margin-right:%d,margin-bottom:%d,margin-left:%d,border-top-width:%d,border-right-width:%d,border-bottom-width:%d,border-left-width:%d,padding-top:%d,padding-right:%d,padding-bottom:%d,padding-left:%d,background-color:(%.2f,%.2f,%.2f,%.2f)", indent_p, Fragment_p->Values.marginTop, Fragment_p->Values.marginRight, Fragment_p->Values.marginBottom, Fragment_p->Values.marginLeft, Fragment_p->Values.borderTop, Fragment_p->Values.borderRight, Fragment_p->Values.borderBottom, Fragment_p->Values.borderLeft, Fragment_p->Values.paddingTop, Fragment_p->Values.paddingRight, Fragment_p->Values.paddingBottom, Fragment_p->Values.paddingLeft, Fragment_p->Values.BackgroundColor.r,  Fragment_p->Values.BackgroundColor.g,  Fragment_p->Values.BackgroundColor.b,  Fragment_p->Values.BackgroundColor.a);
 //        nh_core_sendLogMessage(node_p, NULL, message_p);
@@ -571,23 +536,21 @@ NH_CSS_BEGIN()
 
     memset(indent_p, 0, NH_CSS_MAX_INDENT);
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logBoxTree(
     nh_css_Canvas *Canvas_p, nh_css_BoxTree Tree)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
     char node_p[1024] = {'\0'};
 
     sprintf(node_p, "nh-css:Canvas:%p:BoxTree", Canvas_p);
 
-    NH_CSS_CHECK(nh_css_logBoxTreeNode(node_p, Tree.Root_p, message_p, indent_p, 0))
+    NH_CORE_CHECK(nh_css_logBoxTreeNode(node_p, Tree.Root_p, message_p, indent_p, 0))
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // FRAGMENT TREE ===================================================================================
@@ -595,8 +558,6 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_css_logFragment(
     char *logId_p, nh_css_Fragment *Fragment_p, char *message_p, char *indent_p, int depth)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < depth; ++i) {indent_p[i] = ' ';}
 
     if (Fragment_p->Node_p->type == NH_CSS_BOX_TREE_NODE_ROOT_INLINE) {
@@ -606,7 +567,7 @@ NH_CSS_BEGIN()
     }
 
     char node_p[512] = {0};
-    NH_CSS_CHECK(nh_css_getBoxTreeNodeInfo(Fragment_p->Node_p, node_p))
+    NH_CORE_CHECK(nh_css_getBoxTreeNodeInfo(Fragment_p->Node_p, node_p))
 
     sprintf(message_p, Fragment_p->type == NH_CSS_FRAGMENT_TEXT ? "%sText Fragment %p - %s" : "%sBox Fragment %p - %s", indent_p, Fragment_p, node_p);
     nh_core_sendLogMessage(logId_p, NULL, message_p);
@@ -635,27 +596,24 @@ NH_CSS_BEGIN()
     }
 
     for (int i = 0; i < Fragment_p->Children.size; ++i) {
-        NH_CSS_CHECK(nh_css_logFragment(logId_p, Fragment_p->Children.pp[i], message_p, indent_p, depth + 2))
+        NH_CORE_CHECK(nh_css_logFragment(logId_p, Fragment_p->Children.pp[i], message_p, indent_p, depth + 2))
     }
 
     memset(indent_p, 0, NH_CSS_MAX_INDENT);
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_logFragmentTree(
     nh_css_Canvas *Canvas_p, nh_css_FragmentTree Tree)
 {
-NH_CSS_BEGIN()
-
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
     char tmp_p[1024] = {'\0'};
 
     sprintf(tmp_p, "nh-css:Canvas:%p:FragmentTree", Canvas_p);
 
-    NH_CSS_CHECK(nh_css_logFragment(tmp_p, Tree.Root_p, message_p, indent_p, 0))
+    NH_CORE_CHECK(nh_css_logFragment(tmp_p, Tree.Root_p, message_p, indent_p, 0))
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-

@@ -34,15 +34,15 @@
     );
 
     NH_API_RESULT nh_css_logTokens(
-        char *logId_p, nh_Array *Tokens_p
+        char *logId_p, nh_core_Array *Tokens_p
     );
 
     NH_API_RESULT nh_css_logRules(
-        nh_css_StyleSheetObject *Sheet_p, nh_Array *Rules_p
+        nh_css_StyleSheetObject *Sheet_p, nh_core_Array *Rules_p
     );
 
     NH_API_RESULT nh_css_logRuleObjects(
-        nh_css_StyleSheetObject *Sheet_p, nh_List *StyleRules_p
+        nh_css_StyleSheetObject *Sheet_p, nh_core_List *StyleRules_p
     );
 
     NH_API_RESULT nh_css_logFilter(
@@ -50,11 +50,11 @@
     );
 
     NH_API_RESULT nh_css_logSpecifiedValues(
-        nh_css_LogContext *LogContext_p, nh_Array *SpecifiedValues_p
+        nh_css_LogContext *LogContext_p, nh_core_Array *SpecifiedValues_p
     );
 
     NH_API_RESULT nh_css_logComputedValues(
-        nh_css_LogContext *LogContext_p, nh_List *ComputedValues_p
+        nh_css_LogContext *LogContext_p, nh_core_List *ComputedValues_p
     );
 
 //    NH_API_RESULT nh_css_logFormattingTree(

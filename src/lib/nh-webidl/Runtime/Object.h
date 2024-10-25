@@ -18,8 +18,8 @@ typedef struct nh_webidl_Object {
     nh_webidl_Interface *Interface_p; 
     struct nh_webidl_Object *Parent_p; 
     struct nh_webidl_Object *Child_p; 
-    nh_List Attributes; 
-    nh_List Parts; 
+    nh_core_List Attributes; 
+    nh_core_List Parts; 
     void *internal_p; 
 } nh_webidl_Object; 
 
@@ -45,6 +45,10 @@ typedef struct nh_webidl_Object {
 
     void *nh_webidl_getAttribute(
         nh_webidl_Object *Object_p, char *attribute_p
+    );
+
+    nh_core_String nh_webidl_stringifyObjectForDebugging( 
+        nh_webidl_Object *Object_p
     );
 
 /** @} */

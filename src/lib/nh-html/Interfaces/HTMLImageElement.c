@@ -11,7 +11,6 @@
 #include "HTMLImageElement.h"
 
 #include "../Parser/Algorithms.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-dom/Interfaces/Node.h"
 #include "../../nh-dom/Interfaces/Element.h"
@@ -51,8 +50,6 @@ typedef struct nh_html_Image {
 
 static nh_html_ImageRequest nh_html_initImageRequest()
 {
-NH_HTML_BEGIN()
-
     nh_html_ImageRequest Request;
 
     Request.state = NH_HTML_IMAGE_REQUEST_UNAVAILABLE;
@@ -60,22 +57,20 @@ NH_HTML_BEGIN()
     Request.imageData_p = NULL;
     Request.currentPixelDensity = 1;
 
-NH_HTML_END(Request)
+    return Request;
 }
 
 NH_API_RESULT nh_html_initializeHTMLImageElement(
     nh_webidl_Object *Image_p)
 {
-NH_HTML_BEGIN()
-
     Image_p->internal_p = nh_core_allocate(sizeof(nh_html_Image));
-    NH_HTML_CHECK_NULL(Image_p->internal_p)
+    NH_CORE_CHECK_NULL(Image_p->internal_p)
 
     ((nh_html_Image*)Image_p->internal_p)->dimensionAttributeSource_p = Image_p;
     ((nh_html_Image*)Image_p->internal_p)->CurrentRequest = nh_html_initImageRequest();
     ((nh_html_Image*)Image_p->internal_p)->PendingRequest_p = NULL;
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // UPDATE ==========================================================================================
@@ -84,8 +79,6 @@ NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 void nh_html_updateImageData(
     void *Image_p, bool restartAnimations)
 {
-NH_HTML_BEGIN()
-
     // TODO
 
     char *selectedSource_p = NULL;
@@ -109,8 +102,6 @@ NH_HTML_BEGIN()
 //    puts("updateImageData");
 //    exit(0);
 //    }
-
-NH_HTML_SILENT_END()
 }
 
 // API =============================================================================================
@@ -118,7 +109,6 @@ NH_HTML_SILENT_END()
 void *nh_html_getHTMLImageElement(
     nh_webidl_Object *Object_p)
 {
-NH_HTML_BEGIN()
-NH_HTML_END(nh_webidl_getObject(Object_p, "HTML", "HTMLImageElement"))
+    return nh_webidl_getObject(Object_p, "HTML", "HTMLImageElement");
 }
 

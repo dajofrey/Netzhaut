@@ -15,7 +15,6 @@
 #include "Text.h"
 
 #include "../Main/Vertices.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/Util/Array.h"
 #include "../../nh-core/System/Memory.h"
@@ -24,33 +23,27 @@
 #include <string.h>
 #include <stdlib.h>
 
-// INIT ============================================================================================
+// FUNCTIONS =======================================================================================
 
-static nh_renderer_vk_Data *nh_renderer_vk_allocateData()
+static nh_renderer_VulkanData *nh_renderer_vk_allocateData()
 {
-NH_RENDERER_BEGIN()
+    nh_renderer_VulkanData *Data_p = nh_core_allocate(sizeof(nh_renderer_VulkanData));
+    NH_CORE_CHECK_MEM_2(NULL, Data_p)
 
-    nh_renderer_vk_Data *Data_p = nh_core_allocate(sizeof(nh_renderer_vk_Data));
-    NH_RENDERER_CHECK_MEM_2(NULL, Data_p)
+    Data_p->Buffers     = nh_core_initArray(sizeof(nh_gfx_VulkanBuffer), NH_RENDERER_VULKAN_BUFFER_COUNT);
+    Data_p->Uniforms    = nh_core_initArray(sizeof(nh_gfx_VulkanBuffer), NH_RENDERER_VK_UNIFORM_COUNT);
+    Data_p->Descriptors = nh_core_initArray(sizeof(nh_gfx_VulkanDescriptorSet), 2);
 
-    Data_p->Buffers     = nh_core_initArray(sizeof(nh_vk_Buffer), NH_RENDERER_VK_BUFFER_COUNT);
-    Data_p->Uniforms    = nh_core_initArray(sizeof(nh_vk_Buffer), NH_RENDERER_VK_UNIFORM_COUNT);
-    Data_p->Descriptors = nh_core_initArray(sizeof(nh_vk_DescriptorSet), 2);
-
-NH_RENDERER_END(Data_p)
+    return Data_p;
 }
 
-// CREATE ==========================================================================================
-
-static NH_API_RESULT nh_renderer_vk_createTextFragmentData(
+static NH_API_RESULT nh_renderer_createVulkanTextFragmentData(
     nh_css_Fragment *Fragment_p, nh_gfx_Viewport *Viewport_p)
 {
-NH_RENDERER_BEGIN()
+    NH_CORE_CHECK_NULL(Viewport_p)
+    NH_CORE_CHECK_NULL(Fragment_p)
 
-    NH_RENDERER_CHECK_NULL(Viewport_p)
-    NH_RENDERER_CHECK_NULL(Fragment_p)
-
-    nh_vk_Driver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
+    nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
 
     int x = Fragment_p->Block.Position.x;
     int y = Fragment_p->Block.Position.y;
@@ -64,8 +57,8 @@ NH_RENDERER_BEGIN()
         float *vertices_p = NULL;
         uint32_t *indices_p = NULL;
 
-        NH_RENDERER_CHECK(nh_renderer_getTextVertices(Viewport_p, Segment_p, &x, y, &z, &vertices_p, &indices_p))
-        NH_RENDERER_CHECK(nh_renderer_vk_createText(
+        NH_CORE_CHECK(nh_renderer_getTextVertices(Viewport_p, Segment_p, &x, y, &z, &vertices_p, &indices_p))
+        NH_CORE_CHECK(nh_renderer_createVulkanText(
             Viewport_p->Surface_p->Vulkan.GPU_p, Fragment_p, Segment_p, true, vertices_p, indices_p, i
         ))
     
@@ -73,99 +66,92 @@ NH_RENDERER_BEGIN()
         nh_core_free(indices_p);
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_renderer_vk_createBoxFragmentData(
     nh_css_Fragment *Fragment_p, nh_gfx_Viewport *Viewport_p)
 {
-NH_RENDERER_BEGIN()
+    NH_CORE_CHECK_NULL(Viewport_p)
+    NH_CORE_CHECK_NULL(Fragment_p)
 
-    NH_RENDERER_CHECK_NULL(Viewport_p)
-    NH_RENDERER_CHECK_NULL(Fragment_p)
-
-    nh_vk_Driver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
+    nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
 
     if (Fragment_p->Box.Values.BackgroundColor.a > 0.0f) {
-        NH_RENDERER_CHECK(nh_renderer_vk_createBackgroundVertices(Viewport_p, Driver_p, Fragment_p))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_BACKGROUND))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_BACKGROUND))
+        NH_CORE_CHECK(nh_renderer_createVulkanBackgroundVertices(Viewport_p, Driver_p, Fragment_p))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_BACKGROUND))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_BACKGROUND))
     }
 
     if (Fragment_p->Box.Values.borderTopStyle == NH_CSS_LINE_STYLE_SOLID)
     {
-        NH_RENDERER_CHECK(nh_renderer_vk_createBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VK_BUFFER_TOP_BORDER_VERTICES))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_TOP_BORDER))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_TOP_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VULKAN_BUFFER_TOP_BORDER_VERTICES))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_TOP_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_TOP_BORDER))
     }
 
     if (Fragment_p->Box.Values.borderRightStyle == NH_CSS_LINE_STYLE_SOLID)
     {
-        NH_RENDERER_CHECK(nh_renderer_vk_createBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VK_BUFFER_RIGHT_BORDER_VERTICES))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_RIGHT_BORDER))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_RIGHT_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VULKAN_BUFFER_RIGHT_BORDER_VERTICES))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_RIGHT_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_RIGHT_BORDER))
     }
 
     if (Fragment_p->Box.Values.borderBottomStyle == NH_CSS_LINE_STYLE_SOLID)
     {
-        NH_RENDERER_CHECK(nh_renderer_vk_createBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VK_BUFFER_BOTTOM_BORDER_VERTICES))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_BOTTOM_BORDER))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_BOTTOM_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VULKAN_BUFFER_BOTTOM_BORDER_VERTICES))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_BOTTOM_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_BOTTOM_BORDER))
     }
 
     if (Fragment_p->Box.Values.borderLeftStyle == NH_CSS_LINE_STYLE_SOLID)
     {
-        NH_RENDERER_CHECK(nh_renderer_vk_createBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VK_BUFFER_LEFT_BORDER_VERTICES))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_LEFT_BORDER))
-        NH_RENDERER_CHECK(nh_renderer_vk_createColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_LEFT_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanBorderVertices(Viewport_p, Driver_p, Fragment_p, NH_RENDERER_VULKAN_BUFFER_LEFT_BORDER_VERTICES))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorUniform(Driver_p, Fragment_p, NH_RENDERER_VK_UNIFORM_LEFT_BORDER))
+        NH_CORE_CHECK(nh_renderer_createVulkanColorDescriptor(Driver_p, Fragment_p, NH_RENDERER_VK_DESCRIPTOR_LEFT_BORDER))
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_renderer_vk_createFragmentData(
     nh_css_Fragment *Fragment_p, nh_gfx_Viewport *Viewport_p)
 {
-NH_RENDERER_BEGIN()
-
     Fragment_p->data_p = nh_renderer_vk_allocateData();
-    NH_RENDERER_CHECK_MEM(Fragment_p->data_p)
+    NH_CORE_CHECK_MEM(Fragment_p->data_p)
 
     if (Fragment_p->type == NH_CSS_FRAGMENT_BOX) {
-        NH_RENDERER_CHECK(nh_renderer_vk_createBoxFragmentData(Fragment_p, Viewport_p))
+        NH_CORE_CHECK(nh_renderer_vk_createBoxFragmentData(Fragment_p, Viewport_p))
     }
     else {
-        NH_RENDERER_CHECK(nh_renderer_vk_createTextFragmentData(Fragment_p, Viewport_p))
+        NH_CORE_CHECK(nh_renderer_createVulkanTextFragmentData(Fragment_p, Viewport_p))
     }
 
     for (int i = 0; i < Fragment_p->Children.size; ++i) {
-        NH_RENDERER_CHECK(nh_renderer_vk_createFragmentData(Fragment_p->Children.pp[i], Viewport_p))
+        NH_CORE_CHECK(nh_renderer_vk_createFragmentData(Fragment_p->Children.pp[i], Viewport_p))
     }
 
-NH_RENDERER_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_renderer_vk_createFragmentTreeData(
+NH_API_RESULT nh_renderer_createFragmentTreeVulkanData(
     nh_css_FragmentTree *Tree_p, nh_gfx_Viewport *Viewport_p)
 {
-NH_RENDERER_BEGIN()
-NH_RENDERER_END(nh_renderer_vk_createFragmentData(Tree_p->Root_p, Viewport_p))
+    return nh_renderer_vk_createFragmentData(Tree_p->Root_p, Viewport_p);
 }
 
 //// UPDATE ==========================================================================================
 //
 //NH_API_RESULT nh_vk_updateNodeProperty(
-//    nh_vk_GPU *GPU_p, nh_html_Node *Node_p, nh_renderer_GenericProperty *Property_p)
+//    nh_gfx_VulkanGPU *GPU_p, nh_html_Node *Node_p, nh_renderer_GenericProperty *Property_p)
 //{
-//NH_CORE_BEGIN()
-//
 //    if (GPU_p == NULL || Node_p == NULL) {NH_DIAGNOSTIC_END(NH_SUCCESS)}
 //
 //    switch (Property_p->type)
 //    {
 //        case NH_RENDERER_PROPERTY_BACKGROUND_COLOR : 
 // 
-//            NH_CHECK(nh_vk_mapDeviceMemory(
+//            NH_CHECK(nh_gfx_mapVulkanDeviceMemory(
 //                &GPU_p->Driver, 
 //                &nh_vk_getUniform(Node_p, NH_VK_UNIFORM_BACKGROUND)->DeviceMemory, 
 //                Node_p->Properties.Background.color_p, 
@@ -176,7 +162,7 @@ NH_RENDERER_END(nh_renderer_vk_createFragmentData(Tree_p->Root_p, Viewport_p))
 // 
 //        case NH_RENDERER_PROPERTY_COLOR : 
 // 
-//            NH_CHECK(nh_vk_mapDeviceMemory(
+//            NH_CHECK(nh_gfx_mapVulkanDeviceMemory(
 //                &GPU_p->Driver, 
 //                &nh_vk_getUniform(Node_p, NH_VK_UNIFORM_TEXT_SDF_FS)->DeviceMemory, 
 //                Node_p->Properties.Text.color_p, 
@@ -194,13 +180,11 @@ NH_RENDERER_END(nh_renderer_vk_createFragmentData(Tree_p->Root_p, Viewport_p))
 //void nh_renderer_vk_destroyRenderResources(
 //    nh_gfx_Viewport *Viewport_p, nh_renderer_FormattingNodeFragment *Fragment_p)
 //{
-//NH_RENDERER_BEGIN()
+//    nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
 //
-//    nh_vk_Driver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
-//
-//    nh_renderer_vk_destroyBufferArray(Driver_p, Fragment_p);
-//    nh_renderer_vk_destroyUniformArray(Driver_p, Fragment_p);
-//    nh_renderer_vk_destroyDescriptorArray(Driver_p, Fragment_p);        
+//    nh_renderer_destroyVulkanBufferArray(Driver_p, Fragment_p);
+//    nh_renderer_destroyVulkanUniformArray(Driver_p, Fragment_p);
+//    nh_renderer_destroyVulkanDescriptorArray(Driver_p, Fragment_p);        
 //
 //NH_RENDERER_SILENT_END()
 //}

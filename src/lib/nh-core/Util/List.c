@@ -9,21 +9,19 @@
 // INCLUDES =======================================================================================
 
 #include "List.h"
-
 #include "../System/Memory.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 
-// LIST ============================================================================================
+// FUNCTIONS =======================================================================================
 
-nh_List _nh_core_initList(
+nh_core_List _nh_core_initList(
     unsigned long chunkSize)
 {
-    nh_List List;
+    nh_core_List List;
     List.chunkSize  = chunkSize;
     List.chunkCount = 0;
     List.size       = 0;
@@ -31,15 +29,14 @@ nh_List _nh_core_initList(
     return List;
 }
 
-nh_List nh_core_initList(
+nh_core_List nh_core_initList(
     unsigned long chunkSize)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(_nh_core_initList(chunkSize))
+    return _nh_core_initList(chunkSize);
 }
 
 NH_API_RESULT nh_core_appendToList(
-    nh_List *List_p, void *handle_p)
+    nh_core_List *List_p, void *handle_p)
 {
     if (List_p->size >= List_p->chunkSize * List_p->chunkCount) 
     {
@@ -61,22 +58,18 @@ NH_API_RESULT nh_core_appendToList(
 }
 
 NH_API_RESULT nh_core_appendItemsToList(
-    nh_List *List_p, nh_List *Append_p)
+    nh_core_List *List_p, nh_core_List *Append_p)
 {
-NH_CORE_BEGIN()
-
     for (int i = 0; i < Append_p->size; ++i) {
         NH_CORE_CHECK(nh_core_appendToList(List_p, Append_p->pp[i]))
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_insertIntoList(
-    nh_List *List_p, void *handle_p, unsigned long index)
+    nh_core_List *List_p, void *handle_p, unsigned long index)
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL(List_p)
 
     while (List_p->size <= index) {
@@ -89,18 +82,17 @@ NH_CORE_BEGIN()
 
     List_p->pp[index] = handle_p;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_prependToList(
-    nh_List *List_p, void *handle_p)
+    nh_core_List *List_p, void *handle_p)
 {
-NH_CORE_BEGIN()
-NH_CORE_DIAGNOSTIC_END(nh_core_insertIntoList(List_p, handle_p, 0))
+    return nh_core_insertIntoList(List_p, handle_p, 0);
 }
 
 void *_nh_core_getFromList(
-    nh_List *List_p, unsigned long index)
+    nh_core_List *List_p, unsigned long index)
 {
     if (List_p == NULL || index < 0 || List_p->size <= index) {
         return NULL;
@@ -109,40 +101,35 @@ void *_nh_core_getFromList(
 }
 
 void *nh_core_getFromList(
-    nh_List *List_p, unsigned long index)
+    nh_core_List *List_p, unsigned long index)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(_nh_core_getFromList(List_p, index))
+    return _nh_core_getFromList(List_p, index);
 }
 
 unsigned long nh_core_getListIndex(
-    nh_List *List_p, void *handle_p)
+    nh_core_List *List_p, void *handle_p)
 {
-NH_CORE_BEGIN()
-
     for (unsigned long i = 0; i < List_p->size; ++i) {
-        if (List_p->pp[i] == handle_p) {NH_CORE_END(i)}
+        if (List_p->pp[i] == handle_p) {return i;}
     }
 
-NH_CORE_END(0)
+    return 0;
 }
 
 void *nh_core_getNextListItem(
-    nh_List *List_p, void *handle_p)
+    nh_core_List *List_p, void *handle_p)
 {
-NH_CORE_BEGIN()
-
     for (unsigned long i = 0; i < List_p->size; ++i) {
         if (List_p->pp[i] == handle_p) {
-            if (i + 1 < List_p->size) {NH_CORE_END(List_p->pp[i + 1])}
+            if (i + 1 < List_p->size) {return List_p->pp[i + 1];}
         }
     }
 
-NH_CORE_END(NULL)
+    return NULL;
 }
 
 void nh_core_freeList(
-    nh_List *List_p, bool freeHandles)
+    nh_core_List *List_p, bool freeHandles)
 {
     if (freeHandles) {
         for (int i = 0; i < List_p->size; ++i) {
@@ -157,7 +144,7 @@ void nh_core_freeList(
 }
 
 NH_API_RESULT nh_core_removeFromList(
-    nh_List *List_p, bool freeHandle, unsigned int index)
+    nh_core_List *List_p, bool freeHandle, unsigned int index)
 {
     if (index < 0 || List_p->size == 0) {return NH_API_ERROR_BAD_STATE;}
     if (index >= List_p->size) {index = List_p->size - 1;}
@@ -187,10 +174,8 @@ NH_API_RESULT nh_core_removeFromList(
 }
 
 NH_API_RESULT nh_core_removeFromList2(
-    nh_List *List_p, bool freeHandle, void *handle_p)
+    nh_core_List *List_p, bool freeHandle, void *handle_p)
 {
-NH_CORE_BEGIN()
-
     bool ok = false;
     unsigned long index = 0;
 
@@ -203,21 +188,18 @@ NH_CORE_BEGIN()
     }
 
     if (ok) {
-        NH_CORE_DIAGNOSTIC_END(nh_core_removeFromList(List_p, freeHandle, index))
+        return nh_core_removeFromList(List_p, freeHandle, index);
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
-bool nh_inList(
-    nh_List *List_p, void *handle_p)
+bool nh_core_inList(
+    nh_core_List *List_p, void *handle_p)
 {
-NH_CORE_BEGIN()
-
     for (int i = 0; i < List_p->size; ++i) {
-        if (List_p->pp[i] == handle_p) {NH_CORE_END(true)}
+        if (List_p->pp[i] == handle_p) {return true;}
     }
 
-NH_CORE_END(false)
+    return false;
 }
-

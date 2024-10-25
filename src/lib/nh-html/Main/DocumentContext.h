@@ -18,7 +18,7 @@
  */
 
     typedef struct nh_html_DocumentContext {
-        nh_List Documents;
+        nh_core_List Documents;
         nh_webidl_Object *Document_p;
         bool scripting;
         bool browsingContext;
@@ -31,7 +31,7 @@
  *  @{
  */
 
-    extern nh_List NH_HTML_DOCUMENT_CONTEXTS;
+    extern nh_core_List NH_HTML_DOCUMENT_CONTEXTS;
 
 /** @} */
 

@@ -11,7 +11,6 @@
 #include "Tokenizer.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-encoding/Base/UnicodeDataHelper.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
@@ -42,8 +41,6 @@ const char *NH_WEBIDL_TOKENS_PP[] = {
 static bool nh_webidl_isDigit(
     NH_ENCODING_UTF32 codepoint, bool zero)
 {
-NH_WEBIDL_BEGIN()
-
     if (codepoint == '1' 
     ||  codepoint == '2'
     ||  codepoint == '3'
@@ -54,64 +51,56 @@ NH_WEBIDL_BEGIN()
     ||  codepoint == '8'
     ||  codepoint == '9')
     {
-        NH_WEBIDL_END(true)
+        return true;
     }
 
-    if (zero && codepoint == '0') {NH_WEBIDL_END(true)}
+    if (zero && codepoint == '0') {return true;}
 
-NH_WEBIDL_END(false)
+    return false;
 }
 
 static unsigned int nh_webidl_isDigits(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     if (nh_webidl_isDigit(codepoints_p[0], true)) {
         unsigned int i = 1;
         while (i < length && (nh_webidl_isDigit(codepoints_p[i], true) || codepoints_p[i] == '_')) {
             i++;
         }
-        NH_WEBIDL_END(i)
+        return i;
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static unsigned int nh_webidl_isSignedInteger(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     int offset = 0;
     if (codepoints_p[0] == '+' || codepoints_p[0] == '-') {
         offset++;
     }
     int digits = nh_webidl_isDigits(offset == 0 ? codepoints_p : &codepoints_p[1], true);
-    if (digits == 0) {NH_WEBIDL_END(0)}
+    if (digits == 0) {return 0;}
 
-NH_WEBIDL_END(offset + digits)
+    return offset + digits;
 }
 
 static unsigned int nh_webidl_isExponentPart(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     if (codepoints_p[0] != 'e' && codepoints_p[0] != 'E') {
-        NH_WEBIDL_END(0)
+        return 0;
     }
     int digits = nh_webidl_isSignedInteger(&codepoints_p[1], true);
 
-NH_WEBIDL_END(digits)
+    return digits;
 }
 
 static unsigned int nh_webidl_isDecimalIntegerLiteral(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
-    if (codepoints_p[0] == '0') {NH_WEBIDL_END(1)}
+    if (codepoints_p[0] == '0') {return 1;}
 
     if (nh_webidl_isDigit(codepoints_p[0], false)) 
     {
@@ -120,52 +109,45 @@ NH_WEBIDL_BEGIN()
             offset++;
         }
         int digits = nh_webidl_isDigits(&codepoints_p[offset], length - offset);
-        if (digits == 0 && offset == 2) {NH_WEBIDL_END(0)}
-        NH_WEBIDL_END(digits + offset)
+        if (digits == 0 && offset == 2) {return 0;}
+        return digits + offset;
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static unsigned int nh_webidl_isWhiteSpace(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_WEBIDL_BEGIN()
-
     if (codepoint == 0x0009  // CHARACTER TABULATION <TAB> 
     ||  codepoint == 0x000B  // LINE TABULATION <VT> 
     ||  codepoint == 0x000C  // FORM FEED (FF) 
     ||  codepoint == 0x0020) // SPACE <SP> 
     {
-        NH_WEBIDL_END(1)
+        return 1;
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static unsigned int nh_webidl_isLineTerminator(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
-
     if (codepoints_p[0] == 0x0A  // LINE FEED <LF> 
     ||  codepoints_p[0] == 0x0D) // CARRIAGE RETURN (CR) <CR> 
     {
         if (length > 1 && codepoints_p[0] == 0x0D && codepoints_p[1] == 0x0A) {
-            NH_WEBIDL_END(2)
+            return 2;
         }
-        NH_WEBIDL_END(1)
+        return 1;
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static unsigned int nh_webidl_isComment(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     if (codepoints_p[0] == 0x2F) // '/'
     {
         // single line comment
@@ -175,7 +157,7 @@ NH_WEBIDL_BEGIN()
             while (i < length && !nh_webidl_isLineTerminator(&codepoints_p[i], length - i)) {
                 i++;
             }
-            NH_WEBIDL_END(i)
+            return i;
         }
 
         // multi line comment 
@@ -185,22 +167,20 @@ NH_WEBIDL_BEGIN()
             while (i < length - 1 && codepoints_p[i] != 0x2A && codepoints_p[i + 1] != 0x2F) {
                 i++;
             }
-            NH_WEBIDL_END(i + 2)
+            return i + 2;
         }
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static unsigned int nh_webidl_isPunctuator(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     if (length > 3) {
         if (codepoints_p[0] == '>' && codepoints_p[1] == '>' && codepoints_p[2] == '>' && codepoints_p[3] == '=')
         {
-            NH_WEBIDL_END(4)
+            return 4;
         }
     }
 
@@ -216,7 +196,7 @@ NH_WEBIDL_BEGIN()
         ||  (codepoints_p[0] == '|' && codepoints_p[1] == '|' && codepoints_p[2] == '=')
         ||  (codepoints_p[0] == '?' && codepoints_p[1] == '?' && codepoints_p[2] == '='))
         {
-            NH_WEBIDL_END(3)
+            return 3;
         }
     }
 
@@ -243,12 +223,12 @@ NH_WEBIDL_BEGIN()
         ||  (codepoints_p[0] == '^' && codepoints_p[1] == '=')
         ||  (codepoints_p[0] == '=' && codepoints_p[1] == '>'))
         {
-            NH_WEBIDL_END(2)
+            return 2;
         }
         if (codepoints_p[0] == '?' && codepoints_p[1] == '.')
         { 
             if (length > 2 && nh_webidl_isDigit(codepoints_p[2], true)) {}
-            else {NH_WEBIDL_END(2)}
+            else {return 2;}
         }
     }
 
@@ -277,17 +257,15 @@ NH_WEBIDL_BEGIN()
     ||  codepoints_p[0] == '@' 
     ||  codepoints_p[0] == '=') 
     {
-        NH_WEBIDL_END(1)
+        return 1;
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static bool nh_webidl_isHexDigit(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_WEBIDL_BEGIN()
-
     if (codepoint == '0'
     ||  codepoint == '1'
     ||  codepoint == '2'
@@ -309,16 +287,14 @@ NH_WEBIDL_BEGIN()
     ||  codepoint == 'C'
     ||  codepoint == 'D'
     ||  codepoint == 'E'
-    ||  codepoint == 'F') {NH_WEBIDL_END(true)}
+    ||  codepoint == 'F') {return true;}
 
-NH_WEBIDL_END(false)
+    return false;
 }
 
 static unsigned int nh_webidl_isHexDigits(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     int digits = 0;
 
     while (length >= 1 && nh_webidl_isHexDigit(codepoints_p[digits])) {
@@ -326,14 +302,12 @@ NH_WEBIDL_BEGIN()
         length--;
     }
 
-NH_WEBIDL_END(digits)
+    return digits;
 }
 
 static unsigned int nh_webidl_isHexIntegerLiteral(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     int digits = 0;
 
     if (length > 2 && codepoints_p[0] == '0' && (codepoints_p[1] == 'x' || codepoints_p[1] == 'X')) {
@@ -341,28 +315,26 @@ NH_WEBIDL_BEGIN()
     }
     if (digits > 0) {digits += 2;}
 
-NH_WEBIDL_END(digits)
+    return digits;
 }
 
 // https://tc39.es/ecma262/#sec-literals-numeric-literals
 static unsigned int nh_webidl_isNumericLiteral(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length, NH_WEBIDL_TOKEN *type_p)
 {
-NH_WEBIDL_BEGIN()
-
 // NonDecimalHexIntegerLiteral
 
     int digits = nh_webidl_isHexIntegerLiteral(codepoints_p, length);
     if (digits > 0) {
         *type_p = NH_WEBIDL_TOKEN_NON_DECIMAL_HEX_INTEGER_LITERAL;
-        NH_WEBIDL_END(digits)
+        return digits;
     }
 
 // DecimalBigIntegerLiteral
     if (length > 1 && codepoints_p[0] == '0' && codepoints_p[1] == 'n') 
     {
         *type_p = NH_WEBIDL_TOKEN_DECIMAL_BIG_INTEGER_LITERAL;
-        NH_WEBIDL_END(2)
+        return 2;
     }
 
     if (nh_webidl_isDigit(codepoints_p[0], false) && length > 1) 
@@ -371,14 +343,14 @@ NH_WEBIDL_BEGIN()
             digits = nh_webidl_isDigits(&codepoints_p[2], length - 2);
             if (digits > 0 && length > digits + 2 && codepoints_p[digits + 2] == 'n') {
                 *type_p = NH_WEBIDL_TOKEN_DECIMAL_BIG_INTEGER_LITERAL;
-                NH_WEBIDL_END(digits + 3)
+                return digits + 3;
             } 
         }
 
         digits = nh_webidl_isDigits(&codepoints_p[1], length - 1);
         if (length > digits + 1 && codepoints_p[digits + 1] == 'n') {
             *type_p = NH_WEBIDL_TOKEN_DECIMAL_BIG_INTEGER_LITERAL;
-            NH_WEBIDL_END(digits + 2)
+            return digits + 2;
         } 
     }
 
@@ -389,7 +361,7 @@ NH_WEBIDL_BEGIN()
         if (digits > 1) {
             digits += nh_webidl_isExponentPart(&codepoints_p[digits], length - digits);
             *type_p = NH_WEBIDL_TOKEN_DECIMAL_LITERAL;
-            NH_WEBIDL_END(digits)
+            return digits;
         }
     }
 
@@ -402,27 +374,25 @@ NH_WEBIDL_BEGIN()
             digits++;
             digits += nh_webidl_isDigits(&codepoints_p[digits], length - digits);
             digits += nh_webidl_isExponentPart(&codepoints_p[digits], length - digits);
-            NH_WEBIDL_END(digits)
+            return digits;
         }
 
         digits += nh_webidl_isExponentPart(&codepoints_p[digits], length - digits);
-        NH_WEBIDL_END(digits)
+        return digits;
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static unsigned int nh_webidl_isStringLiteral(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     if (codepoints_p[0] == '"') {
         int count = 1;
         while (count < length) {
             if (codepoints_p[count++] == '"') {break;}
         }
-        if (count > 1) {NH_WEBIDL_END(count)}
+        if (count > 1) {return count;}
     }
 
     if (codepoints_p[0] == 39) {
@@ -430,46 +400,40 @@ NH_WEBIDL_BEGIN()
         while (count < length) {
             if (codepoints_p[count++] == 39) {break;}
         }
-        if (count > 1) {NH_WEBIDL_END(count)}
+        if (count > 1) {return count;}
     }
 
-NH_WEBIDL_END(0)
+    return 0;
 }
 
 static unsigned int nh_webidl_isIdentifierStart(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_WEBIDL_BEGIN()
-
-    if (codepoint == '$' || codepoint == '_') {NH_WEBIDL_END(true)}
-    if (nh_encoding_inIDSTART(codepoint)) {NH_WEBIDL_END(true)}
+    if (codepoint == '$' || codepoint == '_') {return true;}
+    if (nh_encoding_inIDSTART(codepoint)) {return true;}
     if (codepoint == 92) { // 92 == \
         // unicode esc seq
     }
 
-NH_WEBIDL_END(false)
-} 
+    return false;
+}
 
 static unsigned int nh_webidl_isIdentifierPart(
     NH_ENCODING_UTF32 codepoint)
 {
-NH_WEBIDL_BEGIN()
-
-    if (codepoint == '$') {NH_WEBIDL_END(true)}
-    if (nh_encoding_inIDCONTINUE(codepoint)) {NH_WEBIDL_END(true)}
+    if (codepoint == '$') {return true;}
+    if (nh_encoding_inIDCONTINUE(codepoint)) {return true;}
     if (codepoint == 92) {
         // unicode esc seq
     }
 
-NH_WEBIDL_END(false)
+    return false;
 } 
 
 // https://tc39.es/ecma262/#sec-names-and-keywords
 static unsigned int nh_webidl_isIdentifierName(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     int index = 0;
     while (nh_webidl_isIdentifierStart(codepoints_p[index]) && index < length) {
         index++;
@@ -481,14 +445,12 @@ NH_WEBIDL_BEGIN()
         }
     }
 
-NH_WEBIDL_END(index)
+    return index;
 }
 
 static unsigned int nh_webidl_getToken(
-    nh_Array *Tokens_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
+    nh_core_Array *Tokens_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length)
 {
-NH_WEBIDL_BEGIN()
-
     NH_WEBIDL_TOKEN type;
     unsigned int count = 0;
 
@@ -539,32 +501,28 @@ DEFINE_TOKEN: ;
     Token_p->type = type;
     Token_p->String = nh_encoding_encodeUTF8(codepoints_p, count);
 
-NH_WEBIDL_END(count)
+    return count;
 }
 
-static nh_Array nh_webidl_getTokens(
+static nh_core_Array nh_webidl_getTokens(
     nh_encoding_UTF32String Codepoints)
 {
-NH_WEBIDL_BEGIN()
-
-    nh_Array Tokens = nh_core_initArray(sizeof(nh_webidl_Token), 64);
+    nh_core_Array Tokens = nh_core_initArray(sizeof(nh_webidl_Token), 64);
 
     int index = 0;
     while (index < Codepoints.length) {
         index += nh_webidl_getToken(&Tokens, &Codepoints.p[index], Codepoints.length - index);
     }
 
-NH_WEBIDL_END(Tokens)
+    return Tokens;
 }
 
 // DISCARD REDUNDANT INPUT ELEMENTS ================================================================
 
-static nh_Array nh_webidl_discardRedundantTokens(
-    nh_Array DirtyTokens)
+static nh_core_Array nh_webidl_discardRedundantTokens(
+    nh_core_Array DirtyTokens)
 {
-NH_WEBIDL_BEGIN()
-
-    nh_Array CleanTokens = nh_core_initArray(sizeof(nh_webidl_Token), 64);
+    nh_core_Array CleanTokens = nh_core_initArray(sizeof(nh_webidl_Token), 64);
 
     for (int i = 0; i < DirtyTokens.length; ++i) 
     {
@@ -582,35 +540,31 @@ NH_WEBIDL_BEGIN()
         );
     }
 
-NH_WEBIDL_END(CleanTokens)
+    return CleanTokens;
 }
 
 // TOKENIZE ========================================================================================
 
-nh_Array nh_webidl_tokenizeFragment(
+nh_core_Array nh_webidl_tokenizeFragment(
     char *logName_p, char *fragment_p)
 {
-NH_WEBIDL_BEGIN()
-
     nh_encoding_UTF32String Codepoints = nh_encoding_decodeUTF8(fragment_p, strlen(fragment_p), NULL);
 
-    nh_Array DirtyTokens = nh_webidl_getTokens(Codepoints);
+    nh_core_Array DirtyTokens = nh_webidl_getTokens(Codepoints);
     nh_webidl_logTokens(logName_p, &DirtyTokens, true);
 
-    nh_Array CleanTokens = nh_webidl_discardRedundantTokens(DirtyTokens);
+    nh_core_Array CleanTokens = nh_webidl_discardRedundantTokens(DirtyTokens);
     nh_webidl_logTokens(logName_p, &CleanTokens, false);
 
     nh_webidl_freeTokens(DirtyTokens);
     nh_encoding_freeUTF32(&Codepoints);
 
-NH_WEBIDL_END(CleanTokens)
+    return CleanTokens;
 }
 
 void nh_webidl_freeTokens(
-    nh_Array Tokens)
+    nh_core_Array Tokens)
 {
-NH_WEBIDL_BEGIN()
-
     for (int i = 0; i < Tokens.length; ++i)
     {
         nh_webidl_Token *Token_p = &((nh_webidl_Token*)Tokens.p)[i];
@@ -619,7 +573,7 @@ NH_WEBIDL_BEGIN()
 
     nh_core_freeArray(&Tokens);
 
-NH_WEBIDL_SILENT_END()
+    return;
 }
 
 // IS NUMERIC LITERAL ==============================================================================
@@ -627,12 +581,10 @@ NH_WEBIDL_SILENT_END()
 bool nh_webidl_isNumericToken(
     nh_webidl_Token *Token_p)
 {
-NH_WEBIDL_BEGIN()
-
     if (Token_p->type >= NH_WEBIDL_TOKEN_DECIMAL_LITERAL && Token_p->type <= NH_WEBIDL_TOKEN_NON_DECIMAL_HEX_INTEGER_LITERAL) {
-        NH_WEBIDL_END(true)
+        return true;
     }
 
-NH_WEBIDL_END(false)
+    return false;
 }
 

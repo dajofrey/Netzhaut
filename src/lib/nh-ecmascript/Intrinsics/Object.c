@@ -12,7 +12,6 @@
 
 #include "../Engine/OrdinaryObject.h"
 #include "../Engine/BuiltinFunctionObject.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 
@@ -22,9 +21,7 @@
 static NH_ECMASCRIPT_BOOLEAN _nh_ecmascript_setPrototypeOf(
     nh_ecmascript_Object *This_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(false)
+    return false;
 }
 
 // DATA ============================================================================================
@@ -82,242 +79,184 @@ static const char *objectPropertyNames_pp[] = {
 // CONSTRUCTOR =====================================================================================
 
 static nh_ecmascript_Any nh_ecmascript_construct(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 // BUILTIN OBJECT CONSTRUCTOR FUNCTIONS ============================================================
 
 static nh_ecmascript_Any nh_ecmascript_assign(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_create(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_defineProperties(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_defineProperty(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_entries(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_freeze(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_fromEntries(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_getOwnPropertyDescriptor(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_getOwnPropertyDescriptors(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_getOwnPropertyNames(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_getOwnPropertySymbols(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_getPrototypeOf(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_is(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_isExtensible(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_isFrozen(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_isSealed(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_keys(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_preventExtensions(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_seal(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_setPrototypeOf(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_values(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 // BUILTIN OBJECT PROTOTYPE FUNCTIONS ==============================================================
 
 static nh_ecmascript_Any nh_ecmascript_hasOwnProperty(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_isPrototypeOf(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_propertyIsEnumerable(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_toLocaleString(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any _nh_ecmascript_toString(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 static nh_ecmascript_Any nh_ecmascript_valueOf(
-    nh_ecmascript_Object *This_p, nh_List Arguments)
+    nh_ecmascript_Object *This_p, nh_core_List Arguments)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_END(nh_ecmascript_wrapUndefined())
+    return nh_ecmascript_wrapUndefined();
 }
 
 // CREATE ==========================================================================================
 
-typedef nh_ecmascript_Any (*builtin_f)(nh_ecmascript_Object *This_p, nh_List Arguments);
+typedef nh_ecmascript_Any (*builtin_f)(nh_ecmascript_Object *This_p, nh_core_List Arguments);
 
 static nh_ecmascript_Property *nh_ecmascript_getObjectProperty(
     nh_ecmascript_IntrinsicObject *Object_p, int i, builtin_f *function_pp)
 {
-NH_ECMASCRIPT_BEGIN()
-
     Object_p->Properties_p[i].type = NH_ECMASCRIPT_PROPERTY_DATA;
     Object_p->Properties_p[i].enumerable   = false;
     Object_p->Properties_p[i].configurable = false;
@@ -396,14 +335,12 @@ NH_ECMASCRIPT_BEGIN()
         case 28 : *function_pp = nh_ecmascript_valueOf; break;
     }
 
-NH_ECMASCRIPT_END(&Object_p->Properties_p[i])
+    return &Object_p->Properties_p[i];
 }
 
 NH_API_RESULT nh_ecmascript_createIntrinsicObject(
     nh_ecmascript_IntrinsicObject *Object_p, nh_ecmascript_Realm *Realm_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     Object_p->Prototype.Properties = nh_core_initList(8);
     Object_p->Prototype.InternalSlots = nh_ecmascript_initInternalSlots(NULL, 0);
     Object_p->Prototype.InternalMethods_p = &ObjectPrototypeInternalMethods;
@@ -411,7 +348,7 @@ NH_ECMASCRIPT_BEGIN()
     nh_ecmascript_setInternalSlot(&Object_p->Prototype.InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*)true);
     nh_ecmascript_setInternalSlot(&Object_p->Prototype.InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE, NULL);
 
-    NH_ECMASCRIPT_CHECK_NULL(nh_ecmascript_createBuiltinFunctionObject(
+    NH_CORE_CHECK_NULL(nh_ecmascript_createBuiltinFunctionObject(
         &Object_p->Constructor, nh_ecmascript_construct, NULL, 0, Realm_p, &Realm_p->Intrinsics.Function.Prototype 
     ))
 
@@ -427,7 +364,7 @@ NH_ECMASCRIPT_BEGIN()
         Property_p->Key = nh_ecmascript_wrapString(&Object_p->Keys_p[i]);
 
         if (function_p != NULL) {
-            NH_ECMASCRIPT_CHECK_NULL(nh_ecmascript_createBuiltinFunctionObject(
+            NH_CORE_CHECK_NULL(nh_ecmascript_createBuiltinFunctionObject(
                 Property_p->Fields.Data.Value.handle_p, function_p, NULL, 0, Realm_p, NULL 
             ))
         }
@@ -435,6 +372,5 @@ NH_ECMASCRIPT_BEGIN()
         nh_core_appendToList(&ConstructorOrPrototype_p->Properties, Property_p);
     }
 
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-

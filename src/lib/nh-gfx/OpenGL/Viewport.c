@@ -12,7 +12,6 @@
 #include "CommandBuffer.h"
 
 #include "../Base/Viewport.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Thread.h"
 
@@ -23,21 +22,17 @@
 NH_API_RESULT nh_opengl_createViewport(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
     Viewport_p->OpenGL.CommandBuffers_p[0] = nh_opengl_initCommandBuffer();
     Viewport_p->OpenGL.CommandBuffers_p[1] = nh_opengl_initCommandBuffer();
     Viewport_p->OpenGL.CommandBuffer_p = NULL;
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_opengl_destroyViewport(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
-NH_GFX_SILENT_END()
+    return;
 }
 
 // RECORD ==========================================================================================
@@ -45,8 +40,6 @@ NH_GFX_SILENT_END()
 NH_API_RESULT nh_opengl_beginRecording(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
     *(Viewport_p->OpenGL.CommandBuffer_p) = nh_opengl_initCommandBuffer();
 
     // Set viewport.
@@ -115,14 +108,12 @@ NH_GFX_BEGIN()
         "glClear", 
         nh_opengl_glenum(NULL, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_opengl_endRecording(
     nh_gfx_Viewport *Viewport_p)
 {
-NH_GFX_BEGIN()
-
     nh_opengl_addCommand(Viewport_p->OpenGL.CommandBuffer_p, "glDisable", nh_opengl_glenum(NULL, GL_SCISSOR_TEST));
 
     nh_opengl_addCommand(
@@ -143,6 +134,6 @@ NH_GFX_BEGIN()
 
     nh_opengl_addCommand(Viewport_p->OpenGL.CommandBuffer_p, "glClear", nh_opengl_glenum(NULL, GL_COLOR_BUFFER_BIT));
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

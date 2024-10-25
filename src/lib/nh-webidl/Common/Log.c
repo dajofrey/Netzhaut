@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Log.h"
-#include "Macros.h"
 
 #include "../Runtime/Definitions.h"
 #include "../../nh-core/System/Logger.h"
@@ -42,17 +41,15 @@ NH_API_RESULT _nh_webidl_logDiagnosticEnd(
 }
 
 NH_API_RESULT nh_webidl_logTokens(
-    char *fragmentName_p, nh_Array *Tokens_p, bool dirty)
+    char *fragmentName_p, nh_core_Array *Tokens_p, bool dirty)
 {
-NH_WEBIDL_BEGIN()
-
     char message_p[1023] = {0};
     char node_p[255] = {0};
 
     for (int i = 0; i < Tokens_p->length; ++i) 
     {
         nh_webidl_Token *Token_p = &((nh_webidl_Token*)Tokens_p->p)[i];
-        nh_String String = nh_core_initString(64);
+        nh_core_String String = nh_core_initString(64);
         nh_core_appendToString(&String, Token_p->String.p, Token_p->String.length);
 
         for (int i = 0; i < String.length; ++i) {
@@ -70,7 +67,7 @@ NH_WEBIDL_BEGIN()
         memset(node_p, 0, 255);
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 #define MAX_DEPTH 1024
@@ -79,9 +76,7 @@ static NH_API_RESULT nh_webidl_logParseTreeRecursively(
     char *fragmentName_p, nh_webidl_ParseNode *ParseNode_p, nh_webidl_ParseNode *Parent_p, int depth, 
     bool *branch_p, char *message_p, char *indent_p, char *node_p)
 {
-NH_WEBIDL_BEGIN()
-
-    if (depth >= MAX_DEPTH) {NH_WEBIDL_END(NH_API_ERROR_BAD_STATE)}
+    if (depth >= MAX_DEPTH) {return NH_API_ERROR_BAD_STATE;}
 
     int offset;
     for (offset = 0; offset < depth; ++offset) {
@@ -114,14 +109,12 @@ NH_WEBIDL_BEGIN()
         );
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_webidl_logParseTree(
     char *fragmentName_p, nh_webidl_ParseNode *ParseNode_p)
 {
-NH_WEBIDL_BEGIN()
-
     char indent_p[MAX_DEPTH] = {'\0'};
     char message_p[2047] = {'\0'};
     char node_p[255] = {0};
@@ -133,14 +126,12 @@ NH_WEBIDL_BEGIN()
         fragmentName_p, ParseNode_p, NULL, 0, branch_p, message_p, indent_p, node_p
     );
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_webidl_logFragment(
     char *specification_p, nh_webidl_Fragment *Fragment_p)
 {
-NH_WEBIDL_BEGIN()
-
     char message_p[1023] = {'\0'};
 
     for (int i = 0; i < Fragment_p->Interfaces.length; ++i) 
@@ -174,6 +165,6 @@ NH_WEBIDL_BEGIN()
         }
     }
 
-NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

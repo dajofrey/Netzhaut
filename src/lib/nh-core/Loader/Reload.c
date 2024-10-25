@@ -13,8 +13,6 @@
 #include "Reload.h"
 #include "Loader.h"
 
-#include "../Common/Macros.h"
-
 #include <link.h>
 #include <dlfcn.h>
 #include <stddef.h>
@@ -29,8 +27,6 @@
 char *nh_core_lastModified(
     void *lib_p)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
 
     struct link_map *info_p;
@@ -41,7 +37,7 @@ NH_CORE_BEGIN()
     
     struct tm *tm;
     char *time_p = malloc(sizeof(char) * 127);
-    if (time_p == NULL) {NH_CORE_END(NULL)}
+    if (time_p == NULL) {return NULL;}
     memset(time_p, '\0', 127);
 
     /* convert time_t to broken-down time representation */
@@ -51,29 +47,27 @@ NH_CORE_BEGIN()
 
 #endif
 
-NH_CORE_END(time_p)
+return time_p;
 }
 
 //// INIT UPDATER ====================================================================================
 //
 //typedef struct nh_core_loader_ModuleUpdater {
 //    double intervalInSeconds;
-//    nh_SystemTime LastUpdate;
+//    nh_core_SystemTime LastUpdate;
 //    bool offline;
 //} nh_core_loader_ModuleUpdater;
 //
 //void *nh_core_initModuleUpdater(
 //    void *args_p) 
 //{
-//NH_CORE_BEGIN()
-//
 //    nh_core_loader_ModuleUpdater *Updater_p = nh_core_allocate(sizeof(nh_core_loader_ModuleUpdater));
 //    Updater_p->intervalInSeconds = 2.0;
 //    Updater_p->LastUpdate = nh_core_getSystemTime();
 //    Updater_p->offline = true;
 //
-//NH_CORE_END(Updater_p)
-//NH_CORE_END(NULL)
+//return Updater_p;
+//return NULL;
 //}
 //
 //// RUN UPDATER =====================================================================================
@@ -83,12 +77,10 @@ NH_CORE_END(time_p)
 //); 
 //
 //// TODO multithreading
-//static nh_List nh_killLibDependentForks(
+//static nh_core_List nh_killLibDependentForks(
 //    char *libName_p)
 //{
-//NH_CORE_BEGIN()
-//
-//    nh_List Functions = nh_core_initList(1);
+//    nh_core_List Functions = nh_core_initList(1);
 //
 //    for (int i = 0; i < NH_MAX_FORKS; ++i) 
 //    {
@@ -102,7 +94,7 @@ NH_CORE_END(time_p)
 //                    nh_core_appendToList(&Functions, funcName_p);
 //                    // wait until fork has terminated
 //                    while (Proc_p->id != 0) {
-//                        nh_checkForks();
+//                        nh_core_checkForks();
 //                    }
 //                }
 //            }
@@ -110,22 +102,20 @@ NH_CORE_END(time_p)
 //        }
 //    }
 //
-//NH_CORE_END(Functions)
+//return Functions;
 //}
 //
 //NH_SIGNAL nh_core_runModuleUpdater(
 //    void *args_p)
 //{
-//NH_CORE_BEGIN()
-//
 //    nh_core_loader_ModuleUpdater *Updater_p = args_p;
 //    if (nh_core_getSystemTimeDiffInSeconds(Updater_p->LastUpdate, nh_core_getSystemTime()) < Updater_p->intervalInSeconds) {
-//        NH_CORE_END(NH_SIGNAL_OK)
+//        return NH_SIGNAL_OK;
 //    }
 //
 //    for (char *libName_p; libName_p = nh_core_getModifiedLib();)
 //    {
-//        nh_List Functions = nh_killLibDependentForks(libName_p);
+//        nh_core_List Functions = nh_killLibDependentForks(libName_p);
 //
 //        NH_LOADER_CHECK(nh_unload(libName_p))
 //        NH_LOADER_CHECK(nh_core_load(libName_p, false))
@@ -140,6 +130,6 @@ NH_CORE_END(time_p)
 //
 //    Updater_p->LastUpdate = nh_core_getSystemTime();
 //
-//NH_CORE_END(NH_SIGNAL_OK)
+//return NH_SIGNAL_OK;
 //}
 //

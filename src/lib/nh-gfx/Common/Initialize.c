@@ -29,9 +29,9 @@ NH_API_RESULT nh_gfx_initialize()
 {
     _nh_gfx_initConfig();
 
-    NH_GFX_CHECK(nh_gfx_createIndexMap())
-    NH_GFX_CHECK(nh_gfx_initializeFontManager())
-    NH_GFX_CHECK(nh_gfx_createSurfaceRequirements())
+    NH_CORE_CHECK(nh_gfx_createIndexMap())
+    NH_CORE_CHECK(nh_gfx_initializeFontManager())
+    NH_CORE_CHECK(nh_gfx_createSurfaceRequirements())
 
     nh_vk_initVulkan();
     nh_opengl_initOpenGL();

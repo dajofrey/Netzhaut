@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "Macros.h"
 #include "IndexMap.h"
 
 #include "../Runtime/Runtime.h"
@@ -23,12 +22,10 @@
 
 NH_API_RESULT nh_webidl_initialize()
 {
-NH_WEBIDL_BEGIN()
+    NH_CORE_CHECK(nh_webidl_createIndexMap())
+    NH_CORE_CHECK(nh_webidl_initRuntime())
+    NH_CORE_CHECK(nh_webidl_initNamespaces())
 
-    NH_WEBIDL_CHECK(nh_webidl_createIndexMap())
-    NH_WEBIDL_CHECK(nh_webidl_initRuntime())
-    NH_WEBIDL_CHECK(nh_webidl_initNamespaces())
-
-NH_WEBIDL_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

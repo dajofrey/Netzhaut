@@ -9,9 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "GlobalObject.h"
-
-#include "../Common/Macros.h"
-
 #include <string.h>
 
 // DATA ============================================================================================
@@ -84,24 +81,18 @@ static const char *globalPropertyNames_pp[] = {
 static NH_API_RESULT nh_ecmascript_createGlobalObjectValueProperties(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Realm *Realm_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_ecmascript_createGlobalObjectFunctionProperties(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Realm *Realm_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static nh_ecmascript_Property *nh_ecmascript_getGlobalProperty(
     nh_ecmascript_Realm *Realm_p, int i)
 {
-NH_ECMASCRIPT_BEGIN()
-
     Realm_p->Intrinsics.Properties_p[i].type = NH_ECMASCRIPT_PROPERTY_DATA;
     Realm_p->Intrinsics.Properties_p[i].enumerable   = false;
     Realm_p->Intrinsics.Properties_p[i].configurable = false;
@@ -169,15 +160,13 @@ NH_ECMASCRIPT_BEGIN()
 
     Realm_p->Intrinsics.Properties_p[i].Fields.Data.Value = Value;
 
-NH_ECMASCRIPT_END(&Realm_p->Intrinsics.Properties_p[i])
+    return &Realm_p->Intrinsics.Properties_p[i];
 }
 
 // corresponds to https://tc39.es/ecma262/#sec-setdefaultglobalbindings
 nh_ecmascript_Object *nh_ecmascript_setDefaultGlobalBindings(
     nh_ecmascript_Realm *Realm_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     nh_ecmascript_Object *Global_p = Realm_p->GlobalObject_p;
 
     for (int i = 0; i < sizeof(globalPropertyNames_pp) / sizeof(globalPropertyNames_pp[0]); ++i) 
@@ -191,16 +180,13 @@ NH_ECMASCRIPT_BEGIN()
         nh_core_appendToList(&Global_p->Properties, Property_p);
     }
 
-NH_ECMASCRIPT_END(Global_p)
+    return Global_p;
 }
 
 NH_API_RESULT nh_ecmascript_freeDefaultGlobalBindings(
     nh_ecmascript_Object *Object_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // TODO
-
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

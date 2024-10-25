@@ -11,7 +11,6 @@
 #include "Match.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
@@ -31,8 +30,6 @@
 static bool nh_css_matchTypeSelector(
     nh_css_SelectorParseNode *TypeSelector_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
     bool match = false;
 
     if (((nh_css_SelectorParseNode*)TypeSelector_p->Children.pp[0])->type == NH_CSS_SELECTOR_PARSE_NODE_WQ_NAME) 
@@ -49,14 +46,12 @@ NH_CSS_BEGIN()
         }
     }
  
-NH_CSS_END(match)
+    return match;
 }
 
 static bool nh_css_matchIdSelector(
     nh_css_SelectorParseNode *IdSelector_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
     bool match = false;
 
     nh_css_Token *HashTok_p = ((nh_css_SelectorParseNode*)IdSelector_p->Children.pp[0])->Token_p;
@@ -72,14 +67,12 @@ NH_CSS_BEGIN()
 
     nh_encoding_freeUTF8(&Identifier);
  
-NH_CSS_END(match)
+    return match;
 }
 
 static bool nh_css_matchClassSelector(
     nh_css_SelectorParseNode *ClassSelector_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
     bool match = false;
 
     nh_css_Token *IdentTok_p = ((nh_css_SelectorParseNode*)ClassSelector_p->Children.pp[1])->Token_p;
@@ -95,14 +88,12 @@ NH_CSS_BEGIN()
 
     nh_encoding_freeUTF8(&Identifier);
  
-NH_CSS_END(match)
+    return match;
 }
 
 static bool nh_css_matchSubclassSelector(
     nh_css_SelectorParseNode *SubclassSelector_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
     bool match = false;
 
     switch (((nh_css_SelectorParseNode*)SubclassSelector_p->Children.pp[0])->type)
@@ -115,14 +106,12 @@ NH_CSS_BEGIN()
             break;
     }
  
-NH_CSS_END(match)
+    return match;
 }
 
 static bool nh_css_matchCompoundSelector(
     nh_css_SelectorParseNode *CompoundSelector_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
 // TODO
 
     bool match = false;
@@ -140,47 +129,40 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_END(match)
+    return match;
 }
 
 static bool nh_css_matchComplexSelector(
     nh_css_SelectorParseNode *ComplexSelector_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
 // TODO
 
     nh_css_SelectorParseNode *CompoundSelector_p = ComplexSelector_p->Children.pp[0];
-    if (nh_css_matchCompoundSelector(CompoundSelector_p, Element_p)) {NH_CSS_END(true)}
+    if (nh_css_matchCompoundSelector(CompoundSelector_p, Element_p)) {return true;}
 
-NH_CSS_END(false)
+    return false;
 }
 
 static bool nh_css_matchComplexSelectorList(
     nh_css_SelectorParseNode *ComplexSelectorList_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < ComplexSelectorList_p->Children.size; ++i) 
     {
         nh_css_SelectorParseNode *ComplexSelector_p = ComplexSelectorList_p->Children.pp[i];
         bool match = nh_css_matchComplexSelector(ComplexSelector_p, Element_p);
-        if (match) {NH_CSS_END(true)}
+        if (match) {return true;}
     }
 
-NH_CSS_END(false)
+    return false;
 }
 
 bool nh_css_matchSelectors(
     nh_css_SelectorParseNode *Selectors_p, nh_dom_Element *Element_p)
 {
-NH_CSS_BEGIN()
-
-    if (Selectors_p->type != NH_CSS_SELECTOR_PARSE_NODE_SELECTOR_LIST) {NH_CSS_END(false)}
-    if (Selectors_p->Children.size != 1) {NH_CSS_END(false)}
+    if (Selectors_p->type != NH_CSS_SELECTOR_PARSE_NODE_SELECTOR_LIST) {return false;}
+    if (Selectors_p->Children.size != 1) {return false;}
 
     nh_css_SelectorParseNode *ComplexSelectorList_p = Selectors_p->Children.pp[0];
 
-NH_CSS_END(nh_css_matchComplexSelectorList(ComplexSelectorList_p, Element_p))
+    return nh_css_matchComplexSelectorList(ComplexSelectorList_p, Element_p);
 }
-

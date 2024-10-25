@@ -1,7 +1,7 @@
-#ifndef NH_VK_HOST_H
-#define NH_VK_HOST_H
+#ifndef NH_GFX_VULKAN_HOST_H
+#define NH_GFX_VULKAN_HOST_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,62 +9,53 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#define NETZHAUT_VULKAN
+// INCLUDES ========================================================================================
+
 #include "../Common/Includes.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
-
-    typedef struct nh_vk_HostFunctions {
-        PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties;
-        PFN_vkGetPhysicalDeviceFormatProperties vkGetPhysicalDeviceFormatProperties;
-        PFN_vkCreateInstance vkCreateInstance;
-        PFN_vkDestroyInstance vkDestroyInstance;
-        PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties;
-        PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
-        PFN_vkEnumerateInstanceLayerProperties vkEnumerateInstanceLayerProperties;
-        PFN_vkCreateDevice vkCreateDevice;
-        PFN_vkGetPhysicalDeviceFeatures vkGetPhysicalDeviceFeatures;
+typedef struct nh_gfx_VulkanHostFunctions {
+    PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties;
+    PFN_vkGetPhysicalDeviceFormatProperties vkGetPhysicalDeviceFormatProperties;
+    PFN_vkCreateInstance vkCreateInstance;
+    PFN_vkDestroyInstance vkDestroyInstance;
+    PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
+    PFN_vkEnumerateInstanceLayerProperties vkEnumerateInstanceLayerProperties;
+    PFN_vkCreateDevice vkCreateDevice;
+    PFN_vkGetPhysicalDeviceFeatures vkGetPhysicalDeviceFeatures;
 #ifdef VK_USE_PLATFORM_XLIB_KHR
-        PFN_vkCreateXlibSurfaceKHR vkCreateXlibSurfaceKHR; 
+    PFN_vkCreateXlibSurfaceKHR vkCreateXlibSurfaceKHR; 
 #elif VK_USE_PLATFORM_WIN32_KHR 
-        PFN_VkCreateWin32SurfaceKHR vkCreateWin32SurfaceKHR;
+    PFN_VkCreateWin32SurfaceKHR vkCreateWin32SurfaceKHR;
 #endif
-        PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR;
-        PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties;
-        PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices;
-        PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties;
-        PFN_vkEnumerateDeviceExtensionProperties vkEnumerateDeviceExtensionProperties;
-        PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR;
-        PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR;
-        PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
-        PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR;
-    } nh_vk_HostFunctions;
-    
-    typedef struct nh_vk_Host {
-        bool validation;
-        VkInstance Instance;
-        nh_vk_HostFunctions Functions;
-        VkDebugUtilsMessengerEXT Messenger;
-    } nh_vk_Host;
+    PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR;
+    PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties;
+    PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices;
+    PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties;
+    PFN_vkEnumerateDeviceExtensionProperties vkEnumerateDeviceExtensionProperties;
+    PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR;
+    PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR;
+    PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
+    PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR;
+} nh_gfx_VulkanHostFunctions;
 
-/** @} */
+typedef struct nh_gfx_VulkanHost {
+    bool validation;
+    VkInstance Instance;
+    nh_gfx_VulkanHostFunctions Functions;
+    VkDebugUtilsMessengerEXT Messenger;
+} nh_gfx_VulkanHost;
 
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
+// FUNCTIONS =======================================================================================
 
-    NH_API_RESULT nh_vk_createHost(
-        nh_vk_Host *Host_p, bool validation
-    );
+NH_API_RESULT nh_gfx_createVulkanHost(
+    nh_gfx_VulkanHost *Host_p, bool validation
+);
 
-    void nh_vk_destroyHost(
-        nh_vk_Host *Host_p
-    );
+void nh_gfx_destroyVulkanHost(
+    nh_gfx_VulkanHost *Host_p
+);
 
-/** @} */
-
-#endif 
+#endif // NH_GFX_VULKAN_HOST_H 

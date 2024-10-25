@@ -11,7 +11,6 @@
 #include "SurfaceRequirements.h"
 
 #include "../Base/Surface.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Thread.h"
 #include "../../nh-core/System/Memory.h"
@@ -48,8 +47,6 @@ static int VISUAL_DATA_P[] = {
 NH_API_RESULT nh_opengl_createSurfaceRequirements(
     nh_opengl_SurfaceRequirements *Requirements_p)
 {
-NH_GFX_BEGIN()
-
     Requirements_p->Ids = nh_core_initArray(sizeof(VisualID), 8);
 
     Display *Display_p = XOpenDisplay(NULL);
@@ -80,16 +77,14 @@ NH_GFX_BEGIN()
     XFree(FrameBufferConfigurations_p);
     XCloseDisplay(Display_p);
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_opengl_freeSurfaceRequirements(
     nh_opengl_SurfaceRequirements *Requirements_p)
 {
-NH_GFX_BEGIN()
-
     nh_core_freeArray(&Requirements_p->Ids);
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

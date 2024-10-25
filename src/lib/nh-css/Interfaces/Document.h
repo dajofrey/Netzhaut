@@ -1,5 +1,5 @@
-#ifndef NH_CSS_DOCUMENT_H
-#define NH_CSS_DOCUMENT_H
+#ifndef NH_CSS_INTERFACES_DOCUMENT_H
+#define NH_CSS_INTERFACES_DOCUMENT_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -18,16 +18,16 @@
  *  @{
  */
 
-    nh_css_DocumentObject *nh_css_getDocument(
+    nh_webidl_Object *nh_css_getDocument(
         nh_webidl_Object *Object_p
     );
     
     nh_css_Layout *nh_css_getLayout(
-        nh_css_DocumentObject *Document_p
+        nh_webidl_Object *Document_p
     );
 
     nh_css_StyleSheetListObject *nh_css_getStyleSheetList(
-        nh_css_DocumentObject *Document_p
+        nh_webidl_Object *Document_p
     );
 
 /** @} */

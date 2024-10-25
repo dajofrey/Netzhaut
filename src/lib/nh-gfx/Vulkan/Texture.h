@@ -1,7 +1,7 @@
-#ifndef NH_VK_TEXTURE_H
-#define NH_VK_TEXTURE_H
+#ifndef NH_GFX_VULKAN_TEXTURE_H
+#define NH_GFX_VULKAN_TEXTURE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,55 +9,47 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "GPU.h"
 #include "../Fonts/FontManager.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+typedef struct nh_vk_TextureInfo {
+    unsigned int width;           
+    unsigned int height;          
+    int memoryProperties;         
+    void *data_p;                 
+    size_t size;                  
+    VkImageLayout imageLayout;    
+    VkFormat format;              
+    VkImageUsageFlags usageFlags; 
+} nh_vk_TextureInfo;
 
-   typedef struct nh_vk_TextureInfo {
-        unsigned int width;           
-        unsigned int height;          
-        int memoryProperties;         
-        void *data_p;                 
-        size_t size;                  
-        VkImageLayout imageLayout;    
-        VkFormat format;              
-        VkImageUsageFlags usageFlags; 
-    } nh_vk_TextureInfo;
-    
-   typedef struct nh_vk_Texture {
-        void *source_p;
-        unsigned int width;                                                  
-        unsigned int height;                                
-        VkImage Image;                             
-        VkImageView ImageView;                     
-        VkDeviceMemory DeviceMemory;
-        VkDescriptorImageInfo DescriptorImageInfo; 
-        VkSampler Sampler;                         
-    } nh_vk_Texture;
+typedef struct nh_vk_Texture {
+    void *source_p;
+    unsigned int width;                                                  
+    unsigned int height;                                
+    VkImage Image;                             
+    VkImageView ImageView;                     
+    VkDeviceMemory DeviceMemory;
+    VkDescriptorImageInfo DescriptorImageInfo; 
+    VkSampler Sampler;                         
+} nh_vk_Texture;
 
-/** @} */
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-gfx_functions 
- *  @{
- */
+nh_vk_Texture *nh_vk_loadFontTexture(
+    nh_gfx_VulkanGPU *GPU_p, nh_gfx_Font *Font_p
+);
 
-    nh_vk_Texture *nh_vk_loadFontTexture(
-        nh_vk_GPU *GPU_p, nh_gfx_Font *Font_p
-    );
+nh_vk_Texture *nh_vk_reloadFontTexture(
+    nh_gfx_VulkanGPU *GPU_p, nh_gfx_Font *Font_p
+);
 
-    nh_vk_Texture *nh_vk_reloadFontTexture(
-        nh_vk_GPU *GPU_p, nh_gfx_Font *Font_p
-    );
+void nh_vk_destroyTexture(
+    nh_gfx_VulkanGPU *GPU_p, nh_vk_Texture *Texture_p
+);
 
-    void nh_vk_destroyTexture(
-        nh_vk_GPU *GPU_p, nh_vk_Texture *Texture_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_GFX_VULKAN_TEXTURE_H

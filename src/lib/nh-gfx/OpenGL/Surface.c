@@ -11,7 +11,6 @@
 #include "Surface.h"
 
 #include "../Base/Surface.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Thread.h"
 #include "../../nh-core/System/Memory.h"
@@ -31,12 +30,10 @@
 
 nh_opengl_Surface nh_opengl_initSurface()
 {
-NH_GFX_BEGIN()
-
     nh_opengl_Surface Surface;
     Surface.Context_p = NULL;
 
-NH_GFX_END(Surface)
+    return Surface;
 }
 
 // CREATE ==========================================================================================
@@ -63,8 +60,6 @@ typedef GLXContext (*glXCreateContextAttribsARBProc)
 static NH_API_RESULT nh_opengl_createOpenGLContext(
     nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
 {
-NH_GFX_BEGIN()
-
     int count = 0;
     GLXFBConfig *FrameBufferConfigurations_p = 
         glXChooseFBConfig(Window_p->X11.Common_p->Display_p, Window_p->X11.Common_p->screen, VISUAL_DATA_P, &count);
@@ -84,7 +79,7 @@ NH_GFX_BEGIN()
     }
 
     if (!FrameBufferConfiguration_p) {
-        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
  
     glXCreateContextAttribsARBProc glXCreateContextAttribsARB_f = 0;
@@ -92,7 +87,7 @@ NH_GFX_BEGIN()
         glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
 
     if (!glXCreateContextAttribsARB_f) {
-        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
 
     /* Set desired minimum OpenGL version */
@@ -107,25 +102,23 @@ NH_GFX_BEGIN()
         Window_p->X11.Common_p->Display_p, FrameBufferConfiguration_p, NULL, true, contextAttributes_p);
 
     if (!Surface_p->Context_p) {
-        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
 
     XFree(FrameBufferConfigurations_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_opengl_createSurface(
     nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
 {
-NH_GFX_BEGIN()
-
-    NH_GFX_CHECK(nh_opengl_createOpenGLContext(Surface_p, Window_p))
+    NH_CORE_CHECK(nh_opengl_createOpenGLContext(Surface_p, Window_p))
 
     int bufferCount = 3;
 
     Surface_p->CommandBuffers_p = nh_core_allocate(sizeof(nh_opengl_CommandBuffer)*bufferCount);
-    NH_GFX_CHECK_MEM(Surface_p->CommandBuffers_p)
+    NH_CORE_CHECK_MEM(Surface_p->CommandBuffers_p)
 
     Surface_p->bufferCount = bufferCount;
     Surface_p->currentBuffer = 0;
@@ -134,7 +127,7 @@ NH_GFX_BEGIN()
          Surface_p->CommandBuffers_p[i] = nh_opengl_initCommandBuffer();
     }
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // DESTROY =========================================================================================
@@ -142,11 +135,9 @@ NH_GFX_END(NH_API_SUCCESS)
 NH_API_RESULT nh_opengl_destroySurface(
     nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
 {
-NH_GFX_BEGIN()
-
     glXDestroyContext(Window_p->X11.Common_p->Display_p, Surface_p->Context_p);
     nh_core_free(Surface_p->CommandBuffers_p);
     
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

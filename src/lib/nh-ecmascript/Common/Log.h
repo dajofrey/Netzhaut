@@ -24,7 +24,7 @@
     );
 
     NH_API_RESULT nh_ecmascript_logLexer(
-        void *handle_p, nh_Array *InputElements_p, bool dirty
+        void *handle_p, nh_core_Array *InputElements_p, bool dirty
     );
 
     NH_API_RESULT nh_ecmascript_logParseTree(

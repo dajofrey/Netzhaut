@@ -9,64 +9,51 @@
 // INCLUDES =======================================================================================
 
 #include "Pipeline.h"
-
-#include "../Common/Macros.h"
-
 #include "../../nh-gfx/Common/Macros.h"
 
 // DECLARE ========================================================================================
 
 static NH_API_RESULT nh_renderer_vk_createColorPipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p
 );  
-static NH_API_RESULT nh_renderer_vk_createTextSDFPipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
+static NH_API_RESULT nh_renderer_createVulkanTextSDFPipeline(
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p
 );  
 static NH_API_RESULT nh_renderer_vk_createImagePipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p
 );  
 static NH_API_RESULT nh_renderer_vk_createBackgroundImagePipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p
 );  
 
-// IMPLEMENT ======================================================================================
+// FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_renderer_vk_createPipelines(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipelines_p)
+NH_API_RESULT nh_renderer_createVulkanPipelines(
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipelines_p)
 {
-NH_RENDERER_BEGIN()
+    nh_gfx_VulkanPipelineInfo Info;
+    nh_gfx_prepareVulkanPipelineInfo(&Info);
 
-    nh_vk_PipelineInfo Info;
-    nh_vk_prepareDefaultPipelineInfo(&Info);
+    NH_CORE_CHECK(nh_renderer_vk_createColorPipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_COLOR], &Info))
+    NH_CORE_CHECK(nh_renderer_createVulkanTextSDFPipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_TEXT_SDF], &Info))
+    NH_CORE_CHECK(nh_renderer_vk_createImagePipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_IMAGE], &Info))
+    NH_CORE_CHECK(nh_renderer_vk_createBackgroundImagePipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_BACKGROUND_IMAGE], &Info))
 
-    NH_RENDERER_CHECK(nh_renderer_vk_createColorPipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_COLOR], &Info))
-    NH_RENDERER_CHECK(nh_renderer_vk_createTextSDFPipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_TEXT_SDF], &Info))
-    NH_RENDERER_CHECK(nh_renderer_vk_createImagePipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_IMAGE], &Info))
-    NH_RENDERER_CHECK(nh_renderer_vk_createBackgroundImagePipeline(Driver_p, &Pipelines_p[NH_RENDERER_VK_PIPELINE_BACKGROUND_IMAGE], &Info))
-
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-void nh_renderer_vk_destroyPipelines(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipelines_p)
+void nh_renderer_destroyVulkanPipelines(
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipelines_p)
 {
-NH_RENDERER_BEGIN()
-
     for (int i = 0; i < NH_RENDERER_VK_PIPELINE_COUNT; ++i) {
-        nh_vk_destroyPipeline(Driver_p, &Pipelines_p[i]);
+        nh_gfx_destroyVulkanPipeline(Driver_p, &Pipelines_p[i]);
     }
-
-NH_RENDERER_SILENT_END()
 }
-
-// COLOR ===========================================================================================
 
 static NH_API_RESULT nh_renderer_vk_createColorPipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p)
 {
-NH_RENDERER_BEGIN()
-
-// layout
+    // layout
     VkDescriptorSetLayoutBinding LayoutBinding = 
     {
         .binding            = 0,
@@ -93,7 +80,7 @@ NH_RENDERER_BEGIN()
         .pushConstantRangeCount = 0
     };
 
-// shaders
+    // shaders
     const uint32_t vs_code[] = 
     {
         #include "../Common/Data/GLSL/Main/Color.vert.inc"
@@ -103,9 +90,9 @@ NH_RENDERER_BEGIN()
         #include "../Common/Data/GLSL/Main/Color.frag.inc"
     };
     VkShaderModule vertShaderModule;
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
     VkShaderModule fragShaderModule; 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
     
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -123,7 +110,7 @@ NH_RENDERER_BEGIN()
     };
     VkPipelineShaderStageCreateInfo shaderStages[2] = {vertShaderInfo, fragShaderInfo};
 
-// shader input
+    // shader input
     VkVertexInputBindingDescription bindingDescription = 
     {
         .binding   = 0,
@@ -152,7 +139,7 @@ NH_RENDERER_BEGIN()
         .primitiveRestartEnable = VK_FALSE
     };
 
-// create
+    // create
     VkGraphicsPipelineCreateInfo PipelineInfo = 
     {
         .sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -170,23 +157,21 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // SDF TEXT ========================================================================================
 
-static NH_API_RESULT nh_renderer_vk_createTextSDFPipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
+static NH_API_RESULT nh_renderer_createVulkanTextSDFPipeline(
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p)
 {
-NH_RENDERER_BEGIN()
-
-// layout
+    // layout
     VkDescriptorSetLayoutBinding setLayoutBindings[3];
     VkDescriptorSetLayoutBinding setLayoutBinding1 =
     {
@@ -231,7 +216,7 @@ NH_RENDERER_BEGIN()
         .pushConstantRangeCount = 0
     };
 
-// shader
+    // shader
     VkShaderModule fragShaderModule, vertShaderModule;
     const uint32_t vs_code[] = 
     {
@@ -241,8 +226,8 @@ NH_RENDERER_BEGIN()
     {
         #include "../Common/Data/GLSL/Main/TextSDF.frag.inc"
     };
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
 
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -260,7 +245,7 @@ NH_RENDERER_BEGIN()
     };
     VkPipelineShaderStageCreateInfo shaderStages[2] = {vertShaderInfo, fragShaderInfo};
     
-// shader input
+    // shader input
     VkVertexInputBindingDescription vInputBindDescription = 
     {
         .binding   = 0,
@@ -303,7 +288,7 @@ NH_RENDERER_BEGIN()
         .primitiveRestartEnable = VK_FALSE
     };
 
-// create
+    // create
     VkGraphicsPipelineCreateInfo PipelineInfo = 
     {
         .sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -321,23 +306,19 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-// IMAGE ===========================================================================================
-
 static NH_API_RESULT nh_renderer_vk_createImagePipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p)
 {
-NH_RENDERER_BEGIN()
-
-// layout
+    // layout
     VkDescriptorSetLayoutBinding setLayoutBindings[2];
     VkDescriptorSetLayoutBinding setLayoutBinding1 =
     {
@@ -374,7 +355,7 @@ NH_RENDERER_BEGIN()
         .pushConstantRangeCount = 0
     };
 
-// shaders
+    // shaders
     const uint32_t vs_code[] = 
     {
         #include "../Common/Data/GLSL/Main/Image.vert.inc"
@@ -384,9 +365,9 @@ NH_RENDERER_BEGIN()
         #include "../Common/Data/GLSL/Main/Image.frag.inc"
     };
     VkShaderModule vertShaderModule;
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
     VkShaderModule fragShaderModule; 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
     
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -404,7 +385,7 @@ NH_RENDERER_BEGIN()
     };
     VkPipelineShaderStageCreateInfo shaderStages[2] = {vertShaderInfo, fragShaderInfo};
 
-// shader input
+    // shader input
     VkVertexInputBindingDescription bindingDescription = 
     {
         .binding   = 0,
@@ -444,7 +425,7 @@ NH_RENDERER_BEGIN()
         .primitiveRestartEnable = VK_FALSE
     };
 
-// create
+    // create
     VkGraphicsPipelineCreateInfo PipelineInfo = 
     {
         .sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -462,23 +443,19 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-// BACKGROUND IMAGE ================================================================================
-
 static NH_API_RESULT nh_renderer_vk_createBackgroundImagePipeline(
-    nh_vk_Driver *Driver_p, nh_vk_Pipeline *Pipeline_p, nh_vk_PipelineInfo *Info_p)
+    nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanPipeline *Pipeline_p, nh_gfx_VulkanPipelineInfo *Info_p)
 {
-NH_RENDERER_BEGIN()
-
-// layout
+    // layout
     VkDescriptorSetLayoutBinding setLayoutBindings[2];
     VkDescriptorSetLayoutBinding setLayoutBinding1 =
     {
@@ -515,7 +492,7 @@ NH_RENDERER_BEGIN()
         .pushConstantRangeCount = 0
     };
 
-// shaders
+    // shaders
     const uint32_t vs_code[] = 
     {
         #include "../Common/Data/GLSL/Main/BackgroundImage.vert.inc"
@@ -525,9 +502,9 @@ NH_RENDERER_BEGIN()
         #include "../Common/Data/GLSL/Main/BackgroundImage.frag.inc"
     };
     VkShaderModule vertShaderModule;
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, vs_code, sizeof(vs_code), &vertShaderModule))
     VkShaderModule fragShaderModule; 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanShaderModule(Driver_p, fs_code, sizeof(fs_code), &fragShaderModule))
     
     VkPipelineShaderStageCreateInfo vertShaderInfo = 
     {
@@ -545,7 +522,7 @@ NH_RENDERER_BEGIN()
     };
     VkPipelineShaderStageCreateInfo shaderStages[2] = {vertShaderInfo, fragShaderInfo};
 
-// shader input
+    // shader input
     VkVertexInputBindingDescription bindingDescription = 
     {
         .binding   = 0,
@@ -585,7 +562,7 @@ NH_RENDERER_BEGIN()
         .primitiveRestartEnable = VK_FALSE
     };
 
-// create
+    // create
     VkGraphicsPipelineCreateInfo PipelineInfo = 
     {
         .sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -603,12 +580,12 @@ NH_RENDERER_BEGIN()
         .subpass             = 0
     };
 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_vk_createPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createVulkanPipeline(Driver_p, NH_VK_PIPELINE_GRAPHICS, &PipelineLayoutInfo, &PipelineInfo, Pipeline_p))
 
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, fragShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyShaderModule(Driver_p->Device, vertShaderModule, VK_NULL_HANDLE);
     Driver_p->Functions.vkDestroyDescriptorSetLayout(Driver_p->Device, Layout, VK_NULL_HANDLE);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

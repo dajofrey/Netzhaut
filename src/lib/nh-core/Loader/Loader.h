@@ -1,5 +1,5 @@
-#ifndef NH_CORE_LOADER_H
-#define NH_CORE_LOADER_H
+#ifndef NH_CORE_LOADER_LOADER_H
+#define NH_CORE_LOADER_LOADER_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -45,7 +45,9 @@
  *  @{
  */
 
-    typedef nh_Loader *(*nh_core_initLoader_f)(
+typedef struct nh_core_Loader nh_core_Loader;
+
+    typedef nh_core_Loader *(*nh_core_initLoader_f)(
         bool fallback, bool install
     );
 
@@ -91,7 +93,7 @@
         char path_p[255];
     } nh_core_ExternalModule;
 
-    typedef struct nh_Loader {
+    typedef struct nh_core_Loader {
         bool install;
         bool unload;
         nh_core_load_f load_f;
@@ -100,8 +102,8 @@
         nh_core_loadExternalSymbol_f loadExternalSymbol_f;
         nh_core_addModule_f addModule_f;
         nh_Module Modules_p[NH_MODULE_E_COUNT];
-        nh_Array ExternalModules;
-    } nh_Loader;
+        nh_core_Array ExternalModules;
+    } nh_core_Loader;
 
 /** @} */
 
@@ -109,7 +111,7 @@
  *  @{
  */
 
-    extern nh_Loader NH_LOADER;
+    extern nh_core_Loader NH_LOADER;
     extern const char *NH_MODULE_NAMES_PP[];
 
 /** @} */
@@ -126,7 +128,7 @@
         char *moduleName_p, char *symbolName_p
     );
 
-    nh_Loader *nh_core_initLoader(
+    nh_core_Loader *nh_core_initLoader(
         bool fallback, bool install
     );
 
@@ -139,4 +141,5 @@
 
 /** @} */
 
-#endif
+#endif // NH_CORE_LOADER_LOADER_H
+

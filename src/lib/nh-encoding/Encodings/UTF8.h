@@ -14,7 +14,7 @@
 
 #endif
 
-typedef nh_String nh_encoding_UTF8String;
+typedef nh_core_String nh_encoding_UTF8String;
 
 /** @addtogroup lib_nh-encoding_functions
  *  @{

@@ -13,6 +13,7 @@
 #include "../../nh-api/nh-css.h"
 
 #include "../../nh-core/Util/List.h"
+#include "../../nh-core/Util/Debug.h"
 #include "../../nh-webidl/Runtime/Object.h"
 #include "../../nh-url/Main/URLParser.h"
 

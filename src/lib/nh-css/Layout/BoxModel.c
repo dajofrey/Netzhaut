@@ -9,9 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "BoxModel.h"
-
-#include "../Common/Macros.h"
-
 #include "../../nh-gfx/Base/Viewport.h"
 
 #include <string.h>
@@ -31,8 +28,6 @@
 nh_css_ClipBox nh_css_convertToClipBox(
     void *Viewport_p, nh_css_PixelBox PixelBox)
 {
-NH_CSS_BEGIN()
-
     nh_css_ClipBox ClipBox = {0};
 
     ClipBox.Position.x = PIXEL_TO_CLIP(PixelBox.Position.x, ((nh_gfx_Viewport*)Viewport_p), true);
@@ -43,7 +38,7 @@ NH_CSS_BEGIN()
 
     ClipBox.depth = PixelBox.depth;
 
-NH_CSS_END(ClipBox)
+    return ClipBox;
 }
 
 // MAX =============================================================================================
@@ -51,15 +46,13 @@ NH_CSS_END(ClipBox)
 int nh_css_getMaxX(
     nh_css_PixelBox Box)
 {
-NH_CSS_BEGIN()
-NH_CSS_END(Box.Position.x + Box.Size.width)
+    return Box.Position.x + Box.Size.width;
 }
 
 int nh_css_getMaxY(
     nh_css_PixelBox Box)
 {
-NH_CSS_BEGIN()
-NH_CSS_END(Box.Position.y + Box.Size.height)
+    return Box.Position.y + Box.Size.height;
 }
 
 // PIXEL BOX =======================================================================================
@@ -67,8 +60,6 @@ NH_CSS_END(Box.Position.y + Box.Size.height)
 nh_css_PixelBox nh_css_getContentBox(
     nh_css_PixelBox *ContainingBlock_p, nh_css_BoxValues *Values_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_PixelBox Box = nh_css_getPaddingBox(ContainingBlock_p, Values_p); 
 
     Box.Position.x  += Values_p->paddingLeft;
@@ -76,14 +67,12 @@ NH_CSS_BEGIN()
     Box.Size.width  -= Values_p->paddingRight + Values_p->paddingLeft;
     Box.Size.height -= Values_p->paddingBottom + Values_p->paddingTop;
 
-NH_CSS_END(Box)
+    return Box;
 }
 
 nh_css_PixelBox nh_css_getPaddingBox(
     nh_css_PixelBox *ContainingBlock_p, nh_css_BoxValues *Values_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_PixelBox Box = nh_css_getBorderBox(ContainingBlock_p, Values_p);
 
     Box.Position.x += Values_p->borderLeft;
@@ -91,14 +80,12 @@ NH_CSS_BEGIN()
     Box.Size.width -= Values_p->borderRight + Values_p->borderLeft;
     Box.Size.height -= Values_p->borderBottom + Values_p->borderTop;
 
-NH_CSS_END(Box)
+    return Box;
 }
 
 nh_css_PixelBox nh_css_getBorderBox(
     nh_css_PixelBox *ContainingBlock_p, nh_css_BoxValues *Values_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_PixelBox Box;
 
     Box.Position.x  = ContainingBlock_p->Position.x + Values_p->marginLeft;
@@ -108,14 +95,12 @@ NH_CSS_BEGIN()
 
     Box.depth = ContainingBlock_p->depth;
 
-NH_CSS_END(Box)
+    return Box;
 }
 
 nh_css_PixelBox nh_css_getMarginBox(
     nh_css_PixelBox *ContentBox_p, nh_css_BoxValues *Values_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_PixelBox Box;
 
     Box.Position.x  = ContentBox_p->Position.x - Values_p->marginLeft - Values_p->borderLeft - Values_p->paddingLeft;
@@ -125,5 +110,5 @@ NH_CSS_BEGIN()
 
     Box.depth = ContentBox_p->depth;
 
-NH_CSS_END(Box)
+    return Box;
 }

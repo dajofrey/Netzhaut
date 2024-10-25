@@ -19,7 +19,6 @@
 #include "../Properties/Compute.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
@@ -41,10 +40,8 @@
 static nh_encoding_UTF32String nh_css_getMarkerString(
     nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_Value *ListStyleType_p)
 {
-NH_CSS_BEGIN()
-
     nh_encoding_UTF32String MarkerString = nh_encoding_initUTF32(16);
-    nh_List *StyleSheets_p = nh_css_getStyleSheetListData(StyleSheetList_p);
+    nh_core_List *StyleSheets_p = nh_css_getStyleSheetListData(StyleSheetList_p);
 
     nh_css_CounterStyleRuleObject *CounterStyleRule_p = (nh_css_CounterStyleRuleObject*)
         nh_css_findCounterStyleRule(NH_CSS_DEFAULT_STYLE_SHEET_P, ListStyleType_p->String.p);
@@ -56,28 +53,26 @@ NH_CSS_BEGIN()
     }
 
     if (CounterStyleRule_p) {
-        NH_CSS_END(nh_css_calculateMarkerString(CounterStyleRule_p))
+        return nh_css_calculateMarkerString(CounterStyleRule_p);
     }
 
-NH_CSS_END(nh_encoding_initUTF32(16))
+    return nh_encoding_initUTF32(16);
 }
 
 static NH_API_RESULT nh_css_handleListItem(
     nh_css_LogContext LogContext, nh_webidl_Object *Object_p, nh_css_StyleSheetListObject *StyleSheetList_p, 
     nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
 {
-NH_CSS_BEGIN()
-
     nh_dom_Node *Node_p = nh_dom_getNode(Object_p);
-    nh_css_Value *ListStyleType_p = ((nh_List*)nh_dom_getComputedPropertyValues(Node_p))->pp[NH_CSS_PROPERTY_LIST_STYLE_TYPE];
+    nh_css_Value *ListStyleType_p = ((nh_core_List*)nh_dom_getComputedPropertyValues(Node_p))->pp[NH_CSS_PROPERTY_LIST_STYLE_TYPE];
 
     if (ListStyleType_p->Common.type == NH_CSS_VALUE_KEYWORD) 
     {
         nh_encoding_UTF32String MarkerString = nh_css_getMarkerString(StyleSheetList_p, ListStyleType_p);
-        if (MarkerString.length <= 0) {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
+        if (MarkerString.length <= 0) {return NH_API_ERROR_BAD_STATE;}
 
         nh_css_Source *Marker_p = nh_core_allocate(sizeof(nh_css_Source));
-        NH_CSS_CHECK_NULL(Marker_p)
+        NH_CORE_CHECK_NULL(Marker_p)
 
         Marker_p->type = NH_CSS_SOURCE_TEXT_NODE;
         Marker_p->pseudo = NH_CSS_PSEUDO_ELEMENT_MARKER;
@@ -88,9 +83,9 @@ NH_CSS_BEGIN()
 
         nh_core_appendToList(&Parent_p->Element.Children, Marker_p);
     }
-    else {NH_CSS_END(NH_API_ERROR_BAD_STATE)}
+    else {return NH_API_ERROR_BAD_STATE;}
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // SOURCE NODE =====================================================================================
@@ -98,21 +93,20 @@ NH_CSS_END(NH_API_SUCCESS)
 static bool nh_css_displayNode(
     nh_dom_Node *Node_p)
 {
-NH_CSS_BEGIN()
-
-    nh_List *Values_p = nh_dom_getComputedPropertyValues(Node_p);
+    nh_core_List *Values_p = nh_dom_getComputedPropertyValues(Node_p);
     if (Values_p->size && !strcmp(((nh_css_Value*)Values_p->pp[NH_CSS_PROPERTY_DISPLAY])->String.p, "none")) {
-        NH_CSS_END(false)
+        return false;
+    }
+    if (nh_webidl_getObject(Node_p, "DOM", "Comment")) {
+        return false;
     }
 
-NH_CSS_END(true)
+    return true;
 }
 
 static nh_css_LogContext nh_css_updateLogContext(
     nh_css_LogContext Previous, nh_dom_Element *Element_p, int depth)
 {
-NH_CSS_BEGIN()
-
     *Previous.nr_p += 1;
 
     nh_css_LogContext Context;
@@ -124,18 +118,16 @@ NH_CSS_BEGIN()
 
     sprintf(Context.nodeId_p, ":%s%s#%d", Context.indent_p, nh_dom_getLocalName(Element_p)->p, *Context.nr_p);
 
-NH_CSS_END(Context)
+    return Context;
 }
 
 static NH_API_RESULT nh_css_createSourceNode(
     nh_css_LogContext LogContext, nh_webidl_Object *Object_p, nh_css_StyleSheetListObject *StyleSheetList_p, 
     bool updateAll, nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
 {
-NH_CSS_BEGIN()
-
     nh_dom_Element *Element_p = nh_dom_getElement(Object_p);
     nh_dom_Node *Node_p = nh_dom_getNode(Object_p);
-    NH_CSS_CHECK_NULL(Node_p)
+    NH_CORE_CHECK_NULL(Node_p)
 
     bool modified = false;
     if (Element_p && (updateAll || nh_dom_getUpdateAnnotationsFlag(Node_p)))
@@ -145,8 +137,8 @@ NH_CSS_BEGIN()
         nh_css_freeComputedValues(Node_p);
         nh_css_freeSpecifiedValues(Node_p);
 
-        NH_CSS_CHECK(nh_css_setSpecifiedValues(&LogContext, Element_p, StyleSheetList_p, nh_core_initList(0)))
-        NH_CSS_CHECK(nh_css_computeSpecifiedValues(&LogContext, Node_p))
+        NH_CORE_CHECK(nh_css_setSpecifiedValues(&LogContext, Element_p, StyleSheetList_p, nh_core_initList(0)))
+        NH_CORE_CHECK(nh_css_computeSpecifiedValues(&LogContext, Node_p))
 
         nh_dom_setUpdateAnnotationsFlag(Node_p, false);
     }
@@ -156,7 +148,7 @@ NH_CSS_BEGIN()
         bool emptyText = true;
 
         nh_webidl_DOMString *String_p = nh_dom_getTextString((nh_dom_Text*)Object_p);
-        NH_CSS_CHECK_NULL(String_p)
+        NH_CORE_CHECK_NULL(String_p)
 
         nh_encoding_UTF32String Decoded = nh_encoding_decodeUTF8(String_p->p, String_p->length, NULL);
         for (int i = 0; i < Decoded.length; ++i) {
@@ -165,7 +157,7 @@ NH_CSS_BEGIN()
 
         if (!emptyText) {
             *Source_pp = nh_core_allocate(sizeof(nh_css_Source));
-            NH_CSS_CHECK_MEM(*Source_pp)
+            NH_CORE_CHECK_MEM(*Source_pp)
             (*Source_pp)->type = NH_CSS_SOURCE_TEXT_NODE;
             (*Source_pp)->pseudo = NH_CSS_PSEUDO_ELEMENT_UNDEFINED;
             (*Source_pp)->mark = false;
@@ -177,7 +169,7 @@ NH_CSS_BEGIN()
     else if (nh_css_displayNode(Node_p)) 
     {
         *Source_pp = nh_core_allocate(sizeof(nh_css_Source));
-        NH_CSS_CHECK_MEM(*Source_pp)
+        NH_CORE_CHECK_MEM(*Source_pp)
 
         (*Source_pp)->type = NH_CSS_SOURCE_ELEMENT;
         (*Source_pp)->pseudo = NH_CSS_PSEUDO_ELEMENT_UNDEFINED;
@@ -188,60 +180,52 @@ NH_CSS_BEGIN()
 
         nh_css_Value *Display_p = nh_core_getFromList(nh_dom_getComputedPropertyValues(Node_p), NH_CSS_PROPERTY_DISPLAY);
         if (Display_p && Display_p->Common.type == NH_CSS_VALUE_KEYWORD && !strcmp(Display_p->String.p, "list-item")) {
-            NH_CSS_CHECK(nh_css_handleListItem(LogContext, Object_p, StyleSheetList_p, Source_pp, *Source_pp, depth))
+            NH_CORE_CHECK(nh_css_handleListItem(LogContext, Object_p, StyleSheetList_p, Source_pp, *Source_pp, depth))
         }
     }
 
-    nh_List *Children_p = nh_dom_getNodeChildren(Node_p);
+    nh_core_List *Children_p = nh_dom_getNodeChildren(Node_p);
 
     for (int i = 0; i < Children_p->size && nh_css_displayNode(Node_p); ++i) 
     {
         nh_css_Source *Source_p = NULL;           
-        NH_CSS_CHECK(nh_css_createSourceNode(LogContext, Children_p->pp[i], StyleSheetList_p, updateAll, &Source_p, *Source_pp, depth + 2))
+        NH_CORE_CHECK(nh_css_createSourceNode(LogContext, Children_p->pp[i], StyleSheetList_p, updateAll, &Source_p, *Source_pp, depth + 2))
         if (Source_p) {
-            if (!Source_pp || !*Source_pp) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+            if (!Source_pp || !*Source_pp) {return NH_API_ERROR_BAD_STATE;}
             nh_core_appendToList(&(*Source_pp)->Element.Children, Source_p);
         }
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // SOURCE TREE =====================================================================================
 
 static nh_css_LogContext nh_css_initLogContext(
-    void *canvas_p)
+    void *Canvas_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_LogContext Context;
     Context.nr_p = nh_core_allocate(sizeof(int));
     *Context.nr_p = -1;
-    sprintf(Context.topLevelId_p, "nh-css:Canvas:%p:Cascade", canvas_p);
+    sprintf(Context.topLevelId_p, "nh-css:Canvas:%p:Cascade", Canvas_p);
     sprintf(Context.nodeId_p, "");
-
-NH_CSS_END(Context)
+    return Context;
 }
 
-nh_css_SourceTree nh_css_createSourceTree(
+NH_API_RESULT nh_css_createSourceTree(
     nh_webidl_Object *HTMLElement_p, nh_css_StyleSheetListObject *StyleSheetList_p, bool updateAll,
-    void *canvas_p)
+    void *Canvas_p, nh_css_SourceTree *Result_p)
 {
-NH_CSS_BEGIN()
-
-    nh_css_SourceTree Tree;
-    nh_css_LogContext LogContext = nh_css_initLogContext(canvas_p);
-    nh_css_createSourceNode(LogContext, HTMLElement_p, StyleSheetList_p, updateAll, &Tree.Root_p, NULL, 0);
+    NH_CORE_CHECK_NULL(Result_p)
+    nh_css_LogContext LogContext = nh_css_initLogContext(Canvas_p);
+    NH_CORE_CHECK(nh_css_createSourceNode(LogContext, HTMLElement_p, StyleSheetList_p, updateAll, &Result_p->Root_p, NULL, 0))
     nh_core_free(LogContext.nr_p);
-
-NH_CSS_END(Tree)
+    return NH_API_SUCCESS;
 }
 
 void nh_css_freeSource(
     nh_css_Source *Source_p)
 {
-NH_CSS_BEGIN()
-
     if (Source_p->type == NH_CSS_SOURCE_ELEMENT) {
         for (int i = 0; i < Source_p->Element.Children.size; ++i) {
             nh_css_freeSource(Source_p->Element.Children.pp[i]);
@@ -251,6 +235,6 @@ NH_CSS_BEGIN()
 
     nh_core_free(Source_p);
 
-NH_CSS_SILENT_END()
+    return;
 }
 

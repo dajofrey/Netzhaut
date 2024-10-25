@@ -16,7 +16,6 @@
 #include "External/HarfBuzz.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/Util/File.h"
 #include "../../nh-core/Util/String.h"
@@ -33,9 +32,9 @@
 #elif defined(_WIN32) || defined(WIN32)
 #endif
 
-// FONT WEIGHT =====================================================================================
+// FUNCTIONS =======================================================================================
 
-static NH_GFX_FONT_WEIGHT fontWeightValues_p[] = {
+static NH_GFX_FONT_WEIGHT_E fontWeightValues_p[] = {
     NH_GFX_FONT_WEIGHT_THIN,
     NH_GFX_FONT_WEIGHT_EXTRALIGHT,
     NH_GFX_FONT_WEIGHT_ULTRALIGHT,
@@ -72,58 +71,48 @@ static char *fontWeights_pp[] = {
 static int nh_gfx_parseFontWeight(
     char *weight_p)
 {
-NH_GFX_BEGIN()
-
     for (int i = 0; i < sizeof(fontWeights_pp)/sizeof(fontWeights_pp[0]); ++i) {
-        if (strstr(weight_p, fontWeights_pp[i])) {NH_GFX_END(fontWeightValues_p[i])}
+        if (strstr(weight_p, fontWeights_pp[i])) {return fontWeightValues_p[i];}
     }
 
-NH_GFX_END(400)
+    return 400;
 }
 
 nh_gfx_Font *nh_gfx_getLighterFontVariant(
     nh_gfx_Font *Font_p)
 {
-NH_GFX_BEGIN()
-
     for (int weight = Font_p->Style.weight - 100; weight > 0; weight -= 100) {
         for (int font = 0; font < NH_GFX_FONT_MANAGER.Fonts.size; ++font) {
             nh_gfx_Font *Tmp_p = NH_GFX_FONT_MANAGER.Fonts.pp[font];
             if (!strcmp(Font_p->Family.name_p, Tmp_p->Family.name_p) && Tmp_p->Style.weight == weight) {
-                NH_GFX_END(Tmp_p)
+                return Tmp_p;
             }
         }
     }
 
-NH_GFX_END(NULL)
+    return NULL;
 }
 
 nh_gfx_Font *nh_gfx_getBolderFontVariant(
     nh_gfx_Font *Font_p)
 {
-NH_GFX_BEGIN()
-
     for (int weight = Font_p->Style.weight + 100; weight < 1000; weight += 100) {
         for (int font = 0; font < NH_GFX_FONT_MANAGER.Fonts.size; ++font) {
             nh_gfx_Font *Tmp_p = NH_GFX_FONT_MANAGER.Fonts.pp[font];
             if (!strcmp(Font_p->Family.name_p, Tmp_p->Family.name_p) && Tmp_p->Style.weight == weight) {
-                NH_GFX_END(Tmp_p)
+                return Tmp_p;
             }
         }
     }
 
-NH_GFX_END(NULL)
+    return NULL;
 }
-
-// FONT STYLE ======================================================================================
 
 NH_API_RESULT nh_gfx_parseFontStyle(
     nh_gfx_FontStyle *Style_p, char *name_p)
 {
-NH_GFX_BEGIN()
-
     Style_p->name_p = nh_core_allocateBytes(name_p);
-    NH_GFX_CHECK_MEM(Style_p->name_p)
+    NH_CORE_CHECK_MEM(Style_p->name_p)
     for (int i = 0; i < strlen(Style_p->name_p); ++i) {
         Style_p->name_p[i] = tolower(Style_p->name_p[i]);
     }
@@ -132,16 +121,13 @@ NH_GFX_BEGIN()
     Style_p->oblique = strstr(Style_p->name_p, "oblique") ? true : false;
     Style_p->italic = strstr(Style_p->name_p, "italic") ? true : false;
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_gfx_freeFontStyle(
     nh_gfx_FontStyle *Style_p)
 {
-NH_GFX_BEGIN()
-
     nh_core_free(Style_p->name_p);
-
-NH_GFX_SILENT_END()
+    return;
 }
 

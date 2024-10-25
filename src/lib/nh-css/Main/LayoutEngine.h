@@ -21,11 +21,11 @@
 
     typedef struct nh_css_Layout {
         bool initialized;
-        nh_List Canvases;
+        nh_core_List Canvases;
     } nh_css_Layout;
 
     typedef struct nh_css_LayoutEngine {
-        nh_Array CanvasTypes;
+        nh_core_Array CanvasTypes;
         nh_html_DocumentContext *DocumentContext_p;
         nh_css_Layout *Layout_p;
     } nh_css_LayoutEngine;

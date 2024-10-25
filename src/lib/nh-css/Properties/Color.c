@@ -12,7 +12,6 @@
 
 #include "../Common/IndexMap.h"
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -181,16 +180,14 @@ unsigned int NH_CSS_COLORS_PP_COUNT = sizeof(NH_CSS_COLORS_PP)/sizeof(NH_CSS_COL
 NH_API_RESULT nh_css_getColorFromName(
     char *name_p, char *hex_p)
 {
-NH_CSS_BEGIN()
-
-    if (name_p == NULL || strlen(name_p) > 255) {NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    if (name_p == NULL || strlen(name_p) > 255) {return NH_API_ERROR_BAD_STATE;}
 
     char nameCpy_p[255] = {'\0'};
     strcpy(nameCpy_p, name_p);
     for (int i = 0; i < strlen(nameCpy_p); ++i) {nameCpy_p[i] = tolower(nameCpy_p[i]);}
 
     unsigned int *value_p = nh_core_getFromHashMap(&NH_CSS_INDEXMAP.Colors, nameCpy_p);
-    NH_CSS_CHECK_NULL(value_p)
+    NH_CORE_CHECK_NULL(value_p)
     
     switch (*value_p) 
     {
@@ -344,7 +341,7 @@ NH_CSS_BEGIN()
         case NH_CSS_COLOR_YELLOW_GREEN        : strcpy(hex_p, "9ACD32"); break;	
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 /**
@@ -355,18 +352,14 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 static void nh_css_toSRGB(
     float *rgba_p, double gamma)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < 3; ++i) {rgba_p[i] = pow((double)rgba_p[i], gamma);}
 
-NH_CSS_SILENT_END()
+    return;
 }
 
 static NH_API_RESULT nh_css_rgba(
     char *str_p, float rgba_p[4])
 {
-NH_CSS_BEGIN()
-
     int rgb_p[3] = {0};
     int alpha_p[3] = {0};
     bool percentage_p[3] = {false, false, false};
@@ -411,24 +404,20 @@ NH_CSS_BEGIN()
         rgba_p[3] = alpha;
     }
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_css_hsla(
     char *str_p, float rgba_p[4])
 {
-NH_CSS_BEGIN()
-
     // TODO
 
-NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 static NH_API_RESULT nh_css_parseHexColor(
     char *str_p, float rgba_p[4])
 {
-NH_CSS_BEGIN()
-
     int hex_p[4];
 
     if (strlen(str_p) == 3) 
@@ -456,57 +445,52 @@ NH_CSS_BEGIN()
         rgba_p[3] = 1.0f;
     }
     else {
-        NH_CSS_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
     
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-nh_Color nh_css_getColor(
+nh_css_Color nh_css_getColor(
     nh_css_Value Color)
 {
-NH_CSS_BEGIN()
-
-    nh_Color Default;
+    nh_css_Color Default;
     Default.r = 0.0f;
     Default.g = 0.0f;
     Default.b = 0.0f;
     Default.a = 1.0f;
 
     if (Color.Common.type != NH_CSS_VALUE_HEX && Color.Common.type != NH_CSS_VALUE_FUNCTION) {
-        NH_CSS_END(Default)
+        return Default;
     }
 
     float values_p[4];
 
-         if (Color.Common.type == NH_CSS_VALUE_HEX) {NH_CSS_CHECK_2(Default, nh_css_parseHexColor(Color.String.p, values_p))} 
-    else if (strstr(Color.String.p, "rgb")) {NH_CSS_CHECK_2(Default, nh_css_rgba(Color.String.p, values_p))} 
-    else if (strstr(Color.String.p, "hsl")) {NH_CSS_CHECK_2(Default, nh_css_hsla(Color.String.p, values_p))}
+         if (Color.Common.type == NH_CSS_VALUE_HEX) {NH_CORE_CHECK_2(Default, nh_css_parseHexColor(Color.String.p, values_p))} 
+    else if (strstr(Color.String.p, "rgb")) {NH_CORE_CHECK_2(Default, nh_css_rgba(Color.String.p, values_p))} 
+    else if (strstr(Color.String.p, "hsl")) {NH_CORE_CHECK_2(Default, nh_css_hsla(Color.String.p, values_p))}
     else {
-        NH_CSS_END(Default)
+        return Default;
     }
 
     nh_css_toSRGB(values_p, 2.2f);
 
-    nh_Color Result;
+    nh_css_Color Result;
     Result.r = values_p[0];
     Result.g = values_p[1];
     Result.b = values_p[2];
     Result.a = values_p[3];
 
-NH_CSS_END(Result)
+    return Result;
 }
 
 void nh_css_colorToArray(
-    nh_Color Color, float *color_p)
+    nh_css_Color Color, float *color_p)
 {
-NH_CSS_BEGIN()
-
     color_p[0] = Color.r;
     color_p[1] = Color.g;
     color_p[2] = Color.b;
     color_p[3] = Color.a;
 
-NH_CSS_SILENT_END()
+    return;
 }
-

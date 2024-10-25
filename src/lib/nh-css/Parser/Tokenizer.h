@@ -107,7 +107,7 @@
         NH_CSS_TOKEN token
     );
 
-    nh_Array nh_css_tokenize(
+    nh_core_Array nh_css_tokenize(
         nh_encoding_UTF32String *String_p
     );
 

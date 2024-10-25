@@ -14,9 +14,7 @@
 #include "Float.h"
 
 #include "../Main/FormattingContext.h"
-
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/Util/List.h"
 
@@ -24,13 +22,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// MARGIN COLLAPSE =================================================================================
+// FUNCTIONS =======================================================================================
 
+/**
+ * Margin collapse.
+ */
 NH_API_RESULT nh_css_collapse(
     nh_css_Fragment *Fragment_p, int *advance_p)
 {
-NH_CSS_BEGIN()
-
     // first child
     if (Fragment_p->type == NH_CSS_FRAGMENT_BOX && Fragment_p->Parent_p->Children.pp[0] == Fragment_p) {
         if (Fragment_p->Parent_p->Box.Values.marginTop > Fragment_p->Box.Values.marginTop) {
@@ -58,20 +57,16 @@ NH_CSS_BEGIN()
         Previous_p->Box.Values.marginBottom = 0;
     }
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// BLOCK ===========================================================================================
 
 NH_API_RESULT nh_css_arrangeBlockFormattingContext(
     nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p, int *advance_p)
 {
-NH_CSS_BEGIN()
-
-    NH_CSS_CHECK(nh_css_computeBoxValues(Fragment_p))
+    NH_CORE_CHECK(nh_css_computeBoxValues(Fragment_p))
 
     if (Fragment_p->Parent_p) {
-        NH_CSS_CHECK(nh_css_collapse(Fragment_p, advance_p))
+        NH_CORE_CHECK(nh_css_collapse(Fragment_p, advance_p))
         Fragment_p->Block = nh_css_getContentBox(&Fragment_p->Parent_p->Block, &Fragment_p->Box.Values);
         Fragment_p->Block.Position.y += *advance_p;
         Fragment_p->Block.Size.height = 0;
@@ -95,10 +90,10 @@ NH_CSS_BEGIN()
         int newFragments = 0;
 
         if (nh_css_startsFormattingContext(Child_p->Node_p, NH_CSS_FORMATTING_CONTEXT_INLINE)) {
-            NH_CSS_CHECK(nh_css_arrangeInlineFormattingContext(Canvas_p, Child_p, advance, &newFragments))
+            NH_CORE_CHECK(nh_css_arrangeInlineFormattingContext(Canvas_p, Child_p, advance, &newFragments))
         }
         else {
-            NH_CSS_CHECK(nh_css_arrangeBlockFormattingContext(Canvas_p, Child_p, &advance))
+            NH_CORE_CHECK(nh_css_arrangeBlockFormattingContext(Canvas_p, Child_p, &advance))
         }
 
         if (Child_p->Box.Values._float != NH_CSS_FLOAT_NONE) {continue;}
@@ -130,6 +125,5 @@ NH_CSS_BEGIN()
 
     Canvas_p->_float = false;
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-

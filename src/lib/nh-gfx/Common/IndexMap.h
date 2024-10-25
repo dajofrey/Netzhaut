@@ -1,7 +1,7 @@
 #ifndef NH_GFX_COMMON_INDEXMAP_H
 #define NH_GFX_COMMON_INDEXMAP_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE NOTICE ==================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,39 +9,25 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "Result.h"
 #include "../../nh-core/Util/HashMap.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+typedef struct nh_gfx_IndexMap {
+    nh_core_HashMap OpenGLCommandNames;
+} nh_gfx_IndexMap;
 
-    typedef struct nh_gfx_IndexMap {
-        nh_HashMap OpenGLCommandNames;
-    } nh_gfx_IndexMap;
+extern nh_gfx_IndexMap NH_GFX_INDEXMAP;
 
-/** @} */
+// FUNCTIONS =======================================================================================
 
-/** @addtogroup lib_nh-gfx_vars
- *  @{
- */
+NH_API_RESULT nh_gfx_createIndexMap(
+);
 
-    extern nh_gfx_IndexMap NH_GFX_INDEXMAP;
-
-/** @} */
-
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
-
-    NH_API_RESULT nh_gfx_createIndexMap(
-    );
-
-    void nh_gfx_freeIndexMap(
-    );
-
-/** @} */
+void nh_gfx_freeIndexMap(
+);
 
 #endif // NH_GFX_COMMON_INDEXMAP_H 

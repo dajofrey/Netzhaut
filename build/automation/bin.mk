@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -std=gnu99 -Wl,-rpath,$(CURDIR)/lib,-rpath,$(CURDIR)/external/TTyr/lib
 
 # Check flags
-MONITOR_FLAG := $(filter -DMONITOR_CLI -DMONITOR_SA,$(CCFLAGS))
+MONITOR_FLAG := $(filter -DMONITOR,$(CCFLAGS))
 
 # Define the linker and linker flags
 LD = gcc

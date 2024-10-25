@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Log.h"
-#include "Macros.h"
 
 #include "../../nh-core/System/Logger.h"
 
@@ -60,12 +59,10 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
     char *node_p, nh_webidl_Object *Object_p, bool lastChild, int depth, bool *branch_p, 
     char *indent_p)
 {
-NH_HTML_BEGIN()
+    nh_core_String Message = nh_core_initString(255);
+    nh_core_String Attributes = nh_core_initString(128);
 
-    nh_String Message = nh_core_initString(255);
-    nh_String Attributes = nh_core_initString(128);
-
-    if (depth >= MAX_INDENT) {NH_HTML_END(NH_API_ERROR_BAD_STATE)}
+    if (depth >= MAX_INDENT) {return NH_API_ERROR_BAD_STATE;}
 
     for (int i = 0, offset = 0; i < depth * 2; ++i) {
         if (i % 2) {offset++, indent_p[i] = ' '; continue;}
@@ -76,7 +73,7 @@ NH_HTML_BEGIN()
     nh_dom_Element *Element_p = nh_dom_getElement(Object_p);
 
     if (Element_p) {
-        nh_List *Attributes_p = nh_dom_getAttrList(nh_dom_getNamedNodeMap(Element_p));
+        nh_core_List *Attributes_p = nh_dom_getAttrList(nh_dom_getNamedNodeMap(Element_p));
         for (int i = 0; i < Attributes_p->size; ++i) {
             nh_webidl_DOMString *LocalName_p = nh_dom_getAttrLocalName(Attributes_p->pp[i]);
             nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attributes_p->pp[i]);
@@ -120,24 +117,22 @@ NH_HTML_BEGIN()
     memset(indent_p, 0, MAX_INDENT);
     
     nh_dom_NodeList *NodeList_p = nh_webidl_getAttribute(Object_p, "childNodes");
-    NH_HTML_CHECK_NULL(NodeList_p)
+    NH_CORE_CHECK_NULL(NodeList_p)
     NH_WEBIDL_UNSIGNED_LONG length = nh_dom_getNodeListLength(NodeList_p);
 
     for (NH_WEBIDL_UNSIGNED_LONG i = 0; i < length; ++i) {
-        NH_HTML_CHECK(nh_html_logDocumentRecursively(
+        NH_CORE_CHECK(nh_html_logDocumentRecursively(
             node_p, nh_dom_getFromNodeList(NodeList_p, i), i == length - 1, depth + 1, branch_p, 
             indent_p
         ))
     }
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_html_logDocument(
     char *logId_p, nh_webidl_Object *Document_p)
 {
-NH_HTML_BEGIN()
-
     char node_p[255] = {0};
     sprintf(node_p, "nh-html:Parser:%s:DOMTree", logId_p);
 
@@ -147,6 +142,6 @@ NH_HTML_BEGIN()
     memset(branch_p, false, MAX_INDENT);
     nh_html_logDocumentRecursively(node_p, Document_p, false, 0, branch_p, indent_p);
 
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

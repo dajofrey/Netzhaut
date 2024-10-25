@@ -19,7 +19,7 @@
  */
 
     typedef struct nh_encoding_IndexMap {
-        nh_HashMap Labels;
+        nh_core_HashMap Labels;
     } nh_encoding_IndexMap;
 
 /** @} */

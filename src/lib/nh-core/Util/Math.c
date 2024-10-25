@@ -10,20 +10,18 @@
 
 #include "Math.h"
 
-#include "../Common/Macros.h"
-
 #include <math.h>
 #include <stdio.h>
 #include <float.h>
 
 // DEFINES =========================================================================================
 
-#define NH_CLIP_LENG \
+#define float_LENG \
 (                    \
     clipValue + 1.0f \
 ) 
  
-#define NH_CLIP_TO_PIXEL(clipValue, Content_p, basedOnWidth)                                                                             \
+#define float_TO_PIXEL(clipValue, Content_p, basedOnWidth)                                                                             \
 (                                                                                                                                        \
     basedOnWidth ? (int)(((((float)clipValue + 1.0f) / Content_p->Settings.scale) * ((float)Content_p->Tab_p->Size.width)) / 2.0f)  \
                  : (int)(((((float)clipValue + 1.0f) / Content_p->Settings.scale) * ((float)Content_p->Tab_p->Size.height)) / 2.0f) \
@@ -168,8 +166,8 @@ int nh_trianglesToArray(
 //
 //    if (Content_p->Position.x == 0 && Content_p->Position.y == 0) {NH_CORE_SILENT_END()}
 //
-//    float xOff = NH_CLIP_LENGTH(int_TO_CLIP(Content_p->Position.x, Content_p, true));
-//    float yOff = NH_CLIP_LENGTH(int_TO_CLIP(Content_p->Position.y, Content_p, false));
+//    float xOff = float_LENGTH(int_TO_CLIP(Content_p->Position.x, Content_p, true));
+//    float yOff = float_LENGTH(int_TO_CLIP(Content_p->Position.y, Content_p, false));
 //
 //    for (int i = 0; i < count; ++i) {
 //        Vertices_p[i].x += xOff; 

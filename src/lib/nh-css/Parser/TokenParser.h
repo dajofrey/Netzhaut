@@ -43,13 +43,13 @@
     typedef struct nh_css_SimpleBlock {
         NH_CSS_COMPONENT_VALUE type;
         nh_css_Token *Token_p;
-        nh_Array ComponentValues;
+        nh_core_Array ComponentValues;
     } nh_css_SimpleBlock;
 
     typedef struct nh_css_Function {
         NH_CSS_COMPONENT_VALUE type;
         nh_css_Token *Token_p;
-        nh_Array ComponentValues;
+        nh_core_Array ComponentValues;
     } nh_css_Function;
 
     typedef struct nh_css_PreservedToken {
@@ -66,14 +66,14 @@
 
     typedef struct nh_css_Declaration {
         nh_encoding_UTF8String Name;
-        nh_Array ComponentValues;
+        nh_core_Array ComponentValues;
         bool important;
     } nh_css_Declaration;
 
     typedef struct nh_css_Rule {
         NH_CSS_RULE type;
         nh_encoding_UTF32String *Name_p;
-        nh_Array Prelude;
+        nh_core_Array Prelude;
         nh_css_SimpleBlock Block;
     } nh_css_Rule;
 
@@ -87,11 +87,14 @@
         nh_css_Token **Tokens_pp, unsigned long long length
     );
     
+    /**
+     * @param Document_p Must be interface "Document" from specification "CSS".
+     */
     nh_css_StyleSheetObject *nh_css_parseStyleSheet(
-        nh_css_TokenParser *Parser_p, nh_css_DocumentObject *Document_p
+        nh_css_TokenParser *Parser_p, nh_webidl_Object *Document_p
     );
 
-    nh_Array nh_css_parseDeclarations(
+    nh_core_Array nh_css_parseDeclarations(
         nh_css_TokenParser *Parser_p
     );
     
@@ -99,7 +102,7 @@
         nh_css_TokenParser *Parser_p, nh_css_ComponentValue *Value_p
     );
     
-    nh_Array nh_css_parseComponentValues(
+    nh_core_Array nh_css_parseComponentValues(
         nh_css_TokenParser *Parser_p
     );
 

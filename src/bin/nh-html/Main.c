@@ -48,11 +48,11 @@ static void *getFileData(
 static ttyr_tty_TTY *TTY_p = NULL;
 
 static void handleMonitorInput(
-    nh_api_Window *Window_p, nh_api_Event Event)
+    nh_api_Window *Window_p, nh_api_WSIEvent Event)
 {
     switch (Event.type)
     {
-        case NH_WSI_EVENT_KEYBOARD :
+        case NH_API_WSI_EVENT_KEYBOARD :
             ttyr_api_sendEvent(TTY_p, Event);
             break;
     }
@@ -84,7 +84,7 @@ static int openMonitor()
         nh_api_createWindow(NULL, nh_api_getSurfaceRequirements()); 
     if (!Window_p) {return 1;} 
  
-    nh_gfx_Surface *Surface_p = nh_api_createSurface(Window_p, NH_API_GRAPHICS_BACKEND_OPENGL); 
+    nh_api_Surface *Surface_p = nh_api_createSurface(Window_p, NH_API_GRAPHICS_BACKEND_OPENGL); 
     if (!Surface_p) {return 1;} 
  
     nh_api_PixelPosition Position = {0};
@@ -92,7 +92,7 @@ static int openMonitor()
     Size.width  = 700; 
     Size.height = 700; 
  
-    nh_gfx_Viewport *Viewport_p = nh_api_createViewport(Surface_p, Position, Size); 
+    nh_api_Viewport *Viewport_p = nh_api_createViewport(Surface_p, Position, Size); 
     if (!Viewport_p) {return 1;} 
  
     if (ttyr_api_setViewport(Terminal_p, Viewport_p)) {return 1;}
@@ -189,7 +189,14 @@ int main(
     }
 
     while (1) {
-        if (!nh_api_run()) {usleep(10000);}
+        int result = nh_api_run();
+        if (result == -1) {
+            puts("Encountered workload error. Exiting.");
+            break;
+        } else if (result == 0) {
+            // idle
+            usleep(10000);
+        }
         if (!nh_api_keepRunning()) {break;}
     }
 

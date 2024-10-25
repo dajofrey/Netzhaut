@@ -55,12 +55,12 @@
 
     typedef struct nh_Process {
         NH_PROCESS id;
-        nh_ThreadPool ThreadPool;
+        nh_core_ThreadPool ThreadPool;
         nh_IPC IPC;
     } nh_Process;
 
     typedef struct nh_ProcessPoolIPC {
-        nh_SystemTime LastUpdate;
+        nh_core_SystemTime LastUpdate;
         double updateIntervalInSeconds;
     } nh_ProcessPoolIPC;
 
@@ -108,7 +108,7 @@
     nh_Fork *nh_core_getFork(
     );
 
-    void nh_checkForks(
+    void nh_core_checkForks(
     );
 
     int nh_core_activeForks(

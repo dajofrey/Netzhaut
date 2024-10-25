@@ -14,7 +14,6 @@
 #include "../nh-core/System/Thread.h"
 #include "../nh-core/Util/File.h"
 #include "../nh-core/Config/Updater.h"
-
 #include "../nh-core/Common/Terminate.h"
 
 #include <unistd.h>
@@ -26,8 +25,8 @@
 
 // DATA ============================================================================================
 
-nh_Loader *NH_LOADER_P = NULL;
-static void *core_p  = NULL;
+nh_core_Loader *LOADER_P = NULL;
+static void *CORE_P  = NULL;
 
 typedef void *(*nh_core_createMonitorInterface_f)(
 );
@@ -39,7 +38,7 @@ typedef void  *(*nh_core_initialize_f)(
     char *path_p, char *config_p, int length 
 ); 
 
-// HELPER ==========================================================================================
+// FUNCTIONS =======================================================================================
 
 static void *nh_api_openCoreLibrary(
     char *path_p)
@@ -65,7 +64,7 @@ static void *nh_api_closeCoreLibrary()
 {
 #ifdef __unix__
 
-    dlclose(core_p);
+    dlclose(CORE_P);
 
 #endif
 }
@@ -97,7 +96,7 @@ static void *nh_api_loadCoreFunction(
     char *error_p;
     dlerror(); // clear any existing error
 
-    void *function_p = dlsym(core_p, functionName_p); 
+    void *function_p = dlsym(CORE_P, functionName_p); 
     if ((error_p = dlerror()) != NULL) {
         fprintf(stderr, "%s\n", error_p);
         return NULL;
@@ -108,113 +107,108 @@ static void *nh_api_loadCoreFunction(
 #endif
 }
 
-// INITIALIZE/TERMINATE ============================================================================
-
 NH_API_RESULT nh_api_initialize(
     char *path_p, char *config_p, int length)
 {
-    if (core_p != NULL || NH_LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
+    if (CORE_P != NULL || LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
 
-    core_p = nh_api_openCoreLibrary("libnh-core.so");
+    CORE_P = nh_api_openCoreLibrary("libnh-core.so");
 
-    bool fallback = !core_p && path_p != NULL;
-    if (fallback) {core_p = nh_api_openCoreLibrary(path_p);}
+    bool fallback = !CORE_P && path_p != NULL;
+    if (fallback) {CORE_P = nh_api_openCoreLibrary(path_p);}
 
-    if (!core_p) {return NH_API_ERROR_BAD_STATE;}
+    if (!CORE_P) {return NH_API_ERROR_BAD_STATE;}
 
     nh_core_initialize_f initialize_f = nh_api_loadCoreFunction("nh_core_initialize");
-    NH_LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
+    LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
 
-    return NH_LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
+    return LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
 }
  
 NH_API_RESULT nh_api_terminate()
 {
-    if (core_p == NULL || NH_LOADER_P == NULL) {return NH_API_ERROR_BAD_STATE;}
+    if (CORE_P == NULL || LOADER_P == NULL) {return NH_API_ERROR_BAD_STATE;}
 
-    nh_core_terminate_f terminate_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_terminate");
-    if (terminate_f) {terminate_f(NH_LOADER_P);}
+    nh_core_terminate_f terminate_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_terminate");
+    if (terminate_f) {terminate_f(LOADER_P);}
 
     nh_api_closeCoreLibrary();
 
-    NH_LOADER_P = NULL;
-    core_p = NULL;
+    LOADER_P = NULL;
+    CORE_P = NULL;
 
     return NH_API_SUCCESS;
 }
 
-// OTHER ===========================================================================================
-
-unsigned int nh_api_run()
+int nh_api_run()
 {
-    nh_core_runThreadWorkloads_f runThreadWorkloads_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_runThreadWorkloads");
-    return runThreadWorkloads_f ? runThreadWorkloads_f() : 0;
+    nh_core_runThreadWorkloads_f runThreadWorkloads_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_runThreadWorkloads");
+    return runThreadWorkloads_f ? runThreadWorkloads_f() : -1;
 }
 
 bool nh_api_keepRunning()
 {
-    nh_core_keepRunning_f keepRunning_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_keepRunning");
+    nh_core_keepRunning_f keepRunning_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_keepRunning");
     return keepRunning_f ? keepRunning_f() : false;
 }
 
 NH_API_RESULT nh_api_addLogCallback(
     nh_api_logCallback_f logCallback_f)
 {
-    nh_api_addLogCallback_f addLogCallback_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_addLogCallback");
+    nh_api_addLogCallback_f addLogCallback_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_addLogCallback");
     return addLogCallback_f ? addLogCallback_f(logCallback_f) : NH_API_ERROR_BAD_STATE;
 }
 
 nh_api_Workload *nh_api_getWorkload(
     void *args_p)
 {
-    nh_core_getWorkload_f getWorkload_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getWorkload");
+    nh_core_getWorkload_f getWorkload_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getWorkload");
     return getWorkload_f ? getWorkload_f(args_p) : NULL;
 }
-
-// FILE FUNCTIONS ==================================================================================
 
 char *nh_api_getFileData(
     const char* path_p, long *size_p)
 {
-    nh_core_getFileData_f getFileData_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getFileData");
+    nh_core_getFileData_f getFileData_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getFileData");
     return getFileData_f ? getFileData_f(path_p, size_p) : NULL;
 }
 
 NH_API_RESULT nh_api_writeBytesToFile(
     char *filePath_p, char *bytes_p)
 {
-    nh_core_writeBytesToFile_f writeBytesToFile_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_writeBytesToFile");
+    nh_core_writeBytesToFile_f writeBytesToFile_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_writeBytesToFile");
     return writeBytesToFile_f ? writeBytesToFile_f(filePath_p, bytes_p) : NH_API_ERROR_BAD_STATE;
 }
-
-// CONFIG FUNCTIONS ================================================================================
 
 NH_API_RESULT nh_api_registerConfig(
     char *absolutePath_p, int length)
 {
-    nh_core_registerConfig_f registerConfig_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_registerConfig");
+    nh_core_registerConfig_f registerConfig_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_registerConfig");
     return registerConfig_f ? registerConfig_f(absolutePath_p, length) : NH_API_ERROR_BAD_STATE;
 }
-
 
 NH_API_RESULT nh_api_loadConfig(
     char *data_p, int length)
 {
-    nh_core_loadConfig_f loadConfig_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_loadConfig");
+    nh_core_loadConfig_f loadConfig_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_loadConfig");
     return loadConfig_f ? loadConfig_f(data_p, length) : NH_API_ERROR_BAD_STATE;
 }
 
-// INTERFACE FUNCTIONS =============================================================================
-
 void *nh_api_createMonitorInterface()
 {
-    nh_core_createMonitorInterface_f createMonitorInterface_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_createMonitorInterface");
+    nh_core_createMonitorInterface_f createMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_createMonitorInterface");
     return createMonitorInterface_f ? createMonitorInterface_f() : NULL;
 }
 
 void nh_api_freeMonitorInterface(
     void *Interface_p)
 {
-    nh_core_freeMonitorInterface_f freeMonitorInterface_f = !NH_LOADER_P ? NULL : NH_LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_freeMonitorInterface");
+    nh_core_freeMonitorInterface_f freeMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_freeMonitorInterface");
     freeMonitorInterface_f(Interface_p);
 }
+
+void *nh_api_getLoader()
+{
+    return LOADER_P;
+}
+

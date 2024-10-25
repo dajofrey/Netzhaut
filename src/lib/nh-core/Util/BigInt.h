@@ -1,5 +1,5 @@
-#ifndef NH_CORE_BIG_INT_H
-#define NH_CORE_BIG_INT_H
+#ifndef NH_CORE_UTIL_BIG_INT_H
+#define NH_CORE_UTIL_BIG_INT_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -16,6 +16,10 @@
 /** @addtogroup lib_nh-core_functions
  *  @{
  */
+
+typedef struct nh_core_BigInt { 
+    int TODO; 
+} nh_core_BigInt; 
 
 /** @} */
 

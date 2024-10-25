@@ -18,7 +18,7 @@
  */
 
     nh_css_CounterStyleRuleObject *nh_css_createCounterStyleRule(
-        nh_Array Declaration
+        nh_core_Array Declaration
     );
 
     nh_css_CounterStyleRuleObject *nh_css_getCounterStyleRule(

@@ -12,7 +12,6 @@
 #include "LinkedList.h"
 
 #include "../System/Memory.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -32,15 +31,13 @@
 nh_DataStorageUnits nh_humanizeBytes(
     long long bytes)
 {
-NH_CORE_BEGIN()
-
     nh_DataStorageUnits Units;
     Units.gigabytes = bytes / (1024*1024*1024);
     Units.megabytes = (bytes / (1024*1024)) % 1024; 
     Units.kilobytes = (bytes / 1024) % 1024;
     Units.bytes     = bytes % 1024;
    
-NH_CORE_END(Units)
+    return Units;
 }
 
 // BYTES ===========================================================================================
@@ -60,9 +57,7 @@ char *nh_core_allocateBytes(
 int nh_levenshteinDistance(
     char *s1_p, char *s2_p, bool caseSensitive) 
 {
-NH_CORE_BEGIN()
-
-    if (strlen(s1_p) > 255 || strlen(s2_p) > 255) {NH_CORE_END(-1)}
+    if (strlen(s1_p) > 255 || strlen(s2_p) > 255) {return -1;}
 
     unsigned int s1len, s2len, x, y, lastdiag, olddiag;
 
@@ -100,24 +95,21 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_END(column[s1len])
+    return column[s1len];
 }
 
 // STRING ===========================================================================================
 
-nh_String nh_core_initString(
+nh_core_String nh_core_initString(
     int chunkSize)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(nh_core_initArray(sizeof(char), chunkSize))
+    return nh_core_initArray(sizeof(char), chunkSize);
 }
 
 NH_API_RESULT nh_core_appendFormatToString(
-    nh_String *String_p, char *format_p, ...)
+    nh_core_String *String_p, char *format_p, ...)
 {
-NH_CORE_BEGIN()
-
-    if (format_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (format_p == NULL) {return NH_API_SUCCESS;}
 
     va_list args;
     va_start(args, format_p);
@@ -136,47 +128,41 @@ NH_CORE_BEGIN()
 
     nh_core_free(append_p);
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_appendByteToString(
-    nh_String *String_p, char byte)
+    nh_core_String *String_p, char byte)
 {
-NH_CORE_BEGIN()
-NH_CORE_DIAGNOSTIC_END(nh_core_appendToArray(String_p, &byte, 1))
+    return nh_core_appendToArray(String_p, &byte, 1);
 }
 
 NH_API_RESULT nh_core_appendByteToStringRepeatedly(
-    nh_String *String_p, char byte, int count)
+    nh_core_String *String_p, char byte, int count)
 {
-NH_CORE_BEGIN()
-NH_CORE_DIAGNOSTIC_END(nh_core_appendToArrayRepeatedly(String_p, &byte, count))
+    return nh_core_appendToArrayRepeatedly(String_p, &byte, count);
 }
 
 NH_API_RESULT nh_core_appendToString(
-    nh_String *String_p, char *bytes_p, int length)
+    nh_core_String *String_p, char *bytes_p, int length)
 {
-NH_CORE_BEGIN()
-NH_CORE_DIAGNOSTIC_END(nh_core_appendToArray(String_p, bytes_p, length))
+    return nh_core_appendToArray(String_p, bytes_p, length);
 }
 
 NH_API_RESULT nh_core_removeFromString(
-    nh_String *String_p, int index, unsigned int count)
+    nh_core_String *String_p, int index, unsigned int count)
 {
-NH_CORE_BEGIN()
-NH_CORE_DIAGNOSTIC_END(nh_core_removeFromString(String_p, index, count))
+    return nh_core_removeFromString(String_p, index, count);
 }
 
 NH_API_RESULT nh_core_removeTailFromString(
-    nh_String *String_p, unsigned int count)
+    nh_core_String *String_p, unsigned int count)
 {
-NH_CORE_BEGIN()
-NH_CORE_DIAGNOSTIC_END(nh_core_removeTailFromArray(String_p, count))
+    return nh_core_removeTailFromArray(String_p, count);
 }
 
 void nh_core_freeString(
-    nh_String *String_p)
+    nh_core_String *String_p)
 {
     nh_core_freeArray(String_p);
 }
-

@@ -10,8 +10,6 @@
 
 #include "Win32.h"
 
-#include "../Common/Macros.h"
-
 #include <fcntl.h>
 #include <time.h>
 #include <stdio.h>
@@ -39,8 +37,6 @@
 NH_API_RESULT nh_Win32_getInput(
     nh_Win32_Window *Window_p)
 {
-NH_WSI_BEGIN()
-
 #if defined(_WIN32) || defined (WIN32)
     
     MSG msg = {0};
@@ -50,11 +46,11 @@ NH_WSI_BEGIN()
         DispatchMessage(&msg);
     }
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 // WINDOW ==========================================================================================
@@ -63,8 +59,6 @@ NH_API_RESULT nh_Win32_createWindow(
     nh_Win32_Window *Window_p, nh_wsi_WindowConfiguration *Configuration_p, 
     nh_gfx_SurfaceRequirements *Requirements_p)
 {
-NH_WSI_BEGIN()
-
 #if defined(_WIN32) || defined (WIN32)
 
     Window_p->hinstance = (HINSTANCE) GetModuleHandle(NULL);
@@ -93,7 +87,7 @@ NH_WSI_BEGIN()
     );
     
     if (Window_p->hwnd == NULL) {
-        NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
 
     DragAcceptFiles(Window_p->hwnd, true);
@@ -101,11 +95,11 @@ NH_WSI_BEGIN()
 
     Window_p->type = NH_WSI_TYPE_WIN32;
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 // DESTROY =========================================================================================
@@ -113,63 +107,55 @@ NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
 NH_API_RESULT nh_Win32_destroyWindow(
     nh_Win32_Window *Window_p)
 {
-NH_WSI_BEGIN()
-
 #if defined(_WIN32) || defined (WIN32)
 
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";  
     DestroyWindow(Window_p->hwnd);
     UnregisterClassA(CLASS_NAME, Window_p->hinstance);
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 // SET =============================================================================================
 
 NH_API_RESULT nh_Win32_setWindowBackgroundColor(
-    nh_Win32_Window *Window_p, nh_Color Color)
+    nh_Win32_Window *Window_p, nh_css_Color Color)
 {
-NH_WSI_BEGIN()
-
 #if defined(_WIN32) || defined (WIN32)
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_Win32_setWindowTitle(
     nh_Win32_Window *Window_p, char *title_p)
 {
-NH_WSI_BEGIN()
-
 #if defined(_WIN32) || defined (WIN32)
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_Win32_setMouseCursor(
     nh_Win32_Window *Window_p, int type)
 {
-NH_WSI_BEGIN()
-
 #if defined(_WIN32) || defined (WIN32)
 
-    NH_WSI_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 
 #endif
 
-NH_WSI_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+    return NH_API_ERROR_BAD_STATE;
 }
 
 // CALLBACK =======================================================================================

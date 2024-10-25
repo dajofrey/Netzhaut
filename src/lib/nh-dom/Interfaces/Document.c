@@ -10,11 +10,7 @@
 
 #include "Document.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-webidl/Runtime/String.h"
-#include "../../nh-webidl/Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>
@@ -37,27 +33,21 @@ nh_webidl_DOMString NH_DOM_DOCUMENT_MODE_NO_QUIRKS;
 nh_webidl_DOMString NH_DOM_DOCUMENT_MODE_QUIRKS;
 nh_webidl_DOMString NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS;
 
-// INITIALIZE ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_dom_initializeDocument(
     nh_webidl_Object *Document_p)
 {
-NH_DOM_BEGIN()
-
     Document_p->internal_p = nh_core_allocate(sizeof(nh_dom_Document));
-    NH_DOM_CHECK_MEM(Document_p->internal_p)
+    NH_CORE_CHECK_MEM(Document_p->internal_p)
 
     MODE = &NH_DOM_DOCUMENT_MODE_NO_QUIRKS;
 
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// INTERNAL ========================================================================================
 
 NH_API_RESULT nh_dom_initDocumentModes()
 {
-NH_DOM_BEGIN()
-
     NH_DOM_DOCUMENT_MODE_NO_QUIRKS = nh_webidl_initDOMString(16);
     NH_DOM_DOCUMENT_MODE_QUIRKS = nh_webidl_initDOMString(16);
     NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS = nh_webidl_initDOMString(16);
@@ -66,39 +56,31 @@ NH_DOM_BEGIN()
     nh_webidl_appendToDOMString(&NH_DOM_DOCUMENT_MODE_QUIRKS, "quirks", 6);
     nh_webidl_appendToDOMString(&NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS, "limited-quirks", 14);
 
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_dom_freeDocumentModes()
 {
-NH_DOM_BEGIN()
-
     nh_webidl_freeDOMString(&NH_DOM_DOCUMENT_MODE_NO_QUIRKS);
     nh_webidl_freeDOMString(&NH_DOM_DOCUMENT_MODE_QUIRKS);
     nh_webidl_freeDOMString(&NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS);
 
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_dom_setDocumentMode(
     nh_webidl_Object *Document_p, nh_webidl_DOMString *Mode_p)
 {
-NH_DOM_BEGIN()
-
     MODE = Mode_p;
 
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_dom_setDocumentType(
     nh_webidl_Object *Document_p, nh_webidl_Object *DocumentType_p)
 {
-NH_DOM_BEGIN()
-
     DOCTYPE = DocumentType_p;
 
-NH_DOM_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// API =============================================================================================
 

@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Config.h"
-#include "Macros.h"
 
 #include "../Window/Window.h"
 
@@ -40,8 +39,7 @@ size_t NH_WSI_SETTING_NAMES_PP_COUNT =
 const char *nh_wsi_getSettingName(
     NH_WSI_SETTING_E setting)
 {
-NH_WSI_BEGIN()
-NH_WSI_END(NH_WSI_SETTING_NAMES_PP[setting])
+    return NH_WSI_SETTING_NAMES_PP[setting];
 }
 
 // CONFIG ==========================================================================================
@@ -49,38 +47,36 @@ NH_WSI_END(NH_WSI_SETTING_NAMES_PP[setting])
 static NH_API_RESULT nh_wsi_getWindowSetting(
     nh_wsi_WindowConfig *Config_p, char *namespace_p, int index)
 {
-NH_WSI_BEGIN()
-
-    nh_List *Setting_p = nh_core_getGlobalConfigSetting(strlen(namespace_p) == 0 ? NULL : namespace_p, NH_MODULE_WSI, NH_WSI_SETTING_NAMES_PP[index]);
-    NH_WSI_CHECK_NULL(Setting_p)
+    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(strlen(namespace_p) == 0 ? NULL : namespace_p, NH_MODULE_WSI, NH_WSI_SETTING_NAMES_PP[index]);
+    NH_CORE_CHECK_NULL(Setting_p)
 
     switch (index) {
         case 0 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             strcpy(Config_p->title_p, Setting_p->pp[0]);
             break;
         case 1 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->Size.width = atoi(Setting_p->pp[0]);
             break;
         case 2 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->Size.height = atoi(Setting_p->pp[0]);
             break;
         case 3 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->Position.x = atoi(Setting_p->pp[0]);
             break;
         case 4 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->Position.y = atoi(Setting_p->pp[0]);
             break;
         case 5 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->decorated = atoi(Setting_p->pp[0]) == 1;
             break;
         case 6 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->resizable = atoi(Setting_p->pp[0]) == 1;
             break;
         case 7 :
@@ -118,7 +114,7 @@ NH_WSI_BEGIN()
             }
             break;
         case 9 :
-            if (Setting_p->size != 1) {NH_WSI_END(NH_API_ERROR_BAD_STATE)}
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             if (!strcmp("normal", Setting_p->pp[0])) {
                 Config_p->type = NH_WSI_WINDOW_TYPE_NORMAL;
             }
@@ -134,14 +130,12 @@ NH_WSI_BEGIN()
             break;
     }
 
-NH_WSI_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 nh_wsi_WindowConfig nh_wsi_getWindowConfig(
     void *Window_p)
 {
-NH_WSI_BEGIN()
-
     nh_wsi_WindowConfig Config;
     memset(&Config, 0, sizeof(nh_wsi_WindowConfig));
 
@@ -149,6 +143,6 @@ NH_WSI_BEGIN()
         nh_wsi_getWindowSetting(&Config, ((nh_wsi_Window*)Window_p)->namespace_p, i);
     }
 
-NH_WSI_END(Config)
+    return Config;
 }
 

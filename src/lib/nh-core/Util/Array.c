@@ -11,7 +11,6 @@
 #include "Array.h"
 
 #include "../System/Memory.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -20,10 +19,10 @@
 
 // LIST ============================================================================================
 
-nh_Array nh_core_initArray(
+nh_core_Array nh_core_initArray(
     int elementSize, int allocatedLengthPerChunk)
 {
-    nh_Array Array;
+    nh_core_Array Array;
 
     Array.elementSize = elementSize;
     Array.allocatedLengthPerChunk = allocatedLengthPerChunk;
@@ -35,11 +34,9 @@ nh_Array nh_core_initArray(
 }
 
 static NH_API_RESULT nh_core_updateArrayLength(
-    nh_Array *Array_p, unsigned long count, size_t *offset_p)
+    nh_core_Array *Array_p, unsigned long count, size_t *offset_p)
 {
-NH_CORE_BEGIN()
-
-    if (count <= 0) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (count <= 0) {return NH_API_SUCCESS;}
 
     Array_p->length += count;
 
@@ -68,27 +65,23 @@ NH_CORE_BEGIN()
 
     *offset_p = (Array_p->length - count) * Array_p->elementSize;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_appendToArray(
-    nh_Array *Array_p, void *p, unsigned long count)
+    nh_core_Array *Array_p, void *p, unsigned long count)
 {
-NH_CORE_BEGIN()
-
     size_t offset = 0;
     NH_CORE_CHECK(nh_core_updateArrayLength(Array_p, count, &offset))
 
     memcpy(Array_p->p + offset, p, Array_p->elementSize * count);
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_appendToArrayRepeatedly(
-    nh_Array *Array_p, void *p, unsigned long count)
+    nh_core_Array *Array_p, void *p, unsigned long count)
 {
-NH_CORE_BEGIN()
-
     size_t offset = 0;
     NH_CORE_CHECK(nh_core_updateArrayLength(Array_p, count, &offset))
 
@@ -96,11 +89,11 @@ NH_CORE_BEGIN()
         memcpy(Array_p->p + offset + (i * Array_p->elementSize), p, Array_p->elementSize);
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-void *_nh_core_getFromArray(
-    nh_Array *Array_p, unsigned long index)
+void *nh_core_getFromArray(
+    nh_core_Array *Array_p, unsigned long index)
 {
     if (index < 0) {index = 0;}
 
@@ -124,31 +117,15 @@ void *_nh_core_getFromArray(
     return Array_p->p + (index * Array_p->elementSize);
 }
 
-void *nh_core_getFromArray(
-    nh_Array *Array_p, unsigned long index)
-{
-NH_CORE_BEGIN()
-NH_CORE_END(_nh_core_getFromArray(Array_p, index))
-}
-
-void *_nh_core_incrementArray(
-    nh_Array *Array_p)
-{
-    return _nh_core_getFromArray(Array_p, Array_p->length);
-}
-
 void *nh_core_incrementArray(
-    nh_Array *Array_p)
+    nh_core_Array *Array_p)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(_nh_core_incrementArray(Array_p))
+    return nh_core_getFromArray(Array_p, Array_p->length);
 }
 
 NH_API_RESULT nh_core_removeTailFromArray(
-    nh_Array *Array_p, unsigned int count)
+    nh_core_Array *Array_p, unsigned int count)
 {
-NH_CORE_BEGIN()
-
     Array_p->length -= count;
 
     if (Array_p->length < 0) {Array_p->length = 0;}
@@ -165,18 +142,16 @@ NH_CORE_BEGIN()
         Array_p->allocatedLength -= Array_p->allocatedLengthPerChunk;
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_removeFromArray(
-    nh_Array *Array_p, int index, unsigned int count)
+    nh_core_Array *Array_p, int index, unsigned int count)
 {
-NH_CORE_BEGIN()
-
-    if (index >= Array_p->length) {NH_CORE_END(NH_API_SUCCESS)}
+    if (index >= Array_p->length) {return NH_API_SUCCESS;}
 
     if (index + count >= Array_p->length) {
-        NH_CORE_DIAGNOSTIC_END(nh_core_removeTailFromArray(Array_p, count))
+        return nh_core_removeTailFromArray(Array_p, count);
     }
 
     int cpyLength = Array_p->length - index - count;
@@ -190,14 +165,12 @@ NH_CORE_BEGIN()
 
     nh_core_free(cpy_p);
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_insertIntoArray(
-    nh_Array *Array_p, int index, void *elements_p, int length)
+    nh_core_Array *Array_p, int index, void *elements_p, int length)
 {
-NH_CORE_BEGIN()
-
     bool copy = true;
     if (index >= Array_p->length) {
         copy = false;
@@ -221,16 +194,18 @@ NH_CORE_BEGIN()
         nh_core_free(cpy_p);
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_core_freeArray(
-    nh_Array *Array_p)
+    nh_core_Array *Array_p)
 {
     if (Array_p->p != NULL) {nh_core_free(Array_p->p);}
  
     Array_p->allocatedLength = 0;
     Array_p->length = 0;
     Array_p->p = NULL;
+
+    return;
 }
 

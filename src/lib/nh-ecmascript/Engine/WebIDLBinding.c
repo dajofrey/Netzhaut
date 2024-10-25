@@ -22,15 +22,13 @@
 nh_ecmascript_Object *nh_ecmascript_createInterfaceObject(
     nh_webidl_Interface *Interface_p, nh_ecmascript_Realm *Realm_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
     // step 1
     // TODO
 
     // step 2
     nh_ecmascript_Object *ConstructorProto_p = &Realm_p->Intrinsics.FunctionPrototype;
 
-NH_ECMASCRIPT_END()
+    return;
 }
 
 

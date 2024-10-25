@@ -25,12 +25,12 @@
         nh_css_Token *Token_p
     );
 
-    nh_List nh_css_getTokensFromComponentValues(
-        nh_Array *ComponentValues_p
+    nh_core_List nh_css_getTokensFromComponentValues(
+        nh_core_Array *ComponentValues_p
     );
 
     NH_API_RESULT nh_css_parseRules(
-        nh_Array *Rules_p, nh_css_RuleListObject *StyleRules_p
+        nh_core_Array *Rules_p, nh_css_RuleListObject *StyleRules_p
     );
 
 /** @} */

@@ -17,19 +17,19 @@
  *  @{
  */
 
-    nh_List nh_ecmascript_getLexicallyScopedDeclarations(
+    nh_core_List nh_ecmascript_getLexicallyScopedDeclarations(
         nh_ecmascript_ParseNode *Node_p
     );
     
-    nh_List nh_ecmascript_getTopLevelLexicallyScopedDeclarations(
+    nh_core_List nh_ecmascript_getTopLevelLexicallyScopedDeclarations(
         nh_ecmascript_ParseNode *Node_p
     );
 
-    nh_List nh_ecmascript_getVarScopedDeclarations(
+    nh_core_List nh_ecmascript_getVarScopedDeclarations(
         nh_ecmascript_ParseNode *Node_p
     );
 
-    nh_List nh_ecmascript_getTopLevelVarScopedDeclarations(
+    nh_core_List nh_ecmascript_getTopLevelVarScopedDeclarations(
         nh_ecmascript_ParseNode *Node_p
     );
 

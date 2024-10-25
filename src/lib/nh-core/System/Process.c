@@ -10,8 +10,6 @@
 
 #include "Process.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-ecmascript/Engine/Agent.h"
 
 #include <stdio.h>
@@ -32,9 +30,7 @@ nh_ProcessPool NH_PROCESS_POOL;
 
 NH_API_RESULT nh_core_initProcessPool()
 {
-NH_CORE_BEGIN()
-
-    if (init == true) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
+    if (init == true) {return NH_API_ERROR_BAD_STATE;}
 
     NH_PROCESS_POOL.forks = 0;
     NH_PROCESS_POOL.IPC.updateIntervalInSeconds = 1;
@@ -53,45 +49,39 @@ NH_CORE_BEGIN()
     }
 
     init = true;
- 
-NH_CORE_END(NH_API_SUCCESS)
+
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_freeProcessPool() 
 {
-NH_CORE_BEGIN()
-
     nh_core_freeThreadPool(&NH_PROCESS_POOL.Main.ThreadPool);
     init = false;
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // FORK ============================================================================================
 
 static nh_Fork *nh_core_getAvailableFork()
 {
-NH_CORE_BEGIN()
-
-    if (NH_PROCESS_POOL.forks == NH_MAX_FORKS) {NH_CORE_END(NULL)}
+    if (NH_PROCESS_POOL.forks == NH_MAX_FORKS) {return NULL;}
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) {
         if (NH_PROCESS_POOL.Forks_p[i].id == 0) {
             NH_PROCESS_POOL.forks++;
-            NH_CORE_END(&NH_PROCESS_POOL.Forks_p[i])
+            return &NH_PROCESS_POOL.Forks_p[i];
         }
     }
 
-NH_CORE_END(NULL)
+    return NULL;
 }
 
 nh_Fork *nh_core_fork()
 {
-NH_CORE_BEGIN()
-
-    if (init == false) {NH_CORE_END(NULL)}
+    if (init == false) {return NULL;}
     nh_Fork *Fork_p = nh_core_getAvailableFork();
-    if (Fork_p == NULL) {NH_CORE_END(NULL)}
+    if (Fork_p == NULL) {return NULL;}
 
     nh_openChannel(&Fork_p->IPC.In);
     nh_openChannel(&Fork_p->IPC.Out);
@@ -102,21 +92,19 @@ NH_CORE_BEGIN()
         Fork_p->id = getpid();
         nh_closeChannelWriteAccess(&Fork_p->IPC.In);
         nh_closeChannelReadAccess(&Fork_p->IPC.Out);
-        NH_CORE_END(NULL)
+        return NULL;
     }
 
     nh_closeChannelReadAccess(&Fork_p->IPC.In);
     nh_closeChannelWriteAccess(&Fork_p->IPC.Out);
 
-NH_CORE_END(Fork_p)
+    return Fork_p;
 }
 
 static NH_API_RESULT nh_unregisterFork(
     nh_Fork *Fork_p)
 {
-NH_CORE_BEGIN()
-
-    if (init == false || Fork_p->id == 0) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    if (init == false || Fork_p->id == 0) {return NH_API_ERROR_BAD_STATE;}
 
     nh_closeChannelWriteAccess(&Fork_p->IPC.In);
     nh_closeChannelReadAccess(&Fork_p->IPC.Out);
@@ -125,14 +113,12 @@ NH_CORE_BEGIN()
 
     NH_PROCESS_POOL.forks--;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-void nh_checkForks()
+void nh_core_checkForks()
 {
-NH_CORE_BEGIN()
-
-    if (init == false) {NH_CORE_SILENT_END()}
+    if (init == false) {return ;}
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) {
         nh_Fork *Fork_p = &NH_PROCESS_POOL.Forks_p[i];
@@ -141,7 +127,7 @@ NH_CORE_BEGIN()
 #ifdef __unix__
             int result = waitpid(Fork_p->id, &status, WNOHANG);
             if (result == -1) {
-                printf("nh_checkForks %s\n", strerror(errno));
+                printf("nh_core_checkForks %s\n", strerror(errno));
             }
             if (result == -1 || WIFEXITED(status)) {
                 nh_unregisterFork(&NH_PROCESS_POOL.Forks_p[i]);
@@ -150,36 +136,30 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 int nh_core_activeForks()
 {
-NH_CORE_BEGIN()
+    if (init == false) {return 0;}
 
-    if (init == false) {NH_CORE_END(0)}
-
-NH_CORE_END(NH_PROCESS_POOL.forks)
+    return NH_PROCESS_POOL.forks;
 }
 
 void nh_killFork(
     nh_Fork *Fork_p)
 {
-NH_CORE_BEGIN()
-
-    if (init == false) {NH_CORE_SILENT_END()}
+    if (init == false) {return ;}
 
     kill(Fork_p->id, SIGTERM);
     nh_unregisterFork(Fork_p);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 void nh_killForks()
 {
-NH_CORE_BEGIN()
-
-    if (init == false) {NH_CORE_SILENT_END()}
+    if (init == false) {return ;}
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) { 
         if (NH_PROCESS_POOL.Forks_p[i].id != 0) {
@@ -188,22 +168,20 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 nh_Fork *nh_core_getFork()
 {
-NH_CORE_BEGIN()
-
     pid_t pid = getpid();
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) {
         if (NH_PROCESS_POOL.Forks_p[i].id == pid) {
-            NH_CORE_END(&NH_PROCESS_POOL.Forks_p[i])
+            return &NH_PROCESS_POOL.Forks_p[i];
         }
     }
 
-NH_CORE_END(NULL)
+    return NULL;
 }
 
 // WRITE ===========================================================================================
@@ -227,8 +205,7 @@ char *_nh_core_writeToProcess(
 char *nh_core_writeToProcess(
     nh_Process *Proc_p, char *write_p, int writeLen, bool getResponse)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(_nh_core_writeToProcess(Proc_p, write_p, writeLen, getResponse))
+    return _nh_core_writeToProcess(Proc_p, write_p, writeLen, getResponse);
 }
 
 // IPC HANDLER =====================================================================================
@@ -237,8 +214,6 @@ NH_CORE_END(_nh_core_writeToProcess(Proc_p, write_p, writeLen, getResponse))
 NH_API_RESULT nh_handleIPCReceive(
     char *bytes_p)
 {
-NH_CORE_BEGIN()
-
 //    nh_ecmascript_AgentArgs Args;
 //    Args.encoding = NH_UNICODE_ENCODING_UTF8;
 //    Args.bytes_p  = bytes_p + 17;
@@ -252,16 +227,14 @@ NH_CORE_BEGIN()
 //        );
 //    }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_SIGNAL nh_core_runIPCHandler(
     void *args_p)
 {
-NH_CORE_BEGIN()
-
     if (nh_core_getSystemTimeDiffInSeconds(NH_PROCESS_POOL.IPC.LastUpdate, nh_core_getSystemTime()) < NH_PROCESS_POOL.IPC.updateIntervalInSeconds) {
-        NH_CORE_END(NH_SIGNAL_OK)
+        return NH_SIGNAL_OK;
     }
 
     for (int i = 0; i < NH_MAX_FORKS; ++i) {
@@ -276,6 +249,6 @@ NH_CORE_BEGIN()
 
     NH_PROCESS_POOL.IPC.LastUpdate = nh_core_getSystemTime();
 
-NH_CORE_END(NH_SIGNAL_OK)
+    return NH_SIGNAL_OK;
 }
 

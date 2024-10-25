@@ -19,9 +19,9 @@
  */
 
     typedef struct nh_webidl_IndexMap {
-        nh_HashMap FragmentNames;
-        nh_HashMap FragmentFunctionNames;
-        nh_HashMap ParseNodeNames;
+        nh_core_HashMap FragmentNames;
+        nh_core_HashMap FragmentFunctionNames;
+        nh_core_HashMap ParseNodeNames;
     } nh_webidl_IndexMap;
 
 /** @} */

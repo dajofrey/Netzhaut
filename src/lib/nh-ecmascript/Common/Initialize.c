@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "Macros.h"
 #include "IndexMap.h"
 
 #include <stdlib.h>
@@ -20,10 +19,7 @@
 
 NH_API_RESULT nh_ecmascript_initialize()
 {
-NH_ECMASCRIPT_BEGIN()
-
-    NH_ECMASCRIPT_CHECK(nh_ecmascript_createIndexMap())
-
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    NH_CORE_CHECK(nh_ecmascript_createIndexMap())
+    return NH_API_SUCCESS;
 }
 

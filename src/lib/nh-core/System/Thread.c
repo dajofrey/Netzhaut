@@ -13,9 +13,7 @@
 
 #include "../Util/Time.h"
 #include "../System/Memory.h"
-
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -32,22 +30,18 @@
 // INIT ============================================================================================
 
 static inline void nh_core_initThread(
-    nh_Thread *Thread_p)
+    nh_core_Thread *Thread_p)
 {
-NH_CORE_BEGIN()
-
     Thread_p->CurrentWorkload_p = NULL;
     Thread_p->depth = 0;
     Thread_p->id = 0;
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static inline void nh_core_initWorkload(
     nh_core_Workload *Workload_p, bool firstTime)
 {
-NH_CORE_BEGIN()
-
     Workload_p->signal  = NH_SIGNAL_INACTIVE;
     Workload_p->crucial = false;
 
@@ -76,14 +70,12 @@ NH_CORE_BEGIN()
     nh_core_initRingBuffer(&Workload_p->Commands, 64, sizeof(nh_core_WorkloadCommand), NULL);
     nh_core_initRingBufferMarker(&Workload_p->Marker);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
-nh_ThreadPool nh_core_initThreadPool()
+nh_core_ThreadPool nh_core_initThreadPool()
 {
-NH_CORE_BEGIN()
-
-    nh_ThreadPool ThreadPool;
+    nh_core_ThreadPool ThreadPool;
     ThreadPool.threadCount = 0;
 
     nh_core_initThread(&ThreadPool.Main);
@@ -95,20 +87,18 @@ NH_CORE_BEGIN()
         nh_core_initWorkload(&ThreadPool.Workloads_p[i], true);
     }
 
-NH_CORE_END(ThreadPool)
+    return ThreadPool;
 }
 
 NH_API_RESULT nh_core_freeThreadPool(
-    nh_ThreadPool *ThreadPool_p)
+    nh_core_ThreadPool *ThreadPool_p)
 {
-NH_CORE_BEGIN()
-
     for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
         nh_core_deactivateWorkload(&ThreadPool_p->Workloads_p[i]);
         nh_core_freeRingBuffer(&ThreadPool_p->Workloads_p[i].Commands);
     }
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // RUN =============================================================================================
@@ -116,9 +106,7 @@ NH_CORE_END(NH_API_SUCCESS)
 static NH_API_RESULT nh_core_runWorkloadLoop(
     nh_core_Workload *Workload_p, bool *idle_p)
 {
-NH_CORE_BEGIN()
-
-    nh_SystemTime TAT = nh_core_getSystemTime();
+    nh_core_SystemTime TAT = nh_core_getSystemTime();
 
     // Run command if any.
     nh_core_WorkloadCommand *Command_p = NULL;
@@ -128,7 +116,7 @@ NH_CORE_BEGIN()
             Workload_p->runCommand_f(Workload_p->args_p, Command_p);
         }
         Command_p->done = true;
-        NH_CORE_END(NH_API_SUCCESS)
+        return NH_API_SUCCESS;
     }
 
     // Very important line. This runs the encapsulated program loop.
@@ -150,23 +138,21 @@ NH_CORE_BEGIN()
             Workload_p->SignalCounter.idle++;
             break;
         case NH_SIGNAL_FINISH : 
+            nh_core_deactivateWorkload(Workload_p);
+            break;
         case NH_SIGNAL_ERROR  : 
-        {
-            NH_CORE_DIAGNOSTIC_END(nh_core_deactivateWorkload(Workload_p))
-        }
+            return NH_API_ERROR_BAD_STATE;
     }
 
     Workload_p->Timing.turnAround = nh_core_getSystemTimeDiffInSeconds(TAT, nh_core_getSystemTime());
     
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_core_runWorkload(
     nh_core_Workload *Workload_p, bool *idle_p)
 {
-NH_CORE_BEGIN()
-
-    nh_Thread *Thread_p = nh_core_getThread();
+    nh_core_Thread *Thread_p = nh_core_getThread();
     NH_CORE_CHECK_NULL(Thread_p)
 
     Thread_p->CurrentWorkload_p = Workload_p;
@@ -190,18 +176,16 @@ NH_CORE_BEGIN()
 
     Thread_p->CurrentWorkload_p = NULL;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-unsigned int nh_core_runThreadWorkloads()
+int nh_core_runThreadWorkloads()
 {
-NH_CORE_BEGIN()
-
-    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+    nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
     bool idle = true;
     unsigned int count = 0;
-    nh_Thread *Thread_p = nh_core_getThread();
+    nh_core_Thread *Thread_p = nh_core_getThread();
 
     for (int i = 0; i < NH_MAX_WORKLOADS; ++i) 
     {
@@ -209,7 +193,8 @@ NH_CORE_BEGIN()
 
         if (Workload_p->Thread_p == Thread_p) 
         {
-            NH_CORE_CHECK(nh_core_runWorkload(Workload_p, &idle))
+            NH_API_RESULT result = nh_core_runWorkload(Workload_p, &idle);
+            if (result != NH_API_SUCCESS) {return -1;}
             count++;
         }
     }
@@ -218,21 +203,19 @@ NH_CORE_BEGIN()
 
     if (idle) {nh_sleepMs(10);}
 
-NH_CORE_END(count)
+    return count;
 }
 
 //static void nh_core_runThread(
 //    void *index_p)
 //{
-//    nh_Thread *Thread_p = &ThreadPool.Threads_p[*((int*)index_p)];
+//    nh_core_Thread *Thread_p = &ThreadPool.Threads_p[*((int*)index_p)];
 //
 //#ifdef __unix__
 //    Thread_p->id = pthread_self();
 //#elif defined(_WIN32) || defined (WIN32)
 //    Thread_p->id = GetCurrentThreadId();
 //#endif
-//
-//NH_CORE_BEGIN()
 //
 //    nh_core_initializeThreadMemory();
 //
@@ -245,44 +228,38 @@ NH_CORE_END(count)
 //
 //#endif
 //
-//NH_CORE_SILENT_END()
+//return ;
 //}
 
 static void nh_core_startThread(
     int index)
 {
-NH_CORE_BEGIN()
-
 #ifdef __unix__
     // TODO
 #elif defined(_WIN32) || defined (WIN32)
 //        _beginthread(nh_core_runPhysicalThread, 0, (void*)Data_p);
 #endif
-
-NH_CORE_SILENT_END()
+    return;
 }
 
 // KEEP RUNNING? ===================================================================================
 
 bool nh_core_keepRunning()
 {
-NH_CORE_BEGIN()
-
-    nh_checkForks();
-
-NH_CORE_END(nh_core_activeWorkloads(true) > 0 || nh_core_activeForks() > 0 ? true : false)
+    nh_core_checkForks();
+    return nh_core_activeWorkloads(true) > 0 || nh_core_activeForks() > 0 ? true : false;
 }
 
 // GET =============================================================================================
 
 nh_core_Workload *nh_core_getWorkloads()
 {
-return NH_PROCESS_POOL.Main.ThreadPool.Workloads_p;
+    return NH_PROCESS_POOL.Main.ThreadPool.Workloads_p;
 }
 
-nh_Thread *nh_core_getThread()
+nh_core_Thread *nh_core_getThread()
 {
-    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+    nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
     for (int i = 0; i < NH_MAX_THREADS; ++i) 
     {
@@ -302,51 +279,45 @@ nh_Thread *nh_core_getThread()
 nh_core_Workload *nh_core_getWorkload(
     void *args_p)
 {
-NH_CORE_BEGIN()
+    if (args_p == NULL) {return NULL;}
 
-    if (args_p == NULL) {NH_CORE_END(NULL)}
-
-    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+    nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
     for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
         if (args_p == ThreadPool_p->Workloads_p[i].args_p) {
-            NH_CORE_END(&ThreadPool_p->Workloads_p[i])
+            return &ThreadPool_p->Workloads_p[i];
         }
     }
 
-NH_CORE_END(NULL)
+    return NULL;
 }
 
-nh_Thread *nh_core_getThreadFromArgs(
+nh_core_Thread *nh_core_getThreadFromArgs(
     void *args_p)
 {
-NH_CORE_BEGIN()
+    if (args_p == NULL) {return NULL;}
 
-    if (args_p == NULL) {NH_CORE_END(NULL)}
-
-    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+    nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
     for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
         if (args_p == ThreadPool_p->Workloads_p[i].args_p) {
-            NH_CORE_END(ThreadPool_p->Workloads_p[i].Thread_p)
+            return ThreadPool_p->Workloads_p[i].Thread_p;
         }
     }
 
-NH_CORE_END(NULL)
+    return NULL;
 }
 
 int nh_core_getThreadIndex()
 {
-NH_CORE_BEGIN()
+    nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
-    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
-
-    nh_Thread *Thread_p = nh_core_getThread();
+    nh_core_Thread *Thread_p = nh_core_getThread();
     for (int i = 0; i < NH_MAX_THREADS; ++i) {
-        if (Thread_p == &ThreadPool_p->Threads_p[i]) {NH_CORE_END(i)}
+        if (Thread_p == &ThreadPool_p->Threads_p[i]) {return i;}
     }
 
-NH_CORE_END(0)
+    return 0;
 }
 
 // DE/ACTIVATE =====================================================================================
@@ -354,8 +325,6 @@ NH_CORE_END(0)
 static void nh_core_assignToThread(
     nh_core_Workload *Workload_p)
 {
-NH_CORE_BEGIN()
-
     if (NH_PROCESS_POOL.Main.ThreadPool.threadCount == 0) {
         Workload_p->Thread_p = &(NH_PROCESS_POOL.Main.ThreadPool.Main);
     } else {
@@ -363,14 +332,12 @@ NH_CORE_BEGIN()
         exit(0);
     }
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static void nh_core_waitForCompletion(
     nh_core_Workload *Workload_p, NH_SIGNAL signal)
 {
-NH_CORE_BEGIN()
-
     // If the thread that handles the workload is executing this code, 
     // we can just execute the function directly.
     if (Workload_p->Thread_p == nh_core_getThread()) {
@@ -380,15 +347,13 @@ NH_CORE_BEGIN()
     // Otherwise we need to wait for the executing thread to do its work.
     else {while (Workload_p->signal != signal) {}}
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 void *nh_core_activateWorkload(
     void *(*init_f)(nh_core_Workload*), NH_SIGNAL (*run_f)(void*), void (*free_f)(void*), 
     NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, bool crucial)
 {
-NH_CORE_BEGIN()
-
     nh_core_Workload *Workload_p = NULL;
 
     for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
@@ -398,7 +363,7 @@ NH_CORE_BEGIN()
         }
     }
 
-    if (Workload_p == NULL) {NH_CORE_END(NULL)}
+    if (Workload_p == NULL) {return NULL;}
 
     Workload_p->signal       = NH_SIGNAL_INIT;
     Workload_p->args_p       = args_p;
@@ -413,27 +378,24 @@ NH_CORE_BEGIN()
     // Wait for completion of init function, if any.
     nh_core_waitForCompletion(Workload_p, NH_SIGNAL_DONE);
 
-NH_CORE_END(Workload_p->args_p)
+    return Workload_p->args_p;
 }
 
 NH_API_RESULT nh_core_deactivateWorkload(
     nh_core_Workload *Workload_p)
 {
-NH_CORE_BEGIN()
-
     // Check if already deactivated.
-    if (Workload_p->signal == NH_SIGNAL_INACTIVE) {NH_CORE_END(NH_API_SUCCESS)}
+    if (Workload_p->signal == NH_SIGNAL_INACTIVE) {return NH_API_SUCCESS;}
 
     Workload_p->signal = NH_SIGNAL_FREE;
     nh_core_waitForCompletion(Workload_p, NH_SIGNAL_INACTIVE);
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void *nh_core_getWorkloadArg()
 {
-NH_CORE_BEGIN()
-NH_CORE_END(nh_core_getThread()->CurrentWorkload_p->args_p)
+    return nh_core_getThread()->CurrentWorkload_p->args_p;
 }
 
 // EXECUTE =========================================================================================
@@ -441,8 +403,6 @@ NH_CORE_END(nh_core_getThread()->CurrentWorkload_p->args_p)
 NH_API_RESULT nh_core_executeWorkloadCommand(
     void *handle_p, int type, void *p, int byteSize)
 {
-NH_CORE_BEGIN()
-
     nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
     NH_CORE_CHECK_NULL(Workload_p)
 
@@ -467,8 +427,9 @@ NH_CORE_BEGIN()
     if (Workload_p->Thread_p == nh_core_getThread()) {
         while (Command_p->done == false) {
             nh_core_Workload *PreviousWorkload_p = nh_core_getThread()->CurrentWorkload_p;
-            nh_core_runWorkload(Workload_p, NULL);
+            NH_API_RESULT result = nh_core_runWorkload(Workload_p, NULL);
             nh_core_getThread()->CurrentWorkload_p = PreviousWorkload_p;
+            NH_CORE_CHECK(result)
         }
     }
 
@@ -478,14 +439,12 @@ NH_CORE_BEGIN()
 
     if (byteSize > 0) {nh_core_free(Command_p->p);}
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_executeWorkload(
     void *handle_p)
 {
-NH_CORE_BEGIN()
-
     nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
     NH_CORE_CHECK_NULL(Workload_p)
 
@@ -500,39 +459,36 @@ NH_CORE_BEGIN()
     // the previous workload and reset the pointer.
     if (Workload_p->Thread_p == nh_core_getThread()) {
         nh_core_Workload *PreviousWorkload_p = nh_core_getThread()->CurrentWorkload_p;
-        nh_core_runWorkload(Workload_p, NULL);
+        NH_API_RESULT result = nh_core_runWorkload(Workload_p, NULL);
         nh_core_getThread()->CurrentWorkload_p = PreviousWorkload_p;
+        NH_CORE_CHECK(result)
     }
 
     // Otherwise we need to wait for the executing thread to do its work.
     // TODO Sleep.
     else {while (Command_p->done == false) {}}
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // COUNT ==========================================================================================
 
 int nh_core_activeThreads()
 {
-NH_CORE_BEGIN()
-
-    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+    nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
     int count = 0;
     for (int i = 0; i < NH_MAX_THREADS; ++i) {
         if (ThreadPool_p->Threads_p[i].id != 0) {count++;}
     }
 
-NH_CORE_END(count)
+    return count;
 }
 
 int nh_core_activeWorkloads(
     bool onlyCrucial)
 {
-NH_CORE_BEGIN()
-
-    nh_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
+    nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
     int count = 0;
     for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
@@ -542,7 +498,7 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_END(count)
+    return count;
 }
 
 // SLEEP ===========================================================================================
@@ -550,8 +506,6 @@ NH_CORE_END(count)
 NH_API_RESULT nh_sleepMs(
     int milliseconds)
 {
-NH_CORE_BEGIN()
-
 #ifdef WIN32
     Sleep(milliseconds);
 #elif _POSIX_C_SOURCE >= 199309L
@@ -562,7 +516,6 @@ NH_CORE_BEGIN()
 #else
     usleep(milliseconds * 1000);
 #endif
-
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

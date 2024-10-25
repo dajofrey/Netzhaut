@@ -17,6 +17,7 @@
 
 #include "../../nh-webidl/Runtime/Object.h"
 #include "../../nh-dom/Interfaces.h"
+#include "../../nh-core/Util/Debug.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

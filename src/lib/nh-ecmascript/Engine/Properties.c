@@ -9,9 +9,6 @@
 // INCLUDES =======================================================================================
 
 #include "Properties.h"
-
-#include "../Common/Macros.h" 
-
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>
@@ -21,36 +18,30 @@
 nh_ecmascript_Properties nh_ecmascript_initProperties(
     int chunkSize)
 {
-NH_ECMASCRIPT_BEGIN()
-
     nh_ecmascript_Properties Properties = nh_core_initList(chunkSize);
 
-NH_ECMASCRIPT_END(Properties)
+    return Properties;
 }
 
 bool nh_ecmascript_equalPropertyKeys(
     nh_ecmascript_Any Key1, nh_ecmascript_Any Key2)
 {
-NH_ECMASCRIPT_BEGIN()
-
     if (Key1.type == NH_ECMASCRIPT_TYPE_STRING && Key2.type == NH_ECMASCRIPT_TYPE_STRING) {
         if (Key1.handle_p != NULL && Key2.handle_p != NULL && !strcmp(Key1.handle_p, Key2.handle_p)) {
-            NH_ECMASCRIPT_END(true)
+            return true;
         }
     }
 
-NH_ECMASCRIPT_END(false)
+    return false;
 }
 
 nh_ecmascript_Property *nh_ecmascript_newProperty(
     nh_ecmascript_Properties *Properties_p, nh_ecmascript_Any Key, nh_ecmascript_PropertyDescriptor Descriptor)
 {
-NH_ECMASCRIPT_BEGIN()
-
-    if (Descriptor.type == -1) {NH_ECMASCRIPT_END(NULL)}
+    if (Descriptor.type == -1) {return NULL;}
 
     nh_ecmascript_Property *Property_p = nh_core_allocate(sizeof(nh_ecmascript_Property));
-    NH_ECMASCRIPT_CHECK_MEM_2(NULL, Property_p)
+    NH_CORE_CHECK_MEM_2(NULL, Property_p)
 
     Property_p->type = Descriptor.type;
     Property_p->Key  = Key;
@@ -66,6 +57,5 @@ NH_ECMASCRIPT_BEGIN()
         Property_p->Fields.Accessor.Set = Descriptor.Fields.Accessor.Set;
     }
 
-NH_ECMASCRIPT_END(Property_p)
+    return Property_p;
 }
-

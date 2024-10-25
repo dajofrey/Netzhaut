@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "Macros.h"
 
 #include "../Window/Listener.h"
 #include "../Platforms/X11/Init.h"
@@ -24,6 +23,6 @@
 
 NH_API_RESULT nh_wsi_initialize()
 {
-    NH_WSI_CHECK(nh_wsi_normalizeListener())
-    NH_WSI_CHECK(nh_x11_initialize())
+    NH_CORE_CHECK(nh_wsi_normalizeListener())
+    NH_CORE_CHECK(nh_x11_initialize())
 }

@@ -75,7 +75,7 @@ NH_NETWORK_BEGIN()
         nh_core_appendToLinkedList(&Network.Sockets, nh_network_createClientSocket(NH_NETWORK_PROTOCOL_FAMILY_IPV6, NH_NETWORK_SOCKET_TCP)
     ))
 
-    NH_NETWORK_CHECK(nh_network_getHostName())
+    NH_CORE_CHECK(nh_network_getHostName())
 
 NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 }

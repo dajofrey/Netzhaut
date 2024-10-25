@@ -20,7 +20,7 @@
  */
 
     NH_API_RESULT nh_core_logThread(
-        nh_ThreadPool *ThreadPool_p, nh_Thread *Thread_p
+        nh_core_ThreadPool *ThreadPool_p, nh_core_Thread *Thread_p
     );
 
     NH_API_RESULT nh_core_logModules(

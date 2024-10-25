@@ -11,7 +11,6 @@
 #include "BoxTriangulation.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -54,8 +53,6 @@ static int nh_renderer_getTopLeftCornerTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p,
     nh_renderer_CornerData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
-NH_RENDERER_BEGIN()
-
     nh_Vector2D EnclosingBoxTopLeft = {EnclosingBox.Position.x, EnclosingBox.Position.y};
     nh_Vector2D EnclosedBoxTopLeft  = {EnclosedBox.Position.x, EnclosedBox.Position.y};
     nh_Vector2D EnclosedBoxTopRight = {EnclosedBox.Position.x + EnclosedBox.Size.width, EnclosedBox.Position.y};
@@ -102,15 +99,13 @@ NH_RENDERER_BEGIN()
         OldPoint = Point;
     }
  
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static int nh_renderer_getTopRightCornerTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p,
     nh_renderer_CornerData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
-NH_RENDERER_BEGIN()
-
     nh_Vector2D EnclosingBoxTopRight = {EnclosingBox.Position.x + EnclosingBox.Size.width, EnclosingBox.Position.y};
     nh_Vector2D EnclosedBoxTopRight  = {EnclosedBox.Position.x + EnclosedBox.Size.width, EnclosedBox.Position.y};
     nh_Vector2D EnclosedBoxTopLeft   = {EnclosedBox.Position.x, EnclosedBox.Position.y};
@@ -157,15 +152,13 @@ NH_RENDERER_BEGIN()
         OldPoint = Point;
     }
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static int nh_renderer_getBottomLeftCornerTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p, 
     nh_renderer_CornerData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
-NH_RENDERER_BEGIN()
-
     nh_Vector2D EnclosingBoxBottomLeft = {EnclosingBox.Position.x, EnclosingBox.Position.y + EnclosingBox.Size.height};
     nh_Vector2D EnclosedBoxBottomLeft  = {EnclosedBox.Position.x, EnclosedBox.Position.y + EnclosedBox.Size.height};
     nh_Vector2D EnclosedBoxBottomRight = {EnclosedBox.Position.x + EnclosedBox.Size.width, EnclosedBox.Position.y + EnclosedBox.Size.height};
@@ -212,15 +205,13 @@ NH_RENDERER_BEGIN()
         OldPoint = Point;
     } 
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static int nh_renderer_getBottomRightCornerTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p, 
     nh_renderer_CornerData Corners, int cornerTriangleCount, int triangleCount, int side, float z)
 {
-NH_RENDERER_BEGIN()
-
     nh_Vector2D EnclosingBoxBottomRight = {EnclosingBox.Position.x + EnclosingBox.Size.width, EnclosingBox.Position.y + EnclosingBox.Size.height};
     nh_Vector2D EnclosedBoxBottomRight  = {EnclosedBox.Position.x + EnclosedBox.Size.width, EnclosedBox.Position.y + EnclosedBox.Size.height};
     nh_Vector2D EnclosedBoxBottomLeft   = {EnclosedBox.Position.x, EnclosedBox.Position.y + EnclosedBox.Size.height};
@@ -267,15 +258,13 @@ NH_RENDERER_BEGIN()
         OldPoint = Point;
     }
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static int nh_renderer_getTopTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p, 
     int cornerTriangleCount, nh_renderer_CornerData Corners, int triangleCount, float z)
 {
-NH_RENDERER_BEGIN()
-
     Triangles_p[triangleCount].V1.x = Corners.TopLeft.Position.x + Corners.TopLeft.Size.width;
     Triangles_p[triangleCount].V1.y = Corners.TopLeft.Position.y;
     Triangles_p[triangleCount].V1.z = z;
@@ -321,15 +310,13 @@ NH_RENDERER_BEGIN()
         );
     }
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static int nh_renderer_getBottomTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p, 
     int cornerTriangleCount, nh_renderer_CornerData Corners, int triangleCount, float z)
 {
-NH_RENDERER_BEGIN()
-
     Triangles_p[triangleCount].V1.x = Corners.BottomLeft.Position.x + Corners.BottomLeft.Size.width;
     Triangles_p[triangleCount].V1.y = Corners.BottomLeft.Position.y + Corners.BottomLeft.Size.height;
     Triangles_p[triangleCount].V1.z = z;
@@ -375,15 +362,13 @@ NH_RENDERER_BEGIN()
         );
     }
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static int nh_renderer_getLeftTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p, 
     int cornerTriangleCount, nh_renderer_CornerData Corners, int triangleCount, float z)
 {
-NH_RENDERER_BEGIN()
-
     Triangles_p[triangleCount].V1.x = Corners.TopLeft.Position.x;
     Triangles_p[triangleCount].V1.y = Corners.TopLeft.Position.y + Corners.TopLeft.Size.height;
     Triangles_p[triangleCount].V1.z = z;
@@ -429,15 +414,13 @@ NH_RENDERER_BEGIN()
         );
     }
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static int nh_renderer_getRightTriangles(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, nh_renderer_ClipBox *EnclosedPoint_p, nh_Triangle *Triangles_p, 
     int cornerTriangleCount, nh_renderer_CornerData Corners, int triangleCount, float z)
 {
-NH_RENDERER_BEGIN()
-
     Triangles_p[triangleCount].V1.x = Corners.TopRight.Position.x + Corners.TopRight.Size.width;
     Triangles_p[triangleCount].V1.y = Corners.TopRight.Position.y + Corners.TopRight.Size.height;
     Triangles_p[triangleCount].V1.z = z;
@@ -483,14 +466,12 @@ NH_RENDERER_BEGIN()
         );
     }
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 
 static nh_renderer_CornerData nh_renderer_getCorners(
     nh_renderer_ClipBox EnclosingBox, float radii_p[4])
 {
-NH_RENDERER_BEGIN()
-
     nh_renderer_CornerData Corners = {0};
 
     memcpy(Corners.radii_p, radii_p, sizeof(float) * 4);
@@ -530,7 +511,7 @@ NH_RENDERER_BEGIN()
     Corners.BottomRight.Size.width  = radii_p[BOTTOM_RIGHT];
     Corners.BottomRight.Size.height = radii_p[BOTTOM_RIGHT]; 
 
-NH_RENDERER_END(Corners)
+    return Corners;
 }
 
 // TRIANGULATE =====================================================================================
@@ -539,8 +520,6 @@ int nh_renderer_triangulateBox(
     nh_renderer_ClipBox EnclosingBox, nh_renderer_ClipBox EnclosedBox, float radii_p[4], int cornerTriangleCount, 
     char *side_p, nh_Triangle *Triangles_p, bool enclosedPoint, int offset, float z)
 {
-NH_RENDERER_BEGIN()
-
     nh_renderer_ClipBox EnclosedPoint;
 
     EnclosedPoint.Position.x = EnclosedBox.Position.x + EnclosedBox.Size.width / 2.0f;
@@ -582,6 +561,6 @@ NH_RENDERER_BEGIN()
             break;
     }
 
-NH_RENDERER_END(triangleCount)
+    return triangleCount;
 }
 

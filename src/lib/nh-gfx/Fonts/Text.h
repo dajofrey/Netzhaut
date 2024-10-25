@@ -28,7 +28,7 @@
     } nh_gfx_TextSegment;
 
     typedef struct nh_gfx_Text {
-        nh_Array Segments;
+        nh_core_Array Segments;
     } nh_gfx_Text;
 
 /** @} */
@@ -39,7 +39,7 @@
 
     NH_API_RESULT nh_gfx_createText(
         nh_gfx_Text *Text_p, NH_ENCODING_UTF32 *codepoints_p, unsigned int length, int fontSize, 
-        nh_Array *FontFamilies_p, nh_gfx_FontStyle FontStyle
+        nh_core_Array *FontFamilies_p, nh_gfx_FontStyle FontStyle
     );
 
     NH_API_RESULT nh_gfx_createTextFromFont(

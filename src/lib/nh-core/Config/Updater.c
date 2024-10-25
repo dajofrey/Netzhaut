@@ -16,8 +16,6 @@
 #include "../System/Memory.h"
 #include "../System/Thread.h"
 
-#include "../Common/Macros.h"
-
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -34,7 +32,7 @@ typedef struct nh_ConfigUpdaterFile {
 } nh_ConfigUpdaterFile;
 
 typedef struct nh_ConfigUpdater {
-    nh_List Files;
+    nh_core_List Files;
 } nh_ConfigUpdater;
 
 static nh_ConfigUpdater NH_CONFIG_UPDATER;
@@ -45,8 +43,6 @@ static nh_ConfigUpdater NH_CONFIG_UPDATER;
 static void *nh_core_initConfigUpdater(
     nh_core_Workload *Workload_p)
 {
-NH_CORE_BEGIN()
-
     static char *name_p = "Config Updater";
     static char *path_p = "nh-core/Config/Updater.c";
 
@@ -62,17 +58,14 @@ NH_CORE_BEGIN()
 
     NH_CONFIG_UPDATER.Files = nh_core_initList(4);
 
-NH_CORE_END(&NH_CONFIG_UPDATER)
+    return &NH_CONFIG_UPDATER;
 }
 
 static void nh_core_freeConfigUpdater(
     void *p)
 {
-NH_CORE_BEGIN()
-
     nh_core_freeList(&NH_CONFIG_UPDATER.Files, true);
-
-NH_CORE_SILENT_END()
+    return;
 }
 
 // RUN LOOP ========================================================================================
@@ -81,8 +74,6 @@ NH_CORE_SILENT_END()
 static NH_SIGNAL nh_core_runConfigUpdater(
     void *args_p) 
 {
-NH_CORE_BEGIN()
-
     NH_SIGNAL signal = NH_SIGNAL_IDLE;
 
     for (int i = 0; i < NH_CONFIG_UPDATER.Files.size; ++i) {
@@ -114,7 +105,7 @@ NH_CORE_BEGIN()
 //        Setting_p->mark = false;
     }
 
-NH_CORE_END(signal)
+    return signal;
 }
 
 // COMMANDS ========================================================================================
@@ -131,23 +122,21 @@ typedef enum NH_CONFIG_UPDATER_COMMAND_E {
 static NH_SIGNAL nh_core_runConfigUpdaterCommand(
     void *p, nh_core_WorkloadCommand *Command_p)
 {
-NH_CORE_BEGIN()
-
     switch (Command_p->type)
     {
         case NH_CONFIG_UPDATER_COMMAND_REGISTER_CONFIG :
         {
             if (strlen(Command_p->p) > NH_MAX_CONFIG_PATH) {
-                NH_CORE_END(NH_SIGNAL_OK)
+                return NH_SIGNAL_OK;
             }
             nh_ConfigUpdaterFile *File_p = nh_core_allocate(sizeof(nh_ConfigUpdaterFile));
             if (!File_p) {
-                NH_CORE_END(NH_SIGNAL_OK)
+                return NH_SIGNAL_OK;
             }
             strcpy(File_p->path_p, Command_p->p); 
             struct stat statbuf;
             if (stat(Command_p->p, &statbuf) == -1) {
-                NH_CORE_END(NH_SIGNAL_OK)
+                return NH_SIGNAL_OK;
             }
             File_p->lastModification = statbuf.st_mtime;
             nh_core_appendToList(&NH_CONFIG_UPDATER.Files, File_p);
@@ -163,7 +152,7 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_END(NH_SIGNAL_OK)
+    return NH_SIGNAL_OK;
 }
 
 // API =============================================================================================
@@ -171,34 +160,27 @@ NH_CORE_END(NH_SIGNAL_OK)
 
 NH_API_RESULT nh_core_startConfigUpdater()
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL(nh_core_activateWorkload(
         nh_core_initConfigUpdater, nh_core_runConfigUpdater, nh_core_freeConfigUpdater,
         nh_core_runConfigUpdaterCommand, NULL, false))
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_registerConfig(
     char *absolutePath_p, int length)
 {
-NH_CORE_BEGIN()
-
     nh_core_executeWorkloadCommand(&NH_CONFIG_UPDATER, 
         NH_CONFIG_UPDATER_COMMAND_REGISTER_CONFIG, absolutePath_p, length);
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_loadConfig(
     char *data_p, int length)
 {
-NH_CORE_BEGIN()
-
     nh_core_executeWorkloadCommand(&NH_CONFIG_UPDATER, 
         NH_CONFIG_UPDATER_COMMAND_LOAD_CONFIG, data_p, length);
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-

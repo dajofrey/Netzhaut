@@ -25,8 +25,8 @@
         nh_css_FragmentTree FragmentTree;
         bool render;
         bool _float;
-        nh_List Floats;
-        nh_Array LineBoxes;
+        nh_core_List Floats;
+        nh_core_Array LineBoxes;
     } nh_css_Canvas;
 
 /** @} */

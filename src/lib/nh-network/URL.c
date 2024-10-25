@@ -102,11 +102,11 @@
 //
 //    switch (scheme)
 //    {
-//        case NH_URI_SCHEME_HTTP      : NH_NETWORK_CHECK(Sockets, nh_network_getSockets(hostName_p, resolvedHostName_p, NH_NETWORK_PORT_HTTP, &Sockets)) break;
-//        case NH_URI_SCHEME_HTTPS     : NH_NETWORK_CHECK(Sockets, nh_network_getSockets(hostName_p, resolvedHostName_p, NH_NETWORK_PORT_HTTPS, &Sockets)) break;
+//        case NH_URI_SCHEME_HTTP      : NH_CORE_CHECK(Sockets, nh_network_getSockets(hostName_p, resolvedHostName_p, NH_NETWORK_PORT_HTTP, &Sockets)) break;
+//        case NH_URI_SCHEME_HTTPS     : NH_CORE_CHECK(Sockets, nh_network_getSockets(hostName_p, resolvedHostName_p, NH_NETWORK_PORT_HTTPS, &Sockets)) break;
 //        case NH_URI_SCHEME_UNDEFINED :
 //        {
-//            NH_NETWORK_CHECK(Sockets, nh_network_getSockets(hostName_p, resolvedHostName_p, NH_NETWORK_PORT_HTTP, &Sockets))
+//            NH_CORE_CHECK(Sockets, nh_network_getSockets(hostName_p, resolvedHostName_p, NH_NETWORK_PORT_HTTP, &Sockets))
 //            // TODO maybe try others
 //            break;
 //        }
@@ -166,19 +166,19 @@
 //    if (Sockets.count <= 0) {NH_NETWORK_END(NULL)}
 //
 //    nh_network_URL *URL_p = nh_core_allocate(sizeof(nh_network_URL));
-//    NH_NETWORK_CHECK_MEM(NULL, URL_p)
+//    NH_CORE_CHECK_MEM(NULL, URL_p)
 //
 //    nh_network_initURL(URL_p);
 //    URL_p->Sockets = Sockets;
 //
 //    URL_p->hostName_p = nh_core_allocateBytes(hostName_p);
-//    NH_NETWORK_CHECK_MEM(NULL, URL_p->hostName_p)
+//    NH_CORE_CHECK_MEM(NULL, URL_p->hostName_p)
 //
 //    URL_p->resolvedHostName_p = nh_core_allocateBytes(resolvedHostName_p);
-//    NH_NETWORK_CHECK_MEM(NULL, URL_p->resolvedHostName_p)
+//    NH_CORE_CHECK_MEM(NULL, URL_p->resolvedHostName_p)
 //
 //    URL_p->pathName_p = nh_core_allocateBytes(path_p);
-//    NH_NETWORK_CHECK_MEM(NULL, URL_p->pathName_p)
+//    NH_CORE_CHECK_MEM(NULL, URL_p->pathName_p)
 //
 //#include NH_NETWORK_DEFAULT_CHECK
 //
@@ -193,7 +193,7 @@
 //    // TODO URI_p->base ignored
 //
 //    URI_p->data_p = nh_network_createURLFromLocation(URI_p->location_p, &URI_p->scheme);
-//    NH_NETWORK_CHECK_MEM(URI_p->data_p)
+//    NH_CORE_CHECK_MEM(URI_p->data_p)
 //
 //NH_NETWORK_DIAGNOSTIC_END(NH_API_SUCCESS)
 //}
@@ -238,7 +238,7 @@
 //         case NH_NETWORK_PAYLOAD_HTTP :
 //         {
 //             char headerValue_p[512] = {'\0'};
-//             NH_NETWORK_CHECK(-1, nh_network_getHTTPHeaderValue(
+//             NH_CORE_CHECK(-1, nh_network_getHTTPHeaderValue(
 //                 URL_p->Payload.HTTP.header_p, headerValue_p, NH_NETWORK_HTTP_HEADER_CONTENT_TYPE
 //             ))
 //
@@ -302,11 +302,11 @@
 //        case NH_NETWORK_HTTP_RESPONSE_MOVED_PERMANENTLY :  
 //        {
 //            char headerValue_p[512] = {'\0'};
-//            NH_NETWORK_CHECK(Payload, nh_network_getHTTPHeaderValue(data_p, headerValue_p, NH_NETWORK_HTTP_HEADER_LOCATION))
+//            NH_CORE_CHECK(Payload, nh_network_getHTTPHeaderValue(data_p, headerValue_p, NH_NETWORK_HTTP_HEADER_LOCATION))
 //
 //            nh_core_free(URL_p->Forward_p);
 //            URL_p->Forward_p = nh_network_createURLFromLocation(headerValue_p, NULL);
-//            NH_NETWORK_CHECK_NULL(Payload, URL_p->Forward_p)
+//            NH_CORE_CHECK_NULL(Payload, URL_p->Forward_p)
 //
 //            nh_core_free(data_p);
 //            NH_NETWORK_END(nh_network_getGenericPayloadFromURL(URL_p->Forward_p, size_p, scheme_p, 0))
@@ -314,10 +314,10 @@
 //        case NH_NETWORK_HTTP_RESPONSE_FOUND : // TODO temporary forward
 //        {
 //            char headerValue_p[512] = {'\0'};
-//            NH_NETWORK_CHECK(Payload, nh_network_getHTTPHeaderValue(data_p, headerValue_p, NH_NETWORK_HTTP_HEADER_LOCATION))
+//            NH_CORE_CHECK(Payload, nh_network_getHTTPHeaderValue(data_p, headerValue_p, NH_NETWORK_HTTP_HEADER_LOCATION))
 //
 //            URL_p->Forward_p = nh_network_createURLFromLocation(headerValue_p, NULL);
-//            NH_NETWORK_CHECK_NULL(Payload, URL_p->Forward_p)
+//            NH_CORE_CHECK_NULL(Payload, URL_p->Forward_p)
 //
 //            nh_core_free(data_p);
 //            NH_NETWORK_END(nh_network_getGenericPayloadFromURL(URL_p->Forward_p, size_p, scheme_p, 0))

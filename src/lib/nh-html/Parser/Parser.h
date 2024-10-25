@@ -125,11 +125,11 @@
         unsigned int scriptNestingLevel;
         nh_Stack OpenElements;
         nh_Stack TemplateInsertionModes;
-        nh_List ActiveFormattingElements;
+        nh_core_List ActiveFormattingElements;
         nh_webidl_Object *Document_p;
         nh_webidl_Object *HeadElement_p;
         nh_webidl_Object *FormElement_p;
-        nh_Array Errors;
+        nh_core_Array Errors;
         nh_html_Token *Token_p;
         nh_html_Tokenizer *Tokenizer_p;
     } nh_html_Parser;

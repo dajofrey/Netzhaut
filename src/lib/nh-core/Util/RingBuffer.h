@@ -1,7 +1,7 @@
 #ifndef NH_CORE_RING_BUFFER_H
 #define NH_CORE_RING_BUFFER_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE NOTICE ==================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,51 +9,49 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "../Common/Includes.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-typedef struct nh_RingBufferMarker { 
+typedef struct nh_core_RingBufferMarker { 
     int index; 
     int overflow; 
-} nh_RingBufferMarker; 
+} nh_core_RingBufferMarker; 
 
-typedef struct nh_RingBuffer { 
-    nh_RingBufferMarker Marker; /**<For convenience.*/ 
+typedef struct nh_core_RingBuffer { 
+    nh_core_RingBufferMarker Marker; /**<For convenience.*/ 
     int itemCount, itemByteSize; 
     int index; 
     int overflow; 
     void *data_p; 
-} nh_RingBuffer; 
+} nh_core_RingBuffer; 
+
+// FUNCTIONS =======================================================================================
  
-/** @addtogroup lib_nh-core_functions
- *  @{
- */
+NH_API_RESULT nh_core_initRingBuffer(
+    nh_core_RingBuffer *Buffer_p, int itemCount, int itemByteSize, void init_f(nh_core_RingBuffer *Buffer_p, int itemCount)
+);
 
-    NH_API_RESULT nh_core_initRingBuffer(
-        nh_RingBuffer *Buffer_p, int itemCount, int itemByteSize, void init_f(nh_RingBuffer *Buffer_p, int itemCount)
-    );
+void *nh_core_advanceRingBuffer(
+    nh_core_RingBuffer *Buffer_p
+); 
 
-    void *nh_core_advanceRingBuffer(
-        nh_RingBuffer *Buffer_p
-    ); 
+void nh_resetRingBuffer(
+    nh_core_RingBuffer *Buffer_p
+);
 
-    void nh_resetRingBuffer(
-        nh_RingBuffer *Buffer_p
-    );
+void nh_core_freeRingBuffer(
+    nh_core_RingBuffer *Buffer_p
+);
 
-    void nh_core_freeRingBuffer(
-        nh_RingBuffer *Buffer_p
-    );
+void nh_core_initRingBufferMarker(
+    nh_core_RingBufferMarker *Marker_p
+);
 
-    void nh_core_initRingBufferMarker(
-        nh_RingBufferMarker *Marker_p
-    );
-   
-    void *nh_core_incrementRingBufferMarker(
-        nh_RingBuffer *Buffer_p, nh_RingBufferMarker *Marker_p
-    );
-    
-/** @} */
+void *nh_core_incrementRingBufferMarker(
+    nh_core_RingBuffer *Buffer_p, nh_core_RingBufferMarker *Marker_p
+);
 
 #endif 

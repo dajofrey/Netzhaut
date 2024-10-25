@@ -13,7 +13,6 @@
 
 #include "../System/Memory.h"
 #include "../Common/IndexMap.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -1872,34 +1871,29 @@ size_t NH_MEDIA_TYPE_TEMPLATES_PP_COUNT = sizeof(NH_MEDIA_TYPE_TEMPLATES_PP) / s
 NH_MEDIA nh_core_getMediaTypeFromTemplate(
     char *template_p)
 {
-NH_CORE_BEGIN()
-
     unsigned int *index_p = NULL;
     if (hashmap_get(NH_INDEXMAP.MediaTypes, template_p, (void**)(&index)) != MAP_OK) {
-        NH_CORE_END(-1)
+        return -1;
     }
-    if (index_p == NULL) {NH_CORE_END(-1)}
+    if (index_p == NULL) {return -1;}
 
-NH_CORE_END(*index_p)
+    return *index_p;
 }
 
 NH_MEDIA nh_core_getMediaTypeFromPath(
     char *path_p)
 {
-NH_CORE_BEGIN()
+    if (strstr(path_p, ".jpg") || strstr(path_p, ".jpeg")) {return NH_MEDIA_IMAGE_JPEG;}
+    if (strstr(path_p, ".png")) {return NH_MEDIA_IMAGE_PNG;}
+    if (strstr(path_p, ".ktx")) {return NH_MEDIA_IMAGE_KTX;}
+    if (strstr(path_p, ".dds")) {return NH_MEDIA_IMAGE_DDS;}
 
-    if (strstr(path_p, ".jpg") || strstr(path_p, ".jpeg")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_IMAGE_JPEG)}
-    if (strstr(path_p, ".png")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_IMAGE_PNG)}
-    if (strstr(path_p, ".ktx")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_IMAGE_KTX)}
-    if (strstr(path_p, ".dds")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_IMAGE_DDS)}
+    if (strstr(path_p, ".ttf")) {return NH_MEDIA_FONT_TTF;}
+    if (strstr(path_p, ".otf")) {return NH_MEDIA_FONT_OTF;}
 
-    if (strstr(path_p, ".ttf")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_FONT_TTF)}
-    if (strstr(path_p, ".otf")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_FONT_OTF)}
+    if (strstr(path_p, ".html")) {return NH_MEDIA_TEXT_HTML;}
+    if (strstr(path_p, ".css")) {return NH_MEDIA_TEXT_CSS;}
+    if (strstr(path_p, ".js"))  {return NH_MEDIA_TEXT_JAVASCRIPT;}
 
-    if (strstr(path_p, ".html")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_TEXT_HTML)}
-    if (strstr(path_p, ".css")) {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_TEXT_CSS)}
-    if (strstr(path_p, ".js"))  {NH_CORE_DIAGNOSTIC_END(NH_MEDIA_TEXT_JAVASCRIPT)}
-
-NH_CORE_END(-1)
+    return -1;
 }
-

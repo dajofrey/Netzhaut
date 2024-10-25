@@ -34,7 +34,7 @@
     );
 
     NH_API_RESULT nh_webidl_logTokens(
-        char *fragmentName_p, nh_Array *Tokens_p, bool dirty
+        char *fragmentName_p, nh_core_Array *Tokens_p, bool dirty
     );
 
     NH_API_RESULT nh_webidl_logParseTree(

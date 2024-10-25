@@ -10,7 +10,6 @@
 
 #include "Log.h"
 #include "About.h"
-#include "Macros.h"
 
 #include "../Loader/Loader.h"
 #include "../System/Logger.h"
@@ -22,10 +21,8 @@
 // LOG THREAD ======================================================================================
 
 NH_API_RESULT nh_core_logThread(
-    nh_ThreadPool *ThreadPool_p, nh_Thread *Thread_p)
+    nh_core_ThreadPool *ThreadPool_p, nh_core_Thread *Thread_p)
 {
-NH_CORE_BEGIN()
-
     char message_p[255] = {'\0'};
     char option_p[255] = {'\0'};
 
@@ -59,15 +56,13 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // LOG MODULES =====================================================================================
 
 NH_API_RESULT nh_core_logModules()
 {
-NH_CORE_BEGIN()
-
     char message_p[255];
     char option_p[255] = {'\0'};
     char indent_p[64] = {'\0'};
@@ -125,7 +120,7 @@ NH_CORE_BEGIN()
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_URL_VERSION_P");
                     break;
             }
-            if (!ver_p) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
+            if (!ver_p) {return NH_API_ERROR_BAD_STATE;}
             sprintf(message_p, "%s%s : ver.%d.%d.%d.%d", NH_MODULE_NAMES_PP[i], indent_p, ver_p[0], ver_p[1], ver_p[2], ver_p[3]);
         }
 
@@ -137,19 +132,17 @@ NH_CORE_BEGIN()
         memset(indent_p, 0, 64);
     }
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_core_logSystemInfo(
     char *info_p, int line)
 {
-NH_CORE_BEGIN()
-
     char option_p[64] = {'\0'};
     sprintf(option_p, "replace=%d", line);
     nh_core_sendLogMessage("nh-core:System", option_p, info_p);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 // FLOW LOGGING ====================================================================================
@@ -175,4 +168,3 @@ NH_API_RESULT _nh_core_logDiagnosticEnd(
 //    _nh_diagnosticEnd(file_p, function_p, NH_API_RESULTS_PP[result], line, result == NH_API_SUCCESS);
     return result;
 }
-

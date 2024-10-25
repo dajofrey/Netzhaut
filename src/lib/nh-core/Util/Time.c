@@ -10,19 +10,15 @@
 
 #include "Time.h"
 
-#include "../Common/Macros.h"
-
 #include <string.h>
 #include <time.h>
 #include <stdarg.h>
 
-// HUMANIZE ========================================================================================
+// FUNCTIONS =======================================================================================
 
 nh_GeneralTime nh_humanizeSeconds(
     long seconds)
 {
-NH_CORE_BEGIN()
-
     nh_GeneralTime Time;
     Time.weeks   = seconds / 604800; 
     Time.days    = (seconds / 86400) % 7; 
@@ -30,15 +26,11 @@ NH_CORE_BEGIN()
     Time.minutes = (seconds / 60) % 60;
     Time.seconds = seconds % 60;
 
-NH_CORE_END(Time)
+    return Time;
 }
-
-// TIME ============================================================================================
 
 nh_LocalTime nh_core_getLocalTime()
 {
-NH_CORE_BEGIN()
-
     nh_LocalTime Time;
 
 #ifdef __unix__ 	
@@ -57,14 +49,12 @@ NH_CORE_BEGIN()
     // TODO
 #endif
 
-NH_CORE_END(Time)
+    return Time;
 }
 
-nh_SystemTime nh_core_getSystemTime()
+nh_core_SystemTime nh_core_getSystemTime()
 {
-NH_CORE_BEGIN()
-
-    nh_SystemTime Time;
+    nh_core_SystemTime Time;
 
 #ifdef __unix__ 	
     struct timeval LTime;
@@ -77,14 +67,12 @@ NH_CORE_BEGIN()
     GetSystemTime(&WTime);
 #endif
 
-NH_CORE_END(Time)
+    return Time;
 }
 
 double nh_core_getSystemTimeDiffInSeconds(
-    nh_SystemTime Time1, nh_SystemTime Time2)
+    nh_core_SystemTime Time1, nh_core_SystemTime Time2)
 {
-NH_CORE_BEGIN()
-
     double diff;
 #ifdef __unix__
     diff  = (double) (Time2.microseconds - Time1.microseconds) / 1000000 +
@@ -94,6 +82,5 @@ NH_CORE_BEGIN()
            (double) ((Time2.wMilliseconds - Time1.wMilliseconds) / 1000.0);
 #endif
 
-NH_CORE_END(diff)
+    return diff;
 }
-

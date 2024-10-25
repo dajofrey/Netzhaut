@@ -11,8 +11,6 @@
 #include "Misc.h"
 
 #include "../Engine/Type.h"
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>
@@ -22,8 +20,6 @@
 static bool nh_ecmascript_hasName(
     nh_ecmascript_ParseNode *Node_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
 //    switch (Node_p->type)
 //    {
 //        case NH_ECMASCRIPT_PARSE_NODE_PRIMARY_EXPRESSION :
@@ -36,12 +32,12 @@ NH_ECMASCRIPT_BEGIN()
 //        case NH_ECMASCRIPT_PARSE_NODE_ASYNC_FUNCTION_EXPRESSION :
 //        case NH_ECMASCRIPT_PARSE_NODE_CLASS_EXPRESSION :
 //            if (((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->type == NH_ECMASCRIPT_PARSE_NODE_BINDING_IDENTIFIER) {
-//                NH_ECMASCRIPT_END(true)
+//                return true;
 //            }
 //            break;
 //    }
 
-NH_ECMASCRIPT_END(false)
+    return false;
 }
 
 // IS FUNCTION DEFINITION ==========================================================================
@@ -49,8 +45,6 @@ NH_ECMASCRIPT_END(false)
 static bool nh_ecmascript_isFunctionDefinition(
     nh_ecmascript_ParseNode *Node_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
 //    switch (Node_p->type)
 //    {
 //        case NH_ECMASCRIPT_PARSE_NODE_PRIMARY_EXPRESSION :
@@ -60,7 +54,7 @@ NH_ECMASCRIPT_BEGIN()
 //        case NH_ECMASCRIPT_PARSE_NODE_ASSIGNMENT_EXPRESSION :
 //            if (((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->type == NH_ECMASCRIPT_PARSE_NODE_ARROW_FUNCTION
 //            ||  ((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->type == NH_ECMASCRIPT_PARSE_NODE_ASYNC_ARROW_FUNCTION) {
-//                NH_ECMASCRIPT_END(true)
+//                return true;
 //            }
 //            break;
 //
@@ -69,10 +63,10 @@ NH_ECMASCRIPT_BEGIN()
 //        case NH_ECMASCRIPT_PARSE_NODE_ASYNC_GENERATOR_EXPRESSION :
 //        case NH_ECMASCRIPT_PARSE_NODE_ASYNC_FUNCTION_EXPRESSION :
 //        case NH_ECMASCRIPT_PARSE_NODE_CLASS_EXPRESSION :
-//            NH_ECMASCRIPT_END(true)
+//            return true;
 //    }
 
-NH_ECMASCRIPT_END(false)
+    return false;
 }
 
 // IS ANONYMOUS FUNCTION DEFINITION ================================================================
@@ -80,13 +74,11 @@ NH_ECMASCRIPT_END(false)
 bool nh_ecmascript_isAnonymousFunctionDefinition(
     nh_ecmascript_ParseNode *Node_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
-    if (!nh_ecmascript_isFunctionDefinition(Node_p)) {NH_ECMASCRIPT_END(false)}
+    if (!nh_ecmascript_isFunctionDefinition(Node_p)) {return false;}
     bool hasName = nh_ecmascript_hasName(Node_p);
-    if (hasName) {NH_ECMASCRIPT_END(false)}
+    if (hasName) {return false;}
 
-NH_ECMASCRIPT_END(true)
+    return true;
 }
 
 // GET STRING VALUE ================================================================================
@@ -94,21 +86,19 @@ NH_ECMASCRIPT_END(true)
 nh_encoding_UTF8String *nh_ecmascript_getStringValue(
     nh_ecmascript_ParseNode *Node_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
 //    switch (Node_p->type)
 //    {
 //        case NH_ECMASCRIPT_PARSE_NODE_IDENTIFIER_REFERENCE :
 //        case NH_ECMASCRIPT_PARSE_NODE_BINDING_IDENTIFIER :
 //        case NH_ECMASCRIPT_PARSE_NODE_LABEL_IDENTIFIER :
-//            if (Node_p->Value_p != NULL) {NH_ECMASCRIPT_END(&Node_p->Value_p->String)}
-//            NH_ECMASCRIPT_END(nh_ecmascript_getStringValue(Node_p->Children.pp[0]))
+//            if (Node_p->Value_p != NULL) {return &Node_p->Value_p->String;}
+//            return nh_ecmascript_getStringValue(Node_p->Children.pp[0]);
 //
 //        case NH_ECMASCRIPT_PARSE_NODE_IDENTIFIER :
-//            NH_ECMASCRIPT_END(&Node_p->Value_p->String)
+//            return &Node_p->Value_p->String;
 //    }
 
-NH_ECMASCRIPT_END(NULL)
+    return NULL;
 }
 
 // IS CONSTANT DECLARATION =========================================================================
@@ -116,19 +106,17 @@ NH_ECMASCRIPT_END(NULL)
 bool nh_ecmascript_isConstantDeclaration(
     nh_ecmascript_ParseNode *Node_p)
 {
-NH_ECMASCRIPT_BEGIN()
-
 //    switch (Node_p->type)
 //    {
 //        case NH_ECMASCRIPT_PARSE_NODE_LEXICAL_DECLARATION :
-//            NH_ECMASCRIPT_END(nh_ecmascript_isConstantDeclaration(Node_p->Children.pp[0]))
+//            return nh_ecmascript_isConstantDeclaration(Node_p->Children.pp[0]);
 //
 //        case NH_ECMASCRIPT_PARSE_NODE_LET_OR_CONST :
 //            if (!strcmp(Node_p->Value_p->String.p, "let")) {
-//                NH_ECMASCRIPT_END(false)
+//                return false;
 //            }
 //            else if (!strcmp(Node_p->Value_p->String.p, "const")) {
-//                NH_ECMASCRIPT_END(true)
+//                return true;
 //            }
 //            break;
 //
@@ -136,15 +124,15 @@ NH_ECMASCRIPT_BEGIN()
 //        case NH_ECMASCRIPT_PARSE_NODE_GENERATOR_DECLARATION :
 //        case NH_ECMASCRIPT_PARSE_NODE_ASYNC_GENERATOR_DECLARATION :
 //        case NH_ECMASCRIPT_PARSE_NODE_ASYNC_FUNCTION_DECLARATION :
-//            NH_ECMASCRIPT_END(false)
+//            return false;
 //
 //        case NH_ECMASCRIPT_PARSE_NODE_CLASS_DECLARATION :
-//            NH_ECMASCRIPT_END(false)
+//            return false;
 //
 //        case NH_ECMASCRIPT_PARSE_NODE_EXPORT_DECLARATION :
-//            NH_ECMASCRIPT_END(false)
+//            return false;
 //    }
 
-NH_ECMASCRIPT_END(false)
+    return false;
 }
 

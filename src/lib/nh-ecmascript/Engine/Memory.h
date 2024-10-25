@@ -31,7 +31,7 @@
     // https://tc39.es/ecma262/#sec-data-blocks
     typedef struct nh_ecmascript_DataBlock {
         bool shared;
-        nh_Array Data; 
+        nh_core_Array Data; 
     } nh_ecmascript_DataBlock;
 
     // https://tc39.es/ecma262/#sec-agent-event-records
@@ -42,21 +42,21 @@
         nh_ecmascript_DataBlock *Block_p;
         unsigned int byteIndex;
         unsigned int elementSize;
-        nh_Array Payload;
+        nh_core_Array Payload;
 //      ? modifyOp;       
     } nh_ecmascript_SharedDataBlockEvent;
 
     // https://tc39.es/ecma262/#sec-agent-event-records
     typedef struct nh_ecmascript_AgentEventsRecord {
         int agentSignifier;
-        nh_Array EventList;
-        nh_Array AgentSynchronizesWith;
+        nh_core_Array EventList;
+        nh_core_Array AgentSynchronizesWith;
     } nh_ecmascript_AgentEventsRecord;
 
     // https://tc39.es/ecma262/#sec-candidate-executions
     typedef struct nh_ecmascript_CandidateExecution {
-        nh_Array EventsRecords;
-        nh_Array ChosenValues;
+        nh_core_Array EventsRecords;
+        nh_core_Array ChosenValues;
     } nh_ecmascript_CandidateExecution;
 
 /** @} */
@@ -71,22 +71,22 @@
     );
 
     // https://tc39.es/ecma262/#sec-sharedatablockeventset
-    nh_List nh_ecmascript_sharedDataBlockEventSet(
+    nh_core_List nh_ecmascript_sharedDataBlockEventSet(
         nh_ecmascript_CandidateExecution *CandidateExecution_p
     );
     
     // https://tc39.es/ecma262/#sec-hosteventset
-    nh_List nh_ecmascript_hostEventSet(
+    nh_core_List nh_ecmascript_hostEventSet(
         nh_ecmascript_CandidateExecution *CandidateExecution_p
     );
     
     // https://tc39.es/ecma262/#sec-composewriteeventbytes
-    nh_Array nh_ecmascript_composeWriteEventBytes(
-        nh_ecmascript_CandidateExecution *CandidateExecution_p, unsigned int byteIndex, nh_List WriteEvents
+    nh_core_Array nh_ecmascript_composeWriteEventBytes(
+        nh_ecmascript_CandidateExecution *CandidateExecution_p, unsigned int byteIndex, nh_core_List WriteEvents
     );
     
     // https://tc39.es/ecma262/#sec-valueofreadevent
-    nh_Array nh_ecmascript_valueOfReadEvent(
+    nh_core_Array nh_ecmascript_valueOfReadEvent(
         nh_ecmascript_CandidateExecution *CandidateExecution_p, nh_ecmascript_SharedDataBlockEvent ReadEvent
     );
 

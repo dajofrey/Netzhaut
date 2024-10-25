@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Terminate.h"
-#include "Macros.h"
 #include "IndexMap.h"
 
 #include <stdlib.h>
@@ -20,10 +19,7 @@
 
 NH_API_RESULT nh_ecmascript_terminate()
 {
-NH_ECMASCRIPT_BEGIN()
-
     nh_ecmascript_freeIndexMap();
-
-NH_ECMASCRIPT_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

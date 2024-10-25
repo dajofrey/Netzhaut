@@ -47,7 +47,7 @@ NH_URL_BEGIN()
     for (int i = 0; i < DomainName_p->length; ++i) 
     {
         nh_url_IDNAMappingTableEntry *Entry_p = nh_url_getIDNAMappingTableEntry(DomainName_p->p[i]);
-        NH_URL_CHECK_NULL(Entry_p)
+        NH_CORE_CHECK_NULL(Entry_p)
 
         switch (Entry_p->status)
         {

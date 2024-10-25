@@ -23,12 +23,12 @@
     typedef struct nh_opengl_Command {
         NH_GFX_OPENGL_COMMAND_E type;
         nh_opengl_Data Result;
-	nh_List Arguments;
+	nh_core_List Arguments;
         bool autoFree;
     } nh_opengl_Command;
     
     typedef struct nh_opengl_CommandBuffer {
-        nh_List Commands;
+        nh_core_List Commands;
     } nh_opengl_CommandBuffer;
 
 /** @} */

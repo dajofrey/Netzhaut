@@ -18,10 +18,10 @@
  */
 
     nh_css_StyleDeclarationObject *nh_css_createStyleDeclaration(
-        nh_Array Declarations
+        nh_core_Array Declarations
     );
 
-    nh_Array *nh_css_getStyleDeclarationData(
+    nh_core_Array *nh_css_getStyleDeclarationData(
         nh_css_StyleDeclarationObject *Declaration_p
     );
 

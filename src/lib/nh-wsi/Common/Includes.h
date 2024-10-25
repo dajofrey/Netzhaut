@@ -10,6 +10,7 @@
  */
 
 #include "../../nh-api/nh-wsi.h"
+#include "../../nh-core/Util/Debug.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
 
 #endif

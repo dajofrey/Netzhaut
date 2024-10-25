@@ -72,7 +72,7 @@ static void nh_url_printHost(
 //    nh_encoding_UTF32String String = nh_encoding_decodeUTF8(Arguments_p->p, strlen(Arguments_p->p), NULL);
 //
 //    nh_url_URL URL;
-//    NH_URL_CHECK_NULL(nh_url_parseBasicURL(String, NULL, &URL, NH_URL_PARSER_STATE_UNDEFINED))
+//    NH_CORE_CHECK_NULL(nh_url_parseBasicURL(String, NULL, &URL, NH_URL_PARSER_STATE_UNDEFINED))
 //
 //    sprintf(output_p, "URL("); 
 //
@@ -96,7 +96,7 @@ static void nh_url_printHost(
 //        }
 //        sprintf(output_p+strlen(output_p), "path:\""); 
 //        for (int i = 0; i < URL.Path.length; ++i) {
-//            sprintf(output_p+strlen(output_p), i+1 < URL.Path.length ? "%s/" : "%s", ((nh_String*)URL.Path.p)[i].p); 
+//            sprintf(output_p+strlen(output_p), i+1 < URL.Path.length ? "%s/" : "%s", ((nh_core_String*)URL.Path.p)[i].p); 
 //        }
 //        sprintf(output_p+strlen(output_p), "\"");
 //    }

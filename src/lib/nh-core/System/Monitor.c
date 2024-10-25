@@ -12,12 +12,8 @@
 #include "Logger.h"
 #include "Memory.h"
 
-#include "../Common/Macros.h"
 #include "../Util/Time.h"
-
-#include "../../nh-encoding/Common/Macros.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
-
 #include "../../../../external/TTyr/src/lib/ttyr-api/ttyr-tty.h"
 
 #include <stddef.h>
@@ -41,7 +37,7 @@ typedef struct nh_core_MonitorNode {
     long focusedRow;
     long offset;
     int peak;
-    nh_List Children;
+    nh_core_List Children;
     struct nh_core_MonitorNode *Parent_p;
 } nh_core_MonitorNode;
 
@@ -56,7 +52,7 @@ typedef struct nh_core_Monitor {
     bool showCategories;
     int listingWidth;
     nh_core_MonitorNode Root;
-    nh_SystemTime LastUpdate;
+    nh_core_SystemTime LastUpdate;
     double updateIntervalInSeconds;
 } nh_core_Monitor;
 
@@ -65,8 +61,6 @@ typedef struct nh_core_Monitor {
 static NH_API_RESULT nh_core_updateMonitorNode(
     nh_core_LoggerNode *LoggerNode_p, nh_core_MonitorNode *MonitorNode_p)
 {
-NH_CORE_BEGIN()
-
     for (int i = 0; i < LoggerNode_p->Children.size; ++i) 
     {
         nh_core_LoggerNode *NextLoggerNode_p = LoggerNode_p->Children.pp[i];
@@ -94,15 +88,13 @@ NH_CORE_BEGIN()
         NH_CORE_CHECK(nh_core_updateMonitorNode(NextLoggerNode_p, NextMonitorNode_p))
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static void nh_core_getMonitorNodes(
-    nh_core_MonitorNode *Node_p, nh_List *List_p)
+    nh_core_MonitorNode *Node_p, nh_core_List *List_p)
 {
-NH_CORE_BEGIN()
-
-    if (!Node_p->isOpen) {NH_CORE_SILENT_END()}
+    if (!Node_p->isOpen) {return ;}
 
     for (int i = 0; i < Node_p->Children.size; ++i) 
     {
@@ -110,29 +102,25 @@ NH_CORE_BEGIN()
         nh_core_getMonitorNodes(Node_p->Children.pp[i], List_p);
     }
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static int nh_core_getMonitorNodeDepth(
     nh_core_MonitorNode *Node_p)
 {
-NH_CORE_BEGIN()
-
     int depth = 0;
     nh_core_MonitorNode *Parent_p = Node_p->Parent_p;
     while ((Parent_p = Parent_p->Parent_p) != NULL) {
         depth++;
     }
 
-NH_CORE_END(depth)
+    return depth;
 }
 
 static int nh_core_getCategoryListingWidth(
     nh_core_Monitor *Monitor_p)
 {
-NH_CORE_BEGIN()
-
-    nh_List Nodes = nh_core_initList(16);
+    nh_core_List Nodes = nh_core_initList(16);
     nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
 
     int maxWidth = 0;
@@ -146,20 +134,18 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&Nodes, false);
 
-NH_CORE_END(maxWidth + 2)
+    return maxWidth + 2;
 }
 
 static NH_API_RESULT nh_core_updateMonitor(
     ttyr_tty_Program *Program_p)
 {
-NH_CORE_BEGIN()
-
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
 
-    nh_SystemTime Now = nh_core_getSystemTime();
+    nh_core_SystemTime Now = nh_core_getSystemTime();
     if (nh_core_getSystemTimeDiffInSeconds(Monitor_p->LastUpdate, Now) < Monitor_p->updateIntervalInSeconds) {
         // Skip update if update-interval not met.
-        NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+        return NH_API_SUCCESS;
     }
 
     bool init = Monitor_p->Root.Children.size == 0;
@@ -176,18 +162,16 @@ NH_CORE_BEGIN()
     // force screen refresh
     Program_p->refresh = true;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // INPUT ===========================================================================================
 
-static nh_List nh_core_getSelectedMonitorNodes(
+static nh_core_List nh_core_getSelectedMonitorNodes(
     nh_core_Monitor *Monitor_p)
 {
-NH_CORE_BEGIN()
-
-    nh_List SelectedNodes = nh_core_initList(8);
-    nh_List Nodes = nh_core_initList(32);
+    nh_core_List SelectedNodes = nh_core_initList(8);
+    nh_core_List Nodes = nh_core_initList(32);
     nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
 
     for (int i = 0; i < Nodes.size; ++i) {
@@ -198,30 +182,26 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&Nodes, false);
 
-NH_CORE_END(SelectedNodes)
+    return SelectedNodes;
 }
 
 static void nh_core_resetMonitorFocuses(
     nh_core_Monitor *Monitor_p)
 {
-NH_CORE_BEGIN()
-
-    nh_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
+    nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
     for (int i = 0; i < SelectedNodes.size; ++i) {
         ((nh_core_MonitorNode*)SelectedNodes.pp[i])->hasFocus = false;
     }
     nh_core_freeList(&SelectedNodes, false);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static nh_core_MonitorNode *nh_core_getFocusedMonitorNode(
     nh_core_Monitor *Monitor_p)
 {
-NH_CORE_BEGIN()
-
-    nh_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
-    if (SelectedNodes.size <= 0) {NH_CORE_END(NULL)}
+    nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
+    if (SelectedNodes.size <= 0) {return NULL;}
 
     int focus;
     for (focus = 0; focus < SelectedNodes.size && !((nh_core_MonitorNode*)SelectedNodes.pp[focus])->hasFocus; ++focus);
@@ -229,16 +209,14 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&SelectedNodes, false);
 
-NH_CORE_END(Node_p)
+    return Node_p;
 }
 
 static nh_core_MonitorNode *nh_core_getCurrentMonitorNode(
     nh_core_MonitorNode *Node_p)
 {
-NH_CORE_BEGIN()
-
     if (Node_p->isCurrent) {
-        NH_CORE_END(Node_p)
+        return Node_p;
     }
     else
     {
@@ -246,21 +224,19 @@ NH_CORE_BEGIN()
         {
             nh_core_MonitorNode *Result_p = 
                 nh_core_getCurrentMonitorNode(Node_p->Children.pp[i]);
-            if (Result_p != NULL) {NH_CORE_END(Result_p)}
+            if (Result_p != NULL) {return Result_p;}
         }
     }
 
-NH_CORE_END(NULL)
+    return NULL;
 }
 
 static void nh_core_moveCursorVertically(
     ttyr_tty_Program *Program_p, nh_core_MonitorNode *Current_p, int key) 
 {
-NH_CORE_BEGIN()
-
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
 
-    nh_List Nodes = nh_core_initList(16);
+    nh_core_List Nodes = nh_core_initList(16);
     nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
     int index;
     for (index = 0; index < Nodes.size && Nodes.pp[index] != Current_p; ++index);
@@ -291,15 +267,13 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&Nodes, false);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static void nh_core_unselectMonitorNode(
     nh_core_Monitor *Monitor_p, nh_core_MonitorNode *Selected_p)
 {
-NH_CORE_BEGIN()
-
-    nh_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
+    nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
     
     if (SelectedNodes.size > 1 && Selected_p->hasFocus) 
     {
@@ -320,16 +294,14 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&SelectedNodes, false);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static void nh_core_changeFocus(
     nh_core_Monitor *Monitor_p, int c)
 {
-NH_CORE_BEGIN()
-
-    nh_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
-    if (SelectedNodes.size <= 1) {NH_CORE_SILENT_END()}
+    nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
+    if (SelectedNodes.size <= 1) {return ;}
 
     int focus;
     for (focus = 0; focus < SelectedNodes.size && !((nh_core_MonitorNode*)SelectedNodes.pp[focus])->hasFocus; ++focus);
@@ -352,25 +324,23 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&SelectedNodes, false);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static NH_API_RESULT nh_core_handleMonitorInput(
     ttyr_tty_Program *Program_p, nh_api_WSIEvent Event)
 {
-NH_CORE_BEGIN()
-
     if (Event.type != NH_API_WSI_EVENT_KEYBOARD) {
-        NH_CORE_END(NH_API_SUCCESS)
+        return NH_API_SUCCESS;
     }
 
-    if (Event.Keyboard.trigger != NH_API_TRIGGER_PRESS) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (Event.Keyboard.trigger != NH_API_TRIGGER_PRESS) {return NH_API_SUCCESS;}
 
     NH_ENCODING_UTF32 c = Event.Keyboard.codepoint;
 
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
     nh_core_MonitorNode *Current_p = nh_core_getCurrentMonitorNode(&Monitor_p->Root);
-    if (Current_p == NULL) {NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (Current_p == NULL) {return NH_API_SUCCESS;}
 
     nh_core_MonitorNode *Node_p = nh_core_getFocusedMonitorNode(Monitor_p);
 
@@ -448,7 +418,7 @@ NH_CORE_BEGIN()
  
     Program_p->refresh = true;
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // DRAW ============================================================================================
@@ -456,8 +426,6 @@ NH_CORE_END(NH_API_SUCCESS)
 static void nh_core_setNextGlyph(
     ttyr_tty_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
 {
-NH_CORE_BEGIN()
-
     ttyr_tty_Glyph Glyph;
     memset(&Glyph, 0, sizeof(ttyr_tty_Glyph));
     Glyph.Attributes.reverse = false;
@@ -466,7 +434,7 @@ NH_CORE_BEGIN()
     (*Glyphs_pp)[0] = Glyph;
     (*Glyphs_pp) = (*Glyphs_pp)+1;
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 static const char *help_pp[] =
@@ -487,8 +455,6 @@ static const char *help_pp[] =
 static NH_API_RESULT nh_core_drawHelp(
     ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
-NH_CORE_BEGIN()
-
     int entries = sizeof(help_pp) / sizeof(help_pp[0]);
     int begin = (rows / 2) - (entries / 2);
 
@@ -508,15 +474,13 @@ NH_CORE_BEGIN()
         }
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_core_drawSelected(
     nh_core_Monitor *Monitor_p, ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
-NH_CORE_BEGIN()
-
-    nh_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
+    nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
     cols = SelectedNodes.size > 0 ? cols / SelectedNodes.size : cols;
 
     for (int i = 0; i < SelectedNodes.size; ++i)
@@ -532,7 +496,7 @@ NH_CORE_BEGIN()
             SelectedNode_p->focusedRow = 0;
         }
 
-        nh_List *Messages_p = &SelectedNode_p->LoggerNode_p->Messages;
+        nh_core_List *Messages_p = &SelectedNode_p->LoggerNode_p->Messages;
         char *message_p = nh_core_getFromList(Messages_p, row + SelectedNode_p->offset);
 
         if (message_p != NULL) 
@@ -568,19 +532,17 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&SelectedNodes, false);
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_core_drawMonitorRow(
     ttyr_tty_Program *Program_p, ttyr_tty_Glyph *Glyphs_p, int width, int height, int row)
 {
-NH_CORE_BEGIN()
-
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
     Monitor_p->View.height = height;
 
     int tmp = -1;
-    nh_List Nodes = nh_core_initList(16);
+    nh_core_List Nodes = nh_core_initList(16);
     nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
     nh_core_MonitorNode *Node_p = nh_core_getFromList(&Nodes, row + Monitor_p->View.rowOffset);
 
@@ -626,7 +588,7 @@ NH_CORE_BEGIN()
 
     nh_core_freeList(&Nodes, false);
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // INIT/DESTROY ====================================================================================
@@ -634,8 +596,6 @@ NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
 static void *nh_core_initMonitor(
     void *arg_p)
 {
-NH_CORE_BEGIN()
-
     nh_core_Monitor *Monitor_p = nh_core_allocate(sizeof(nh_core_Monitor));
     NH_CORE_CHECK_MEM_2(NULL, Monitor_p)
 
@@ -652,25 +612,21 @@ NH_CORE_BEGIN()
     Monitor_p->Root.Children     = nh_core_initList(4);
     Monitor_p->Root.Parent_p     = NULL;
 
-NH_CORE_END(Monitor_p)
+    return Monitor_p;
 }
 
 static void nh_core_destroyMonitor(
     void *handle_p)
 {
-NH_CORE_BEGIN()
-
     nh_core_free(handle_p);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 // PROTOTYPE =======================================================================================
 
 void *nh_core_createMonitorInterface()
 {
-NH_CORE_BEGIN()
-
     ttyr_tty_Interface *Monitor_p = nh_core_allocate(sizeof(ttyr_tty_Interface));
     NH_CORE_CHECK_MEM_2(NULL, Monitor_p)
 
@@ -682,15 +638,13 @@ NH_CORE_BEGIN()
     Monitor_p->Callbacks.update_f = nh_core_updateMonitor;
     Monitor_p->Callbacks.destroy_f = nh_core_destroyMonitor;
 
-NH_CORE_END(Monitor_p)
+    return Monitor_p;
 }
 
 void nh_core_freeMonitorInterface(
     void *Interface_p)
 {
-NH_CORE_BEGIN()
-
     nh_core_free(Interface_p);
 
-NH_CORE_SILENT_END()
+    return;
 }

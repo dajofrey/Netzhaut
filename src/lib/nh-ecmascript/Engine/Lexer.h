@@ -61,12 +61,12 @@
  *  @{
  */
 
-    nh_Array nh_ecmascript_getInputElements(
+    nh_core_Array nh_ecmascript_getInputElements(
         nh_encoding_UTF32String Codepoints
     );
 
-    nh_Array nh_ecmascript_discardRedundantInputElements(
-        nh_Array DirtyInputElements
+    nh_core_Array nh_ecmascript_discardRedundantInputElements(
+        nh_core_Array DirtyInputElements
     );
 
     bool nh_ecmascript_isNumericToken(

@@ -10,8 +10,9 @@
  */
 
 #include "../../nh-api/nh-core.h"
-#include "../../nh-encoding/Common/Includes.h"
 #include "../../nh-api/nh-ecmascript.h"
+#include "../../nh-encoding/Common/Includes.h"
+#include "../../nh-core/Util/Debug.h"
 
 #endif
 

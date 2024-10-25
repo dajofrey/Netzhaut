@@ -55,9 +55,9 @@
         nh_encoding_UTF32String Password; 
         nh_url_Host *Host_p; 
         NH_URL_PORT *port_p; 
-        nh_Array Path;                       /**<May contain a path in form of \ref nh_String elements.*/ 
-        nh_String *Query_p;    /**<Can be NULL.*/ 
-        nh_String *Fragment_p; /**<Can be NULL.*/ 
+        nh_core_Array Path;                       /**<May contain a path in form of \ref nh_core_String elements.*/ 
+        nh_core_String *Query_p;    /**<Can be NULL.*/ 
+        nh_core_String *Fragment_p; /**<Can be NULL.*/ 
         bool cannotBeABaseURL; 
     } nh_url_URL; 
 

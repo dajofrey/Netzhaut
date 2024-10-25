@@ -19,7 +19,7 @@
  *  @{
  */
 
-    typedef nh_List nh_Stack;
+    typedef nh_core_List nh_Stack;
 
 /** @} */
 
@@ -31,15 +31,15 @@
         int chunkSize
     );
      
-    NH_API_RESULT nh_pushStack(
+    NH_API_RESULT nh_core_pushStack(
         nh_Stack *Stack_p, void *handle_p
     );
      
-    void *nh_peekStack(
+    void *nh_core_peekStack(
         nh_Stack *Stack_p
     );
      
-    void *nh_popStack(
+    void *nh_core_popStack(
         nh_Stack *Stack_p
     );
 

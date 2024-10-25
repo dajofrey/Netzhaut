@@ -14,30 +14,26 @@
 
 #endif
 
-   typedef struct nh_ArrayList { 
-       nh_List Arrays; 
+   typedef struct nh_core_ArrayList { 
+       nh_core_List Arrays; 
        int elementSize;             /**<Number of items.*/ 
        int allocatedLengthPerChunk; 
-   } nh_ArrayList; 
+   } nh_core_ArrayList; 
 
 /** @addtogroup lib_nh-core_functions
  *  @{
  */
 
-    nh_ArrayList nh_core_initArrayList(
+    nh_core_ArrayList nh_core_initArrayList(
         int elementSize, int allocatedLengthPerChunk
     );
     
-    void *_nh_core_incrementArrayList(
-        nh_ArrayList *ArrayList_p
-    );
-    
     void *nh_core_incrementArrayList(
-        nh_ArrayList *ArrayList_p
+        nh_core_ArrayList *ArrayList_p
     );
     
     void nh_core_freeArrayList(
-        nh_ArrayList *ArrayList_p
+        nh_core_ArrayList *ArrayList_p
     );
 
 /** @} */

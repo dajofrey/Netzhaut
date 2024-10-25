@@ -21,7 +21,7 @@
  */
 
     typedef struct nh_opengl_SurfaceRequirements {
-        nh_Array Ids; // Contains visualid's that are glx framebuffer compatible. This is used for WSI window creation.
+        nh_core_Array Ids; // Contains visualid's that are glx framebuffer compatible. This is used for WSI window creation.
     } nh_opengl_SurfaceRequirements;
 
 /** @} */

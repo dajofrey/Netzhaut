@@ -1,7 +1,7 @@
 #ifndef NH_RENDERER_RENDERER_H
 #define NH_RENDERER_RENDERER_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+// LICENSE =========================================================================================
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,55 +9,43 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+// INCLUDES ========================================================================================
+
 #include "../Common/Includes.h"
 
 #include "../../nh-gfx/Base/Viewport.h"
 #include "../../nh-css/Main/LayoutEngine.h"
 
-#endif
+// STRUCTS =========================================================================================
 
-/** @addtogroup lib_nh-renderer_structs
- *  @{
- */
+typedef struct nh_renderer_RenderTarget {
+    nh_gfx_Viewport *Viewport_p;
+    bool render;
+} nh_renderer_RenderTarget;
 
-    typedef struct nh_renderer_RenderTarget {
-        nh_gfx_Viewport *Viewport_p;
-        bool render;
-    } nh_renderer_RenderTarget;
+typedef struct nh_renderer_Renderer {
+    nh_css_LayoutEngine *LayoutEngine_p;
+    nh_core_Array RenderTargets;
+} nh_renderer_Renderer;
 
-    typedef struct nh_renderer_Renderer {
-        nh_css_LayoutEngine *LayoutEngine_p;
-        nh_Array RenderTargets;
-    } nh_renderer_Renderer;
+// TYPEDEFS ========================================================================================
 
-/** @} */
+typedef nh_renderer_Renderer *(*nh_renderer_createRenderer_f)(
+    nh_css_LayoutEngine *LayoutEngine_p 
+);
 
-/** @addtogroup lib_nh-renderer_typedefs
- *  @{
- */
+typedef NH_API_RESULT (*nh_renderer_addViewport_f)(
+    nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p
+);
 
-    typedef nh_renderer_Renderer *(*nh_renderer_createRenderer_f)(
-        nh_css_LayoutEngine *LayoutEngine_p 
-    );
+// FUNCTIONS =======================================================================================
 
-    typedef NH_API_RESULT (*nh_renderer_addViewport_f)(
-        nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p
-    );
+nh_renderer_Renderer *nh_renderer_createRenderer(
+    nh_css_LayoutEngine *LayoutEngine_p
+);
 
-/** @} */
+NH_API_RESULT nh_renderer_addViewport(
+    nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p
+);
 
-/** @addtogroup lib_nh-renderer_functions
- *  @{
- */
-
-    nh_renderer_Renderer *nh_renderer_createRenderer(
-        nh_css_LayoutEngine *LayoutEngine_p
-    );
-
-    NH_API_RESULT nh_renderer_addViewport(
-        nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_RENDERER_RENDERER_H

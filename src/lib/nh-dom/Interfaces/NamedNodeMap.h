@@ -24,7 +24,7 @@
         nh_dom_NamedNodeMap *NamedNodeMap_p, NH_WEBIDL_UNSIGNED_LONG index
     );
 
-    nh_List *nh_dom_getAttrList(
+    nh_core_List *nh_dom_getAttrList(
         nh_dom_NamedNodeMap *NamedNodeMap_p
     );
 

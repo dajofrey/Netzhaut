@@ -26,7 +26,7 @@
     );
 
     void nh_css_setStyleSheetTokens(
-        nh_css_StyleSheetObject *StyleSheet_p, nh_Array Tokens
+        nh_css_StyleSheetObject *StyleSheet_p, nh_core_Array Tokens
     );
 
     nh_webidl_Object *nh_css_findCounterStyleRule(

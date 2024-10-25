@@ -31,7 +31,7 @@
  *  @{
  */
 
-    #define nh_ecmascript_Properties nh_List
+    #define nh_ecmascript_Properties nh_core_List
 
 /** @} */
 

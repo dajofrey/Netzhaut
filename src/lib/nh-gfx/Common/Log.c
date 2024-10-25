@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Log.h"
-#include "Macros.h"
 
 #include "../../nh-core/System/Logger.h"
 
@@ -44,8 +43,6 @@ NH_API_RESULT _nh_gfx_logDiagnosticEnd(
 void nh_gfx_logFont(
     nh_gfx_Font *Font_p)
 {
-NH_GFX_BEGIN()
-
     char *node_p = Font_p->internal ? "nh-gfx:Fonts:Internal" : "nh-gfx:Fonts:System";
 
     char message_p[1024];
@@ -78,29 +75,24 @@ NH_GFX_BEGIN()
     sprintf(message_p, "  oblique : %s", Font_p->Style.oblique ? "true" : "false");
     nh_core_sendLogMessage(node_p, NULL, message_p);
 
-NH_GFX_SILENT_END()
+    return;
 }
 
 void nh_gfx_logVulkanValidation(
     char *message_p)
 {
-NH_GFX_BEGIN()
-
     nh_core_sendLogMessage("nh-gfx:VulkanValidation", NULL, message_p);
-
-NH_GFX_SILENT_END()
+    return;
 }
            
 void nh_gfx_logOpenGLCommand(
     char *format_p, ...)
 {
-NH_GFX_BEGIN()
-
 //    va_list args;
 //    va_start(args, format_p);
 //    vprintf(format_p, args);
 //    va_end(args);
 
-NH_GFX_SILENT_END()
+    return;
 }
  

@@ -56,12 +56,12 @@
  *  @{
  */
 
-    nh_Array nh_webidl_tokenizeFragment(
+    nh_core_Array nh_webidl_tokenizeFragment(
         char *logName_p, char *fragment_p
     );
     
     void nh_webidl_freeTokens(
-        nh_Array Tokens
+        nh_core_Array Tokens
     );
 
     bool nh_webidl_isNumericToken(

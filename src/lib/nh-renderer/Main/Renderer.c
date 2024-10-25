@@ -14,13 +14,10 @@
 #include "../Vulkan/Record.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-gfx/Base/Viewport.h"
 #include "../../nh-gfx/Common/Macros.h"
-
 #include "../../nh-css/Main/Canvas.h"
-#include "../../nh-css/Common/Macros.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/System/Thread.h"
@@ -37,8 +34,6 @@
 void *nh_renderer_initRenderer(
     nh_core_Workload *Workload_p)
 {
-NH_RENDERER_BEGIN()
-
     static char *name_p = "Renderer";
     static char *path_p = "nh-renderer/Main/Renderer.c";
     Workload_p->name_p = name_p;
@@ -46,15 +41,15 @@ NH_RENDERER_BEGIN()
     Workload_p->module = NH_MODULE_RENDERER;
 
     nh_css_LayoutEngine *LayoutEngine_p = Workload_p->args_p;
-    NH_RENDERER_CHECK_NULL_2(NULL, LayoutEngine_p)
+    NH_CORE_CHECK_NULL_2(NULL, LayoutEngine_p)
 
     nh_renderer_Renderer *Renderer_p = nh_core_allocate(sizeof(nh_renderer_Renderer));
-    NH_RENDERER_CHECK_MEM_2(NULL, Renderer_p)
+    NH_CORE_CHECK_MEM_2(NULL, Renderer_p)
 
     Renderer_p->LayoutEngine_p = LayoutEngine_p;
     Renderer_p->RenderTargets = nh_core_initArray(sizeof(nh_renderer_RenderTarget), 8);
 
-NH_RENDERER_END(Renderer_p)
+    return Renderer_p;
 }
 
 // RUN =============================================================================================
@@ -62,64 +57,56 @@ NH_RENDERER_END(Renderer_p)
 static NH_API_RESULT nh_renderer_createRenderData(
     nh_gfx_Viewport *Viewport_p, nh_css_Canvas *Canvas_p)
 {
-NH_RENDERER_BEGIN()
-
     switch (Viewport_p->Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN :
-            nh_renderer_vk_createFragmentTreeData(&Canvas_p->FragmentTree, Viewport_p);
+            nh_renderer_createFragmentTreeVulkanData(&Canvas_p->FragmentTree, Viewport_p);
             break;
         default :
-            NH_RENDERER_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_renderer_renderCanvas(
     nh_gfx_Viewport *Viewport_p, nh_css_Canvas *Canvas_p)
 {
-NH_RENDERER_BEGIN()
-
     nh_gfx_beginRecording(Viewport_p);
 
     switch (Viewport_p->Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN :
-            nh_renderer_vk_recordFragmentTree(&Canvas_p->FragmentTree, Viewport_p);
+            nh_renderer_recordVulkanFragmentTree(&Canvas_p->FragmentTree, Viewport_p);
             break;
         default :
-            NH_RENDERER_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
     }
 
     nh_gfx_endRecording(Viewport_p, false);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static nh_css_Canvas *nh_renderer_getCanvas(
     nh_css_Layout *Layout_p, nh_renderer_RenderTarget *RenderTarget_p)
 {
-NH_RENDERER_BEGIN()
-
     for (int i = 0; i < Layout_p->Canvases.size; ++i) {
         nh_css_Canvas *Canvas_p = Layout_p->Canvases.pp[i];
         if (Canvas_p->Type.Size.width == RenderTarget_p->Viewport_p->Settings.Size.width
         &&  Canvas_p->Type.Size.height == RenderTarget_p->Viewport_p->Settings.Size.height) {
-            NH_RENDERER_END(Canvas_p)
+            return Canvas_p;
         }
     }
 
-NH_RENDERER_END(NULL)
+    return NULL;
 }
 
 static NH_SIGNAL nh_renderer_updateRenders(
     nh_renderer_Renderer *Renderer_p) 
 {
-NH_RENDERER_BEGIN()
-
-    if (!Renderer_p->LayoutEngine_p) {NH_RENDERER_END(NH_SIGNAL_ERROR)}
-    if (!Renderer_p->LayoutEngine_p->Layout_p) {NH_RENDERER_END(NH_SIGNAL_IDLE)}
+    if (!Renderer_p->LayoutEngine_p) {return NH_SIGNAL_ERROR;}
+    if (!Renderer_p->LayoutEngine_p->Layout_p) {return NH_SIGNAL_IDLE;}
 
     bool render = false;
 
@@ -130,26 +117,22 @@ NH_RENDERER_BEGIN()
         nh_css_Canvas *Canvas_p = 
             nh_renderer_getCanvas(Renderer_p->LayoutEngine_p->Layout_p, RenderTarget_p);
         if (!Canvas_p) {continue;}
-        NH_RENDERER_CHECK_2(NH_SIGNAL_ERROR, nh_renderer_createRenderData(RenderTarget_p->Viewport_p, Canvas_p))
-        NH_RENDERER_CHECK_2(NH_SIGNAL_ERROR, nh_renderer_renderCanvas(RenderTarget_p->Viewport_p, Canvas_p))
+        NH_CORE_CHECK_2(NH_SIGNAL_ERROR, nh_renderer_createRenderData(RenderTarget_p->Viewport_p, Canvas_p))
+        NH_CORE_CHECK_2(NH_SIGNAL_ERROR, nh_renderer_renderCanvas(RenderTarget_p->Viewport_p, Canvas_p))
         RenderTarget_p->render = false;
         render = true;
     }
 
-NH_RENDERER_END(render ? NH_SIGNAL_OK : NH_SIGNAL_IDLE)
+    return render ? NH_SIGNAL_OK : NH_SIGNAL_IDLE;
 }
 
 static NH_SIGNAL nh_renderer_runRenderer(
     void *args_p) 
 {
-NH_RENDERER_BEGIN()
-
     nh_renderer_Renderer *Renderer_p = args_p;
-    NH_RENDERER_CHECK_NULL_2(NH_SIGNAL_ERROR, Renderer_p)
+    NH_CORE_CHECK_NULL_2(NH_SIGNAL_ERROR, Renderer_p)
 
-    NH_RENDERER_CHECK_2(NH_SIGNAL_ERROR, nh_renderer_updateRenders(Renderer_p))
-
-NH_RENDERER_END(NH_SIGNAL_OK)
+    return nh_renderer_updateRenders(Renderer_p);
 }
 
 // CREATE ==========================================================================================
@@ -157,34 +140,30 @@ NH_RENDERER_END(NH_SIGNAL_OK)
 nh_renderer_Renderer *nh_renderer_createRenderer(
     nh_css_LayoutEngine *LayoutEngine_p) 
 {
-NH_RENDERER_BEGIN()
-
     nh_renderer_Renderer *Renderer_p = 
         nh_core_activateWorkload(nh_renderer_initRenderer, nh_renderer_runRenderer, NULL, NULL, LayoutEngine_p, true);
 
-NH_RENDERER_END(Renderer_p)
+    return Renderer_p;
 }
 
 NH_API_RESULT nh_renderer_addViewport(
     nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p)
 {
-NH_RENDERER_BEGIN()
+    NH_CORE_CHECK_NULL(Renderer_p)
+    NH_CORE_CHECK_NULL(Viewport_p)
 
-    NH_RENDERER_CHECK_NULL(Renderer_p)
-    NH_RENDERER_CHECK_NULL(Viewport_p)
-
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, 
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, 
         nh_gfx_claimViewport(Viewport_p, NH_GFX_VIEWPORT_OWNER_CSS, Renderer_p))
 
-    NH_CSS_CHECK_2(NH_API_ERROR_BAD_STATE, 
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, 
         nh_css_addCanvasType(Renderer_p->LayoutEngine_p, nh_css_createCanvasType(Viewport_p->Settings.Size)))
 
     nh_renderer_RenderTarget *RenderTarget_p = nh_core_incrementArray(&Renderer_p->RenderTargets);
-    NH_RENDERER_CHECK_MEM(RenderTarget_p)
+    NH_CORE_CHECK_MEM(RenderTarget_p)
 
     RenderTarget_p->Viewport_p = Viewport_p;
     RenderTarget_p->render = true;
  
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

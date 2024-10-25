@@ -11,8 +11,6 @@
 #include "Parser.h"
 #include "Tokenizer.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/File.h"
 
@@ -32,10 +30,8 @@ typedef struct nh_ConfigParser {
 } nh_ConfigParser;
 
 static NH_API_RESULT nh_core_parseRawConfigValues(
-    nh_ConfigParser *Parser_p, nh_List *Values_p) 
+    nh_ConfigParser *Parser_p, nh_core_List *Values_p) 
 {
-NH_CORE_BEGIN()
-
     *Values_p = nh_core_initList(4);
 
     while (Parser_p->Token_p->type != NH_CONFIG_TOKEN_SEMICOLON && Parser_p->Token_p->type != NH_CONFIG_TOKEN_EOF) {
@@ -53,15 +49,13 @@ NH_CORE_BEGIN()
 
     ++(Parser_p->Token_p);
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_core_parseConfigSetting(
     nh_ConfigParser *Parser_p) 
 {
-NH_CORE_BEGIN()
-
-    if (!Parser_p->Token_p->string_p) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
+    if (!Parser_p->Token_p->string_p) {return NH_API_ERROR_BAD_STATE;}
 
     nh_RawConfigSetting *Setting_p = malloc(sizeof(nh_RawConfigSetting));
     NH_CORE_CHECK_NULL(Setting_p)
@@ -82,7 +76,7 @@ NH_CORE_BEGIN()
     }
 
     for (c = 0; c < strlen(string_p) && string_p[c] != '.'; ++c);
-    if (c == strlen(string_p)) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
+    if (c == strlen(string_p)) {return NH_API_ERROR_BAD_STATE;}
 
     string_p[c] = 0;
     int module = nh_core_getModuleIndex(string_p);
@@ -110,42 +104,38 @@ NH_CORE_BEGIN()
     }
 
     ++(Parser_p->Token_p);
-    if (Parser_p->Token_p->type != NH_CONFIG_TOKEN_COLON) {NH_CORE_END(NH_API_ERROR_BAD_STATE)}
+    if (Parser_p->Token_p->type != NH_CONFIG_TOKEN_COLON) {return NH_API_ERROR_BAD_STATE;}
     ++(Parser_p->Token_p);
  
     NH_CORE_CHECK(nh_core_parseRawConfigValues(Parser_p, &Setting_p->Values))
     nh_core_appendToList(&Parser_p->Config_p->Settings, Setting_p);
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_core_parseConfigToken(
     nh_ConfigParser *Parser_p)
 {
-NH_CORE_BEGIN()
-
     if (Parser_p->Token_p->type != NH_CONFIG_TOKEN_IDENTIFIER) {
-        NH_CORE_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
 
     switch ((Parser_p->Token_p+1)->type) {
         case NH_CONFIG_TOKEN_COLON :
-            NH_CORE_END(nh_core_parseConfigSetting(Parser_p))
+            return nh_core_parseConfigSetting(Parser_p);
         case NH_CONFIG_TOKEN_EOF :
             ++(Parser_p->Token_p);
             break;
         default :
-            NH_CORE_END(NH_API_ERROR_BAD_STATE)
+            return NH_API_ERROR_BAD_STATE;
     }
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_parseRawConfig(
     nh_RawConfig *Config_p, char *data_p, int length, nh_RawConfig *GlobalConfig_p)
 {
-NH_CORE_BEGIN()
-
     nh_ConfigTokenizer Tokenizer;
     nh_core_tokenizeConfig(&Tokenizer, data_p, length);
 
@@ -160,14 +150,12 @@ NH_CORE_BEGIN()
 
     nh_core_freeConfigTokenizer(&Tokenizer);
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_freeRawConfig(
     nh_RawConfig *Config_p)
 {
-NH_CORE_BEGIN()
-
     for (int i = 0; i < Config_p->Settings.size; ++i) {
         nh_RawConfigSetting *Setting_p = Config_p->Settings.pp[i];
         if (Setting_p->Default_p == NULL) {
@@ -180,6 +168,5 @@ NH_CORE_BEGIN()
 
     memset(Config_p, 0, sizeof(nh_RawConfig));
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-

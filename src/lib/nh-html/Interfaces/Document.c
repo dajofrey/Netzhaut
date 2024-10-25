@@ -10,8 +10,6 @@
 
 #include "Document.h"
 
-#include "../Common/Macros.h"
-
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-dom/Interfaces/Node.h"
 #include "../../nh-webidl/Runtime/Object.h"
@@ -25,8 +23,7 @@
 NH_API_RESULT nh_html_initializeDocument(
     nh_webidl_Object *Document_p)
 {
-NH_HTML_BEGIN()
-NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // API =============================================================================================
@@ -34,22 +31,18 @@ NH_HTML_DIAGNOSTIC_END(NH_API_SUCCESS)
 nh_webidl_Object *nh_html_createDocument(
     nh_html_DocumentContext *Context_p)
 {
-NH_HTML_BEGIN()
-
     nh_webidl_Object *Document_p = nh_webidl_createCompositeObject("HTML", "Document");
-    NH_HTML_CHECK_MEM_2(NULL, Document_p)
+    NH_CORE_CHECK_MEM_2(NULL, Document_p)
 
     // The node document of a document is that document itself. 
     // All nodes have a node document at all times. 
     nh_dom_setNodeDocument(nh_dom_getNode(Document_p), Document_p);
 
-NH_HTML_END(Document_p)
+    return Document_p;
 }
 
 nh_webidl_Object *nh_html_getDocument(
     nh_webidl_Object *Object_p)
 {
-NH_HTML_BEGIN()
-NH_HTML_END(nh_webidl_getObject(Object_p, "HTML", "Document"))
+    return nh_webidl_getObject(Object_p, "HTML", "Document");
 }
-

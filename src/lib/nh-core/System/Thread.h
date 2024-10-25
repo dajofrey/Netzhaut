@@ -40,7 +40,7 @@
  *  @{
  */
 
-    typedef struct nh_Thread nh_Thread;
+    typedef struct nh_core_Thread nh_core_Thread;
 
     typedef struct nh_core_WorkloadCommand {
         bool done;
@@ -56,10 +56,10 @@
     } nh_SignalCounter;
 
     typedef struct nh_core_Workload {
-        nh_Thread *Thread_p;
+        nh_core_Thread *Thread_p;
         nh_SignalCounter SignalCounter;
-        nh_RingBuffer Commands;
-        nh_RingBufferMarker Marker;
+        nh_core_RingBuffer Commands;
+        nh_core_RingBufferMarker Marker;
         NH_SIGNAL signal;
         bool crucial;
         NH_MODULE_E module;
@@ -79,7 +79,7 @@
         } Timing;
     } nh_core_Workload;
 
-    typedef struct nh_Thread {
+    typedef struct nh_core_Thread {
         int depth;
         nh_core_Workload *CurrentWorkload_p;
         struct {
@@ -93,14 +93,14 @@
     #elif defined(_WIN32) || defined (WIN32)
         DWORD id;              
     #endif
-    } nh_Thread;
+    } nh_core_Thread;
 
-    typedef struct nh_ThreadPool {
-        nh_Thread Main;
-        nh_Thread Threads_p[NH_MAX_THREADS];
+    typedef struct nh_core_ThreadPool {
+        nh_core_Thread Main;
+        nh_core_Thread Threads_p[NH_MAX_THREADS];
         nh_core_Workload Workloads_p[NH_MAX_WORKLOADS];
         int threadCount;    
-    } nh_ThreadPool;
+    } nh_core_ThreadPool;
 
 /** @} */
 
@@ -108,7 +108,7 @@
  *  @{
  */
 
-    typedef unsigned int (*nh_core_runThreadWorkloads_f)(
+    typedef int (*nh_core_runThreadWorkloads_f)(
     );
 
     typedef bool (*nh_core_keepRunning_f)(
@@ -124,14 +124,14 @@
  *  @{
  */
 
-    nh_ThreadPool nh_core_initThreadPool(
+    nh_core_ThreadPool nh_core_initThreadPool(
     );
     
     NH_API_RESULT nh_core_freeThreadPool(
-        nh_ThreadPool *ThreadPool_p
+        nh_core_ThreadPool *ThreadPool_p
     );
  
-    unsigned int nh_core_runThreadWorkloads(
+    int nh_core_runThreadWorkloads(
     );
     
     bool nh_core_keepRunning(
@@ -174,10 +174,10 @@
     int nh_core_activeThreads(
     );
 
-    nh_Thread *nh_core_getThread(
+    nh_core_Thread *nh_core_getThread(
     );
     
-    nh_Thread *nh_core_getThreadFromArgs(
+    nh_core_Thread *nh_core_getThreadFromArgs(
         void *args_p
     );
 

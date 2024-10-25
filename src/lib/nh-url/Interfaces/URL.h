@@ -32,7 +32,7 @@
     );
     
     void nh_css_setCSSRulePrelude(
-        nh_css_RuleObject *CSSRule_p, nh_Array Prelude
+        nh_css_RuleObject *CSSRule_p, nh_core_Array Prelude
     );
     
     void nh_css_setCSSRuleBlock(
@@ -47,7 +47,7 @@
         nh_css_RuleObject *CSSRule_p
     );
     
-    nh_Array *nh_css_getCSSRulePrelude(
+    nh_core_Array *nh_css_getCSSRulePrelude(
         nh_css_RuleObject *CSSRule_p
     );
     

@@ -15,23 +15,17 @@
 #include "Float.h"
 
 #include "../Main/FormattingContext.h"
-
-#include "../Common/Log.h"
-#include "../Common/Macros.h"
-
 #include "../../nh-core/Util/List.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-// LINE BOXES ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_shiftLineBoxDownward(
     nh_css_Canvas *Canvas_p, nh_css_LineBox *LineBox_p)
 {
-NH_CSS_BEGIN()
-
     int shift = 10000;
 
     // get minimal vertical shift value;
@@ -56,14 +50,12 @@ NH_CSS_BEGIN()
     LineBox_p->Size.width = LineBox_p->RootInline_p->Parent_p->Block.Size.width;
     LineBox_p->RootInline_p->Block.Size.width = 0;
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_offsetLineBoxFromFloats(
     nh_css_Canvas *Canvas_p, nh_css_LineBox *LineBox_p)
 {
-NH_CSS_BEGIN()
-
     for (int i = 0; i < Canvas_p->Floats.size; ++i) {
         nh_css_Fragment *Float_p = Canvas_p->Floats.pp[i];
         nh_css_PixelBox FloatBox = nh_css_getMarginBox(&Float_p->Block, &Float_p->Box.Values);
@@ -84,16 +76,12 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// FLOAT ===========================================================================================
 
 NH_API_RESULT nh_css_arrangeFloat(
     nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_PixelBox CurrentBox = nh_css_getMarginBox(&Fragment_p->Block, &Fragment_p->Box.Values);
 
     for (int i = 0; i < Canvas_p->Floats.size; ++i) {
@@ -123,5 +111,5 @@ NH_CSS_BEGIN()
 
     nh_core_appendToList(&Canvas_p->Floats, Fragment_p);
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }

@@ -15,9 +15,7 @@
 #include "../Properties/Color.h"
 #include "../Properties/Properties.h"
 #include "../Properties/Values.h"
-
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-gfx/Common/Macros.h"
 #include "../../nh-dom/Interfaces/Node.h"
@@ -35,33 +33,29 @@
 static NH_CSS_POSITION nh_css_getPositionType(
     nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
-
     if (Value_p->Common.type != NH_CSS_VALUE_KEYWORD) {
-        NH_CSS_END(NH_CSS_POSITION_STATIC)
+        return NH_CSS_POSITION_STATIC;
     }
 
     if (!strcmp(Value_p->String.p, "static")) {
-        NH_CSS_END(NH_CSS_POSITION_STATIC)
+        return NH_CSS_POSITION_STATIC;
     }
     else if (!strcmp(Value_p->String.p, "relative")) {
-        NH_CSS_END(NH_CSS_POSITION_RELATIVE)
+        return NH_CSS_POSITION_RELATIVE;
     }
     else if (!strcmp(Value_p->String.p, "absolute")) {
-        NH_CSS_END(NH_CSS_POSITION_ABSOLUTE)
+        return NH_CSS_POSITION_ABSOLUTE;
     }
     else if (!strcmp(Value_p->String.p, "fixed")) {
-        NH_CSS_END(NH_CSS_POSITION_FIXED)
+        return NH_CSS_POSITION_FIXED;
     }
 
-NH_CSS_END(NH_CSS_POSITION_STATIC)
+    return NH_CSS_POSITION_STATIC;
 }
 
 static int nh_css_getLengthPercentage(
     nh_css_Fragment *Fragment_p, nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
-
     if (Value_p->Common.type == NH_CSS_VALUE_FUNCTION) {
         // TODO
     }
@@ -69,94 +63,89 @@ NH_CSS_BEGIN()
         // TODO
     }
     else if (Value_p->Common.type == NH_CSS_VALUE_PX) {
-        NH_CSS_END((int)Value_p->number)
+        return (int)Value_p->number;
     }
 
-NH_CSS_END(0)
+    return 0;
 }
 
 static NH_CSS_LINE_STYLE nh_css_getLineStyle(
     nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
+    if (Value_p->Common.type != NH_CSS_VALUE_KEYWORD) {return NH_CSS_LINE_STYLE_NONE;}
 
-    if (Value_p->Common.type != NH_CSS_VALUE_KEYWORD) {NH_CSS_END(NH_CSS_LINE_STYLE_NONE)}
+         if (!strcmp(Value_p->String.p, "none"))   {return NH_CSS_LINE_STYLE_NONE;}
+    else if (!strcmp(Value_p->String.p, "hidden")) {return NH_CSS_LINE_STYLE_HIDDEN;}
+    else if (!strcmp(Value_p->String.p, "dotted")) {return NH_CSS_LINE_STYLE_DOTTED;}
+    else if (!strcmp(Value_p->String.p, "dashed")) {return NH_CSS_LINE_STYLE_DASHED;}
+    else if (!strcmp(Value_p->String.p, "solid"))  {return NH_CSS_LINE_STYLE_SOLID;}
+    else if (!strcmp(Value_p->String.p, "double")) {return NH_CSS_LINE_STYLE_DOUBLE;}
+    else if (!strcmp(Value_p->String.p, "groove")) {return NH_CSS_LINE_STYLE_GROOVE;}
+    else if (!strcmp(Value_p->String.p, "ridge"))  {return NH_CSS_LINE_STYLE_RIDGE;}
+    else if (!strcmp(Value_p->String.p, "inset"))  {return NH_CSS_LINE_STYLE_INSET;}
+    else if (!strcmp(Value_p->String.p, "outset")) {return NH_CSS_LINE_STYLE_OUTSET;}
 
-         if (!strcmp(Value_p->String.p, "none"))   {NH_CSS_END(NH_CSS_LINE_STYLE_NONE)}
-    else if (!strcmp(Value_p->String.p, "hidden")) {NH_CSS_END(NH_CSS_LINE_STYLE_HIDDEN)}
-    else if (!strcmp(Value_p->String.p, "dotted")) {NH_CSS_END(NH_CSS_LINE_STYLE_DOTTED)}
-    else if (!strcmp(Value_p->String.p, "dashed")) {NH_CSS_END(NH_CSS_LINE_STYLE_DASHED)}
-    else if (!strcmp(Value_p->String.p, "solid"))  {NH_CSS_END(NH_CSS_LINE_STYLE_SOLID)}
-    else if (!strcmp(Value_p->String.p, "double")) {NH_CSS_END(NH_CSS_LINE_STYLE_DOUBLE)}
-    else if (!strcmp(Value_p->String.p, "groove")) {NH_CSS_END(NH_CSS_LINE_STYLE_GROOVE)}
-    else if (!strcmp(Value_p->String.p, "ridge"))  {NH_CSS_END(NH_CSS_LINE_STYLE_RIDGE)}
-    else if (!strcmp(Value_p->String.p, "inset"))  {NH_CSS_END(NH_CSS_LINE_STYLE_INSET)}
-    else if (!strcmp(Value_p->String.p, "outset")) {NH_CSS_END(NH_CSS_LINE_STYLE_OUTSET)}
-
-NH_CSS_END(NH_CSS_LINE_STYLE_NONE)
+    return NH_CSS_LINE_STYLE_NONE;
 }
 
 // FONT ============================================================================================
 
+// https://www.w3.org/TR/css-fonts-4/#generic-font-families
 static int nh_css_getGenericFontFamily(
     nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
-
     if (!strcmp(Value_p->String.p, "serif")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_SERIF)
+        return NH_GFX_GENERIC_FONT_FAMILY_SERIF;
     }
     else if (!strcmp(Value_p->String.p, "sans-serif")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_SANS_SERIF)
+        return NH_GFX_GENERIC_FONT_FAMILY_SANS_SERIF;
     }
     else if (!strcmp(Value_p->String.p, "cursive")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_CURSIVE)
+        return NH_GFX_GENERIC_FONT_FAMILY_CURSIVE;
     }
     else if (!strcmp(Value_p->String.p, "fantasy")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_FANTASY)
+        return NH_GFX_GENERIC_FONT_FAMILY_FANTASY;
     }
     else if (!strcmp(Value_p->String.p, "monospace")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_MONOSPACE)
+        return NH_GFX_GENERIC_FONT_FAMILY_MONOSPACE;
     }
     else if (!strcmp(Value_p->String.p, "system-ui")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_SYSTEM_UI)
+        return NH_GFX_GENERIC_FONT_FAMILY_SYSTEM_UI;
     }
     else if (!strcmp(Value_p->String.p, "emoji")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_EMOJI)
+        return NH_GFX_GENERIC_FONT_FAMILY_EMOJI;
     }
     else if (!strcmp(Value_p->String.p, "math")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_MATH)
+        return NH_GFX_GENERIC_FONT_FAMILY_MATH;
     }
     else if (!strcmp(Value_p->String.p, "fangsong")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_FANGSONG)
+        return NH_GFX_GENERIC_FONT_FAMILY_FANGSONG;
     }
     else if (!strcmp(Value_p->String.p, "ui-serif")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_UI_SERIF)
+        return NH_GFX_GENERIC_FONT_FAMILY_UI_SERIF;
     }
     else if (!strcmp(Value_p->String.p, "ui-sans-serif")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_UI_SANS_SERIF)
+        return NH_GFX_GENERIC_FONT_FAMILY_UI_SANS_SERIF;
     }
     else if (!strcmp(Value_p->String.p, "ui-monospace")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_UI_MONOSPACE)
+        return NH_GFX_GENERIC_FONT_FAMILY_UI_MONOSPACE;
     }
     else if (!strcmp(Value_p->String.p, "ui-rounded")) {
-        NH_CSS_END(NH_GFX_GENERIC_FONT_FAMILY_UI_ROUNDED)
+        return NH_GFX_GENERIC_FONT_FAMILY_UI_ROUNDED;
     }
 
-NH_CSS_END(-1)
+    return -1;
 }
 
 static NH_API_RESULT nh_css_getFontFamilies(
-    nh_css_Value *Value_p, nh_Array *Families_p)
+    nh_css_Value *Value_p, nh_core_Array *Families_p)
 {
-NH_CSS_BEGIN()
-
     *Families_p = nh_core_initArray(sizeof(nh_gfx_FontFamily), 4);
 
     while (Value_p) 
     {
         nh_gfx_FontFamily *Family_p = nh_core_incrementArray(Families_p);
-        NH_CSS_CHECK_MEM(Family_p)
+        NH_CORE_CHECK_MEM(Family_p)
 
         *Family_p = nh_gfx_initFontFamily(NULL);
         int generic = nh_css_getGenericFontFamily(Value_p);
@@ -167,28 +156,24 @@ NH_CSS_BEGIN()
         Value_p = Value_p->Common.Next_p;
     }
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 static nh_gfx_FontStyle nh_css_getFontStyle(
     nh_css_Value *Weight_p, nh_css_Value *Style_p)
 {
-NH_CSS_BEGIN()
-
     nh_gfx_FontStyle Style;
 
     Style.weight = Weight_p->number;
     Style.oblique = strstr(Style_p->String.p, "oblique") ? true : false;
     Style.italic = strstr(Style_p->String.p, "italic") ? true : false;
 
-NH_CSS_END(Style)
+    return Style;
 }
 
 static nh_css_BoxSizing nh_css_getBoxSizing(
-    nh_css_Fragment *Fragment_p, nh_List *ComputedValues_p, NH_CSS_PROPERTY property)
+    nh_css_Fragment *Fragment_p, nh_core_List *ComputedValues_p, NH_CSS_PROPERTY property)
 {
-NH_CSS_BEGIN()
-
     nh_css_Value *Value_p = ComputedValues_p->pp[property];
 
     nh_css_BoxSizing Sizing;
@@ -221,7 +206,7 @@ NH_CSS_BEGIN()
         Sizing.value = (int)Value_p->number;
     }
 
-NH_CSS_END(Sizing)
+    return Sizing;
 }
 
 // TEXT ALIGN ======================================================================================
@@ -229,35 +214,33 @@ NH_CSS_END(Sizing)
 static int nh_css_getTextAlign(
     nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
-
     if (!Value_p) {}
     else if (!strcmp(Value_p->String.p, "start")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_START)
+        return NH_CSS_TEXT_ALIGN_START;
     }
     else if (!strcmp(Value_p->String.p, "auto")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_AUTO)
+        return NH_CSS_TEXT_ALIGN_AUTO;
     }
     else if (!strcmp(Value_p->String.p, "end")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_END)
+        return NH_CSS_TEXT_ALIGN_END;
     }
     else if (!strcmp(Value_p->String.p, "left")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_LEFT)
+        return NH_CSS_TEXT_ALIGN_LEFT;
     }
     else if (!strcmp(Value_p->String.p, "right")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_RIGHT)
+        return NH_CSS_TEXT_ALIGN_RIGHT;
     }
     else if (!strcmp(Value_p->String.p, "center")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_CENTER)
+        return NH_CSS_TEXT_ALIGN_CENTER;
     }
     else if (!strcmp(Value_p->String.p, "justify")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_JUSTIFY)
+        return NH_CSS_TEXT_ALIGN_JUSTIFY;
     }
     else if (!strcmp(Value_p->String.p, "match-parent")) {
-        NH_CSS_END(NH_CSS_TEXT_ALIGN_MATCH_PARENT)
+        return NH_CSS_TEXT_ALIGN_MATCH_PARENT;
     }
 
-NH_CSS_END(NH_CSS_TEXT_ALIGN_START)
+    return NH_CSS_TEXT_ALIGN_START;
 }
 
 // FLOAT ===========================================================================================
@@ -265,19 +248,17 @@ NH_CSS_END(NH_CSS_TEXT_ALIGN_START)
 static int nh_css_getFloat(
     nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
-
     if (!strcmp(Value_p->String.p, "none")) {
-        NH_CSS_END(NH_CSS_FLOAT_NONE)
+        return NH_CSS_FLOAT_NONE;
     }
     else if (!strcmp(Value_p->String.p, "left")) {
-        NH_CSS_END(NH_CSS_FLOAT_LEFT)
+        return NH_CSS_FLOAT_LEFT;
     }
     else if (!strcmp(Value_p->String.p, "right")) {
-        NH_CSS_END(NH_CSS_FLOAT_RIGHT)
+        return NH_CSS_FLOAT_RIGHT;
     }
 
-NH_CSS_END(NH_CSS_FLOAT_NONE)
+    return NH_CSS_FLOAT_NONE;
 }
 
 // WORD BREAK ======================================================================================
@@ -285,22 +266,20 @@ NH_CSS_END(NH_CSS_FLOAT_NONE)
 static int nh_css_getWordBreak(
     nh_css_Value *Value_p)
 {
-NH_CSS_BEGIN()
-
     if (!strcmp(Value_p->String.p, "normal")) {
-        NH_CSS_END(NH_CSS_WORD_BREAK_NORMAL)
+        return NH_CSS_WORD_BREAK_NORMAL;
     }
     else if (!strcmp(Value_p->String.p, "keep-all")) {
-        NH_CSS_END(NH_CSS_WORD_BREAK_KEEP_ALL)
+        return NH_CSS_WORD_BREAK_KEEP_ALL;
     }
     else if (!strcmp(Value_p->String.p, "break-all")) {
-        NH_CSS_END(NH_CSS_WORD_BREAK_BREAK_ALL)
+        return NH_CSS_WORD_BREAK_BREAK_ALL;
     }
     else if (!strcmp(Value_p->String.p, "break-word")) {
-        NH_CSS_END(NH_CSS_WORD_BREAK_BREAK_WORD)
+        return NH_CSS_WORD_BREAK_BREAK_WORD;
     }
 
-NH_CSS_END(NH_CSS_WORD_BREAK_NORMAL)
+    return NH_CSS_WORD_BREAK_NORMAL;
 }
 
 // TEXT VALUES =====================================================================================
@@ -308,23 +287,21 @@ NH_CSS_END(NH_CSS_WORD_BREAK_NORMAL)
 NH_API_RESULT nh_css_computeTextValues(
     nh_css_Fragment *Fragment_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_Fragment *Parent_p = Fragment_p->Parent_p;
     while (!Parent_p->Node_p->Source_p) {Parent_p = Parent_p->Parent_p;}
 
-    nh_List *ComputedValues_p = Parent_p->Node_p->Source_p->ComputedValues_p;
+    nh_core_List *ComputedValues_p = Parent_p->Node_p->Source_p->ComputedValues_p;
 
     Fragment_p->Text.Values.Color = nh_css_getColor(*((nh_css_Value*)ComputedValues_p->pp[NH_CSS_PROPERTY_COLOR]));
     Fragment_p->Text.Values.fontSize = 
         nh_css_getLengthPercentage(Fragment_p->Parent_p, ComputedValues_p->pp[NH_CSS_PROPERTY_FONT_SIZE]);
 
-    NH_CSS_CHECK(nh_css_getFontFamilies(ComputedValues_p->pp[NH_CSS_PROPERTY_FONT_FAMILY], &Fragment_p->Text.Values.FontFamilies))
+    NH_CORE_CHECK(nh_css_getFontFamilies(ComputedValues_p->pp[NH_CSS_PROPERTY_FONT_FAMILY], &Fragment_p->Text.Values.FontFamilies))
     Fragment_p->Text.Values.FontStyle = nh_css_getFontStyle(
         ComputedValues_p->pp[NH_CSS_PROPERTY_FONT_WEIGHT], ComputedValues_p->pp[NH_CSS_PROPERTY_FONT_STYLE]
     );
 
-    NH_GFX_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createText(
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createText(
         &Fragment_p->Text.Values.Text, Fragment_p->Text.text_p, Fragment_p->Text.length, Fragment_p->Text.Values.fontSize, 
         &Fragment_p->Text.Values.FontFamilies, Fragment_p->Text.Values.FontStyle
     ))
@@ -334,18 +311,16 @@ NH_CSS_BEGIN()
 
     Fragment_p->Text.Values.wordBreak = nh_css_getWordBreak(ComputedValues_p->pp[NH_CSS_PROPERTY_WORD_BREAK]);
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_css_freeTextValues(
     nh_css_Fragment *Fragment_p)
 {
-NH_CSS_BEGIN()
-
     nh_gfx_freeText(&Fragment_p->Text.Values.Text);
     nh_core_freeArray(&Fragment_p->Text.Values.FontFamilies);
 
-NH_CSS_SILENT_END()
+    return;
 }
 
 // BOX VALUES ======================================================================================
@@ -353,14 +328,12 @@ NH_CSS_SILENT_END()
 static NH_API_RESULT nh_css_computeAnonymousBoxValues(
     nh_css_Fragment *Fragment_p)
 {
-NH_CSS_BEGIN()
-
     nh_css_Fragment *Ancestor_p = Fragment_p;
     while (!Ancestor_p->Node_p->Source_p) {
         Ancestor_p = Ancestor_p->Parent_p;
     }
 
-    nh_List *ComputedValues_p = Ancestor_p->Node_p->Source_p->ComputedValues_p;
+    nh_core_List *ComputedValues_p = Ancestor_p->Node_p->Source_p->ComputedValues_p;
     nh_css_BoxValues *Values_p = &Fragment_p->Box.Values;
 
     Values_p->_float = NH_CSS_FLOAT_NONE; 
@@ -387,19 +360,17 @@ NH_CSS_BEGIN()
     Values_p->textAlignAll  = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_ALL]);
     Values_p->textAlignLast = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_LAST]);
 
-NH_CSS_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_css_computeBoxValues(
     nh_css_Fragment *Fragment_p)
 {
-NH_CSS_BEGIN()
-
     if (!Fragment_p->Node_p->Source_p) {
-        NH_CSS_END(nh_css_computeAnonymousBoxValues(Fragment_p))
+        return nh_css_computeAnonymousBoxValues(Fragment_p);
     }
 
-    nh_List *ComputedValues_p = Fragment_p->Node_p->Source_p->ComputedValues_p;
+    nh_core_List *ComputedValues_p = Fragment_p->Node_p->Source_p->ComputedValues_p;
     nh_css_BoxValues *Values_p = &Fragment_p->Box.Values;
 
     Values_p->position = nh_css_getPositionType(ComputedValues_p->pp[NH_CSS_PROPERTY_POSITION]);
@@ -445,6 +416,6 @@ NH_CSS_BEGIN()
     Values_p->textAlignAll  = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_ALL]);
     Values_p->textAlignLast = nh_css_getTextAlign(ComputedValues_p->pp[NH_CSS_PROPERTY_TEXT_ALIGN_LAST]);
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

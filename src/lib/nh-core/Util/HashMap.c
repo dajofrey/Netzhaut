@@ -11,57 +11,42 @@
 #include "HashMap.h"
 
 #include "../System/Memory.h"
-#include "../Common/Macros.h"
 
 #include <stdio.h>
 #include <string.h>
 
-// CREATE ==========================================================================================
+// FUNCTIONS =======================================================================================
 
-nh_HashMap nh_core_createHashMap()
+nh_core_HashMap nh_core_createHashMap()
 {
-NH_CORE_BEGIN()
-NH_CORE_DIAGNOSTIC_END(hashmap_new())
+    return hashmap_new();
 }
-
-// ADD =============================================================================================
 
 NH_API_RESULT nh_core_addToHashMap(
-    nh_HashMap *Map_p, char *key_p, void *value_p)
+    nh_core_HashMap *Map_p, char *key_p, void *value_p)
 {
-NH_CORE_BEGIN()
-
     if (hashmap_put(*Map_p, key_p, value_p) != MAP_OK) {
-        NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// FREE ============================================================================================
 
 void nh_core_freeHashMap(
-    nh_HashMap Map)
+    nh_core_HashMap Map)
 {
-NH_CORE_BEGIN()
-
     hashmap_free(Map);
 
-NH_CORE_SILENT_END()
+    return;
 }
-
-// GET =============================================================================================
 
 void *nh_core_getFromHashMap(
-    nh_HashMap *Map_p, char *key_p)
+    nh_core_HashMap *Map_p, char *key_p)
 {
-NH_CORE_BEGIN()
-
     void *handle_p = NULL;
     if (hashmap_get(*Map_p, key_p, (void**)(&handle_p)) != MAP_OK) {
-        NH_CORE_END(NULL)
+        return NULL;
     }
 
-NH_CORE_END(handle_p)
+    return handle_p;
 }
-

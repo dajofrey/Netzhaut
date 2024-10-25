@@ -53,7 +53,7 @@
     typedef struct nh_css_SelectorParseNode {
         NH_CSS_SELECTOR_PARSE_NODE type;
         nh_css_Token *Token_p;
-        nh_List Children;
+        nh_core_List Children;
     } nh_css_SelectorParseNode;
 
 /** @} */
@@ -67,7 +67,7 @@
     );
 
     nh_css_SelectorParseNode *nh_css_parseSelectorList(
-        nh_Array ComponentValues
+        nh_core_Array ComponentValues
     );
 
 /** @} */

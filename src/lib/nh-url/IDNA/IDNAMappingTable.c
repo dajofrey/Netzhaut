@@ -184,14 +184,14 @@ NH_URL_BEGIN()
     {
         if (Parser.expect == 0) {
             Parser.Entry_p = nh_core_incrementArray(&NH_URL_IDNA_MAPPING_TABLE.Entries);
-            NH_URL_CHECK_MEM(Parser.Entry_p)
+            NH_CORE_CHECK_MEM(Parser.Entry_p)
             Parser.Entry_p->begin = 0;
             Parser.Entry_p->end = 0;
             Parser.Entry_p->status = NH_URL_IDNA_STATUS_UNDEFINED;
             Parser.Entry_p->Mapping = nh_encoding_initUTF32(2);
             Parser.Entry_p->status2008 = 0;
         }
-        NH_URL_CHECK(nh_url_parseNextField(&Parser))
+        NH_CORE_CHECK(nh_url_parseNextField(&Parser))
     }
 
 NH_URL_END(NH_API_SUCCESS)

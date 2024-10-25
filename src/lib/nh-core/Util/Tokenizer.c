@@ -11,7 +11,6 @@
 #include "Tokenizer.h"
 
 #include "../System/Memory.h"
-#include "../Common/Macros.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,45 +23,39 @@
 static bool nh_core_isASCIIUpperAlpha(
     char codepoint)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(codepoint >= 0x41 && codepoint <= 0x5A)
+    return codepoint >= 0x41 && codepoint <= 0x5A;
 }
 
 static bool nh_core_isASCIILowerAlpha(
     char codepoint)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(codepoint >= 0x61 && codepoint <= 0x7A)
+    return codepoint >= 0x61 && codepoint <= 0x7A;
 }
 
 static bool nh_core_isASCIIAlpha(
     char codepoint)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(nh_core_isASCIIUpperAlpha(codepoint) || nh_core_isASCIILowerAlpha(codepoint))
+    return nh_core_isASCIIUpperAlpha(codepoint) || nh_core_isASCIILowerAlpha(codepoint);
 }
 
 static bool nh_core_isBracket(
     char codepoint)
 {
-NH_CORE_BEGIN()
-NH_CORE_END(codepoint == '(' || codepoint == ')' || codepoint == '{' || codepoint == '}' || codepoint == '[' || codepoint == ']')
+    return codepoint == '(' || codepoint == ')' || codepoint == '{' || codepoint == '}' || codepoint == '[' || codepoint == ']';
 }
 
 static bool nh_core_isTokenBegin(
     char codepoint)
 {
-NH_CORE_BEGIN()
-
     if (nh_core_isASCIIAlpha(codepoint) || nh_core_isBracket(codepoint) 
     || codepoint == ',' 
     || codepoint == '"' 
     || codepoint == ':' 
     || codepoint == '-') 
 
-    {NH_CORE_END(true)}
+    {return true;}
 
-NH_CORE_END(false)
+    return false;
 }
 
 // TOKENIZE ========================================================================================
@@ -70,8 +63,6 @@ NH_CORE_END(false)
 static char *nh_core_tokenizeString(
     nh_Token *Token_p, char *bytes_p)
 {
-NH_CORE_BEGIN()
-
     char *string_p = malloc(1);
     unsigned int stringLength = 0;
 
@@ -86,7 +77,7 @@ NH_CORE_BEGIN()
         }
         bytes_p++;
     }
-    if (!*bytes_p) {NH_CORE_END(NULL)}
+    if (!*bytes_p) {return NULL;}
 
     *bytes_p = 0;
 
@@ -97,15 +88,13 @@ NH_CORE_BEGIN()
 
     *bytes_p = '"';
 
-NH_CORE_END(&bytes_p[1])
+    return &bytes_p[1];
 }
 
 static char *nh_core_getToken(
     nh_Token *Token_p, char *bytes_p) 
 {
-NH_CORE_BEGIN()
-
-    if (!*bytes_p) {NH_CORE_END(NULL)}
+    if (!*bytes_p) {return NULL;}
 
     Token_p->type     = NH_TOKEN_UNDEFINED;
     Token_p->string_p = NULL;
@@ -116,7 +105,7 @@ NH_CORE_BEGIN()
         }
         bytes_p++;
     }
-    if (!*bytes_p) {NH_CORE_END(NULL)}
+    if (!*bytes_p) {return NULL;}
 
     char *tokenBegin_p = bytes_p;
 
@@ -134,16 +123,16 @@ NH_CORE_BEGIN()
         case ';' : Token_p->type = NH_TOKEN_SEMICOLON; break;
         case '"' :
             Token_p->type = NH_TOKEN_STRING;
-            NH_CORE_END(nh_core_tokenizeString(Token_p, &bytes_p[1]))
+            return nh_core_tokenizeString(Token_p, &bytes_p[1]);
             break;
     }
     
     if (Token_p->type != NH_TOKEN_UNDEFINED) {
-        NH_CORE_END(&bytes_p[1])
+        return &bytes_p[1];
     }
 
     while (*bytes_p && (nh_core_isASCIIAlpha(*bytes_p) || *bytes_p == '_')) {bytes_p++;}
-    if (!*bytes_p) {NH_CORE_END(NULL)}
+    if (!*bytes_p) {return NULL;}
 
     char tmp = *bytes_p;
     *bytes_p = 0;    
@@ -154,14 +143,12 @@ NH_CORE_BEGIN()
 
     *bytes_p = tmp;
 
-NH_CORE_END(bytes_p)
+    return bytes_p;
 }
 
 static void nh_core_getTokens(
     nh_Token *Tokens_p, char *bytes_p, unsigned int *tokens_p) 
 {
-NH_CORE_BEGIN()
-
     unsigned int tokens = 0;
 
     while (bytes_p)
@@ -178,14 +165,12 @@ NH_CORE_BEGIN()
 
     if (tokens_p) {*tokens_p = tokens;}
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 NH_API_RESULT nh_core_tokenize(
     nh_Tokenizer *Tokenizer_p, char *data_p, int length) 
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL(data_p)
     NH_CORE_CHECK_NULL(Tokenizer_p)
     Tokenizer_p->tokens = 0;
@@ -215,14 +200,12 @@ NH_CORE_BEGIN()
     Tokenizer_p->tokens   = tokens;
     Tokenizer_p->Tokens_p = Tokens_p;
 
-NH_CORE_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void nh_core_freeTokenizer(
     nh_Tokenizer *Tokenizer_p)
 {
-NH_CORE_BEGIN()
-
     for (int i = 0; i < Tokenizer_p->tokens; ++i) {
         if (Tokenizer_p->Tokens_p[i].string_p) {free(Tokenizer_p->Tokens_p[i].string_p);}
     }
@@ -230,6 +213,6 @@ NH_CORE_BEGIN()
     free(Tokenizer_p->Tokens_p);
     Tokenizer_p->tokens = 0;
 
-NH_CORE_SILENT_END()
+    return;
 }
 

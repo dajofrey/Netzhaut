@@ -33,7 +33,7 @@
         bool isLockFree2;
         bool isLockFree8;
 //        nh_ecmascript_CandidateExecution CandidateExecution;
-        nh_List KeptAlive;
+        nh_core_List KeptAlive;
     } nh_ecmascript_Agent;
 
 /** @} */

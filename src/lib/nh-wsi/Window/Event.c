@@ -11,7 +11,6 @@
 #include "Event.h"
 #include "Window.h"
 
-#include "../Common/Macros.h"
 #include "../../nh-core/Util/RingBuffer.h"
 
 #include <string.h>
@@ -21,13 +20,11 @@
 static nh_api_WSIEvent nh_wsi_initEvent(
     NH_API_WSI_EVENT_E type)
 {
-NH_WSI_BEGIN()
-
     nh_api_WSIEvent Event;
     memset(&Event, 0, sizeof(nh_api_WSIEvent));
     Event.type = type;
  
-NH_WSI_END(Event)
+    return Event;
 }
 
 // SEND ============================================================================================
@@ -35,8 +32,6 @@ NH_WSI_END(Event)
 void nh_wsi_sendWindowEvent(
     nh_wsi_Window *Window_p, NH_API_WINDOW_E type, int x, int y, int width, int height)
 {
-NH_WSI_BEGIN()
-
     nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_WINDOW);
 
     Event.Window.type        = type;
@@ -52,14 +47,12 @@ NH_WSI_BEGIN()
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
     *Event_p = Event;
 
-NH_WSI_SILENT_END()
+    return;
 }
 
 void nh_wsi_sendMouseEvent(
     nh_wsi_Window *Window_p, int x, int y, NH_API_TRIGGER_E trigger, NH_API_MOUSE_E type)
 {
-NH_WSI_BEGIN()
-
     nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_MOUSE);
 
     Event.Mouse.Position.x = x;
@@ -74,15 +67,13 @@ NH_WSI_BEGIN()
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
     *Event_p = Event;
 
-NH_WSI_SILENT_END()
+    return;
 }
 
 void nh_wsi_sendKeyboardEvent(
     nh_wsi_Window *Window_p, NH_ENCODING_UTF32 codepoint, NH_API_KEY_E special, NH_API_TRIGGER_E trigger,
     NH_API_MODIFIER_FLAG state)
 {
-NH_WSI_BEGIN()
-
     nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_KEYBOARD);
 
     Event.Keyboard.codepoint = codepoint;
@@ -97,6 +88,6 @@ NH_WSI_BEGIN()
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
     *Event_p = Event;
 
-NH_WSI_SILENT_END()
+    return;
 }
 

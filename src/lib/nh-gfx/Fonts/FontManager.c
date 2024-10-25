@@ -40,25 +40,23 @@
 nh_gfx_FontManager NH_GFX_FONT_MANAGER;
 static FT_Library FreeType;
 
-// ADD =============================================================================================
+// FUNCTIONS =======================================================================================
 
 static NH_API_RESULT nh_gfx_addFont(
     char *data_p, size_t size, char *id_p, bool internal)
 {
-NH_GFX_BEGIN()
-
     FT_Face Face; 
     int error = FT_New_Memory_Face(FreeType, data_p, size, 0, &Face);
 
     if (error == FT_Err_Unknown_File_Format) {
-        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_INVALID_FILE_FORMAT)
+        return NH_API_ERROR_INVALID_FILE_FORMAT;
     }
     else if (error) {
-        NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+        return NH_API_SUCCESS;
     }
 
     nh_gfx_Font *Font_p = nh_core_allocate(sizeof(nh_gfx_Font));
-    NH_GFX_CHECK_MEM(Font_p)
+    NH_CORE_CHECK_MEM(Font_p)
 
     Font_p->file_p           = internal ? data_p : NULL;
     Font_p->fileSize         = internal ? size : 0;
@@ -68,31 +66,29 @@ NH_GFX_BEGIN()
     Font_p->internal         = internal;
 
     Font_p->id_p = nh_core_allocateBytes(id_p);
-    NH_GFX_CHECK_MEM(Font_p->id_p)
+    NH_CORE_CHECK_MEM(Font_p->id_p)
 
-    NH_GFX_CHECK(nh_gfx_parseFontFamily(&Font_p->Family, Face->family_name))
-    NH_GFX_CHECK(nh_gfx_parseFontStyle(&Font_p->Style, Face->style_name))
+    NH_CORE_CHECK(nh_gfx_parseFontFamily(&Font_p->Family, Face->family_name))
+    NH_CORE_CHECK(nh_gfx_parseFontStyle(&Font_p->Style, Face->style_name))
 
     nh_core_appendToList(&NH_GFX_FONT_MANAGER.Fonts, Font_p);
     nh_gfx_logFont(Font_p);
 
     FT_Done_Face(Face);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_gfx_addFontDirectory(
     char *dirPath_p)
 {
-NH_GFX_BEGIN()
-
 #ifdef __unix__ 
 
     struct dirent *entry_p = NULL;
     char absolutePath_p[1024] = {'\0'};
 
     DIR *dir_p = opendir(dirPath_p); 
-    if (dir_p == NULL) {NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)}
+    if (dir_p == NULL) {return NH_API_SUCCESS;}
   
     while ((entry_p = readdir(dir_p)) != NULL) 
     {
@@ -105,11 +101,11 @@ NH_GFX_BEGIN()
         NH_API_RESULT result = nh_gfx_addFontUsingAbsolutePath(absolutePath_p);
         if (result != NH_API_SUCCESS && result != NH_API_ERROR_INVALID_FILE_FORMAT) {
             closedir(dir_p); 
-            NH_GFX_END(result)
+            return result;
         }
 
         if (strcmp(entry_p->d_name, "..") != 0 && strcmp(entry_p->d_name, ".") != 0) {
-            NH_GFX_CHECK(nh_gfx_addFontDirectory(absolutePath_p))
+            NH_CORE_CHECK(nh_gfx_addFontDirectory(absolutePath_p))
         }
     }
   
@@ -122,43 +118,37 @@ NH_GFX_BEGIN()
 
 #endif
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_gfx_addFontUsingAbsolutePath(
     char *absolutePath_p)
 {
-NH_GFX_BEGIN()
-
-    if (!nh_core_isRegularFile(absolutePath_p)) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_INVALID_FILE_FORMAT)}
+    if (!nh_core_isRegularFile(absolutePath_p)) {return NH_API_ERROR_INVALID_FILE_FORMAT;}
 
     if (!strstr(absolutePath_p, ".ttf") && !strstr(absolutePath_p, ".otf")) {
-        NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_INVALID_FILE_FORMAT)
+        return NH_API_ERROR_INVALID_FILE_FORMAT;
     }
 
     size_t size = 0;
     char *data_p = nh_core_getFileData(absolutePath_p, &size);
 
-    if (!data_p) {NH_GFX_DIAGNOSTIC_END(NH_API_ERROR_INVALID_FILE_FORMAT)}
+    if (!data_p) {return NH_API_ERROR_INVALID_FILE_FORMAT;}
 
     nh_gfx_addFont(data_p, size, absolutePath_p, false);
 
     nh_core_free(data_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// FONT INSTANCE ===================================================================================
 
 static nh_gfx_FontInstance *nh_gfx_loadFontInstance(
     nh_gfx_Font *Font_p, unsigned int fontSize, nh_gfx_FontInstance *Instance_p)
 {
-NH_GFX_BEGIN()
-
     if (!Font_p->Atlas.external_p) 
     {
         Font_p->Atlas.external_p = texture_atlas_new(1024, 1024, 1);
-        NH_GFX_CHECK_NULL_2(NULL, Font_p->Atlas.external_p)
+        NH_CORE_CHECK_NULL_2(NULL, Font_p->Atlas.external_p)
         Font_p->Atlas.width  = ((texture_atlas_t*)Font_p->Atlas.external_p)->width; 
         Font_p->Atlas.height = ((texture_atlas_t*)Font_p->Atlas.external_p)->height;
         Font_p->Atlas.data_p = ((texture_atlas_t*)Font_p->Atlas.external_p)->data;
@@ -166,16 +156,16 @@ NH_GFX_BEGIN()
 
     if (!Instance_p) {
         Instance_p = nh_core_incrementArray(&Font_p->Instances);
-        NH_GFX_CHECK_MEM_2(NULL, Instance_p)
+        NH_CORE_CHECK_MEM_2(NULL, Instance_p)
     }
 
     if (!Font_p->file_p) {
         Font_p->file_p = nh_core_getFileData(Font_p->id_p, &Font_p->fileSize);
-        NH_GFX_CHECK_MEM_2(NULL, Font_p->file_p)
+        NH_CORE_CHECK_MEM_2(NULL, Font_p->file_p)
     }
     Instance_p->external_p = texture_font_new_from_memory(&FreeType, Font_p->Atlas.external_p, fontSize, Font_p->file_p, Font_p->fileSize);
 
-    NH_GFX_CHECK_NULL_2(NULL, Instance_p->external_p)
+    NH_CORE_CHECK_NULL_2(NULL, Instance_p->external_p)
     ((texture_font_t*)Instance_p->external_p)->rendermode = RENDER_SIGNED_DISTANCE_FIELD;
 
     Instance_p->Font_p    = Font_p;
@@ -185,14 +175,12 @@ NH_GFX_BEGIN()
     Instance_p->descender = ((texture_font_t*)Instance_p->external_p)->descender;
     Instance_p->hres      = ((texture_font_t*)Instance_p->external_p)->hres;
 
-NH_GFX_END(Instance_p)
+    return Instance_p;
 }
 
 nh_gfx_FontInstance *nh_gfx_claimFontInstance(
     nh_gfx_Font *Font_p, unsigned int fontSize)
 {
-NH_GFX_BEGIN()
-
     nh_gfx_FontInstance *Instance_p = NULL;
     for (int i = 0; i < Font_p->Instances.length; ++i) {
         Instance_p = &((nh_gfx_FontInstance*)Font_p->Instances.p)[i];
@@ -201,66 +189,56 @@ NH_GFX_BEGIN()
     }
 
     if (!Instance_p || !Instance_p->external_p) {
-        NH_GFX_END(nh_gfx_loadFontInstance(Font_p, fontSize, Instance_p))
+        return nh_gfx_loadFontInstance(Font_p, fontSize, Instance_p);
     }
 
     // TODO claim counter
 
-NH_GFX_END(Instance_p)
+    return Instance_p;
 }
 
 NH_API_RESULT nh_gfx_unclaimFontInstance(
     nh_gfx_FontInstance *Instance_p)
 {
-NH_GFX_BEGIN()
-
     // TODO unclaim check
 
     texture_atlas_clear(Instance_p->Font_p->Atlas.external_p);
     texture_font_delete(Instance_p->external_p);
     Instance_p->external_p = NULL;
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
-
-// GLYPH ===========================================================================================
 
 NH_API_RESULT nh_gfx_loadGlyphs(
     nh_gfx_FontInstance *Instance_p, NH_ENCODING_UTF32 *text_p, unsigned int textLength)
 {
-NH_GFX_BEGIN()
-
     if (texture_font_load_glyphs(&FreeType, Instance_p->external_p, text_p, textLength, "en")) {
-        NH_GFX_END(NH_API_ERROR_BAD_STATE)
+        return NH_API_ERROR_BAD_STATE;
     }
 
-NH_GFX_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 bool nh_gfx_hasGlyph(
     nh_gfx_FontInstance *Instance_p, NH_ENCODING_UTF32 codepoint)
 {
-NH_GFX_BEGIN()
-
     if (FT_Get_Char_Index(((texture_font_t*)Instance_p->external_p)->ft_face, codepoint)) {
-        NH_GFX_END(true)
+        return true;
     }
 
-NH_GFX_END(false)
+    return false;
 }
 
 nh_gfx_Glyph nh_gfx_getGlyph(
     nh_gfx_FontInstance *Instance_p, NH_ENCODING_UTF32 id)
 {
-NH_GFX_BEGIN()
-
     nh_gfx_Glyph Glyph = {0};
 
     char bytes_p[4];
     memset(bytes_p, 0, 4);
 
     texture_glyph_t *Glyph_p = texture_font_get_glyph(Instance_p->external_p, id);
-    if (!Glyph_p) {NH_GFX_END(Glyph)}
+    if (!Glyph_p) {return Glyph;}
 
     Glyph.external_p = Glyph_p;
 
@@ -275,17 +253,13 @@ NH_GFX_BEGIN()
     Glyph.u1 = Glyph_p->s1;
     Glyph.v1 = Glyph_p->t1;
 
-NH_GFX_END(Glyph)
+    return Glyph;
 }
 
-// GET =============================================================================================
-
-nh_List nh_gfx_getFonts(
+nh_core_List nh_gfx_getFonts(
     nh_gfx_FontFamily FontFamily, nh_gfx_FontStyle FontStyle, bool internal)
 {
-NH_GFX_BEGIN()
-
-    nh_List Fonts = nh_core_initList(64);
+    nh_core_List Fonts = nh_core_initList(64);
 
     for (int i = 0; i < NH_GFX_FONT_MANAGER.Fonts.size; ++i) 
     {
@@ -316,27 +290,23 @@ NH_GFX_BEGIN()
         }
     }
 
-NH_GFX_END(Fonts)
+    return Fonts;
 }
 
 nh_gfx_Font *nh_gfx_getFontUsingId(
     char *id_p)
 {
-NH_GFX_BEGIN()
-
     for (int i = 0; i < NH_GFX_FONT_MANAGER.Fonts.size; ++i) {
         nh_gfx_Font *Font_p = NH_GFX_FONT_MANAGER.Fonts.pp[i];
-        if (!strcmp(Font_p->id_p, id_p)) {NH_GFX_END(Font_p)}
+        if (!strcmp(Font_p->id_p, id_p)) {return Font_p;}
     }
 
-NH_GFX_END(NULL)
+    return NULL;
 }
 
 nh_gfx_Font *nh_gfx_getDefaultFont(
-    NH_GFX_GENERIC_FONT_FAMILY generic, NH_GFX_FONT_WEIGHT weight, bool italic, bool oblique)
+    NH_GFX_GENERIC_FONT_FAMILY generic, NH_GFX_FONT_WEIGHT_E weight, bool italic, bool oblique)
 {
-NH_GFX_BEGIN()
-
     nh_gfx_FontFamily Family = nh_gfx_initFontFamily(NULL);
     Family.generic_p[generic] = true;
 
@@ -345,51 +315,43 @@ NH_GFX_BEGIN()
     Style.italic = italic;
     Style.oblique = oblique;
 
-    nh_List Fonts = nh_gfx_getFonts(Family, Style, false);
+    nh_core_List Fonts = nh_gfx_getFonts(Family, Style, false);
     nh_gfx_Font *Font_p = Fonts.size <= 0 ? NULL : Fonts.pp[0]; // TODO define default fonts
     nh_core_freeList(&Fonts, false);
 
-NH_GFX_END(Font_p)
+    return Font_p;
 }
-
-// FONT MANAGER ====================================================================================
 
 static NH_API_RESULT nh_gfx_addInitialFonts()
 {
-NH_GFX_BEGIN()
-
     // First system fonts.
 
 #ifdef __unix__
-    NH_GFX_CHECK(nh_gfx_addFontDirectory("/usr/share/fonts/"))
-    NH_GFX_CHECK(nh_gfx_addFontDirectory("/usr/local/share/fonts/"))
-    NH_GFX_CHECK(nh_gfx_addFontDirectory("~/.fonts/"))
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("/usr/share/fonts/"))
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("/usr/local/share/fonts/"))
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("~/.fonts/"))
 #elif defined(_WIN32) || defined (WIN32)
     // TODO
 #endif
 
     // Then internal fonts.
 
-    NH_GFX_CHECK(nh_gfx_addFont(source_code_pro_ttf_inc, source_code_pro_ttf_inc_len, "SourceCodePro", true))
+    NH_CORE_CHECK(nh_gfx_addFont(source_code_pro_ttf_inc, source_code_pro_ttf_inc_len, "SourceCodePro", true))
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_gfx_initializeFontManager()
 {
-NH_GFX_BEGIN()
-
     NH_GFX_FONT_MANAGER.Fonts = nh_core_initList(255);
 
-    if (FT_Init_FreeType(&FreeType)) {NH_GFX_END(NH_API_ERROR_BAD_STATE)}
+    if (FT_Init_FreeType(&FreeType)) {return NH_API_ERROR_BAD_STATE;}
 
-NH_GFX_DIAGNOSTIC_END(nh_gfx_addInitialFonts())
+    return nh_gfx_addInitialFonts();
 }
 
 void nh_gfx_terminateFontManager()
 {
-NH_GFX_BEGIN()
-
     for (int i = 0; i < NH_GFX_FONT_MANAGER.Fonts.size; ++i) 
     {
         nh_gfx_Font *Font_p = NH_GFX_FONT_MANAGER.Fonts.pp[i];
@@ -415,6 +377,5 @@ NH_GFX_BEGIN()
 
     FT_Done_FreeType(FreeType);
 
-NH_GFX_SILENT_END()
+    return;
 }
-

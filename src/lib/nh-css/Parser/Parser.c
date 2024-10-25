@@ -11,9 +11,7 @@
 #include "Parser.h"
 
 #include "../Interfaces/StyleSheet.h"
-
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/Util/Array.h"
 #include "../../nh-core/System/Memory.h"
@@ -34,13 +32,11 @@ nh_css_StyleSheetObject *NH_CSS_DEFAULT_STYLE_SHEET_P = NULL;
 // PARSER INTERFACE ================================================================================
 
 nh_css_StyleSheetObject *nh_css_parseStyleSheetFromUTF32(
-    nh_encoding_UTF32String *String_p, nh_css_DocumentObject *Document_p)
+    nh_encoding_UTF32String *String_p, nh_webidl_Object *Document_p)
 {
-NH_CSS_BEGIN()
+    nh_core_Array Tokens = nh_css_tokenize(String_p);
 
-    nh_Array Tokens = nh_css_tokenize(String_p);
-
-    nh_List TokenList = nh_core_initList(Tokens.length);
+    nh_core_List TokenList = nh_core_initList(Tokens.length);
     for (int i = 0; i < Tokens.length; ++i) {
         nh_core_appendToList(&TokenList, &((nh_css_Token*)Tokens.p)[i]);
     }
@@ -55,25 +51,23 @@ NH_CSS_BEGIN()
 
     nh_core_freeList(&TokenList, false);
 
-NH_CSS_END(StyleSheet_p)
+    return StyleSheet_p;
 }
 
 nh_css_ComponentValueData nh_css_parseComponentValuesFromUTF8Codepoints(
     char *logId_p, char *p, unsigned long long length)
 {
-NH_CSS_BEGIN()
-
     nh_encoding_UTF32String String = nh_encoding_decodeUTF8(p, length, NULL);
 
-    nh_Array Tokens = nh_css_tokenize(&String);
+    nh_core_Array Tokens = nh_css_tokenize(&String);
 
-    nh_List TokenList = nh_core_initList(Tokens.length);
+    nh_core_List TokenList = nh_core_initList(Tokens.length);
     for (int i = 0; i < Tokens.length; ++i) {
         nh_core_appendToList(&TokenList, &((nh_css_Token*)Tokens.p)[i]);
     }
 
     nh_css_TokenParser Parser = nh_css_initTokenParser((nh_css_Token**)TokenList.pp, TokenList.size);
-    nh_Array ComponentValues = nh_css_parseComponentValues(&Parser);
+    nh_core_Array ComponentValues = nh_css_parseComponentValues(&Parser);
 
     nh_core_freeList(&TokenList, false);
     nh_encoding_freeUTF32(&String);
@@ -82,25 +76,23 @@ NH_CSS_BEGIN()
     Result.Tokens          = Tokens;
     Result.ComponentValues = ComponentValues;
 
-NH_CSS_END(Result)
+    return Result;
 }
 
 nh_css_DeclarationData nh_css_parseDeclarationsFromBytes(
     char *logId_p, char *p, unsigned long long length)
 {
-NH_CSS_BEGIN()
-
     nh_encoding_UTF32String String = nh_encoding_decodeUTF8(p, length, NULL);
 
-    nh_Array Tokens = nh_css_tokenize(&String);
+    nh_core_Array Tokens = nh_css_tokenize(&String);
 
-    nh_List TokenList = nh_core_initList(Tokens.length);
+    nh_core_List TokenList = nh_core_initList(Tokens.length);
     for (int i = 0; i < Tokens.length; ++i) {
         nh_core_appendToList(&TokenList, &((nh_css_Token*)Tokens.p)[i]);
     }
 
     nh_css_TokenParser Parser = nh_css_initTokenParser((nh_css_Token**)TokenList.pp, TokenList.size);
-    nh_Array Declarations = nh_css_parseDeclarations(&Parser);
+    nh_core_Array Declarations = nh_css_parseDeclarations(&Parser);
 
     nh_core_freeList(&TokenList, false);
     nh_encoding_freeUTF32(&String);
@@ -109,6 +101,6 @@ NH_CSS_BEGIN()
     Result.Tokens       = Tokens;
     Result.Declarations = Declarations;
 
-NH_CSS_END(Result)
+    return Result;
 }
 

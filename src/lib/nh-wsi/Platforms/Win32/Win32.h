@@ -56,7 +56,7 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
     );
     
     NH_API_RESULT nh_Win32_setWindowBackgroundColor(
-        nh_Win32_Window *Window_p, nh_Color Color
+        nh_Win32_Window *Window_p, nh_css_Color Color
     );
     
     NH_API_RESULT nh_Win32_setWindowTitle(

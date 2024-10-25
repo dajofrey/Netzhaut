@@ -45,11 +45,11 @@
 //NH_GFX_BEGIN()
 //
 ////    nh_Texture *Dummy_p = nh_core_initTexture(Content_p, NULL, NULL);
-////    NH_GFX_CHECK_NULL(Dummy_p)
+////    NH_CORE_CHECK_NULL(Dummy_p)
 ////     
 ////    switch (Content_p->Tab_p->GPU.API)
 ////    {
-////        case NH_API_VULKAN : NH_GFX_CHECK(nh_vk_hardLoadTexture(Content_p->Tab_p->GPU.Pointer, Dummy_p)) break;
+////        case NH_API_VULKAN : NH_CORE_CHECK(nh_vk_hardLoadTexture(Content_p->Tab_p->GPU.Pointer, Dummy_p)) break;
 ////        case NH_API_DIRECTX : break;
 ////    }
 //
@@ -63,7 +63,7 @@
 //
 //#include NH_GFX_CUSTOM_CHECK
 //
-//    NH_GFX_CHECK_NULL(NULL, Content_p)
+//    NH_CORE_CHECK_NULL(NULL, Content_p)
 //
 //    nh_URI URI = URI_p == NULL ? nh_core_createURI(location_p, NULL, NULL, -1) : nh_copyURI(URI_p);
 //
@@ -82,8 +82,8 @@
 //NH_GFX_BEGIN()
 //
 //    nh_Texture *Texture_p = nh_core_allocate(sizeof(nh_Texture));
-//    NH_GFX_CHECK_NULL(NULL, Texture_p)
-//    NH_GFX_CHECK(NULL, nh_core_appendToLinkedList(&Content_p->Textures, Texture_p))
+//    NH_CORE_CHECK_NULL(NULL, Texture_p)
+//    NH_CORE_CHECK(NULL, nh_core_appendToLinkedList(&Content_p->Textures, Texture_p))
 //
 //    Texture_p->gamma    = NH_CONFIG.Settings.gamma;
 //    Texture_p->pixels_p = NULL;
@@ -105,7 +105,7 @@
 //
 //#include NH_GFX_CUSTOM_CHECK
 //
-//    NH_GFX_CHECK_NULL(NULL, Texture_p)
+//    NH_CORE_CHECK_NULL(NULL, Texture_p)
 //
 //    switch (Surface_p->api)
 //    {
@@ -118,12 +118,12 @@
 //    // catch already loaded texture
 //    if (Texture_p->pixels_p != NULL || Texture_p->data_p != NULL) {NH_GFX_END(NULL)}
 //
-//    NH_GFX_CHECK(NULL, nh_gfx_loadFont(Font_p))
+//    NH_CORE_CHECK(NULL, nh_gfx_loadFont(Font_p))
 //
 //    Texture_p->width    = Font_p->Atlas.width;
 //    Texture_p->height   = Font_p->Atlas.height;
 //    Texture_p->pixels_p = Font_p->Atlas.data_p;
-//    NH_GFX_CHECK_NULL(NULL, Texture_p->pixels_p)
+//    NH_CORE_CHECK_NULL(NULL, Texture_p->pixels_p)
 //
 //#include NH_GFX_DEFAULT_CHECK
 //
@@ -135,7 +135,7 @@
 //{
 //NH_GFX_BEGIN()
 //
-//    NH_GFX_CHECK_NULL(NULL, Texture_p)
+//    NH_CORE_CHECK_NULL(NULL, Texture_p)
 //
 //    // catch already loaded texture
 //    if (Texture_p->pixels_p != NULL || Texture_p->data_p != NULL) {NH_GFX_END(NULL)}
@@ -150,7 +150,7 @@
 //            char *data_p = nh_core_getPayload(&Texture_p->URI);
 //            Texture_p->pixels_p = stbi_load_from_memory(data_p, Texture_p->URI.size, &Texture_p->width, &Texture_p->height, &Texture_p->compression, STBI_rgb_alpha);
 //            nh_core_freePayload(&Texture_p->URI);
-//            NH_GFX_CHECK_NULL(NULL, Texture_p->pixels_p)
+//            NH_CORE_CHECK_NULL(NULL, Texture_p->pixels_p)
 //
 //            break;
 //        }
@@ -158,19 +158,19 @@
 //        case NH_MEDIA_FONT_OTF :
 //        { 
 //            nh_Font *Font_p = nh_core_getFontUsingURI(&Texture_p->URI);
-//            NH_GFX_CHECK(NULL, nh_core_loadFont(Font_p))
+//            NH_CORE_CHECK(NULL, nh_core_loadFont(Font_p))
 //
 //            Texture_p->width    = Font_p->Atlas.width;
 //            Texture_p->height   = Font_p->Atlas.height;
 //            Texture_p->pixels_p = Font_p->Atlas.data_p;
-//            NH_GFX_CHECK_NULL(NULL, Texture_p->pixels_p)
+//            NH_CORE_CHECK_NULL(NULL, Texture_p->pixels_p)
 //
 //            break;
 //        }
 ////        case -1 :
 ////        {
 ////            Texture_p->data_p = nh_core_allocate(sizeof(uint32_t) * 10000);
-////            NH_GFX_CHECK_NULL(NULL, Texture_p->data_p)
+////            NH_CORE_CHECK_NULL(NULL, Texture_p->data_p)
 ////            for (int i = 0; i < 10000; ++i) {((uint32_t*)Texture_p->data_p)[i] = 255;}
 ////
 ////            Texture_p->width  = 100;
@@ -226,7 +226,7 @@
 //NH_GFX_BEGIN()
 //
 //    while (Content_p->Textures.count > 0) {
-//        NH_GFX_CHECK(nh_deleteTexture(Content_p, nh_core_getFromLinkedList(&Content_p->Textures, 0)))
+//        NH_CORE_CHECK(nh_deleteTexture(Content_p, nh_core_getFromLinkedList(&Content_p->Textures, 0)))
 //    }
 //
 //    nh_core_destroyLinkedList(&Content_p->Textures, true);
@@ -239,8 +239,8 @@
 //{
 //NH_GFX_BEGIN()
 //
-////    NH_GFX_CHECK_NULL(Content_p)
-////    NH_GFX_CHECK_NULL(Texture_p)
+////    NH_CORE_CHECK_NULL(Content_p)
+////    NH_CORE_CHECK_NULL(Texture_p)
 ////
 ////    int index = -1;
 ////    for (int i = 0; i < Content_p->Textures.count; ++i) {
@@ -268,10 +268,10 @@
 ////    if (Content_p == NULL || Texture_p == NULL) {NH_GFX_END(NH_SUCCESS)}
 ////
 ////    nh_softFreeTexture(Texture_p);
-////    NH_GFX_CHECK_NULL(nh_softLoadTexture(Texture_p))
+////    NH_CORE_CHECK_NULL(nh_softLoadTexture(Texture_p))
 ////
 ////    if (Texture_p->Vulkan_p != NULL) {
-////        NH_GFX_CHECK(nh_vk_hardReloadTexture(Content_p->Tab_p->GPU.Pointer, Texture_p))
+////        NH_CORE_CHECK(nh_vk_hardReloadTexture(Content_p->Tab_p->GPU.Pointer, Texture_p))
 ////    }
 //
 //NH_GFX_END(NH_SUCCESS)

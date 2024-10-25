@@ -24,11 +24,11 @@
         char name_p[255];
         nh_webidl_Specification *Specification_p;
         nh_webidl_FragmentParseResult ParseResult;
-        nh_Array Interfaces;
+        nh_core_Array Interfaces;
     } nh_webidl_Fragment;
 
     typedef struct nh_webidl_Runtime {
-        nh_Array Specifications;
+        nh_core_Array Specifications;
     } nh_webidl_Runtime;
 
 /** @} */
@@ -64,7 +64,7 @@
         char *specification_p, char *interface_p
     );
 
-    nh_List nh_webidl_getCompositeInterfaces(
+    nh_core_List nh_webidl_getCompositeInterfaces(
         nh_webidl_Interface *PartialInterface_p
     );
 

@@ -145,13 +145,13 @@
     typedef struct nh_webidl_ParseNode {
         NH_WEBIDL_PARSE_NODE type;
         nh_webidl_Token *Token_p;
-        nh_List Children;
+        nh_core_List Children;
     } nh_webidl_ParseNode;
 
     typedef struct nh_webidl_FragmentParseResult {
         nh_webidl_ParseNode *Root_p;
-        nh_Array Tokens;
-        nh_List SyntaxErrors;
+        nh_core_Array Tokens;
+        nh_core_List SyntaxErrors;
     } nh_webidl_FragmentParseResult;
 
 /** @} */
@@ -195,7 +195,7 @@
     );
 
     NH_API_RESULT nh_webidl_getParseNodes(
-        nh_webidl_ParseNode *Node_p, NH_WEBIDL_PARSE_NODE type, nh_List *Nodes_p
+        nh_webidl_ParseNode *Node_p, NH_WEBIDL_PARSE_NODE type, nh_core_List *Nodes_p
     );
 
 /** @} */

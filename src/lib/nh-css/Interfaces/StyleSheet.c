@@ -15,7 +15,6 @@
 #include "Document.h"
 
 #include "../Parser/Parser.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-webidl/Runtime/Object.h"
@@ -33,15 +32,13 @@
 NH_API_RESULT nh_css_initializeCSSStyleSheet(
     nh_webidl_Object *StyleSheet_p)
 {
-NH_CSS_BEGIN()
-
-    StyleSheet_p->internal_p = nh_core_allocate(sizeof(nh_Array));
-    NH_CSS_CHECK_MEM(StyleSheet_p->internal_p)
+    StyleSheet_p->internal_p = nh_core_allocate(sizeof(nh_core_Array));
+    NH_CORE_CHECK_MEM(StyleSheet_p->internal_p)
 
     StyleSheet_p->Attributes.pp[1] = nh_webidl_createObject("CSS", "CSSRuleList");
-    NH_CSS_CHECK_NULL(StyleSheet_p->Attributes.pp[1])
+    NH_CORE_CHECK_NULL(StyleSheet_p->Attributes.pp[1])
 
-NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 // API =============================================================================================
@@ -49,34 +46,27 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 nh_css_StyleSheetObject *nh_css_getStyleSheet(
     nh_webidl_Object *Object_p)
 {
-NH_CSS_BEGIN()
-NH_CSS_END((nh_css_StyleSheetObject*)nh_webidl_getObject(Object_p, "CSS", "CSSStyleSheet"))
+    return (nh_css_StyleSheetObject*)nh_webidl_getObject(Object_p, "CSS", "CSSStyleSheet");
 }
 
 nh_css_RuleListObject *nh_css_getRuleList(
     nh_css_StyleSheetObject *StyleSheet_p)
 {
-NH_CSS_BEGIN()
-NH_CSS_END(((nh_webidl_Object*)StyleSheet_p)->Attributes.pp[1])
+    return ((nh_webidl_Object*)StyleSheet_p)->Attributes.pp[1];
 }
 
 void nh_css_setStyleSheetTokens(
-    nh_css_StyleSheetObject *StyleSheet_p, nh_Array Tokens)
+    nh_css_StyleSheetObject *StyleSheet_p, nh_core_Array Tokens)
 {
-NH_CSS_BEGIN()
-
-    *((nh_Array*)((nh_webidl_Object*)StyleSheet_p)->internal_p) = Tokens;
-
-NH_CSS_SILENT_END()
+    *((nh_core_Array*)((nh_webidl_Object*)StyleSheet_p)->internal_p) = Tokens;
+    return;
 }
 
 // AT RULES ========================================================================================
 
 static bool nh_css_compareCounterStyleRuleName(
-    nh_Array *Prelude_p, char *name_p)
+    nh_core_Array *Prelude_p, char *name_p)
 {
-NH_CSS_BEGIN()
-
     bool match = false;
 
     for (int i = 0; i < Prelude_p->length; ++i) {
@@ -92,20 +82,18 @@ NH_CSS_BEGIN()
         }
     }
 
-NH_CSS_END(match)
+    return match;
 }
 
 nh_webidl_Object *nh_css_findCounterStyleRule(
     nh_css_StyleSheetObject *StyleSheet_p, char *name_p)
 {
-NH_CSS_BEGIN()
-
-    NH_ENCODING_UTF32 tmp_p[] = {99, 111, 117, 110, 116, 101, 114, 45, 115, 116, 121, 108, 101}; // counter-style
-    nh_encoding_UTF32String Name = nh_encoding_initUTF32(13);
-    nh_encoding_appendUTF32(&Name, tmp_p, 13);
+    NH_ENCODING_UTF32 tmp_p[] = {99, 111, 117, 110, 116, 101, 114, 45, 115, 116, 121, 108, 101, 0}; // counter-style
+    nh_encoding_UTF32String Name = nh_encoding_initUTF32(14);
+    nh_encoding_appendUTF32(&Name, tmp_p, 14);
 
     nh_css_RuleListObject *RuleList_p = ((nh_webidl_Object*)StyleSheet_p)->Attributes.pp[1];
-    nh_List *List_p = nh_css_getRuleListData(RuleList_p);
+    nh_core_List *List_p = nh_css_getRuleListData(RuleList_p);
 
     nh_webidl_Object *Object_p = NULL;
     for (int i = 0; i < List_p->size; ++i) {
@@ -120,6 +108,5 @@ NH_CSS_BEGIN()
 
     nh_encoding_freeUTF32(&Name);
 
-NH_CSS_END(Object_p)
+    return Object_p;
 }
-

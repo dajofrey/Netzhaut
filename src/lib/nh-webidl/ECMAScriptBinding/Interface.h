@@ -19,7 +19,7 @@
 
 typedef struct nh_webidl_Specification { 
     char name_p[255]; 
-    nh_Array Fragments; 
+    nh_core_Array Fragments; 
 } nh_webidl_Specification; 
 
 typedef struct nh_webidl_InterfaceInheritance { 
@@ -30,7 +30,7 @@ typedef struct nh_webidl_InterfaceInheritance {
 typedef struct nh_webidl_Interface { 
     bool partial; 
     char *name_p; 
-    nh_Array Members; 
+    nh_core_Array Members; 
     nh_webidl_Specification *Specification_p; 
     nh_webidl_InterfaceInheritance *Inheritance_p; 
 } nh_webidl_Interface; 

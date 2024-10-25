@@ -9,7 +9,6 @@
 // INCLUDES ========================================================================================
 
 #include "Initialize.h"
-#include "Macros.h"
 
 #include "../Vulkan/Pipeline.h"
 
@@ -27,18 +26,16 @@
 
 NH_API_RESULT nh_renderer_initialize()
 {
-NH_RENDERER_BEGIN()
-
     for (int i = 0; i < NH_VULKAN.GPUs.size; ++i) 
     {
-        nh_vk_GPU *GPU_p = NH_VULKAN.GPUs.pp[i];
+        nh_gfx_VulkanGPU *GPU_p = NH_VULKAN.GPUs.pp[i];
 
-        GPU_p->Renderer.Pipelines_p = nh_core_allocate(sizeof(nh_vk_Pipeline) * NH_RENDERER_VK_PIPELINE_COUNT);
-        NH_RENDERER_CHECK_MEM(GPU_p->Renderer.Pipelines_p)
+        GPU_p->Renderer.Pipelines_p = nh_core_allocate(sizeof(nh_gfx_VulkanPipeline) * NH_RENDERER_VK_PIPELINE_COUNT);
+        NH_CORE_CHECK_MEM(GPU_p->Renderer.Pipelines_p)
  
-        NH_RENDERER_CHECK(nh_renderer_vk_createPipelines(&GPU_p->Driver, GPU_p->Renderer.Pipelines_p))
+        NH_CORE_CHECK(nh_renderer_createVulkanPipelines(&GPU_p->Driver, GPU_p->Renderer.Pipelines_p))
     }
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

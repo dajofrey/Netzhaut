@@ -7,3 +7,4 @@
 [submodule "external/TTyr"]
 	path = external/TTyr
 	url = https://github.com/dajofrey/TTyr.git
+	fetchRecurseSubmodules = false

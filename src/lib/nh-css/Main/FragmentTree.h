@@ -49,7 +49,7 @@
         nh_css_PixelBox Block;
         struct nh_css_Fragment *Parent_p;
         nh_css_BoxTreeNode *Node_p;
-        nh_List Children;
+        nh_core_List Children;
         void *data_p;
     } nh_css_Fragment;
 

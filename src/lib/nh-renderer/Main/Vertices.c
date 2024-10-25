@@ -12,7 +12,6 @@
 #include "BoxTriangulation.h"
 
 #include "../Common/Log.h"
-#include "../Common/Macros.h"
 
 #include "../../nh-gfx/Base/Viewport.h"
 #include "../../nh-gfx/Fonts/HarfBuzz.h"
@@ -28,8 +27,6 @@
 nh_renderer_ClipBox nh_renderer_convertToClipBox(
     nh_gfx_Viewport *Viewport_p, nh_css_PixelBox PixelBox)
 {
-NH_RENDERER_BEGIN()
-
     #define CLIP_LENGTH(VALUE) (VALUE + 1.0f)
     #define PIXEL_TO_CLIP(PIXEL, VIEWPORT, basedOnWidth)                                            \
     (                                                                                             \
@@ -47,7 +44,7 @@ NH_RENDERER_BEGIN()
 
     ClipBox.depth = PixelBox.depth;
 
-NH_RENDERER_END(ClipBox)
+    return ClipBox;
 }
 
 // HELPER ==========================================================================================
@@ -55,8 +52,6 @@ NH_RENDERER_END(ClipBox)
 //static void nh_renderer_getTextureTriangles(
 //    nh_Triangle Triangles_p[2], nh_renderer_ClipBox Box)
 //{
-//NH_RENDERER_BEGIN()
-//
 //    Triangles_p[0].V1.x = Box.Position.x;
 //    Triangles_p[0].V1.y = Box.Position.y;
 //    Triangles_p[0].V1.z = Box.depth;
@@ -101,8 +96,6 @@ NH_RENDERER_END(ClipBox)
 int nh_renderer_getBackgroundVertices(
     nh_gfx_Viewport *Viewport_p, nh_css_Fragment *Fragment_p, float *vertices_p, int cornerTriangleCount)
 {
-NH_RENDERER_BEGIN()
-
     int triangleCount = 0;
     nh_Triangle Triangles_p[1024] = {0.0f};
 
@@ -126,15 +119,13 @@ NH_RENDERER_BEGIN()
         nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, false);
     }
 
-NH_RENDERER_END(triangleCount * 9)
+    return triangleCount * 9;
 }
 
 //NH_API_RESULT nh_renderer_getBackgroundImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_renderer_FormattingNodeFragment *Fragment_p, float vertices_p[30], NH_RENDERER_Image *Image_p, 
 //    float subtractFromZ)
 //{
-//NH_RENDERER_BEGIN()
-//
 //    nh_renderer_ClipBox Box = nh_renderer_convertToClipBox(Viewport_p, nh_renderer_getBackgroundImageBox(Viewport_p, Fragment_p, Image_p, subtractFromZ));
 //
 //    nh_Triangle Triangles_p[2] = {0.0f};
@@ -156,8 +147,6 @@ int nh_renderer_getBorderVertices(
     nh_gfx_Viewport *Viewport_p, nh_css_Fragment *Fragment_p, float *vertices_p, char *side_p, 
     int cornerTriangleCount)
 {
-NH_RENDERER_BEGIN()
-
     nh_css_PixelBox MarginBox = nh_css_getMarginBox(&Fragment_p->Block, &Fragment_p->Box.Values);
     nh_renderer_ClipBox PaddingBox = nh_renderer_convertToClipBox(Viewport_p, nh_css_getPaddingBox(&MarginBox, &Fragment_p->Box.Values)); 
     nh_renderer_ClipBox BorderBox  = nh_renderer_convertToClipBox(Viewport_p, nh_css_getBorderBox(&MarginBox, &Fragment_p->Box.Values));
@@ -177,14 +166,12 @@ NH_RENDERER_BEGIN()
 //    nh_scrollTriangles(Viewport_p, Triangles_p, triangleCount);
     nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, false);
 
-NH_RENDERER_END(triangleCount * 9)
+    return triangleCount * 9;
 }
 
 //NH_API_RESULT nh_renderer_getImageVertices(
 //    nh_gfx_Viewport *Viewport_p, nh_renderer_FormattingNodeFragment *Fragment_p, float vertices_p[30], float subtractFromZ)
 //{
-//NH_RENDERER_BEGIN()
-//
 //    nh_renderer_ClipBox ContentBox = nh_renderer_convertToClipBox(Viewport_p, nh_renderer_getContentPixelBox(Fragment_p, 0));
 //    ContentBox.depth -= subtractFromZ;
 //
@@ -201,16 +188,14 @@ NH_API_RESULT nh_renderer_getTextVertices(
     nh_gfx_Viewport *Viewport_p, nh_gfx_TextSegment *Segment_p, int *x_p, int y, float *z_p,
     float **vertices_pp, uint32_t **indices_pp)
 {
-NH_RENDERER_BEGIN()
-
     unsigned int glyphs = 0;
     nh_gfx_HarfBuzzBuffer Buffer = nh_gfx_createHarfBuzzBuffer(Segment_p->FontInstance_p, Segment_p->codepoints_p, Segment_p->length);
     nh_gfx_HarfBuzzGlyphInfo *Infos_p = nh_gfx_getHarfBuzzGlyphInfos(Buffer, &glyphs);
 
     nh_Vertex *Vertices_p = nh_core_allocate(sizeof(nh_Vertex) * 4 * glyphs);
     uint32_t *indices_p   = nh_core_allocate(sizeof(uint32_t) * 6 * glyphs);
-    NH_RENDERER_CHECK_NULL(Vertices_p)
-    NH_RENDERER_CHECK_NULL(indices_p)
+    NH_CORE_CHECK_NULL(Vertices_p)
+    NH_CORE_CHECK_NULL(indices_p)
 
     nh_css_PixelBox GlyphBox;
     GlyphBox.Position.x = *x_p;
@@ -271,7 +256,7 @@ NH_RENDERER_BEGIN()
     *z_p -= 0.000001f * glyphs;
 
     float *vertices_p = nh_core_allocate(sizeof(float) * 20 * glyphs);
-    NH_RENDERER_CHECK_MEM(vertices_p)
+    NH_CORE_CHECK_MEM(vertices_p)
     nh_verticesToArray(Vertices_p, vertices_p, 4 * glyphs, true, 0);
 
     if (vertices_pp != NULL) {*vertices_pp = vertices_p;}
@@ -282,6 +267,6 @@ NH_RENDERER_BEGIN()
 
     nh_gfx_destroyHarfBuzzBuffer(Buffer);
 
-NH_RENDERER_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

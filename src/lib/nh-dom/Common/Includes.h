@@ -15,6 +15,7 @@
 #include "../../nh-api/nh-webidl.h"
 
 #include "../../nh-webidl/Runtime/Type.h"
+#include "../../nh-core/Util/Debug.h"
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

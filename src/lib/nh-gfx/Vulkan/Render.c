@@ -26,13 +26,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-// PREPARE RENDERING ===============================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_vk_prepareRendering(
-    nh_vk_Surface *Surface_p)
+    nh_gfx_VulkanSurface *Surface_p)
 {
-NH_GFX_BEGIN()
-
     VkResult result = Surface_p->GPU_p->Driver.Functions.vkAcquireNextImageKHR(
         Surface_p->GPU_p->Driver.Device, Surface_p->SwapchainKHR, UINT64_MAX, Surface_p->Sync.Semaphore_p[0], 
         VK_NULL_HANDLE, &Surface_p->currentImage
@@ -40,16 +38,12 @@ NH_GFX_BEGIN()
 
     NH_GFX_CHECK_VULKAN(result)
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
-// RENDER ==========================================================================================
-
 static NH_API_RESULT nh_vk_clearSurface(
-    nh_gfx_Surface *Surface_p, nh_vk_Driver *Driver_p)
+    nh_gfx_Surface *Surface_p, nh_gfx_VulkanDriver *Driver_p)
 {
-NH_GFX_BEGIN()
-
     VkCommandBuffer *CommandBuffer_p = &Surface_p->Vulkan.CommandBuffers_p[Surface_p->Vulkan.currentImage];
 
     VkCommandBufferBeginInfo CommandBufferInfo = 
@@ -97,21 +91,19 @@ NH_GFX_BEGIN()
 
     Driver_p->Functions.vkEndCommandBuffer(*CommandBuffer_p);
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_vk_render( // TODO multi GPU rendering
-    nh_gfx_Surface *Surface_p, nh_List *SortedViewports_p)
+    nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p)
 {
-NH_GFX_BEGIN()
-
     VkSemaphore *Semaphores_pp[2] = {&Surface_p->Vulkan.Sync.Semaphore_p[0], &Surface_p->Vulkan.Sync.Semaphore_p[1]};
 
     VkCommandBuffer *Commands_p = nh_core_allocate(sizeof(void*)*(SortedViewports_p->size+1));
-    NH_GFX_CHECK_MEM(Commands_p)
+    NH_CORE_CHECK_MEM(Commands_p)
 
     // insert clear commandbuffer
-    NH_GFX_CHECK(nh_vk_clearSurface(Surface_p, &Surface_p->Vulkan.GPU_p->Driver))
+    NH_CORE_CHECK(nh_vk_clearSurface(Surface_p, &Surface_p->Vulkan.GPU_p->Driver))
     Commands_p[0] = Surface_p->Vulkan.CommandBuffers_p[Surface_p->Vulkan.currentImage];
 
     // get viewport commandbuffers
@@ -144,7 +136,7 @@ NH_GFX_BEGIN()
         .pCommandBuffers      = Commands_p,
     };
 
-    nh_vk_GPU *GPU_p = Surface_p->Vulkan.GPU_p;
+    nh_gfx_VulkanGPU *GPU_p = Surface_p->Vulkan.GPU_p;
 
     NH_GFX_CHECK_VULKAN(GPU_p->Driver.Functions.vkQueueSubmit(GPU_p->Driver.GraphicsQueue, 1, &submitInfo, Surface_p->Vulkan.Sync.Fence))
     GPU_p->Driver.Functions.vkWaitForFences(GPU_p->Driver.Device, 1, &Surface_p->Vulkan.Sync.Fence, VK_TRUE, UINT64_MAX);
@@ -165,6 +157,6 @@ NH_GFX_BEGIN()
 
     nh_core_free(Commands_p); 
 
-NH_GFX_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 

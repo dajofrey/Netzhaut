@@ -11,7 +11,6 @@
 #include "LinkedList.h"
 
 #include "../System/Memory.h"
-#include "../Common/Macros.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -37,13 +36,11 @@ struct nh_LinkedListItem {
 
 nh_LinkedList nh_core_initLinkedList()
 {
-NH_CORE_BEGIN()
-
     nh_LinkedList List;
     List.count  = 0;
     List.Head_p = NULL;
 
-NH_CORE_END(List)
+    return List;
 }
 
 NH_API_RESULT _nh_core_appendToLinkedList( // TODO multithreading
@@ -68,8 +65,6 @@ NH_API_RESULT _nh_core_appendToLinkedList( // TODO multithreading
 NH_API_RESULT nh_core_appendToLinkedList( // TODO multithreading
     nh_LinkedList *List_p, void *data_p)
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL(List_p)
     NH_CORE_CHECK_NULL(data_p)
 
@@ -84,22 +79,20 @@ NH_CORE_BEGIN()
 
     List_p->count++;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_insertIntoLinkedList( // TODO multithreading
     nh_LinkedList *List_p, void *data_p, int index)
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL(List_p)
     NH_CORE_CHECK_NULL(data_p)
 
     if (index >= List_p->count) {
-        NH_CORE_DIAGNOSTIC_END(nh_core_appendToLinkedList(List_p, data_p))
+        return nh_core_appendToLinkedList(List_p, data_p);
     }
     if (index <= 0) {
-        NH_CORE_DIAGNOSTIC_END(nh_core_prependToLinkedList(List_p, data_p))
+        return nh_core_prependToLinkedList(List_p, data_p);
     }
 
     int tmp = 0;
@@ -122,18 +115,16 @@ NH_CORE_BEGIN()
 
     List_p->count++;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_prependToLinkedList( // TODO multithreading
     nh_LinkedList *List_p, void *data_p)
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL(List_p)
     NH_CORE_CHECK_NULL(data_p)
 
-    if (List_p->Head_p == NULL) {NH_CORE_END(nh_core_appendToLinkedList(List_p, data_p))}
+    if (List_p->Head_p == NULL) {return nh_core_appendToLinkedList(List_p, data_p);}
     else {
 
         nh_LinkedListItem *Next_p = List_p->Head_p;
@@ -146,31 +137,27 @@ NH_CORE_BEGIN()
         List_p->count++;
     }
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_core_setInLinkedList(
     nh_LinkedList *List_p, int index, void *data_p)
 {
-NH_CORE_BEGIN()
-
     nh_LinkedListItem **Item_pp = &List_p->Head_p;
 
     for (int i = 0; i < index; ++i) {
         if ((*Item_pp)->Next_p != NULL) {Item_pp = &(*Item_pp)->Next_p;}
-        else {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+        else {return NH_API_ERROR_BAD_STATE;}
     }
 
     (*Item_pp)->data_p = data_p;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_replaceInLinkedList(
     nh_LinkedList *List_p, void *replace_p, void *replacement_p)
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL(List_p)
     NH_CORE_CHECK_NULL(replace_p) 
     NH_CORE_CHECK_NULL(replacement_p)
@@ -182,10 +169,10 @@ NH_CORE_BEGIN()
         index++;
     }
 
-    if (index == List_p->count) {NH_CORE_DIAGNOSTIC_END(NH_API_ERROR_BAD_STATE)}
+    if (index == List_p->count) {return NH_API_ERROR_BAD_STATE;}
     (*Item_pp)->data_p = replacement_p;
 
-NH_CORE_DIAGNOSTIC_END(NH_API_SUCCESS)
+    return NH_API_SUCCESS;
 }
 
 void *_nh_core_getFromLinkedList(
@@ -206,40 +193,34 @@ void *_nh_core_getFromLinkedList(
 void *nh_core_getFromLinkedList(
     nh_LinkedList *List_p, int index)
 {
-NH_CORE_BEGIN()
-
-    if (List_p == NULL || List_p->Head_p == NULL) {NH_CORE_END(NULL)}
+    if (List_p == NULL || List_p->Head_p == NULL) {return NULL;}
 
     nh_LinkedListItem **Item_pp = &List_p->Head_p;
 
     for (int i = 0; i < index; ++i) {
         if ((*Item_pp)->Next_p != NULL) {Item_pp = &(*Item_pp)->Next_p;}
-        else {NH_CORE_END(NULL)}
+        else {return NULL;}
     }
     
-NH_CORE_END((*Item_pp)->data_p)
+    return (*Item_pp)->data_p;
 }
 
 void nh_core_destroyLinkedList( // TODO multithreading
     nh_LinkedList *List_p, bool freeData)
 {
-NH_CORE_BEGIN()
-
     while (List_p->count > 0) {
         nh_core_removeFromLinkedList(List_p, List_p->count - 1, freeData);
     }
 
     *List_p = nh_core_initLinkedList();
     
-NH_CORE_SILENT_END()
+    return;
 }
 
 void nh_core_removeFromLinkedList( // TODO multithreading
     nh_LinkedList *List_p, int index, bool freeData)
 {
-NH_CORE_BEGIN()
-
-    if (List_p == NULL) {NH_CORE_SILENT_END()}
+    if (List_p == NULL) {return ;}
 
     nh_LinkedListItem **Item_pp = &List_p->Head_p;
     nh_LinkedListItem **Prev_pp = NULL;
@@ -251,7 +232,7 @@ NH_CORE_BEGIN()
             Prev_pp = Item_pp;
             Item_pp = &(*Item_pp)->Next_p;
         }
-        else {NH_CORE_SILENT_END()}
+        else {return ;}
     }
 
     nh_LinkedListItem *Next_p = (*Item_pp)->Next_p;
@@ -264,17 +245,15 @@ NH_CORE_BEGIN()
 
     List_p->count -= 1;
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 void nh_core_removeFromLinkedList2( // TODO multithreading
     nh_LinkedList *List_p, void *pointer, bool freeData)
 {
-NH_CORE_BEGIN()
-
     _nh_core_removeFromLinkedList2(List_p, pointer, freeData);
 
-NH_CORE_SILENT_END()
+    return;
 }
 
 void _nh_core_removeFromLinkedList2( // TODO multithreading
@@ -309,30 +288,25 @@ void _nh_core_removeFromLinkedList2( // TODO multithreading
 bool nh_inLinkedList(
     nh_LinkedList *List_p, void *pointer)
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL_2(false, List_p)
     NH_CORE_CHECK_NULL_2(false, pointer)
 
     for (int i = 0; i < List_p->count; ++i) {
-        if (nh_core_getFromLinkedList(List_p, i) == pointer) {NH_CORE_END(true)}
+        if (nh_core_getFromLinkedList(List_p, i) == pointer) {return true;}
     }
 
-NH_CORE_END(false)
+    return false;
 }
 
 int nh_core_getLinkedListIndex(
     nh_LinkedList *List_p, void *pointer)
 {
-NH_CORE_BEGIN()
-
     NH_CORE_CHECK_NULL_2(false, List_p)
     NH_CORE_CHECK_NULL_2(false, pointer)
 
     for (int i = 0; i < List_p->count; ++i) {
-        if (nh_core_getFromLinkedList(List_p, i) == pointer) {NH_CORE_END(i)}
+        if (nh_core_getFromLinkedList(List_p, i) == pointer) {return i;}
     }
 
-NH_CORE_END(-1)
+    return -1;
 }
-

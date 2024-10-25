@@ -48,7 +48,7 @@
     } nh_url_IDNAMappingTableEntry;
 
     typedef struct nh_url_IDNAMappingTable {
-        nh_Array Entries; 
+        nh_core_Array Entries; 
     } nh_url_IDNAMappingTable;
 
 /** @} */
