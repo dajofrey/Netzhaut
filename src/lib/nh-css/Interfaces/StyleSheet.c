@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// INITIALIZE ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_initializeCSSStyleSheet(
     nh_webidl_Object *StyleSheet_p)
@@ -40,8 +40,6 @@ NH_API_RESULT nh_css_initializeCSSStyleSheet(
 
     return NH_API_SUCCESS;
 }
-
-// API =============================================================================================
 
 nh_css_StyleSheetObject *nh_css_getStyleSheet(
     nh_webidl_Object *Object_p)
@@ -61,8 +59,6 @@ void nh_css_setStyleSheetTokens(
     *((nh_core_Array*)((nh_webidl_Object*)StyleSheet_p)->internal_p) = Tokens;
     return;
 }
-
-// AT RULES ========================================================================================
 
 static bool nh_css_compareCounterStyleRuleName(
     nh_core_Array *Prelude_p, char *name_p)
@@ -99,7 +95,7 @@ nh_webidl_Object *nh_css_findCounterStyleRule(
     for (int i = 0; i < List_p->size; ++i) {
         nh_css_RuleObject *Rule_p = nh_css_getRule(List_p->pp[i]);
         nh_css_Rule *RuleData_p = nh_css_getRuleData(Rule_p);
-        if (RuleData_p->Name_p && nh_encoding_compareUTF32(RuleData_p->Name_p->p, Name.p)) {
+        if (RuleData_p && RuleData_p->Name_p && nh_encoding_compareUTF32(RuleData_p->Name_p->p, Name.p)) {
             if (nh_css_compareCounterStyleRuleName(&RuleData_p->Prelude, name_p)) {
                 Object_p = List_p->pp[i]; 
             }

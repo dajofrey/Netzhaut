@@ -374,12 +374,10 @@ LIB_C_HASHMAP = external/c_hashmap/libc_hashmap.a
 LIB_VOLK = external/volk/libvolk.a
 LIB_FREETYPE_GL = external/freetype-gl/libfreetype-gl.so
 
-# Create dirs
-create_lib_dir:
-	mkdir -p lib
+# Keep this as default (first) target. 
+all: $(LIB_NHAPI) $(LIB_C_HASHMAP) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS)
 
 # Build targets for each library
-all: $(LIB_NHAPI) $(LIB_C_HASHMAP) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS)
 nh-api.so: $(LIB_NHAPI)
 nh-core.so: $(LIB_C_HASHMAP) $(LIB_NHCORE)
 nh-wsi.so: $(LIB_NHWSI)
@@ -393,6 +391,10 @@ nh-gfx.so: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX)
 nh-renderer.so: $(LIB_NHRENDERER)
 nh-css.so: $(LIB_NHCSS)
 nh-url.so: $(LIB_NHURL)
+
+# Create dirs
+create_lib_dir:
+	mkdir -p lib
 
 # Custom compiler flags
 $(OBJ_FILES_NHCORE): CFLAGS += -Isrc/lib

@@ -157,6 +157,7 @@ static NH_API_RESULT nh_css_consumeQualifiedRule(
     nh_css_TokenParser *Parser_p, nh_css_Rule *Rule_p)
 {
     Rule_p->type = NH_CSS_RULE_QUALIFIED;
+    Rule_p->Name_p = NULL;
     Rule_p->Prelude = nh_core_initArray(sizeof(nh_css_ComponentValue), 8);
     Rule_p->Block.ComponentValues = nh_core_initArray(sizeof(nh_css_ComponentValue), 8);
 

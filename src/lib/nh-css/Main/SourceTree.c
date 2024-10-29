@@ -37,19 +37,27 @@
 
 // LIST ITEM =======================================================================================
 
+/**
+ * For example, handles "disc" list marker.
+ */
 static nh_encoding_UTF32String nh_css_getMarkerString(
     nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_Value *ListStyleType_p)
 {
     nh_encoding_UTF32String MarkerString = nh_encoding_initUTF32(16);
     nh_core_List *StyleSheets_p = nh_css_getStyleSheetListData(StyleSheetList_p);
 
-    nh_css_CounterStyleRuleObject *CounterStyleRule_p = (nh_css_CounterStyleRuleObject*)
+    // First, find the default rule.
+    nh_webidl_Object *CounterStyleRule_p =
         nh_css_findCounterStyleRule(NH_CSS_DEFAULT_STYLE_SHEET_P, ListStyleType_p->String.p);
 
+    // Replace default if necessary.
     for (int i = 0; i < StyleSheets_p->size; ++i) {
         nh_css_StyleSheetObject *StyleSheet_p = StyleSheets_p->pp[i];
-        CounterStyleRule_p = (nh_css_CounterStyleRuleObject*)
+        nh_webidl_Object *Replace_p =
             nh_css_findCounterStyleRule(StyleSheet_p, ListStyleType_p->String.p);
+        if (Replace_p) {
+            CounterStyleRule_p = Replace_p;
+        }
     }
 
     if (CounterStyleRule_p) {
@@ -59,6 +67,9 @@ static nh_encoding_UTF32String nh_css_getMarkerString(
     return nh_encoding_initUTF32(16);
 }
 
+/**
+ * Handles <li> elements.
+ */
 static NH_API_RESULT nh_css_handleListItem(
     nh_css_LogContext LogContext, nh_webidl_Object *Object_p, nh_css_StyleSheetListObject *StyleSheetList_p, 
     nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
@@ -237,4 +248,3 @@ void nh_css_freeSource(
 
     return;
 }
-

@@ -30,13 +30,13 @@ else
     BUILD_TTYR_TARGET := # don't build TTyr
 endif
 
+# Keep this as first (default) target.
+all: $(BUILD_TTYR_TARGET) $(BIN_NHHTML)
+
 build_ttyr:
 	(cd external/TTyr && make -f build/automation/Makefile lib NETZHAUT_PATH=$(CURDIR))
 create_bin_dir:
 	mkdir -p bin
-
-# Build targets for each library
-all: $(BUILD_TTYR_TARGET) $(BIN_NHHTML)
 
 # Custom compiler flags
 $(OBJ_FILES_NHHTML): CFLAGS += $(CCFLAGS) -Iexternal/TTyr/src/lib -Isrc/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface

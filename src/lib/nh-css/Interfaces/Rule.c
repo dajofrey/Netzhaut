@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// INITIALIZE ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_initializeCSSRule(
     nh_webidl_Object *Rule_p)
@@ -29,8 +29,6 @@ NH_API_RESULT nh_css_initializeCSSRule(
 
     return NH_API_SUCCESS;
 }
-
-// API =============================================================================================
 
 nh_css_RuleObject *nh_css_getRule(
     nh_webidl_Object *Object_p)
@@ -50,4 +48,3 @@ nh_css_Rule *nh_css_getRuleData(
 {
     return (nh_css_Rule*)((nh_webidl_Object*)Rule_p)->internal_p;
 }
-

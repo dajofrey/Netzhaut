@@ -38,13 +38,13 @@ nh_css_CounterStyleRuleObject *nh_css_createCounterStyleRule(
 
     *((nh_core_Array*)CounterStyleRule_p->internal_p) = Declaration;
 
-return (nh_css_CounterStyleRuleObject*)CounterStyleRule_p;
+    return (nh_css_CounterStyleRuleObject*)CounterStyleRule_p;
 }
 
 nh_css_CounterStyleRuleObject *nh_css_getCounterStyleRule(
     nh_webidl_Object *Object_p)
 {
-return (nh_css_CounterStyleRuleObject*)nh_webidl_getObject(Object_p, "CSS", "CSSCounterStyleRule");
+    return (nh_css_CounterStyleRuleObject*)nh_webidl_getObject(Object_p, "CSS", "CSSCounterStyleRule");
 }
 
 static nh_css_Declaration *nh_css_getCounterStyleRuleDeclaration(
