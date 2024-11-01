@@ -245,12 +245,11 @@ NH_API_RESULT nh_css_logObjects(
     {
         nh_webidl_Object *Rule_p = Rules_p->pp[i];
 
-        if (i < Rules_p->size - 1) {
-            if (i > 0) {nh_core_sendLogMessage(node_p, NULL, " ");}
-            sprintf(message_p, "%s %d", Rule_p->Interface_p->name_p, i);
-            nh_core_sendLogMessage(node_p, NULL, message_p);
-            memset(message_p, 0, NH_CSS_MAX_MESSAGE);
-        }
+        if (i > 0) {nh_core_sendLogMessage(node_p, NULL, " ");}
+
+        sprintf(message_p, "%s %d", Rule_p->Interface_p->name_p, i);
+        nh_core_sendLogMessage(node_p, NULL, message_p);
+        memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 
         if (nh_css_getStyleRule(Rule_p)) {
             NH_CORE_CHECK(nh_css_logStyleRule(node_p, message_p, indent_p, nh_css_getStyleRule(Rule_p)))

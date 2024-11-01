@@ -103,7 +103,7 @@ static nh_css_SelectorParseNode *nh_css_parseCombinator(
 {
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_DELIM) 
     {
-        if (Parser_p->Tokens_pp[0]->Delim.value == ' ' || Parser_p->Tokens_pp[0]->Delim.value == '>' || Parser_p->Tokens_pp[0]->Delim.value == '+' || Parser_p->Tokens_pp[0]->Delim.value == '~') 
+        if (Parser_p->Tokens_pp[0]->Delim.value == '>' || Parser_p->Tokens_pp[0]->Delim.value == '+' || Parser_p->Tokens_pp[0]->Delim.value == '~') 
         {
             nh_css_SelectorParseNode *Combinator_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_COMBINATOR);
             NH_CORE_CHECK_MEM_2(NULL, Combinator_p)
@@ -113,6 +113,15 @@ static nh_css_SelectorParseNode *nh_css_parseCombinator(
         }
     }
 
+    if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_WHITESPACE) 
+    {
+        nh_css_SelectorParseNode *Combinator_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_COMBINATOR);
+        NH_CORE_CHECK_MEM_2(NULL, Combinator_p)
+        NH_CORE_CHECK_NULL_2(NULL, nh_css_appendTerminal(Combinator_p, Parser_p->Tokens_pp[0]))
+        Parser_p->Tokens_pp = &Parser_p->Tokens_pp[1];
+        return Combinator_p;
+    }
+ 
     return NULL;
 }
 
