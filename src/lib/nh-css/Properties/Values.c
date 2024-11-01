@@ -329,7 +329,9 @@ static NH_API_RESULT nh_css_getValue(
 static NH_API_RESULT nh_css_getCascadedValue(
     nh_core_List *OrderedList_p, nh_css_Value *Value_p)
 {
+    // Use cascaded value that has highest precedence.
     nh_css_DeclaredValue *CascadedValue_p = OrderedList_p->pp[0];
+
     NH_CORE_CHECK_NULL(CascadedValue_p)
     NH_CORE_CHECK(nh_css_getValue(&CascadedValue_p->Declaration_p->ComponentValues, Value_p, CascadedValue_p))
 
@@ -424,4 +426,3 @@ NH_API_RESULT nh_css_freeSpecifiedValues(
 
     return NH_API_SUCCESS;
 }
-

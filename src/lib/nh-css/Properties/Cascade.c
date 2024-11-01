@@ -70,6 +70,19 @@ static int nh_css_getLayersPrecedence(
     return 0;
 }
 
+/**
+ * https://www.w3.org/TR/selectors/#specificity
+ */
+static int nh_css_getSpecificityPrecedence(
+    nh_css_DeclaredValue *Value_p)
+{
+    // TODO
+
+    Value_p->Declaration_p
+
+    return 0;
+}
+
 nh_css_DeclaredValue *nh_css_compare(
     nh_css_DeclaredValue *Value1_p, nh_css_DeclaredValue *Value2_p)
 {
@@ -144,6 +157,9 @@ static void nh_css_cascadeDeclaredValues(
     return;
 }
 
+/**
+ * https://www.w3.org/TR/css-cascade-4/#cascade
+ */
 void nh_css_cascade(
     nh_css_Filter *Filter_p)
 {

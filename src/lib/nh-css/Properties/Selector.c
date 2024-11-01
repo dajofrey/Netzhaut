@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 	
-// MATCH ===========================================================================================
+// FUNCTIONS =======================================================================================
 
 static bool nh_css_matchTypeSelector(
     nh_css_SelectorParseNode *TypeSelector_p, nh_webidl_Object *DOMElement_p)
@@ -52,6 +52,20 @@ static bool nh_css_matchTypeSelector(
         }
     }
  
+    if (((nh_css_SelectorParseNode*)TypeSelector_p->Children.pp[0])->type == NH_CSS_SELECTOR_PARSE_NODE_NS_PREFIX) 
+    {
+        // TODO
+    }
+
+    if (((nh_css_SelectorParseNode*)TypeSelector_p->Children.pp[0])->Token_p)
+    {
+        nh_css_Token *Token_p = ((nh_css_SelectorParseNode*)TypeSelector_p->Children.pp[0])->Token_p;
+        if (Token_p->type == NH_CSS_TOKEN_DELIM && Token_p->Delim.value == 0x2A) {
+            // universal selector (*)
+           match = true;
+        } 
+    }
+
     return match;
 }
 

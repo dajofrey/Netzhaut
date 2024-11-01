@@ -161,6 +161,10 @@ static NH_API_RESULT nh_css_getStyleAttributeDeclarations(
     return NH_API_SUCCESS;
 }
 
+/**
+ * Filtered rules are all rules that match to the Element via Selectors.
+ * Cascading will afterwards decide which filtered rules to keep.
+ */
 nh_css_Filter nh_css_filterDeclarations(
     nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, nh_core_List UserStyleSheets)
 {

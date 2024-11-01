@@ -65,6 +65,10 @@ static int nh_css_getLengthPercentage(
     else if (Value_p->Common.type == NH_CSS_VALUE_PX) {
         return (int)Value_p->number;
     }
+    else if (Value_p->Common.type == NH_CSS_VALUE_KEYWORD) {
+       puts("safsafsaffa");
+       exit(0);
+    }
 
     return 0;
 }
