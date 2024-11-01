@@ -38,6 +38,10 @@ typedef void  *(*nh_core_initialize_f)(
     char *path_p, char *config_p, int length 
 ); 
 
+typedef void (*nh_core_dump_f)( 
+    char *node_p
+);
+
 // FUNCTIONS =======================================================================================
 
 static void *nh_api_openCoreLibrary(
@@ -212,3 +216,10 @@ void *nh_api_getLoader()
     return LOADER_P;
 }
 
+void *nh_api_dump(
+    char *node_p)
+{
+    nh_core_dump_f dump_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_dump");
+    if (dump_f) {dump_f(node_p);}
+    return;
+}

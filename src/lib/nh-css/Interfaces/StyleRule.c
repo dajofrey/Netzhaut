@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// API =============================================================================================
+// FUNCTIONS =======================================================================================
 
 nh_css_StyleRuleObject *nh_css_getStyleRule(
     nh_webidl_Object *Object_p)
@@ -34,19 +34,19 @@ nh_css_SelectorParseNode *nh_css_getStyleRuleSelectors(
 }
 
 nh_css_StyleDeclarationObject *nh_css_getStyleRuleDeclaration(
-    nh_css_StyleRuleObject *StyleRule_p)
+    nh_webidl_Object *CSSStyleRule_p)
 {
-    return ((nh_webidl_Object*)StyleRule_p)->Attributes.pp[0];
+    return CSSStyleRule_p->Attributes.pp[0];
 }
 
-nh_css_StyleRuleObject *nh_css_createStyleRule(
+nh_webidl_Object *nh_css_createStyleRule(
     nh_css_SelectorParseNode *Selectors_p, nh_css_StyleDeclarationObject *StyleDeclaration_p)
 {
-    nh_webidl_Object *StyleRule_p = nh_webidl_createObject("CSS", "CSSStyleRule");
-    NH_CORE_CHECK_MEM_2(NULL, StyleRule_p)
+    nh_webidl_Object *CSSStyleRule_p = nh_webidl_createObject("CSS", "CSSStyleRule");
+    NH_CORE_CHECK_MEM_2(NULL, CSSStyleRule_p)
 
-    StyleRule_p->internal_p = Selectors_p;
-    StyleRule_p->Attributes.pp[0] = StyleDeclaration_p;
+    CSSStyleRule_p->internal_p = Selectors_p;
+    CSSStyleRule_p->Attributes.pp[0] = StyleDeclaration_p;
 
-    return (nh_css_StyleRuleObject*)StyleRule_p;
+    return CSSStyleRule_p;
 }

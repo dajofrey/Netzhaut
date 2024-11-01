@@ -25,10 +25,10 @@ nh_css_SelectorParseNode *nh_css_getStyleRuleSelectors(
 );
 
 nh_css_StyleDeclarationObject *nh_css_getStyleRuleDeclaration(
-    nh_css_StyleRuleObject *StyleRule_p
+    nh_webidl_Object *CSSStyleRule_p
 );
 
-nh_css_StyleRuleObject *nh_css_createStyleRule(
+nh_webidl_Object *nh_css_createStyleRule(
     nh_css_SelectorParseNode *Selectors_p, nh_css_StyleDeclarationObject *CSSStyleDeclaration_p
 );
 

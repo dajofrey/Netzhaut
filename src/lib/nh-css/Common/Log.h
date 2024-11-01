@@ -21,28 +21,16 @@
  *  @{
  */
 
-    NH_API_RESULT _nh_css_logBegin(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_css_logEnd(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_css_logDiagnosticEnd(
-        const char *file_p, const char *function_p, NH_API_RESULT result, int line
-    );
-
     NH_API_RESULT nh_css_logTokens(
-        char *logId_p, nh_core_Array *Tokens_p
+        nh_webidl_Object *CSSStyleSheet_p, nh_core_Array *Tokens_p
     );
 
     NH_API_RESULT nh_css_logRules(
-        nh_css_StyleSheetObject *Sheet_p, nh_core_Array *Rules_p
+        nh_webidl_Object *CSSStyleSheet_p, nh_core_Array *Rules_p
     );
 
-    NH_API_RESULT nh_css_logRuleObjects(
-        nh_css_StyleSheetObject *Sheet_p, nh_core_List *StyleRules_p
+    NH_API_RESULT nh_css_logObjects(
+        nh_webidl_Object *CSSStyleSheet_p, nh_core_List *StyleRules_p
     );
 
     NH_API_RESULT nh_css_logFilter(

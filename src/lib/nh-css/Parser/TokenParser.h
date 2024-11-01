@@ -90,7 +90,7 @@
     /**
      * @param Document_p Must be interface "Document" from specification "CSS".
      */
-    nh_css_StyleSheetObject *nh_css_parseStyleSheet(
+    nh_webidl_Object *nh_css_parseStyleSheet(
         nh_css_TokenParser *Parser_p, nh_webidl_Object *Document_p
     );
 

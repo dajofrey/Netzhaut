@@ -7,6 +7,4 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "../Common/Includes.h"
-
-#endif 
+#endif // NH_CORE_SYSTEM_MONITOR_H

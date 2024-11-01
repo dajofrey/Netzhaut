@@ -16,18 +16,22 @@
 #include <string.h>
 #include <stdio.h>
 
-// CALLBACKS =======================================================================================
+// DATA =======================================================================================
 
-#define NH_MAX_LOGGER_CALLBACKS 127
-static nh_api_logCallback_f callbacks_pp[NH_MAX_LOGGER_CALLBACKS] = {NULL};
+#define MAX_LOGGER_CALLBACKS 8
+static nh_api_logCallback_f CALLBACKS_PP[MAX_LOGGER_CALLBACKS] = {NULL};
+
+nh_core_Logger NH_LOGGER;
+
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_core_addLogCallback(
     nh_api_logCallback_f logCallback_f)
 {
     NH_API_RESULT result = NH_API_ERROR_BAD_STATE;
-    for (int i = 0; i < NH_MAX_LOGGER_CALLBACKS; ++i) {
-        if (callbacks_pp[i] == NULL) {
-            callbacks_pp[i] = logCallback_f;
+    for (int i = 0; i < MAX_LOGGER_CALLBACKS; ++i) {
+        if (CALLBACKS_PP[i] == NULL) {
+            CALLBACKS_PP[i] = logCallback_f;
             result = NH_API_SUCCESS;
             break;
         }
@@ -36,10 +40,6 @@ NH_API_RESULT nh_core_addLogCallback(
     return result;
 }
 
-// INIT/DESTROY ====================================================================================
-
-nh_core_Logger NH_LOGGER;
-
 NH_API_RESULT nh_core_initLogger()
 {
     NH_LOGGER.Root.name_p   = NULL;
@@ -47,8 +47,8 @@ NH_API_RESULT nh_core_initLogger()
     NH_LOGGER.Root.Children = nh_core_initList(8);
     NH_LOGGER.Root.Messages = nh_core_initList(255);
 
-    for (int i = 0; i < NH_MAX_LOGGER_CALLBACKS; ++i) {
-        callbacks_pp[i] = NULL;
+    for (int i = 0; i < MAX_LOGGER_CALLBACKS; ++i) {
+        CALLBACKS_PP[i] = NULL;
     }
 
     return NH_API_SUCCESS;
@@ -75,8 +75,6 @@ NH_API_RESULT nh_core_freeLogger()
 
     return NH_API_SUCCESS;
 }
-
-// LOGGER ==========================================================================================
 
 typedef struct nh_core_LoggerOption {
     nh_core_String Name;
@@ -225,8 +223,6 @@ static NH_API_RESULT nh_core_updateLogger(
     return NH_API_SUCCESS;
 }
 
-// MESSAGE =========================================================================================
-
 NH_API_RESULT nh_core_sendLogMessage(
     char *node_p, char *options_p, char *message_p)
 {
@@ -236,94 +232,12 @@ NH_API_RESULT nh_core_sendLogMessage(
     if (nh_core_updateLogger(node_p, options_p, message_p) != NH_API_SUCCESS) {return NH_API_ERROR_BAD_STATE;}
 
     // send to callbacks
-    for (int i = 0; i < NH_MAX_LOGGER_CALLBACKS && callbacks_pp[i] != NULL; ++i) {
-        callbacks_pp[i](node_p, options_p, message_p);
+    for (int i = 0; i < MAX_LOGGER_CALLBACKS && CALLBACKS_PP[i] != NULL; ++i) {
+        CALLBACKS_PP[i](node_p, options_p, message_p);
     }
-
-//    // send to forks
-//    if (NH_PROCESS_POOL.forks > 0)
-//    {
-//        char *messageIPC_p = nh_core_allocate(strlen(message_p) + 11);
-//        if (messageIPC_p == NULL) {return NH_API_ERROR_BAD_STATE;}
-//        sprintf(messageIPC_p, "NH_IPC_LOG%s", message_p);
-//    
-//        for (int i = 0; i < NH_MAX_FORKS; ++i) {
-//            if (NH_PROCESS_POOL.Forks_p[i].id != 0) {
-//                _nh_core_writeToProcess(&NH_PROCESS_POOL.Forks_p[i], messageIPC_p, strlen(messageIPC_p), false);
-//            }
-//        }
-//    
-//        nh_core_free(messageIPC_p);
-//    }
 
     return NH_API_SUCCESS;
 }
-
-// FLOW ============================================================================================
-
-#define NH_FLOW_INDENT 2
-
-NH_API_RESULT _nh_begin(
-    const char *file_p, const char *function_p)
-{
-    nh_core_Thread *Thread_p = nh_core_getThread();
-    if (Thread_p == NULL) {return NH_API_ERROR_BAD_STATE;}
-
-    char message_p[1024] = {'\0'};
-    memset(message_p, ' ', sizeof(char) * (Thread_p->depth * NH_FLOW_INDENT));
-    sprintf(message_p + strlen(message_p), "-> %s (%s)\n", function_p, file_p);
-
-    Thread_p->depth++;
-
-    char node_p[63] = {'\0'};
-    sprintf(node_p, "nh-core:Flow:Thread%d", nh_core_getThreadIndex());
-
-    return nh_core_sendLogMessage(node_p, NULL, message_p);
-}
-
-NH_API_RESULT _nh_end(
-    const char *file_p, const char *function_p)
-{
-    nh_core_Thread *Thread_p = nh_core_getThread();
-    if (Thread_p == NULL) {return NH_API_ERROR_BAD_STATE;}
-
-    Thread_p->depth--;
-
-    char message_p[1024] = {'\0'};
-    memset(message_p, ' ', sizeof(char) * (Thread_p->depth * NH_FLOW_INDENT));
-    sprintf(message_p + strlen(message_p), "<- %s (%s)\n", function_p, file_p);
-
-    char node_p[63] = {'\0'};
-    sprintf(node_p, "nh-core:Flow:Thread%d", nh_core_getThreadIndex());
-
-    return nh_core_sendLogMessage(node_p, NULL, message_p);
-}
-
-NH_API_RESULT _nh_diagnosticEnd(
-    const char *file_p, const char *function_p, const char *result_p, int line, bool success)
-{
-    nh_core_Thread *Thread_p = nh_core_getThread();
-    if (Thread_p == NULL) {return NH_API_ERROR_BAD_STATE;}
-
-    Thread_p->depth--;
-
-    char message_p[1024] = {'\0'};
-    memset(message_p, ' ', sizeof(char) * (Thread_p->depth * NH_FLOW_INDENT));
-
-    if (success) {
-        sprintf(message_p + strlen(message_p), "<- %s (%s)\n", function_p, file_p);
-    }
-    else {
-        sprintf(message_p + strlen(message_p), "<- %s (%s LINE %d) \e[1;31m%s\e[0m\n", function_p, file_p, line, result_p);
-    }
-
-    char node_p[63] = {'\0'};
-    sprintf(node_p, "nh-core:Flow:Thread%d", nh_core_getThreadIndex());
-
-    return nh_core_sendLogMessage(node_p, NULL, message_p);
-}
-
-// LOG ID ==========================================================================================
 
 void nh_core_getUniqueLogId(
     char *logId_p)
@@ -333,4 +247,15 @@ void nh_core_getUniqueLogId(
     sprintf(logId_p, "THREAD<%d>TIME<%lus,%lums>", thread, SystemTime.seconds, SystemTime.milliseconds);
 
     return;
+}
+
+void nh_core_dump(
+    char *node_p)
+{
+    nh_core_LoggerNode *Node_p = nh_core_getLoggerNode(&NH_LOGGER.Root, node_p);
+    if (Node_p) {
+        for (int i = 0; i < Node_p->Messages.size; ++i) {
+            puts(Node_p->Messages.pp[i]);
+        }
+    }
 }

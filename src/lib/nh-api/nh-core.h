@@ -223,4 +223,11 @@ void nh_api_freeMonitorInterface(
 void *nh_api_getLoader(
 );
 
+/**
+ * Todo.
+ */
+void *nh_api_dump( 
+    char *node_p
+); 
+
 #endif // NH_API_NH_CORE_H

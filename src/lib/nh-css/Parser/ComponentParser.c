@@ -193,11 +193,11 @@ static NH_API_RESULT nh_css_parseQualifiedRule(
 
     nh_css_StyleDeclarationObject *StyleDeclaration_p = nh_css_createStyleDeclaration(Declarations);
     NH_CORE_CHECK_NULL(StyleDeclaration_p)
-    nh_css_StyleRuleObject *StyleRule_p = nh_css_createStyleRule(Selectors_p, StyleDeclaration_p);
-    NH_CORE_CHECK_NULL(StyleRule_p)
+    nh_webidl_Object *CSSStyleRule_p = nh_css_createStyleRule(Selectors_p, StyleDeclaration_p);
+    NH_CORE_CHECK_NULL(CSSStyleRule_p)
 
-    nh_css_setRuleData(nh_css_getRule((nh_webidl_Object*)StyleRule_p), *Rule_p);
-    nh_css_appendToRuleList(RuleList_p, (nh_webidl_Object*)StyleRule_p);
+    nh_css_setRuleData(nh_css_getRule(CSSStyleRule_p), *Rule_p);
+    nh_css_appendToRuleList(RuleList_p, CSSStyleRule_p);
 
     return NH_API_SUCCESS;
 }

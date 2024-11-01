@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// LOG THREAD ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_core_logThread(
     nh_core_ThreadPool *ThreadPool_p, nh_core_Thread *Thread_p)
@@ -58,8 +58,6 @@ NH_API_RESULT nh_core_logThread(
 
     return NH_API_SUCCESS;
 }
-
-// LOG MODULES =====================================================================================
 
 NH_API_RESULT nh_core_logModules()
 {
@@ -145,26 +143,10 @@ void nh_core_logSystemInfo(
     return;
 }
 
-// FLOW LOGGING ====================================================================================
-
-NH_API_RESULT _nh_core_logBegin(
-    const char *file_p, const char *function_p)
+void nh_core_logDebugMessage(
+    char *message_p)
 {
-//    if (!NH_CONFIG.Flags.Log.Flow.core) {return NH_API_SUCCESS;}
-//    return _nh_begin(file_p, function_p);
-}
+    nh_core_sendLogMessage("nh-core:Debug", NULL, message_p);
 
-NH_API_RESULT _nh_core_logEnd(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.core) {return NH_API_SUCCESS;}
-//    return _nh_end(file_p, function_p);
-}
-
-NH_API_RESULT _nh_core_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.core) {return result;}
-//    _nh_diagnosticEnd(file_p, function_p, NH_API_RESULTS_PP[result], line, result == NH_API_SUCCESS);
-    return result;
+    return;
 }

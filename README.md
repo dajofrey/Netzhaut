@@ -11,9 +11,9 @@ The documentation for this project is fully contained in this README.
 ## Contents
   
  - [Build](#Build)
+ - [Binaries](#Binaries)
 
 ## Build
-
 
 ### 1. Get sources using [Git](https://git-scm.com/)
 ```bash 
@@ -38,4 +38,14 @@ This requires the TTyr submodule.
 ```bash
 make -f build/automation/lib.mk all MONITOR=1
 make -f build/automation/bin.mk all CCFLAGS="-DMONITOR"
+```
+
+## Binaries
+
+The resulting binaries after build can be found at `Netzhaut/bin`.
+
+### nh-css
+Parses a file containing CSS rules and dumps the parsing result.
+```base
+./nh-css <file-path> [Tokens | Rules | Objects]
 ```

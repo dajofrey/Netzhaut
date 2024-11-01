@@ -123,6 +123,7 @@ static NH_API_RESULT nh_core_loadDependencies(
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_DOM, 0))
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_GFX, 0))
             break;
 
         case NH_MODULE_DOM :

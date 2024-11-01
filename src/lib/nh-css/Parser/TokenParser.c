@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// PARSER HELPER ===================================================================================
+// FUNCTIONS =======================================================================================
 
 nh_css_TokenParser nh_css_initTokenParser(
     nh_css_Token **Tokens_pp, unsigned long long length)
@@ -53,8 +53,6 @@ static void nh_css_advanceTokenParser(
 
     return;
 }
-
-// PARSER ALGORITHMS ===============================================================================
 
 static NH_API_RESULT nh_css_consumeComponentValue(
     nh_css_TokenParser *Parser_p, nh_css_ComponentValue *Value_p
@@ -384,30 +382,28 @@ static nh_core_Array nh_css_consumeDeclarations(
     return Declarations;
 }
 
-// ENTRY POINTS ====================================================================================
-
-nh_css_StyleSheetObject *nh_css_parseStyleSheet(
+nh_webidl_Object *nh_css_parseStyleSheet(
     nh_css_TokenParser *Parser_p, nh_webidl_Object *Document_p)
 {
-    nh_css_StyleSheetObject *StyleSheet_p = (nh_css_StyleSheetObject*)nh_webidl_createObject("CSS", "CSSStyleSheet");
-    NH_CORE_CHECK_NULL_2(NULL, StyleSheet_p)
+    nh_webidl_Object *CSSStyleSheet_p = nh_webidl_createObject("CSS", "CSSStyleSheet");
+    NH_CORE_CHECK_NULL_2(NULL, CSSStyleSheet_p)
 
     nh_core_Array Rules = nh_css_consumeRules(Parser_p, true);
-    NH_CORE_CHECK_2(NULL, nh_css_logRules(StyleSheet_p, &Rules))
+    NH_CORE_CHECK_2(NULL, nh_css_logRules(CSSStyleSheet_p, &Rules))
 
-    if (!nh_css_getRuleList(StyleSheet_p)) {return NULL;}
+    if (!nh_css_getRuleList(CSSStyleSheet_p)) {return NULL;}
 
-    NH_CORE_CHECK_2(NULL, nh_css_parseRules(&Rules, nh_css_getRuleList(StyleSheet_p)))
-    NH_CORE_CHECK_2(NULL, nh_css_logRuleObjects(StyleSheet_p, nh_css_getRuleListData(nh_css_getRuleList(StyleSheet_p))))
+    NH_CORE_CHECK_2(NULL, nh_css_parseRules(&Rules, nh_css_getRuleList(CSSStyleSheet_p)))
+    NH_CORE_CHECK_2(NULL, nh_css_logObjects(CSSStyleSheet_p, nh_css_getRuleListData(nh_css_getRuleList(CSSStyleSheet_p))))
 
     if (Document_p) {
         nh_css_StyleSheetListObject *StyleSheetList_p = nh_css_getStyleSheetList(Document_p);
-        nh_css_appendToStyleSheetList(StyleSheetList_p, StyleSheet_p);
+        nh_css_appendToStyleSheetList(StyleSheetList_p, CSSStyleSheet_p);
     }
 
     nh_core_freeArray(&Rules);
 
-    return StyleSheet_p;
+    return CSSStyleSheet_p;
 }
 
 nh_core_Array nh_css_parseDeclarations(
@@ -464,4 +460,3 @@ nh_core_Array nh_css_parseComponentValues(
 
     return ComponentValues;
 }
-

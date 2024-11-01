@@ -28,7 +28,7 @@
     );
 
     nh_webidl_DOMString *nh_dom_getLocalName(
-        nh_dom_Element *Element_p
+        nh_webidl_Object *DOMElement_p
     );
 
     nh_webidl_DOMString *nh_dom_getNamespaceURI(
@@ -48,7 +48,7 @@
     );
     
     nh_dom_Attr *nh_dom_getAttrByLocalName(
-        nh_dom_Element *Element_p, char *localName_p
+        nh_webidl_Object *DOMElement_p, char *localName_p
     );
 
     NH_API_RESULT nh_dom_replaceAttr(

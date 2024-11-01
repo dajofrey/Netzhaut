@@ -1,8 +1,6 @@
 #ifndef NH_CSS_PARSER_H
 #define NH_CSS_PARSER_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -15,48 +13,32 @@
 
 #include "../Common/Includes.h"
 
-#endif
+extern nh_css_StyleSheetObject *NH_CSS_DEFAULT_STYLE_SHEET_P;
 
-/** @addtogroup lib_nh-css_vars
- *  @{
- */
+typedef struct nh_css_ComponentValueData {
+    nh_core_Array Tokens;
+    nh_core_Array ComponentValues;
+} nh_css_ComponentValueData;
 
-    extern nh_css_StyleSheetObject *NH_CSS_DEFAULT_STYLE_SHEET_P;
+typedef struct nh_css_DeclarationData {
+    nh_core_Array Tokens;
+    nh_core_Array Declarations; 
+} nh_css_DeclarationData;
 
-/** @} */
+nh_webidl_Object *nh_css_parseStyleSheetFromUTF8( 
+    char *data_p, size_t length, nh_webidl_Object *Document_p
+); 
 
-/** @addtogroup lib_nh-css_structs
- *  @{
- */
+nh_webidl_Object *nh_css_parseStyleSheetFromUTF32(
+    nh_encoding_UTF32String *String_p, nh_webidl_Object *Document_p
+);
 
-    typedef struct nh_css_ComponentValueData {
-        nh_core_Array Tokens;
-        nh_core_Array ComponentValues;
-    } nh_css_ComponentValueData;
+nh_css_ComponentValueData nh_css_parseComponentValuesFromUTF8Codepoints(
+    char *logId_p, char *p, unsigned long long length
+);
 
-    typedef struct nh_css_DeclarationData {
-        nh_core_Array Tokens;
-        nh_core_Array Declarations; 
-    } nh_css_DeclarationData;
-
-/** @} */
-
-/** @addtogroup lib_nh-css_functions
- *  @{
- */
-
-    nh_css_StyleSheetObject *nh_css_parseStyleSheetFromUTF32(
-        nh_encoding_UTF32String *String_p, nh_webidl_Object *Document_p
-    );
-
-    nh_css_ComponentValueData nh_css_parseComponentValuesFromUTF8Codepoints(
-        char *logId_p, char *p, unsigned long long length
-    );
-
-    nh_css_DeclarationData nh_css_parseDeclarationsFromBytes(
-        char *logId_p, char *p, unsigned long long length
-    );
-
-/** @} */
+nh_css_DeclarationData nh_css_parseDeclarationsFromBytes(
+    char *logId_p, char *p, unsigned long long length
+);
 
 #endif

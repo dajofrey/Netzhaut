@@ -1,8 +1,6 @@
 #ifndef NH_CORE_COMMON_CONFIG_H
 #define NH_CORE_COMMON_CONFIG_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -12,37 +10,22 @@
 #include "Result.h"
 #include "Includes.h"
 
-#endif
+typedef enum NH_CORE_SETTING_E {
+    NH_CORE_SETTING_LOADER_UNLOAD,
+    NH_CORE_SETTING_DEBUG_TO_CONSOLE,
+    NH_CORE_SETTING_DEBUG_LEVEL,
+    NH_CORE_SETTING_LOG_ON,
+    NH_CORE_SETTING_E_COUNT,
+} NH_CORE_SETTING_E;
 
-/** @addtogroup lib_nh-core_enums
- *  @{
- */
+typedef struct nh_core_Config {
+    bool loaderUnload;
+    bool debugToConsole;
+    int debugLevel;
+    bool logOn;
+} nh_core_Config;
 
-    typedef enum NH_CORE_SETTING_E {
-        NH_CORE_SETTING_LOADER_UNLOAD,
-        NH_CORE_SETTING_E_COUNT,
-    } NH_CORE_SETTING_E;
-
-/** @} */
-
-/** @addtogroup lib_nh-core_structs
- *  @{
- */
-
-    typedef struct nh_core_Config {
-        bool loaderUnload;
-    } nh_core_Config;
-
-/** @} */
-
-
-/** @addtogroup lib_nh-core_functions
- *  @{
- */
-
-    nh_core_Config nh_core_getConfig(
-    );
-
-/** @} */
+nh_core_Config nh_core_getConfig(
+);
 
 #endif // NH_CORE_COMMON_CONFIG_H

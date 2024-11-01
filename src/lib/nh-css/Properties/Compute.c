@@ -1402,4 +1402,3 @@ NH_API_RESULT nh_css_freeComputedValues(
 
     return NH_API_SUCCESS;
 }
-

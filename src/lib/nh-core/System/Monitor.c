@@ -56,7 +56,7 @@ typedef struct nh_core_Monitor {
     double updateIntervalInSeconds;
 } nh_core_Monitor;
 
-// UPDATE LOGGER ===================================================================================
+// FUNCTIONS =======================================================================================
 
 static NH_API_RESULT nh_core_updateMonitorNode(
     nh_core_LoggerNode *LoggerNode_p, nh_core_MonitorNode *MonitorNode_p)

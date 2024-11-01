@@ -131,9 +131,9 @@ nh_webidl_DOMString *nh_dom_getNamespaceURI(
 }
 
 nh_webidl_DOMString *nh_dom_getLocalName(
-    nh_dom_Element *Element_p)
+    nh_webidl_Object *DOMElement_p)
 {
-    return ((nh_webidl_Object*)Element_p)->Attributes.pp[2];
+    return DOMElement_p->Attributes.pp[2];
 }
 
 nh_webidl_DOMString *nh_dom_getTagName(
@@ -173,9 +173,9 @@ nh_dom_Attr *nh_dom_getAttrByNamespaceAndLocalName(
 }
 
 nh_dom_Attr *nh_dom_getAttrByLocalName(
-    nh_dom_Element *Element_p, char *localName_p)
+    nh_webidl_Object *DOMElement_p, char *localName_p)
 {
-    nh_core_List *AttrList_p = nh_dom_getAttrList(((nh_webidl_Object*)Element_p)->Attributes.pp[9]);
+    nh_core_List *AttrList_p = nh_dom_getAttrList(DOMElement_p->Attributes.pp[9]);
 
     for (int i = 0; i < AttrList_p->size; ++i) 
     {

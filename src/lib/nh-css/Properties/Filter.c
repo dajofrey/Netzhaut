@@ -10,14 +10,13 @@
 
 #include "Filter.h"
 #include "Properties.h"
+#include "Selector.h"
 
 #include "../Interfaces/StyleSheetList.h"
 #include "../Interfaces/StyleSheet.h"
 #include "../Interfaces/RuleList.h"
 #include "../Interfaces/StyleRule.h"
 #include "../Interfaces/StyleDeclaration.h"
-
-#include "../Parser/Match.h"
 
 #include "../Common/IndexMap.h"
 #include "../Common/Log.h"

@@ -53,20 +53,12 @@ NH_API_RESULT nh_core_sendLogMessage(
     char *node_p, char *options_p, char *message_p
 );
 
-NH_API_RESULT _nh_begin(
-    const char *file_p, const char *function_p
-);
-
-NH_API_RESULT _nh_end(
-    const char *file_p, const char *function_p
-);
-
-NH_API_RESULT _nh_diagnosticEnd(
-    const char *file_p, const char *function_p, const char *result_p, int line, bool success
-);
-
 void nh_core_getUniqueLogId(
     char *logId_p
 );
+
+void nh_core_dump( 
+    char *node_p
+); 
 
 #endif // NH_CORE_SYSTEM_LOGGER_H

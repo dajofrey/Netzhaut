@@ -418,4 +418,3 @@ NH_API_RESULT nh_css_computeBoxValues(
 
     return NH_API_SUCCESS;
 }
-

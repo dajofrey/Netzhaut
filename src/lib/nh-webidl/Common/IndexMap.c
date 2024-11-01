@@ -121,7 +121,7 @@ void nh_webidl_freeIndexMap()
     }
 
     nh_core_freeHashMap(NH_WEBIDL_INDEXMAP.FragmentNames);
-    nh_core_freeHashMap(NH_WEBIDL_INDEXMAP.FragmentFunctionNames);
+//    nh_core_freeHashMap(NH_WEBIDL_INDEXMAP.FragmentFunctionNames);
     nh_core_freeHashMap(NH_WEBIDL_INDEXMAP.ParseNodeNames);
 
     init = false;

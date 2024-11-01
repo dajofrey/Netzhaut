@@ -10,7 +10,9 @@
 
 #include "Debug.h"
 
-#include <string.h>
+#include "../Common/Log.h"
+#include "../Common/Config.h"
+
 #include <stdio.h>
 
 // FUNCTIONS =======================================================================================
@@ -18,5 +20,10 @@
 void nh_core_debug(
     char *message_p)
 {
-    puts(message_p);
+    nh_core_logDebugMessage(message_p);
+
+    nh_core_Config Config = nh_core_getConfig();
+    if (Config.debugToConsole) {
+        puts(message_p);
+    }
 }

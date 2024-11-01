@@ -25,13 +25,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// DEFAULT STYLE SHEET =============================================================================
+// DATA ============================================================================================
 
 nh_css_StyleSheetObject *NH_CSS_DEFAULT_STYLE_SHEET_P = NULL;
 	
-// PARSER INTERFACE ================================================================================
+// FUNCTIONS =======================================================================================
 
-nh_css_StyleSheetObject *nh_css_parseStyleSheetFromUTF32(
+nh_webidl_Object *nh_css_parseStyleSheetFromUTF8(
+    char *data_p, size_t length, nh_webidl_Object *Document_p)
+{
+    nh_encoding_UTF32String String = nh_encoding_decodeUTF8(data_p, length, NULL);
+    nh_webidl_Object *CSSStyleSheet_p = nh_css_parseStyleSheetFromUTF32(&String, Document_p);
+    nh_encoding_freeUTF32(&String);
+    return CSSStyleSheet_p;
+}
+
+nh_webidl_Object *nh_css_parseStyleSheetFromUTF32(
     nh_encoding_UTF32String *String_p, nh_webidl_Object *Document_p)
 {
     nh_core_Array Tokens = nh_css_tokenize(String_p);
@@ -42,16 +51,16 @@ nh_css_StyleSheetObject *nh_css_parseStyleSheetFromUTF32(
     }
 
     nh_css_TokenParser TokenParser = nh_css_initTokenParser((nh_css_Token**)TokenList.pp, TokenList.size);
-    nh_css_StyleSheetObject *StyleSheet_p = nh_css_parseStyleSheet(&TokenParser, Document_p);
+    nh_webidl_Object *CSSStyleSheet_p = nh_css_parseStyleSheet(&TokenParser, Document_p);
 
-    if (StyleSheet_p) {
-        nh_css_setStyleSheetTokens(StyleSheet_p, Tokens);
-//        nh_css_logTokens(logId_p, &Tokens);
+    if (CSSStyleSheet_p) {
+        nh_css_setStyleSheetTokens(CSSStyleSheet_p, Tokens);
+        nh_css_logTokens(CSSStyleSheet_p, &Tokens);
     }
 
     nh_core_freeList(&TokenList, false);
 
-    return StyleSheet_p;
+    return CSSStyleSheet_p;
 }
 
 nh_css_ComponentValueData nh_css_parseComponentValuesFromUTF8Codepoints(
@@ -103,4 +112,3 @@ nh_css_DeclarationData nh_css_parseDeclarationsFromBytes(
 
     return Result;
 }
-

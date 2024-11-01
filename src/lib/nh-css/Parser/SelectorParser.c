@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 	
-// PARSE NODE NAMES ================================================================================
+// FUNCTIONS =======================================================================================
 
 const char *nh_css_getSelectorParseNodeName(
     nh_css_SelectorParseNode *Node_p)
@@ -55,8 +55,6 @@ const char *nh_css_getSelectorParseNodeName(
     
     return parseNodeNames_pp[Node_p->type];
 }
-
-// HELPER ==========================================================================================
 
 typedef struct nh_css_SelectorParser {
     nh_css_Token **Tokens_pp;
@@ -100,14 +98,12 @@ static nh_css_SelectorParseNode *nh_css_appendTerminal(
     return Terminal_p;
 }
 
-// PARSER INTERFACE ================================================================================
-
 static nh_css_SelectorParseNode *nh_css_parseCombinator(
     nh_css_SelectorParser *Parser_p)
 {
     if (Parser_p->Tokens_pp[0]->type == NH_CSS_TOKEN_DELIM) 
     {
-        if (Parser_p->Tokens_pp[0]->Delim.value == '>' || Parser_p->Tokens_pp[0]->Delim.value == '+' || Parser_p->Tokens_pp[0]->Delim.value == '~') 
+        if (Parser_p->Tokens_pp[0]->Delim.value == ' ' || Parser_p->Tokens_pp[0]->Delim.value == '>' || Parser_p->Tokens_pp[0]->Delim.value == '+' || Parser_p->Tokens_pp[0]->Delim.value == '~') 
         {
             nh_css_SelectorParseNode *Combinator_p = nh_css_allocateNonTerminal(NH_CSS_SELECTOR_PARSE_NODE_COMBINATOR);
             NH_CORE_CHECK_MEM_2(NULL, Combinator_p)
@@ -594,4 +590,3 @@ nh_css_SelectorParseNode *nh_css_parseSelectorList(
 
     return SelectorList_p;
 }
-

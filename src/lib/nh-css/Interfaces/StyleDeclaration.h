@@ -17,12 +17,12 @@
  *  @{
  */
 
-    nh_css_StyleDeclarationObject *nh_css_createStyleDeclaration(
+    nh_webidl_Object *nh_css_createStyleDeclaration(
         nh_core_Array Declarations
     );
 
     nh_core_Array *nh_css_getStyleDeclarationData(
-        nh_css_StyleDeclarationObject *Declaration_p
+        nh_webidl_Object *Declaration_p
     );
 
 /** @} */
