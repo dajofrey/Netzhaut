@@ -278,7 +278,7 @@ SRC_FILES_NHCSS = \
     Parser/SelectorParser.c \
     Parser/TokenParser.c \
     Parser/ComponentParser.c \
-    Properties/Selector.c \
+    Properties/Match.c \
     Properties/Values.c \
     Properties/Properties.c \
     Properties/Compute.c \

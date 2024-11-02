@@ -45,7 +45,7 @@ NH_API_RESULT nh_css_appendToRuleList(
 }
 
 nh_core_List *nh_css_getRuleListData(
-    nh_css_RuleListObject *RuleList_p)
+    nh_webidl_Object *RuleList_p)
 {
-    return ((nh_webidl_Object*)RuleList_p)->internal_p;
+    return RuleList_p->internal_p;
 }

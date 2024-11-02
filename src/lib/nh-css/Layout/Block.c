@@ -67,6 +67,8 @@ NH_API_RESULT nh_css_arrangeBlockFormattingContext(
 
     if (Fragment_p->Parent_p) {
         NH_CORE_CHECK(nh_css_collapse(Fragment_p, advance_p))
+
+        // The block of the new fragment is based on the most inner box (content box) of the parent.
         Fragment_p->Block = nh_css_getContentBox(&Fragment_p->Parent_p->Block, &Fragment_p->Box.Values);
         Fragment_p->Block.Position.y += *advance_p;
         Fragment_p->Block.Size.height = 0;
@@ -77,6 +79,19 @@ NH_API_RESULT nh_css_arrangeBlockFormattingContext(
     }
     else if (Fragment_p->Box.Values.Width.type == NH_CSS_BOX_SIZING_LENGTH) {
         Fragment_p->Block.Size.width = Fragment_p->Box.Values.Width.value;
+    }
+
+    // Handle auto.
+    if (Fragment_p->Parent_p) {
+        int halfOffset = (Fragment_p->Parent_p->Block.Size.width - Fragment_p->Block.Size.width)/2;
+        if (Fragment_p->Box.Values.MarginLeft.type == NH_CSS_BOX_SIZING_AUTO) {
+            Fragment_p->Box.Values.MarginLeft.value = halfOffset;
+            Fragment_p->Block.Size.width += halfOffset;
+        }
+        if (Fragment_p->Box.Values.MarginRight.type == NH_CSS_BOX_SIZING_AUTO) {
+            Fragment_p->Box.Values.MarginRight.value = halfOffset;
+            Fragment_p->Block.Size.width += halfOffset;
+        }
     }
 
     if (Fragment_p->Box.Values._float != NH_CSS_FLOAT_NONE) {

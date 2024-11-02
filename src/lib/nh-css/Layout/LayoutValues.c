@@ -343,10 +343,11 @@ static NH_API_RESULT nh_css_computeAnonymousBoxValues(
     Values_p->_float = NH_CSS_FLOAT_NONE; 
     Values_p->BackgroundColor = nh_css_getColor(*((nh_css_Value*)ComputedValues_p->pp[NH_CSS_PROPERTY_BACKGROUND_COLOR]));
 
+    memset(&Values_p->MarginRight, 0, sizeof(nh_css_BoxSizing));
+    memset(&Values_p->MarginLeft, 0, sizeof(nh_css_BoxSizing));
+
     Values_p->marginTop     = 0;
-    Values_p->marginRight   = 0;
     Values_p->marginBottom  = 0;
-    Values_p->marginLeft    = 0;
     Values_p->paddingTop    = 0;
     Values_p->paddingRight  = 0;
     Values_p->paddingBottom = 0;
@@ -389,10 +390,11 @@ NH_API_RESULT nh_css_computeBoxValues(
     Values_p->MaxWidth  = nh_css_getBoxSizing(Fragment_p, ComputedValues_p, NH_CSS_PROPERTY_MAX_WIDTH);
     Values_p->MaxHeight = nh_css_getBoxSizing(Fragment_p, ComputedValues_p, NH_CSS_PROPERTY_MAX_HEIGHT);
 
-    Values_p->marginTop     = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_MARGIN_TOP]);
-    Values_p->marginLeft    = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_MARGIN_LEFT]);
-    Values_p->marginBottom  = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_MARGIN_BOTTOM]);
-    Values_p->marginRight   = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_MARGIN_RIGHT]);
+    Values_p->MarginLeft   = nh_css_getBoxSizing(Fragment_p, ComputedValues_p, NH_CSS_PROPERTY_MARGIN_LEFT);
+    Values_p->MarginRight  = nh_css_getBoxSizing(Fragment_p, ComputedValues_p, NH_CSS_PROPERTY_MARGIN_RIGHT);
+    Values_p->marginTop    = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_MARGIN_TOP]);
+    Values_p->marginBottom = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_MARGIN_BOTTOM]);
+
     Values_p->paddingTop    = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_PADDING_TOP]);
     Values_p->paddingLeft   = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_PADDING_LEFT]);
     Values_p->paddingBottom = nh_css_getLengthPercentage(Fragment_p, ComputedValues_p->pp[NH_CSS_PROPERTY_PADDING_BOTTOM]);

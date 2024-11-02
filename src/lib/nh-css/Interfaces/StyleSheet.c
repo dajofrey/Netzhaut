@@ -47,10 +47,10 @@ nh_css_StyleSheetObject *nh_css_getStyleSheet(
     return (nh_css_StyleSheetObject*)nh_webidl_getObject(Object_p, "CSS", "CSSStyleSheet");
 }
 
-nh_css_RuleListObject *nh_css_getRuleList(
-    nh_css_StyleSheetObject *StyleSheet_p)
+nh_webidl_Object *nh_css_getRuleList(
+    nh_webidl_Object *CSSStyleSheet_p)
 {
-    return ((nh_webidl_Object*)StyleSheet_p)->Attributes.pp[1];
+    return CSSStyleSheet_p->Attributes.pp[1];
 }
 
 void nh_css_setStyleSheetTokens(

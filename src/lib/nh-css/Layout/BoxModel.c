@@ -9,6 +9,7 @@
 // INCLUDES ========================================================================================
 
 #include "BoxModel.h"
+
 #include "../../nh-gfx/Base/Viewport.h"
 
 #include <string.h>
@@ -16,7 +17,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-// CLIP BOX ========================================================================================
+// DEFINES =========================================================================================
 
 #define CLIP_LENGTH(VALUE) (VALUE + 1.0f)
 #define PIXEL_TO_CLIP(PIXEL, VIEWPORT, basedOnWidth)                                            \
@@ -24,6 +25,8 @@
     basedOnWidth ? ((((float)PIXEL) / ((float)VIEWPORT->Settings.Size.width))) * 2.0f - 1.0f  \
                  : ((((float)PIXEL) / ((float)VIEWPORT->Settings.Size.height))) * 2.0f - 1.0f \
 )
+
+// FUNCTIONS =========================================================================================
 
 nh_css_ClipBox nh_css_convertToClipBox(
     void *Viewport_p, nh_css_PixelBox PixelBox)
@@ -41,8 +44,6 @@ nh_css_ClipBox nh_css_convertToClipBox(
     return ClipBox;
 }
 
-// MAX =============================================================================================
-
 int nh_css_getMaxX(
     nh_css_PixelBox Box)
 {
@@ -54,8 +55,6 @@ int nh_css_getMaxY(
 {
     return Box.Position.y + Box.Size.height;
 }
-
-// PIXEL BOX =======================================================================================
 
 nh_css_PixelBox nh_css_getContentBox(
     nh_css_PixelBox *ContainingBlock_p, nh_css_BoxValues *Values_p)
@@ -88,9 +87,9 @@ nh_css_PixelBox nh_css_getBorderBox(
 {
     nh_css_PixelBox Box;
 
-    Box.Position.x  = ContainingBlock_p->Position.x + Values_p->marginLeft;
+    Box.Position.x  = ContainingBlock_p->Position.x + Values_p->MarginLeft.value;
     Box.Position.y  = ContainingBlock_p->Position.y + Values_p->marginTop;
-    Box.Size.width  = ContainingBlock_p->Size.width - (Values_p->marginRight + Values_p->marginLeft);
+    Box.Size.width  = ContainingBlock_p->Size.width - (Values_p->MarginRight.value + Values_p->MarginLeft.value);
     Box.Size.height = ContainingBlock_p->Size.height - (Values_p->marginBottom + Values_p->marginTop);
 
     Box.depth = ContainingBlock_p->depth;
@@ -103,9 +102,9 @@ nh_css_PixelBox nh_css_getMarginBox(
 {
     nh_css_PixelBox Box;
 
-    Box.Position.x  = ContentBox_p->Position.x - Values_p->marginLeft - Values_p->borderLeft - Values_p->paddingLeft;
+    Box.Position.x  = ContentBox_p->Position.x - Values_p->MarginLeft.value - Values_p->borderLeft - Values_p->paddingLeft;
     Box.Position.y  = ContentBox_p->Position.y - Values_p->marginTop - Values_p->borderTop - Values_p->paddingTop;
-    Box.Size.width  = ContentBox_p->Size.width + Values_p->marginRight + Values_p->marginLeft + Values_p->paddingRight + Values_p->paddingLeft + Values_p->borderRight + Values_p->borderLeft;
+    Box.Size.width  = ContentBox_p->Size.width + Values_p->MarginRight.value + Values_p->MarginLeft.value + Values_p->paddingRight + Values_p->paddingLeft + Values_p->borderRight + Values_p->borderLeft;
     Box.Size.height = ContentBox_p->Size.height + Values_p->marginBottom + Values_p->marginTop + Values_p->paddingBottom + Values_p->paddingTop + Values_p->borderBottom + Values_p->borderTop;
 
     Box.depth = ContentBox_p->depth;

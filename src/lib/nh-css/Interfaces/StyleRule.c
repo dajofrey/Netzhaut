@@ -21,16 +21,16 @@
 
 // FUNCTIONS =======================================================================================
 
-nh_css_StyleRuleObject *nh_css_getStyleRule(
+nh_webidl_Object *nh_css_getCSSStyleRule(
     nh_webidl_Object *Object_p)
 {
     return (nh_css_StyleRuleObject*)nh_webidl_getObject(Object_p, "CSS", "CSSStyleRule");
 }
 
-nh_css_SelectorParseNode *nh_css_getStyleRuleSelectors(
-    nh_css_StyleRuleObject *StyleRule_p)
+nh_css_SelectorParseNode *nh_css_getCSSStyleRuleSelectors(
+    nh_webidl_Object *CSSStyleRule_p)
 {
-    return ((nh_webidl_Object*)StyleRule_p)->internal_p;
+    return CSSStyleRule_p->internal_p;
 }
 
 nh_css_StyleDeclarationObject *nh_css_getStyleRuleDeclaration(

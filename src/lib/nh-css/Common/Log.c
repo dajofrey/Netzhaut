@@ -207,12 +207,12 @@ static NH_API_RESULT nh_css_logSelectorParseNode(
 }
 
 static NH_API_RESULT nh_css_logStyleRule(
-    char *node_p, char *message_p, char *indent_p, nh_webidl_Object *Rule_p)
+    char *node_p, char *message_p, char *indent_p, nh_webidl_Object *CSSStyleRule_p)
 {
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
-    nh_core_Array *Declarations_p = nh_css_getStyleDeclarationData(nh_css_getStyleRuleDeclaration(Rule_p));
+    nh_core_Array *Declarations_p = nh_css_getStyleDeclarationData(nh_css_getStyleRuleDeclaration(CSSStyleRule_p));
 
-    NH_CORE_CHECK(nh_css_logSelectorParseNode(node_p, nh_css_getStyleRuleSelectors(Rule_p), 1, message_p, indent_p))
+    NH_CORE_CHECK(nh_css_logSelectorParseNode(node_p, nh_css_getCSSStyleRuleSelectors(CSSStyleRule_p), 1, message_p, indent_p))
 
     for (int i = 0; i < Declarations_p->length; ++i) 
     {
@@ -251,8 +251,8 @@ NH_API_RESULT nh_css_logObjects(
         nh_core_sendLogMessage(node_p, NULL, message_p);
         memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 
-        if (nh_css_getStyleRule(Rule_p)) {
-            NH_CORE_CHECK(nh_css_logStyleRule(node_p, message_p, indent_p, nh_css_getStyleRule(Rule_p)))
+        if (nh_css_getCSSStyleRule(Rule_p)) {
+            NH_CORE_CHECK(nh_css_logStyleRule(node_p, message_p, indent_p, nh_css_getCSSStyleRule(Rule_p)))
         }
 
         memset(message_p, 0, NH_CSS_MAX_MESSAGE);
@@ -261,23 +261,31 @@ NH_API_RESULT nh_css_logObjects(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_css_logDeclaredValue(
-    char *node_p, char *message_p, char *indent_p, char *token_p, nh_css_DeclaredValue *Value_p)
+static NH_API_RESULT nh_css_logCandidate(
+    char *node_p, char *message_p, char *indent_p, char *token_p, nh_css_Candidate *Candidate_p)
 {
     nh_core_sendLogMessage(node_p, NULL, "  {");
 
-    sprintf(message_p, "    direct: %d", Value_p->direct);
+    sprintf(message_p, "    direct: %d", Candidate_p->direct);
     nh_core_sendLogMessage(node_p, NULL, message_p);
     memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 
-    sprintf(message_p, "    origin: %d", Value_p->direct);
+    sprintf(message_p, "    origin: %d", Candidate_p->direct);
     nh_core_sendLogMessage(node_p, NULL, message_p);
     memset(message_p, 0, NH_CSS_MAX_MESSAGE);
+
+    if (Candidate_p->CSSStyleRule_p) {
+        sprintf(message_p, "    selector:");
+        nh_core_sendLogMessage(node_p, NULL, message_p);
+        memset(message_p, 0, NH_CSS_MAX_MESSAGE);
+        NH_CORE_CHECK(nh_css_logSelectorParseNode(node_p, nh_css_getCSSStyleRuleSelectors(Candidate_p->CSSStyleRule_p), 3, message_p, indent_p))
+        memset(message_p, 0, NH_CSS_MAX_MESSAGE);
+    }
 
     nh_core_sendLogMessage(node_p, NULL, "    value:");
 
-    for (int i = 0; i < Value_p->Declaration_p->ComponentValues.length; ++i) {
-        NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Value_p->Declaration_p->ComponentValues.p)[i], token_p, message_p, indent_p, 6))
+    for (int i = 0; i < Candidate_p->Declaration_p->ComponentValues.length; ++i) {
+        NH_CORE_CHECK(nh_css_logComponentValue(node_p, &((nh_css_ComponentValue*)Candidate_p->Declaration_p->ComponentValues.p)[i], token_p, message_p, indent_p, 3))
     }
 
     nh_core_sendLogMessage(node_p, NULL, "  }");
@@ -297,12 +305,12 @@ NH_API_RESULT nh_css_logFilter(
 
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i)
     {
-        nh_core_List *List_p = Filter_p->DeclaredValueLists.pp[i];
+        nh_core_List *List_p = Filter_p->CandidateLists.pp[i];
 
         if (List_p) {
             nh_core_sendLogMessage(node_p, NULL, (char*)NH_CSS_PROPERTY_NAMES_PP[i]);
             for (int j = 0; j < List_p->size; ++j) {
-                NH_CORE_CHECK(nh_css_logDeclaredValue(node_p, message_p, indent_p, token_p, List_p->pp[j]))
+                NH_CORE_CHECK(nh_css_logCandidate(node_p, message_p, indent_p, token_p, List_p->pp[j]))
             }
         }
     }
@@ -495,7 +503,7 @@ static NH_API_RESULT nh_css_logBoxTreeNode(
     for (int i = 0; i < Node_p->Children.size; ++i) {
         NH_CORE_CHECK(nh_css_logBoxTreeNode(node_p, Node_p->Children.pp[i], message_p, indent_p, depth + 2))
 
-//        sprintf(message_p, "%sValues   : margin-top:%d,margin-right:%d,margin-bottom:%d,margin-left:%d,border-top-width:%d,border-right-width:%d,border-bottom-width:%d,border-left-width:%d,padding-top:%d,padding-right:%d,padding-bottom:%d,padding-left:%d,background-color:(%.2f,%.2f,%.2f,%.2f)", indent_p, Fragment_p->Values.marginTop, Fragment_p->Values.marginRight, Fragment_p->Values.marginBottom, Fragment_p->Values.marginLeft, Fragment_p->Values.borderTop, Fragment_p->Values.borderRight, Fragment_p->Values.borderBottom, Fragment_p->Values.borderLeft, Fragment_p->Values.paddingTop, Fragment_p->Values.paddingRight, Fragment_p->Values.paddingBottom, Fragment_p->Values.paddingLeft, Fragment_p->Values.BackgroundColor.r,  Fragment_p->Values.BackgroundColor.g,  Fragment_p->Values.BackgroundColor.b,  Fragment_p->Values.BackgroundColor.a);
+//        sprintf(message_p, "%sValues   : margin-top:%d,margin-right:%d,margin-bottom:%d,margin-left:%d,border-top-width:%d,border-right-width:%d,border-bottom-width:%d,border-left-width:%d,padding-top:%d,padding-right:%d,padding-bottom:%d,padding-left:%d,background-color:(%.2f,%.2f,%.2f,%.2f)", indent_p, Fragment_p->Values.marginTop, Fragment_p->Values.MarginRight.value, Fragment_p->Values.marginBottom, Fragment_p->Values.marginLeft, Fragment_p->Values.borderTop, Fragment_p->Values.borderRight, Fragment_p->Values.borderBottom, Fragment_p->Values.borderLeft, Fragment_p->Values.paddingTop, Fragment_p->Values.paddingRight, Fragment_p->Values.paddingBottom, Fragment_p->Values.paddingLeft, Fragment_p->Values.BackgroundColor.r,  Fragment_p->Values.BackgroundColor.g,  Fragment_p->Values.BackgroundColor.b,  Fragment_p->Values.BackgroundColor.a);
 //        nh_core_sendLogMessage(node_p, NULL, message_p);
 //        memset(message_p, 0, NH_CSS_MAX_MESSAGE);
     }
@@ -553,9 +561,9 @@ static NH_API_RESULT nh_css_logFragment(
             "%sValues   : margin-top:%d,margin-right:%d,margin-bottom:%d,margin-left:%d,border-top-width:%d,border-right-width:%d,border-bottom-width:%d,border-left-width:%d,padding-top:%d,padding-right:%d,padding-bottom:%d,padding-left:%d,background-color:(%.2f,%.2f,%.2f,%.2f),text-align-all:%d", 
             indent_p, 
             Fragment_p->Box.Values.marginTop,
-            Fragment_p->Box.Values.marginRight,
+            Fragment_p->Box.Values.MarginRight.value,
             Fragment_p->Box.Values.marginBottom,
-            Fragment_p->Box.Values.marginLeft,
+            Fragment_p->Box.Values.MarginLeft.value,
             Fragment_p->Box.Values.borderTop,
             Fragment_p->Box.Values.borderRight,
             Fragment_p->Box.Values.borderBottom,

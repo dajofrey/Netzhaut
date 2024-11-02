@@ -19,8 +19,8 @@
  *  @{
  */
 
-    nh_css_DeclaredValue *nh_css_compare(
-        nh_css_DeclaredValue *Value1_p, nh_css_DeclaredValue *Value2_p
+    nh_css_Candidate *nh_css_compare(
+        nh_css_Candidate *Value1_p, nh_css_Candidate *Value2_p
     );
 
     void nh_css_cascade(

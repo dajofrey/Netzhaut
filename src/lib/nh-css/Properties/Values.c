@@ -11,6 +11,7 @@
 #include "Values.h"
 #include "Properties.h"
 #include "Filter.h"
+#include "Cascade.h"
 
 #include "../Common/Log.h"
 
@@ -304,7 +305,7 @@ static NH_API_RESULT nh_css_convertComponentValueToValue(
 // SPECIFIED VALUES ================================================================================
 
 static NH_API_RESULT nh_css_getValue(
-    nh_core_Array *ComponentValues_p, nh_css_Value *Value_p, nh_css_DeclaredValue *Origin_p)
+    nh_core_Array *ComponentValues_p, nh_css_Value *Value_p, nh_css_Candidate *Origin_p)
 {
     for (int i = 0; i < ComponentValues_p->length; ++i) 
     {
@@ -330,7 +331,7 @@ static NH_API_RESULT nh_css_getCascadedValue(
     nh_core_List *OrderedList_p, nh_css_Value *Value_p)
 {
     // Use cascaded value that has highest precedence.
-    nh_css_DeclaredValue *CascadedValue_p = OrderedList_p->pp[0];
+    nh_css_Candidate *CascadedValue_p = OrderedList_p->pp[0];
 
     NH_CORE_CHECK_NULL(CascadedValue_p)
     NH_CORE_CHECK(nh_css_getValue(&CascadedValue_p->Declaration_p->ComponentValues, Value_p, CascadedValue_p))
@@ -367,7 +368,7 @@ static NH_API_RESULT nh_css_getDefaultValue(
 static NH_API_RESULT nh_css_getSpecifiedValue(
     nh_dom_Node *Node_p, NH_CSS_PROPERTY property, nh_css_Value *Value_p, nh_css_Filter *Filter_p)
 {
-    nh_core_List *OrderedList_p = Filter_p->DeclaredValueLists.pp[property];
+    nh_core_List *OrderedList_p = Filter_p->CandidateLists.pp[property];
 
     if (OrderedList_p && OrderedList_p->size > 0) {
         NH_CORE_CHECK(nh_css_getCascadedValue(OrderedList_p, Value_p))
@@ -386,10 +387,12 @@ NH_API_RESULT nh_css_setSpecifiedValues(
     nh_dom_Node *Node_p = nh_dom_getNode((nh_webidl_Object*)Element_p);
     if (nh_dom_getSpecifiedPropertyValues(Node_p)->length > 0) {return NH_API_ERROR_BAD_STATE;}
 
-    nh_core_Array SpecifiedValues = nh_core_initArray(sizeof(nh_css_Value), NH_CSS_PROPERTY_COUNT);
-    nh_css_Filter Filter = nh_css_filterDeclarations(Element_p, AuthorStyleSheets_p, UserStyleSheets);
-
+    nh_css_Filter Filter = nh_css_filter(Element_p, AuthorStyleSheets_p, UserStyleSheets);
     if (LogContext_p) {nh_css_logFilter(LogContext_p, &Filter);}
+
+    nh_css_cascade(&Filter);
+
+    nh_core_Array SpecifiedValues = nh_core_initArray(sizeof(nh_css_Value), NH_CSS_PROPERTY_COUNT);
 
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) 
     {

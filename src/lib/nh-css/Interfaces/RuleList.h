@@ -20,7 +20,7 @@ NH_API_RESULT nh_css_appendToRuleList(
 );
 
 nh_core_List *nh_css_getRuleListData(
-    nh_css_RuleListObject *RuleList_p
+    nh_webidl_Object *RuleList_p
 );
 
 #endif // NH_CSS_INTERFACES_RULE_LIST_H

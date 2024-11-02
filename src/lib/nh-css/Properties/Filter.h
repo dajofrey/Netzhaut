@@ -1,7 +1,5 @@
-#ifndef NH_CSS_FILTER_H
-#define NH_CSS_FILTER_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_CSS_PROPERTIES_FILTER_H
+#define NH_CSS_PROPERTIES_FILTER_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -10,60 +8,34 @@
  */
 
 #include "Properties.h"
-
 #include "../Parser/Parser.h"
 #include "../Common/Includes.h"
 
-#endif
+typedef enum NH_CSS_DECLARATION_ORIGIN {
+    NH_CSS_DECLARATION_ORIGIN_AUTHOR,
+    NH_CSS_DECLARATION_ORIGIN_USER,
+    NH_CSS_DECLARATION_ORIGIN_USER_AGENT,
+    NH_CSS_DECLARATION_ORIGIN_ANIMATION,
+    NH_CSS_DECLARATION_ORIGIN_TRANSITION,
+} NH_CSS_DECLARATION_ORIGIN;
 
-/** @addtogroup lib_nh-css_enums
- *  @{
- */
+extern const char *NH_CSS_DECLARATION_ORIGIN_NAMES_PP[];
 
-    typedef enum NH_CSS_DECLARATION_ORIGIN {
-        NH_CSS_DECLARATION_ORIGIN_AUTHOR,
-        NH_CSS_DECLARATION_ORIGIN_USER,
-        NH_CSS_DECLARATION_ORIGIN_USER_AGENT,
-        NH_CSS_DECLARATION_ORIGIN_ANIMATION,
-        NH_CSS_DECLARATION_ORIGIN_TRANSITION,
-    } NH_CSS_DECLARATION_ORIGIN;
+typedef struct nh_css_Filter {
+    nh_core_Array Candidates;
+    nh_core_List CandidateLists;
+    nh_core_Array CandidateListsArray;
+} nh_css_Filter;
 
-/** @} */
+typedef struct nh_css_Candidate {
+    bool direct;
+    NH_CSS_DECLARATION_ORIGIN origin;
+    nh_css_Declaration *Declaration_p;
+    nh_webidl_Object *CSSStyleRule_p;
+} nh_css_Candidate;
 
-/** @addtogroup lib_nh-css_vars
- *  @{
- */
+nh_css_Filter nh_css_filter(
+    nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, nh_core_List UserStyleSheets
+);
 
-    extern const char *NH_CSS_DECLARATION_ORIGIN_NAMES_PP[];
-
-/** @} */
-
-/** @addtogroup lib_nh-css_structs
- *  @{
- */
-
-    typedef struct nh_css_Filter {
-        nh_core_Array DeclaredValues;
-        nh_core_List DeclaredValueLists;
-        nh_core_Array DeclaredValueListsArray;
-    } nh_css_Filter;
-
-    typedef struct nh_css_DeclaredValue {
-        bool direct;
-        NH_CSS_DECLARATION_ORIGIN origin;
-        nh_css_Declaration *Declaration_p;
-    } nh_css_DeclaredValue;
-
-/** @} */
-
-/** @addtogroup lib_nh-css_functions
- *  @{
- */
-
-    nh_css_Filter nh_css_filterDeclarations(
-        nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, nh_core_List UserStyleSheets
-    );
-
-/** @} */
-
-#endif
+#endif // NH_CSS_PROPERTIES_FILTER_H

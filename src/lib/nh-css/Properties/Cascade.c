@@ -11,6 +11,8 @@
 #include "Cascade.h"
 
 #include "../Common/Log.h"
+#include "../Interfaces/StyleRule.h"
+
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-encoding/Encodings/UTF8.h"
 
@@ -19,30 +21,38 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// COMPARE =========================================================================================
+// TYPEDEFS ========================================================================================
+
+typedef struct nh_css_Specificity {
+    unsigned int a;
+    unsigned int b;
+    unsigned int c;
+} nh_css_Specificity;
+
+// FUNCTIONS =======================================================================================
 
 static int nh_css_getOriginAndImportancePrecedence(
-    nh_css_DeclaredValue *Value_p)
+    nh_css_Candidate *Candidate_p)
 {
-    switch (Value_p->origin)
+    switch (Candidate_p->origin)
     {
         case NH_CSS_DECLARATION_ORIGIN_TRANSITION :
             return 1;
 
         case NH_CSS_DECLARATION_ORIGIN_USER_AGENT :
-            if (Value_p->Declaration_p->important) {
+            if (Candidate_p->Declaration_p->important) {
                 return 2;
             }
             return 8;
 
         case NH_CSS_DECLARATION_ORIGIN_USER :
-            if (Value_p->Declaration_p->important) {
+            if (Candidate_p->Declaration_p->important) {
                 return 3;
             }
             return 7;
 
         case NH_CSS_DECLARATION_ORIGIN_AUTHOR :
-            if (Value_p->Declaration_p->important) {
+            if (Candidate_p->Declaration_p->important) {
                 return 4;
             }
             return 6;
@@ -55,7 +65,7 @@ static int nh_css_getOriginAndImportancePrecedence(
 }
 
 static int nh_css_getContextPrecedence(
-    nh_css_DeclaredValue *Value_p)
+    nh_css_Candidate *Candidate_p)
 {
     // TODO
 
@@ -63,59 +73,102 @@ static int nh_css_getContextPrecedence(
 }
 
 static int nh_css_getLayersPrecedence(
-    nh_css_DeclaredValue *Value_p)
+    nh_css_Candidate *Candidate_p)
 {
     // TODO
 
     return 0;
+}
+
+static void nh_css_countSelectorType(
+    nh_css_SelectorParseNode *Node_p, NH_CSS_SELECTOR_PARSE_NODE type, int *count_p)
+{
+    if (Node_p->type == type) {++(*count_p);}
+
+    // Ignore the universal selector.
+    if (Node_p->type == NH_CSS_SELECTOR_PARSE_NODE_TYPE_SELECTOR) {
+        if (((nh_css_SelectorParseNode*)Node_p->Children.pp[0])->Token_p != NULL) {
+            nh_css_Token *Token_p = ((nh_css_SelectorParseNode*)Node_p->Children.pp[0])->Token_p;
+            if (Token_p->type == NH_CSS_TOKEN_DELIM && Token_p->Delim.value == 0x2A) { 
+                --(*count_p);
+            } 
+        }
+    }
+
+    for (int i = 0; i < Node_p->Children.size; ++i) {
+        nh_css_countSelectorType(Node_p->Children.pp[i], type, count_p);
+    }
 }
 
 /**
  * https://www.w3.org/TR/selectors/#specificity
  */
-static int nh_css_getSpecificityPrecedence(
-    nh_css_DeclaredValue *Value_p)
+static nh_css_Specificity nh_css_getSpecificity(
+    nh_css_Candidate *Candidate_p)
 {
-    // TODO
+    nh_css_Specificity Specificity;
+    memset(&Specificity, 0, sizeof(nh_css_Specificity));
 
-    Value_p->Declaration_p
+    if (Candidate_p->CSSStyleRule_p == NULL) {
+        return Specificity;
+    }
 
-    return 0;
+    nh_css_SelectorParseNode *Node_p = 
+        nh_css_getCSSStyleRuleSelectors(Candidate_p->CSSStyleRule_p);
+
+    nh_css_countSelectorType(Node_p, NH_CSS_SELECTOR_PARSE_NODE_ID_SELECTOR, &Specificity.a);
+    nh_css_countSelectorType(Node_p, NH_CSS_SELECTOR_PARSE_NODE_CLASS_SELECTOR, &Specificity.b);
+    nh_css_countSelectorType(Node_p, NH_CSS_SELECTOR_PARSE_NODE_ATTRIBUTE_SELECTOR, &Specificity.b);
+    nh_css_countSelectorType(Node_p, NH_CSS_SELECTOR_PARSE_NODE_PSEUDO_CLASS_SELECTOR, &Specificity.b);
+    nh_css_countSelectorType(Node_p, NH_CSS_SELECTOR_PARSE_NODE_TYPE_SELECTOR, &Specificity.c);
+    nh_css_countSelectorType(Node_p, NH_CSS_SELECTOR_PARSE_NODE_PSEUDO_ELEMENT_SELECTOR, &Specificity.c);
+
+    return Specificity;
 }
 
-nh_css_DeclaredValue *nh_css_compare(
-    nh_css_DeclaredValue *Value1_p, nh_css_DeclaredValue *Value2_p)
+nh_css_Candidate *nh_css_compare(
+    nh_css_Candidate *Candidate1_p, nh_css_Candidate *Candidate2_p)
 {
     int v1, v2;
 
-    v1 = nh_css_getOriginAndImportancePrecedence(Value1_p);
-    v2 = nh_css_getOriginAndImportancePrecedence(Value2_p);
+    v1 = nh_css_getOriginAndImportancePrecedence(Candidate1_p);
+    v2 = nh_css_getOriginAndImportancePrecedence(Candidate2_p);
 
     if (v1 != v2) {
-        if (v1 < v2) {return Value1_p;} else {return Value2_p;}
+        if (v1 < v2) {return Candidate1_p;} else {return Candidate2_p;}
     }
 
 // TODO context
 
-    if (Value1_p->direct != Value2_p->direct) {
-        if (Value1_p->direct) {return Value1_p;} else {return Value2_p;}
+    if (Candidate1_p->direct != Candidate2_p->direct) {
+        if (Candidate1_p->direct) {return Candidate1_p;} else {return Candidate2_p;}
     }
 
 // TODO layers
-// TODO specificity
 
-    if (Value1_p == Value2_p) {return NULL;}
+    nh_css_Specificity Specificity1 = nh_css_getSpecificity(Candidate1_p);
+    nh_css_Specificity Specificity2 = nh_css_getSpecificity(Candidate2_p);
 
-    return Value1_p < Value2_p ? Value2_p : Value1_p;
+    if (Specificity1.a != Specificity2.a) {
+        if (Specificity1.a > Specificity2.a) {return Candidate1_p;} else {return Candidate2_p;}
+    }
+    if (Specificity1.b != Specificity2.b) {
+        if (Specificity1.b > Specificity2.b) {return Candidate1_p;} else {return Candidate2_p;}
+    }
+    if (Specificity1.c != Specificity2.c) {
+        if (Specificity1.c > Specificity2.c) {return Candidate1_p;} else {return Candidate2_p;}
+    }
+
+    if (Candidate1_p == Candidate2_p) {return NULL;}
+
+    return Candidate1_p < Candidate2_p ? Candidate2_p : Candidate1_p;
 }
-	
-// CONVERT =========================================================================================
 
 static void nh_css_cascadeUsingQuickSort(
-    nh_core_List *DeclaredValues_p, int first, int last)
+    nh_core_List *Candidates_p, int first, int last)
 {
     int i, j, pivot;
-    nh_css_DeclaredValue *Temp_p;
+    nh_css_Candidate *Temp_p;
 
     if (first < last)
     {
@@ -125,34 +178,34 @@ static void nh_css_cascadeUsingQuickSort(
 
         while (i < j)
         {
-            while (nh_css_compare(DeclaredValues_p->pp[i], DeclaredValues_p->pp[pivot]) == DeclaredValues_p->pp[pivot] && i < last)
+            while (i < last && nh_css_compare(Candidates_p->pp[i], Candidates_p->pp[pivot]) == Candidates_p->pp[pivot])
                 i++;
-            while (nh_css_compare(DeclaredValues_p->pp[j], DeclaredValues_p->pp[pivot]) != DeclaredValues_p->pp[pivot])
+            while (j > first && nh_css_compare(Candidates_p->pp[j], Candidates_p->pp[pivot]) != Candidates_p->pp[pivot])
                 j--;
             if (i < j){
-                Temp_p = DeclaredValues_p->pp[i];
-                DeclaredValues_p->pp[i] = DeclaredValues_p->pp[j];
-                DeclaredValues_p->pp[j] = Temp_p;
+                Temp_p = Candidates_p->pp[i];
+                Candidates_p->pp[i] = Candidates_p->pp[j];
+                Candidates_p->pp[j] = Temp_p;
             }
         }
     
-        Temp_p = DeclaredValues_p->pp[pivot];
-        DeclaredValues_p->pp[pivot] = DeclaredValues_p->pp[j];
-        DeclaredValues_p->pp[j] = Temp_p;
+        Temp_p = Candidates_p->pp[pivot];
+        Candidates_p->pp[pivot] = Candidates_p->pp[j];
+        Candidates_p->pp[j] = Temp_p;
 
-        nh_css_cascadeUsingQuickSort(DeclaredValues_p, first, j - 1);
-        nh_css_cascadeUsingQuickSort(DeclaredValues_p, j + 1, last);
+        nh_css_cascadeUsingQuickSort(Candidates_p, first, j - 1);
+        nh_css_cascadeUsingQuickSort(Candidates_p, j + 1, last);
     }
 
     return;
 }
 
-static void nh_css_cascadeDeclaredValues(
-    nh_core_List *DeclaredValues_p)
+static void nh_css_cascadeCandidates(
+    nh_core_List *Candidates_p)
 {
-    if (!DeclaredValues_p) {return ;}
+    if (!Candidates_p) {return ;}
 
-    nh_css_cascadeUsingQuickSort(DeclaredValues_p, 0, DeclaredValues_p->size);
+    nh_css_cascadeUsingQuickSort(Candidates_p, 0, Candidates_p->size-1);
 
     return;
 }
@@ -164,7 +217,7 @@ void nh_css_cascade(
     nh_css_Filter *Filter_p)
 {
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {
-        nh_css_cascadeDeclaredValues(Filter_p->DeclaredValueLists.pp[i]);
+        nh_css_cascadeCandidates(Filter_p->CandidateLists.pp[i]);
     }
 
     return;

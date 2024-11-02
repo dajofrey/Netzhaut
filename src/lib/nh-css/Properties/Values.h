@@ -88,7 +88,7 @@
     typedef struct nh_css_ValueCommon {
         NH_CSS_VALUE type;
         NH_CSS_VALUE_SCOPE scope;
-        nh_css_DeclaredValue *Origin_p;
+        nh_css_Candidate *Origin_p;
         struct nh_css_Value *Next_p;
     } nh_css_ValueCommon;
 

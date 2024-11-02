@@ -51,7 +51,7 @@ static nh_css_Value *nh_css_compareSpecifiedValues(
         return Value1_p;
     }
     else if (Value1_p->Common.Origin_p && Value2_p->Common.Origin_p) {
-        nh_css_DeclaredValue *Declared_p = nh_css_compare(Value1_p->Common.Origin_p, Value2_p->Common.Origin_p);
+        nh_css_Candidate *Declared_p = nh_css_compare(Value1_p->Common.Origin_p, Value2_p->Common.Origin_p);
         return Declared_p == Value1_p->Common.Origin_p ? Value1_p : Value2_p;
     }
 

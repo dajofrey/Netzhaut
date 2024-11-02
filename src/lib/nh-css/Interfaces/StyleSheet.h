@@ -21,8 +21,8 @@
         nh_webidl_Object *Object_p
     );
 
-    nh_css_RuleListObject *nh_css_getRuleList(
-        nh_css_StyleSheetObject *StyleSheet_p
+    nh_webidl_Object *nh_css_getRuleList(
+        nh_webidl_Object *CSSStyleSheet_p
     );
 
     void nh_css_setStyleSheetTokens(

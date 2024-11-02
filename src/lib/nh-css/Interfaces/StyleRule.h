@@ -16,12 +16,12 @@
 
 // FUNCTIONS =======================================================================================
 
-nh_css_StyleRuleObject *nh_css_getStyleRule(
+nh_webidl_Object *nh_css_getCSSStyleRule(
     nh_webidl_Object *Object_p
 );
 
-nh_css_SelectorParseNode *nh_css_getStyleRuleSelectors(
-    nh_css_StyleRuleObject *StyleRule_p
+nh_css_SelectorParseNode *nh_css_getCSSStyleRuleSelectors(
+    nh_webidl_Object *CSSStyleRule_p
 );
 
 nh_css_StyleDeclarationObject *nh_css_getStyleRuleDeclaration(
