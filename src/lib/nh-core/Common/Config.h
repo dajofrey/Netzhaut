@@ -14,7 +14,9 @@ typedef enum NH_CORE_SETTING_E {
     NH_CORE_SETTING_LOADER_UNLOAD,
     NH_CORE_SETTING_DEBUG_TO_CONSOLE,
     NH_CORE_SETTING_DEBUG_LEVEL,
-    NH_CORE_SETTING_LOG_ON,
+    NH_CORE_SETTING_LOGGER_ON,
+    NH_CORE_SETTING_LOGGER_IPC,
+    NH_CORE_SETTING_LOGGER_PORT,
     NH_CORE_SETTING_E_COUNT,
 } NH_CORE_SETTING_E;
 
@@ -22,7 +24,9 @@ typedef struct nh_core_Config {
     bool loaderUnload;
     bool debugToConsole;
     int debugLevel;
-    bool logOn;
+    bool loggerOn;
+    bool loggerIPC;
+    bool loggerPort;
 } nh_core_Config;
 
 nh_core_Config nh_core_getConfig(

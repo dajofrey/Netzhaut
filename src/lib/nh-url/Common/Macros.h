@@ -18,19 +18,19 @@
 // FLOW LOGGING ====================================================================================
 
 #ifdef NH_LOG_FLOW 
-    #define NH_URL_BEGIN() {_nh_url_logBegin(__FILE__, __func__);} 
+    #define NH_URL_BEGIN()
 #else 
     #define NH_URL_BEGIN() 
 #endif 
 
 #ifdef NH_LOG_FLOW 
-    #define NH_URL_END(result) {_nh_url_logEnd(__FILE__, __func__); return result;} 
+    #define NH_URL_END(result) {return result;} 
 #else 
     #define NH_URL_END(result) {return result;} 
 #endif 
 
 #ifdef NH_LOG_FLOW 
-    #define NH_URL_SILENT_END() {_nh_url_logEnd(__FILE__, __func__); return;} 
+    #define NH_URL_SILENT_END() {return;} 
 #else 
     #define NH_URL_SILENT_END() {return;} 
 #endif 

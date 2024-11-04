@@ -16,9 +16,7 @@
 #include "../Parser/Parser.h"
 #include "../Properties/Properties.h"
 
-#include "../../nh-core/System/Logger.h"
 #include "../../nh-core/System/Memory.h"
-
 #include "../../nh-encoding/Encodings/UTF8.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
 

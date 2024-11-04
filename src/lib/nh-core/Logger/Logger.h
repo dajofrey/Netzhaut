@@ -45,10 +45,6 @@ NH_API_RESULT nh_core_addLogCallback(
     nh_api_logCallback_f logCallback_f
 );
 
-NH_API_RESULT _nh_core_sendLogMessage(
-    char *node_p, char *options_p, char *message_p
-);
-
 NH_API_RESULT nh_core_sendLogMessage(
     char *node_p, char *options_p, char *message_p
 );

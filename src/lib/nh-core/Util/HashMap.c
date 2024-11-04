@@ -12,6 +12,9 @@
 
 #include "../System/Memory.h"
 
+#pragma GCC diagnostic ignored "-Wendif-labels"
+#include "../../../../external/c_hashmap/hashmap.h"
+
 #include <stdio.h>
 #include <string.h>
 

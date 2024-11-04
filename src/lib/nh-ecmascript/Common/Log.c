@@ -11,7 +11,7 @@
 #include "Log.h"
 
 #include "../Engine/Lexer.h"
-#include "../../nh-core/System/Logger.h"
+#include "../../nh-core/Logger/Logger.h"
 
 #include <stdio.h>
 
@@ -20,30 +20,6 @@
 #define NH_ECMASCRIPT_LOG_PREFIX "nh-ecmascript"
 #define NH_ECMASCRIPT_LOG_CATEGORY_LOGGING "Logging"
 #define NH_ECMASCRIPT_LOG_CATEGORY_DECODER "Decoder"
-
-// LOG =============================================================================================
-
-NH_API_RESULT _nh_ecmascript_logBegin(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_begin(file_p, function_p);
-}
-
-NH_API_RESULT _nh_ecmascript_logEnd(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_end(file_p, function_p);
-}
-
-NH_API_RESULT _nh_ecmascript_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
-//    _nh_diagnosticEnd(file_p, function_p, result, line);
-//    return result;
-}
 
 //NH_API_RESULT nh_ecmascript_finishLogging(
 //    nh_ecmascript_Script *Script_p, nh_core_Array *UnicodeCodePoints_p)
@@ -131,4 +107,3 @@ NH_API_RESULT nh_ecmascript_logParseTree(
 
     return NH_API_SUCCESS;
 }
-

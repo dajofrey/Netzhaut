@@ -1,7 +1,5 @@
-#ifndef NH_WSI_LOG_H
-#define NH_WSI_LOG_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_WSI_COMMON_LOG_H
+#define NH_WSI_COMMON_LOG_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -12,16 +10,8 @@
 #include "Includes.h"
 #include "../Window/Window.h"
 
-#endif
+void nh_wsi_logEvent(
+    nh_wsi_Window *Window_p, nh_api_WSIEvent *Event_p
+);
 
-/** @addtogroup lib_nh-wsi_functions
- *  @{
- */
-
-    void nh_wsi_logEvent(
-        nh_wsi_Window *Window_p, nh_api_WSIEvent *Event_p
-    );
-
-/** @} */
-
-#endif 
+#endif // NH_WSI_COMMON_LOG_H

@@ -13,12 +13,12 @@
 
 #include "../../nh-core/Util/String.h"
 #include "../../nh-core/System/Memory.h"
-#include "../../nh-core/System/Logger.h"
+#include "../../nh-core/Logger/Logger.h"
 
 #include <string.h>
 #include <stdio.h>
 
-// LOG =============================================================================================
+// FUNCTIONS =======================================================================================
 
 void nh_network_logReceive(
     char *data_p)
@@ -77,4 +77,3 @@ NH_API_RESULT _nh_network_logDiagnosticEnd(
 //    _nh_diagnosticEnd(file_p, function_p, NH_API_RESULTS_PP[result], line, result == NH_API_SUCCESS);
     return result;
 }
-

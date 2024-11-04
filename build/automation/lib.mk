@@ -62,9 +62,10 @@ SRC_FILES_NHCORE = \
     System/System.c \
     System/Thread.c \
     System/Channel.c \
-    System/Logger.c \
     System/Memory.c \
     System/Process.c \
+    Logger/Logger.c \
+    Logger/Monitor.c \
     Util/MediaType.c \
     Util/HashMap.c \
     Util/Time.c \
@@ -90,10 +91,6 @@ SRC_FILES_NHCORE = \
     Common/Log.c \
     Common/About.c \
     Common/Config.c \
-
-ifdef MONITOR
-SRC_FILES_NHCORE += System/Monitor.c
-endif
 
 SRC_FILES_NHWSI = \
     Window/Window.c \
@@ -323,7 +320,7 @@ SRC_FILES_NHURL = \
     Common/Initialize.c \
     Common/About.c \
     Common/Test.c \
-	
+
 SRC_FILES_C_HASHMAP = hashmap.c
 SRC_FILES_VOLK = volk.c
 

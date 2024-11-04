@@ -11,12 +11,12 @@
 #include "Log.h"
 
 #include "../../nh-core/System/Memory.h"
-#include "../../nh-core/System/Logger.h"
+#include "../../nh-core/Logger/Logger.h"
 
 #include <string.h>
 #include <stdio.h>
 
-// EVENT ===========================================================================================
+// FUNCTIONS =======================================================================================
 
 void nh_wsi_logEvent( // TODO multithreading
     nh_wsi_Window *Window_p, nh_api_WSIEvent *Event_p)

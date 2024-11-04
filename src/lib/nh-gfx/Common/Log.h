@@ -20,18 +20,6 @@
  *  @{
  */
 
-    NH_API_RESULT _nh_gfx_logBegin(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_gfx_logEnd(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_gfx_logDiagnosticEnd(
-        const char *file_p, const char *function_p, NH_API_RESULT result, int line
-    );
-
     void nh_gfx_logFont(
         nh_gfx_Font *Font_p 
     );

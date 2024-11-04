@@ -9,9 +9,9 @@
 // INCLUDES ========================================================================================
 
 #include "Logger.h"
-#include "Thread.h"
-#include "Process.h"
-#include "Memory.h"
+#include "../System/Thread.h"
+#include "../System/Process.h"
+#include "../System/Memory.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -235,6 +235,8 @@ NH_API_RESULT nh_core_sendLogMessage(
     for (int i = 0; i < MAX_LOGGER_CALLBACKS && CALLBACKS_PP[i] != NULL; ++i) {
         CALLBACKS_PP[i](node_p, options_p, message_p);
     }
+
+    // send to IPC
 
     return NH_API_SUCCESS;
 }

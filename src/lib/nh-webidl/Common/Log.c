@@ -11,34 +11,12 @@
 #include "Log.h"
 
 #include "../Runtime/Definitions.h"
-#include "../../nh-core/System/Logger.h"
+#include "../../nh-core/Logger/Logger.h"
 
 #include <string.h>
 #include <stdio.h>
 
-// DEBUG ===========================================================================================
-
-NH_API_RESULT _nh_webidl_logBegin(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_begin(file_p, function_p);
-}
-
-NH_API_RESULT _nh_webidl_logEnd(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_end(file_p, function_p);
-}
-
-NH_API_RESULT _nh_webidl_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
-//    _nh_diagnosticEnd(file_p, function_p, result, line);
-//    return result;
-}
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_webidl_logTokens(
     char *fragmentName_p, nh_core_Array *Tokens_p, bool dirty)
@@ -167,4 +145,3 @@ NH_API_RESULT nh_webidl_logFragment(
 
     return NH_API_SUCCESS;
 }
-

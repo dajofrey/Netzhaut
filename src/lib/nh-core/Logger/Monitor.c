@@ -10,8 +10,8 @@
 
 #include "Monitor.h"
 #include "Logger.h"
-#include "Memory.h"
 
+#include "../System/Memory.h"
 #include "../Util/Time.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
 #include "../../../../external/TTyr/src/lib/ttyr-api/ttyr-tty.h"
@@ -49,8 +49,6 @@ typedef struct nh_core_MonitorView {
 
 typedef struct nh_core_Monitor {
     nh_core_MonitorView View;
-    bool showCategories;
-    int listingWidth;
     nh_core_MonitorNode Root;
     nh_core_SystemTime LastUpdate;
     double updateIntervalInSeconds;
@@ -89,6 +87,43 @@ static NH_API_RESULT nh_core_updateMonitorNode(
     }
 
     return NH_API_SUCCESS;
+}
+
+static void nh_core_getPreviewNodes(
+    nh_core_MonitorNode *Node_p, nh_core_List *List_p)
+{
+    nh_core_MonitorNode *Child_p = NULL;
+    for (int i = 0; i < Node_p->Children.size; ++i) {
+        if (((nh_core_MonitorNode*)Node_p->Children.pp[i])->isOpen) {
+            Child_p = Node_p->Children.pp[i];
+        }
+    }
+
+    if (Child_p) {
+        nh_core_getPreviewNodes(Child_p, List_p);
+    } else {
+        for (int i = 0; i < Node_p->Children.size; ++i) {
+            nh_core_appendToList(List_p, Node_p->Children.pp[i]);
+        }
+    }
+
+    return;
+}
+
+static void nh_core_getMonitorNodes2(
+    nh_core_MonitorNode *Node_p, nh_core_List *List_p)
+{
+    if (!Node_p->isOpen && !Node_p->isCurrent) {return;}
+
+    if (Node_p->Parent_p) {
+        nh_core_appendToList(List_p, Node_p);
+    }
+
+    for (int i = 0; i < Node_p->Children.size; ++i) {
+        nh_core_getMonitorNodes2(Node_p->Children.pp[i], List_p);
+    }
+
+    return;
 }
 
 static void nh_core_getMonitorNodes(
@@ -156,7 +191,6 @@ static NH_API_RESULT nh_core_updateMonitor(
         ((nh_core_MonitorNode*)Monitor_p->Root.Children.pp[0])->isCurrent = true;
     }
 
-    Monitor_p->listingWidth = nh_core_getCategoryListingWidth(Monitor_p);
     Monitor_p->LastUpdate = Now;
 
     // force screen refresh
@@ -231,13 +265,14 @@ static nh_core_MonitorNode *nh_core_getCurrentMonitorNode(
     return NULL;
 }
 
+
 static void nh_core_moveCursorVertically(
     ttyr_tty_Program *Program_p, nh_core_MonitorNode *Current_p, int key) 
 {
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
 
     nh_core_List Nodes = nh_core_initList(16);
-    nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
+    nh_core_getPreviewNodes(&Monitor_p->Root, &Nodes);
     int index;
     for (index = 0; index < Nodes.size && Nodes.pp[index] != Current_p; ++index);
 
@@ -247,6 +282,7 @@ static void nh_core_moveCursorVertically(
             if (index > 0) 
             {
                 Current_p->isCurrent = false;
+                Current_p->isOpen = false;
                 ((nh_core_MonitorNode*)Nodes.pp[index - 1])->isCurrent = true;
 
                 if (Monitor_p->View.screenCursor == 0 && Monitor_p->View.rowOffset > 0) {Monitor_p->View.rowOffset--;}
@@ -257,6 +293,7 @@ static void nh_core_moveCursorVertically(
             if (Nodes.size > index + 1) 
             {
                 Current_p->isCurrent = false;
+                Current_p->isOpen = false;
                 ((nh_core_MonitorNode*)Nodes.pp[index + 1])->isCurrent = true;
 
                 if (Monitor_p->View.screenCursor < Monitor_p->View.height - 1) {Monitor_p->View.screenCursor++;}
@@ -377,43 +414,55 @@ static NH_API_RESULT nh_core_handleMonitorInput(
             break;
 
         case 'a' :
+            if (Current_p->Parent_p->Parent_p == NULL) {
+                 break;
+            }
             if (Current_p->isSelected) {
                 nh_core_unselectMonitorNode(Monitor_p, Current_p);
-            }
-            else if (Current_p->Parent_p->Parent_p != NULL) 
-            {
-                for (int i = 0; i < Current_p->Parent_p->Children.size; ++i) 
-                {
-                    nh_core_MonitorNode *Sibling_p = Current_p->Parent_p->Children.pp[i];
-                    if (Sibling_p->isSelected) {
-                        nh_core_unselectMonitorNode(Monitor_p, Sibling_p);
-                    } 
-                    Sibling_p->isCurrent = false;
-                }
+                Current_p->isOpen = false;
+                Current_p->isCurrent = true;
+                Current_p->hasFocus = true;
+            } else {
+                Current_p->isCurrent = false;
+                Current_p->hasFocus = false;
+                Current_p->isOpen = false;
                 Current_p->Parent_p->isOpen = false;
                 Current_p->Parent_p->isCurrent = true;
+                Current_p->Parent_p->hasFocus = true;
             }
+
+//            for (int i = 0; i < Current_p->Parent_p->Children.size; ++i) 
+//            {
+//                nh_core_MonitorNode *Sibling_p = Current_p->Parent_p->Children.pp[i];
+//                Sibling_p->isCurrent = false;
+//                if (Sibling_p->isSelected) {
+//                    nh_core_unselectMonitorNode(Monitor_p, Sibling_p);
+//                    Sibling_p->isCurrent = true;
+//                } 
+//            }
+//            Current_p->Parent_p->isOpen = false;
+//            Current_p->Parent_p->isCurrent = true;
+//            if (Current_p->isSelected) {
+//                 nh_core_unselectMonitorNode(Monitor_p, Current_p);
+//            }
             break;
 
         case 'd' :
             Current_p->isOpen = true;
-            if (Current_p->LoggerNode_p->Messages.size == 0) {
-                Monitor_p->listingWidth = nh_core_getCategoryListingWidth(Monitor_p);
-            }
-            else {
-                nh_core_resetMonitorFocuses(Monitor_p);
+            Current_p->isCurrent = false;
+            if (Current_p->LoggerNode_p->Messages.size > 0) {
                 Current_p->isSelected = true;
                 Current_p->hasFocus = true;
+                Current_p->isCurrent = true;
+            } else {
+                ((nh_core_MonitorNode*)Current_p->Children.pp[0])->isCurrent = true;
             }
+
             break;
 
         case 'q' :
             Program_p->close = true;
             break;
-
-//        case CTRL_KEY('b') :
-//            Monitor_p->showCategories = !Monitor_p->showCategories; 
-//            break;
     }
  
     Program_p->refresh = true;
@@ -428,7 +477,20 @@ static void nh_core_setNextGlyph(
 {
     ttyr_tty_Glyph Glyph;
     memset(&Glyph, 0, sizeof(ttyr_tty_Glyph));
-    Glyph.Attributes.reverse = false;
+    Glyph.codepoint = codepoint;
+ 
+    (*Glyphs_pp)[0] = Glyph;
+    (*Glyphs_pp) = (*Glyphs_pp)+1;
+
+    return;
+}
+
+static void nh_core_setNextReverseGlyph(
+    ttyr_tty_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
+{
+    ttyr_tty_Glyph Glyph;
+    memset(&Glyph, 0, sizeof(ttyr_tty_Glyph));
+    Glyph.Attributes.reverse = true;
     Glyph.codepoint = codepoint;
  
     (*Glyphs_pp)[0] = Glyph;
@@ -508,9 +570,13 @@ static NH_API_RESULT nh_core_drawSelected(
             }
 
             if (SelectedNode_p->hasFocus && SelectedNode_p->focusedRow == row) {
+                nh_core_setNextGlyph(Glyphs_pp, ' ');
                 nh_core_setNextGlyph(Glyphs_pp, '>');
+                nh_core_setNextGlyph(Glyphs_pp, ' ');
             }
             else {
+                nh_core_setNextGlyph(Glyphs_pp, ' ');
+                nh_core_setNextGlyph(Glyphs_pp, ' ');
                 nh_core_setNextGlyph(Glyphs_pp, ' ');
             }
 
@@ -528,13 +594,14 @@ static NH_API_RESULT nh_core_drawSelected(
         }
     }
 
-    if (SelectedNodes.size == 0) {nh_core_drawHelp(Glyphs_pp, row, cols, rows);}
+//    if (SelectedNodes.size == 0) {nh_core_drawHelp(Glyphs_pp, row, cols, rows);}
 
     nh_core_freeList(&SelectedNodes, false);
 
     return NH_API_SUCCESS;
 }
 
+int OFFSET = 0;
 static NH_API_RESULT nh_core_drawMonitorRow(
     ttyr_tty_Program *Program_p, ttyr_tty_Glyph *Glyphs_p, int width, int height, int row)
 {
@@ -543,48 +610,94 @@ static NH_API_RESULT nh_core_drawMonitorRow(
 
     int tmp = -1;
     nh_core_List Nodes = nh_core_initList(16);
-    nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
-    nh_core_MonitorNode *Node_p = nh_core_getFromList(&Nodes, row + Monitor_p->View.rowOffset);
+    nh_core_getPreviewNodes(&Monitor_p->Root, &Nodes);
 
     ttyr_tty_Glyph *Tmp_p = Glyphs_p;
     for (int i = 0; i < width; ++i) {
         nh_core_setNextGlyph(&Glyphs_p, ' ');
     }
     Glyphs_p = Tmp_p;
- 
-    if (Monitor_p->showCategories)
-    {
-        if (Node_p != NULL && row < Nodes.size) 
-        {
-            int offset = nh_core_getMonitorNodeDepth(Node_p);
-            for (int i = 0; i < offset; ++i) {
+
+    if (row == 0) {
+        char title_p[] = " Netzhaut Console ";
+        for (int i = 0; i < width - strlen(title_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, '-');
+        }
+        for (int i = 0; i < strlen(title_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
+        }
+    } else if (row == 1) {
+        OFFSET = 0;
+        nh_core_List Nodes2 = nh_core_initList(16);
+        nh_core_getMonitorNodes2(&Monitor_p->Root, &Nodes2);
+        nh_core_MonitorNode *LastNode_p = NULL;
+        for (int i = 0; i < Nodes2.size; ++i) {
+            nh_core_MonitorNode *Node2_p = Nodes2.pp[i];
+            if (Nodes2.size == i+1 && !Node2_p->isSelected) {
+                Node2_p = Node2_p->Parent_p->Children.pp[0];
+            }
+            if (LastNode_p) {
+                OFFSET +=strlen(LastNode_p->LoggerNode_p->name_p);
+            }
+            nh_core_setNextGlyph(&Glyphs_p, ' ');
+            if (Nodes2.size == i+1) {
+                if (Node2_p->isCurrent || Node2_p->isSelected) {
+                    nh_core_setNextGlyph(&Glyphs_p, '>');
+                } else {
+                    nh_core_setNextGlyph(&Glyphs_p, ' ');
+                }
+            } else {nh_core_setNextGlyph(&Glyphs_p, '>');}
+            nh_core_setNextGlyph(&Glyphs_p, ' ');
+            for (int i = 0; i < strlen(Node2_p->LoggerNode_p->name_p); ++i) {
+                if (Node2_p->isSelected) {
+                    nh_core_setNextReverseGlyph(&Glyphs_p, Node2_p->LoggerNode_p->name_p[i]);
+                } else {
+                    nh_core_setNextGlyph(&Glyphs_p, Node2_p->LoggerNode_p->name_p[i]);
+                }
+            }
+            LastNode_p = Node2_p;
+            if (Nodes2.size > i+1) {
+                OFFSET += 3;
+            }
+        }
+    } else if (Nodes.size > 1 && (row-1) < Nodes.size) {
+        nh_core_MonitorNode *Node_p = nh_core_getFromList(&Nodes, row-1);
+        if (Node_p) {
+            for (int i = 0; i < OFFSET; ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, ' ');
+            }
+            if (Node_p->isCurrent) {
+                nh_core_setNextGlyph(&Glyphs_p, ' ');
+                nh_core_setNextGlyph(&Glyphs_p, '>');
+                nh_core_setNextGlyph(&Glyphs_p, ' ');
+            }
+            else if (Node_p->isSelected) {nh_core_setNextGlyph(&Glyphs_p, '>');}
+            else {
+                nh_core_setNextGlyph(&Glyphs_p, ' ');
                 nh_core_setNextGlyph(&Glyphs_p, ' ');
                 nh_core_setNextGlyph(&Glyphs_p, ' ');
             }
-            offset *= 2;
-            offset += 1;
-
-            if (Node_p->isCurrent) {nh_core_setNextGlyph(&Glyphs_p, '>');}
-            else if (Node_p->isSelected) {nh_core_setNextGlyph(&Glyphs_p, '>');}
-            else {nh_core_setNextGlyph(&Glyphs_p, ' ');}
 
             for (int i = 0; i < strlen(Node_p->LoggerNode_p->name_p); ++i) {
                 nh_core_setNextGlyph(&Glyphs_p, Node_p->LoggerNode_p->name_p[i]);
             }
-
-            for (int i = 0; i < Monitor_p->listingWidth - (strlen(Node_p->LoggerNode_p->name_p) + offset); ++i) {
-                nh_core_setNextGlyph(&Glyphs_p, ' ');
-            }
         }
-        else {
-            for (int i = 0; i < Monitor_p->listingWidth; ++i) {
-                nh_core_setNextGlyph(&Glyphs_p, ' ');
-            }
+    } else if ((row-1) == Nodes.size || row == 2) {
+        for (int i = 0; i < width; ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, '-');
         }
-
-        NH_CORE_CHECK(nh_core_drawSelected(Monitor_p, &Glyphs_p, row, width - (Monitor_p->listingWidth), height))
+    } else if (row == height - 2) {
+        for (int i = 0; i < width; ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, '-');
+        }
+    } else if (row == height - 1) {
+        char title_p[] = " [:] Command-line [/] Search ";
+        for (int i = 0; i < strlen(title_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
+        }
+    } else {
+        NH_CORE_CHECK(nh_core_drawSelected(Monitor_p, &Glyphs_p, row - 3, width, height - 5))
     }
-    else {NH_CORE_CHECK(nh_core_drawSelected(Monitor_p, &Glyphs_p, row, width, height))}
 
     nh_core_freeList(&Nodes, false);
 
@@ -601,8 +714,6 @@ static void *nh_core_initMonitor(
 
     memset(&Monitor_p->View, 0, sizeof(nh_core_MonitorView));
 
-    Monitor_p->showCategories = true;
-    Monitor_p->listingWidth   = 0;
     Monitor_p->LastUpdate     = nh_core_getSystemTime();
     Monitor_p->updateIntervalInSeconds = 1.0;
 

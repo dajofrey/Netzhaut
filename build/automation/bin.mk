@@ -2,42 +2,34 @@
 CC = gcc
 CFLAGS = -std=gnu99 -Wl,-rpath,$(CURDIR)/lib,-rpath,$(CURDIR)/external/TTyr/lib
 
-# Check flags
-MONITOR_FLAG := $(filter -DMONITOR,$(CCFLAGS))
-
 # Define the linker and linker flags
 LD = gcc
-LDFLAGS_NHHTML = -Llib -lnh-api
-LDFLAGS_NHCSS = -Llib -lnh-api
+LDFLAGS_NH_HTML = -Llib -lnh-api
+LDFLAGS_NH_CSS = -Llib -lnh-api
+LDFLAGS_NH_MONITOR = -Llib -lnh-api -Lexternal/TTyr/lib -lttyr-api
 
 # Define the source file directory for each binary
-SRC_DIR_NHHTML = src/bin/nh-html
-SRC_DIR_NHCSS = src/bin/nh-css
+SRC_DIR_NH_HTML = src/bin/nh-html
+SRC_DIR_NH_CSS = src/bin/nh-css
+SRC_DIR_NH_MONITOR = src/bin/nh-monitor
 
 # List of source files for each binary
-SRC_FILES_NHHTML = Main.c
-SRC_FILES_NHCSS = Main.c
+SRC_FILES_NH_HTML = Main.c
+SRC_FILES_NH_CSS = Main.c
+SRC_FILES_NH_MONITOR = Main.c
 
 # Object files derived from source files for each binary 
-OBJ_FILES_NHHTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHHTML)/, $(SRC_FILES_NHHTML)))
-OBJ_FILES_NHCSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHCSS)/, $(SRC_FILES_NHCSS)))
+OBJ_FILES_NH_HTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_HTML)/, $(SRC_FILES_NH_HTML)))
+OBJ_FILES_NH_CSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_CSS)/, $(SRC_FILES_NH_CSS)))
+OBJ_FILES_NH_MONITOR = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_MONITOR)/, $(SRC_FILES_NH_MONITOR)))
 
 # Names of the shared libraries
-BIN_NHHTML = bin/nh-html
-BIN_NHCSS = bin/nh-css
-
-ifneq ($(strip $(MONITOR_FLAG)),)
-    $(info MONITOR flag was provided)
-    BUILD_TTYR_TARGET := build_ttyr
-    LDFLAGS_NHHTML += -Lexternal/TTyr/lib -lttyr-api
-    LDFLAGS_NHCSS += -Lexternal/TTyr/lib -lttyr-api
-else
-    $(info MONITOR flag was not provided)
-    BUILD_TTYR_TARGET := # don't build TTyr
-endif
+BIN_NH_HTML = bin/nh-html
+BIN_NH_CSS = bin/nh-css
+BIN_NH_MONITOR = bin/nh-monitor
 
 # Keep this as first (default) target.
-all: $(BUILD_TTYR_TARGET) $(BIN_NHHTML) $(BIN_NHCSS)
+all: $(BIN_NH_HTML) $(BIN_NH_CSS) $(BIN_NH_MONITOR)
 
 build_ttyr:
 	(cd external/TTyr && make -f build/automation/Makefile lib NETZHAUT_PATH=$(CURDIR))
@@ -45,26 +37,32 @@ create_bin_dir:
 	mkdir -p bin
 
 # Custom compiler flags
-$(OBJ_FILES_NHHTML): CFLAGS += $(CCFLAGS) -Iexternal/TTyr/src/lib -Isrc/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-$(OBJ_FILES_NHCSS): CFLAGS += $(CCFLAGS) -Iexternal/TTyr/src/lib -Isrc/lib -Iexternal
+$(OBJ_FILES_NH_HTML): CFLAGS += $(CCFLAGS) -Isrc/lib -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NH_CSS): CFLAGS += $(CCFLAGS) -Isrc/lib -Iexternal
+$(OBJ_FILES_NH_MONITOR): CFLAGS += $(CCFLAGS) -Iexternal/TTyr/src/lib -Isrc/lib -Iexternal
 
 # Rule to compile source files into object files
-%.o: $(SRC_DIR_NHHTML)/%.c
+%.o: $(SRC_DIR_NH_HTML)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
-%.o: $(SRC_DIR_NHCSS)/%.c
+%.o: $(SRC_DIR_NH_CSS)/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+%.o: $(SRC_DIR_NH_MONITOR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Rule to link object files into the shared libraries
-$(BIN_NHHTML): create_bin_dir $(OBJ_FILES_NHHTML)
-	$(LD) $(CFLAGS) -o $@ $(OBJ_FILES_NHHTML) $(LDFLAGS_NHHTML)
-$(BIN_NHCSS): create_bin_dir $(OBJ_FILES_NHCSS)
-	$(LD) $(CFLAGS) -o $@ $(OBJ_FILES_NHCSS) $(LDFLAGS_NHCSS)
+$(BIN_NH_HTML): create_bin_dir $(OBJ_FILES_NH_HTML)
+	$(LD) $(CFLAGS) -o $@ $(OBJ_FILES_NH_HTML) $(LDFLAGS_NH_HTML)
+$(BIN_NH_CSS): create_bin_dir $(OBJ_FILES_NH_CSS)
+	$(LD) $(CFLAGS) -o $@ $(OBJ_FILES_NH_CSS) $(LDFLAGS_NH_CSS)
+$(BIN_NH_MONITOR): create_bin_dir build_ttyr $(OBJ_FILES_NH_MONITOR)
+	$(LD) $(CFLAGS) -o $@ $(OBJ_FILES_NH_MONITOR) $(LDFLAGS_NH_MONITOR)
 
 # Clean rule
 clean:
-	rm -f $(OBJ_FILES_NHHTML) $(BIN_NHHTML)
-	rm -f $(OBJ_FILES_NHCSS) $(BIN_NHCSS)
+	rm -f $(OBJ_FILES_NH_HTML) $(BIN_NH_HTML)
+	rm -f $(OBJ_FILES_NH_CSS) $(BIN_NH_CSS)
+	rm -f $(OBJ_FILES_NH_MONITOR) $(BIN_NH_MONITOR)
 	rm -rf bin 
 	(cd external/TTyr && make -f build/automation/Makefile clean)
 
-.PHONY: all lib clean
+.PHONY: all clean create_bin_dir build_ttyr

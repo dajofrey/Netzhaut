@@ -15,14 +15,14 @@
 #include "../../nh-gfx/Vulkan/GPU.h"
 #include "../../nh-gfx/Vulkan/Vulkan.h"
 
-#include "../../nh-core/System/Logger.h"
+#include "../../nh-core/Logger/Logger.h"
 #include "../../nh-core/System/Memory.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-// DEBUG ===========================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_renderer_initialize()
 {
@@ -38,4 +38,3 @@ NH_API_RESULT nh_renderer_initialize()
 
     return NH_API_SUCCESS;
 }
-

@@ -11,38 +11,6 @@
 #include <stdlib.h>
 
 /** 
- * Utility function for getting file data. 
- */
-static void *getFileData(
-    char *path_p, long *size_p) 
-{
-    FILE *fh = fopen(path_p, "rb");
-    if (fh == NULL) {return NULL;}
-    
-    if (fseek(fh, 0L, SEEK_END) != 0) {return NULL;}
-
-    long size = ftell(fh);
-
-    if (fseek(fh, 0L, SEEK_SET) != 0) {return NULL;}
-
-    if(size <= 0) {
-        fclose(fh);
-        return NULL;
-    }
-
-    char *data_p = (char*)malloc(((size_t)size) + 1); 
-    if (!data_p) {return NULL;}
-    
-    fread(data_p, 1, size, fh);
-    fclose(fh);
-
-    data_p[size] = '\0';
-    if (size_p) {*size_p = size;}
-
-    return data_p;
-}
-
-/** 
  * Parse a style sheet and dump the result.
  */
 int main(
@@ -59,7 +27,7 @@ int main(
     }
 
     long size;
-    void *data_p = getFileData(argv_pp[1], &size);
+    void *data_p = nh_api_getFileData(argv_pp[1], &size);
 
     if (!data_p || !size) {
         puts("Getting file data failed. Exiting.");

@@ -16,7 +16,7 @@
 #include "../System/Memory.h"
 #include "../System/Process.h"
 #include "../System/Thread.h"
-#include "../System/Logger.h"
+#include "../Logger/Logger.h"
 #include "../Loader/Loader.h"
 #include "../Config/Config.h"
 #include "../Config/Updater.h"

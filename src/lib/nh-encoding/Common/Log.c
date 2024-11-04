@@ -11,36 +11,12 @@
 #include "Log.h"
 
 #include "../Base/UnicodeData.gen.h"
-#include "../../nh-core/System/Logger.h"
+#include "../../nh-core/Logger/Logger.h"
 
 #include <stdio.h>
 #include <string.h>
 
-// LOG FLOW ========================================================================================
-
-NH_API_RESULT _nh_encoding_logBegin(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_begin(file_p, function_p);
-}
-
-NH_API_RESULT _nh_encoding_logEnd(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_end(file_p, function_p);
-}
-
-NH_API_RESULT _nh_encoding_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
-//    _nh_diagnosticEnd(file_p, function_p, result, line);
-//    return result;
-}
-
-// LOG UNICODE CODEPOINT DESCRIPTIONS ==============================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_encoding_logUnicodeCodepointDescriptions()
 {

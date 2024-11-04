@@ -1,7 +1,5 @@
-#ifndef NH_URL_LOG_H
-#define NH_URL_LOG_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_URL_COMMON_LOG_H
+#define NH_URL_COMMON_LOG_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -12,28 +10,8 @@
 #include "Includes.h"
 #include "../IDNA/IDNAMappingTable.h"
 
-#endif
+NH_API_RESULT nh_url_logIDNAMappingTable(
+    nh_url_IDNAMappingTable *MappingTable_p
+);
 
-/** @addtogroup lib_nh-url_functions
- *  @{
- */
-
-    NH_API_RESULT nh_url_logIDNAMappingTable(
-        nh_url_IDNAMappingTable *MappingTable_p
-    );
-
-    NH_API_RESULT _nh_url_logBegin(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_url_logEnd(
-        const char *file_p, const char *function_p
-    );
-    
-    NH_API_RESULT _nh_url_logDiagnosticEnd(
-        const char *file_p, const char *function_p, NH_API_RESULT result, int line
-    );
-
-/** @} */
-
-#endif 
+#endif // NH_URL_COMMON_LOG_H 

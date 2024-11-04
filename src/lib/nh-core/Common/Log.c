@@ -12,7 +12,7 @@
 #include "About.h"
 
 #include "../Loader/Loader.h"
-#include "../System/Logger.h"
+#include "../Logger/Logger.h"
 
 #include <stdio.h>
 #include <stdlib.h>

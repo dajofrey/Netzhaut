@@ -28,12 +28,6 @@
 nh_core_Loader *LOADER_P = NULL;
 static void *CORE_P  = NULL;
 
-typedef void *(*nh_core_createMonitorInterface_f)(
-);
-typedef void (*nh_core_freeMonitorInterface_f)(
-    void *Interface_p
-);
-
 typedef void  *(*nh_core_initialize_f)( 
     char *path_p, char *config_p, int length 
 ); 
@@ -196,19 +190,6 @@ NH_API_RESULT nh_api_loadConfig(
 {
     nh_core_loadConfig_f loadConfig_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_loadConfig");
     return loadConfig_f ? loadConfig_f(data_p, length) : NH_API_ERROR_BAD_STATE;
-}
-
-void *nh_api_createMonitorInterface()
-{
-    nh_core_createMonitorInterface_f createMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_createMonitorInterface");
-    return createMonitorInterface_f ? createMonitorInterface_f() : NULL;
-}
-
-void nh_api_freeMonitorInterface(
-    void *Interface_p)
-{
-    nh_core_freeMonitorInterface_f freeMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_freeMonitorInterface");
-    freeMonitorInterface_f(Interface_p);
 }
 
 void *nh_api_getLoader()

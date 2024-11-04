@@ -26,7 +26,9 @@ const char *NH_CORE_SETTING_NAMES_PP[] = {
     "loader.unload",
     "debug.toConsole",
     "debug.level",
-    "log.on"
+    "logger.on",
+    "logger.ipc",
+    "logger.port",
 };
 
 // FUNCTIONS =======================================================================================
@@ -48,9 +50,17 @@ static NH_API_RESULT nh_core_getSetting(
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->debugToConsole = atoi(Setting_p->pp[0]) == 1;
             break;
-        case NH_CORE_SETTING_LOG_ON :
+        case NH_CORE_SETTING_LOGGER_ON :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->logOn = atoi(Setting_p->pp[0]) == 1;
+            Config_p->loggerOn = atoi(Setting_p->pp[0]) == 1;
+            break;
+        case NH_CORE_SETTING_LOGGER_IPC :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->loggerIPC = atoi(Setting_p->pp[0]) == 1;
+            break;
+        case NH_CORE_SETTING_LOGGER_PORT :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->loggerPort = atoi(Setting_p->pp[0]);
             break;
     }
 

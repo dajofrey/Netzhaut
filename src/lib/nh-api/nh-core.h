@@ -205,19 +205,6 @@ NH_API_RESULT nh_api_loadConfig(
 );
 
 /**
- * Todo.
- */
-void *nh_api_createMonitorInterface(
-);
-
-/**
- * Todo.
- */
-void nh_api_freeMonitorInterface(
-    void *Interface_p
-);
-
-/**
  * For internal use only.
  */
 void *nh_api_getLoader(

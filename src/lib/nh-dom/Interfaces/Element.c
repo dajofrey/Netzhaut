@@ -32,7 +32,7 @@ typedef struct nh_dom_Element {
     int TODO;
 } nh_dom_Element;
 
-// INITIALIZE ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_dom_initializeElement(
     nh_webidl_Object *Element_p)
@@ -45,8 +45,6 @@ NH_API_RESULT nh_dom_initializeElement(
 
     return NH_API_SUCCESS;
 }
-
-// INTERNAL ========================================================================================
 
 nh_dom_Element *nh_dom_getElement(
     nh_webidl_Object *Object_p)

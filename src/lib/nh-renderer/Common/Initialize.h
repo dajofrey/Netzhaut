@@ -1,7 +1,5 @@
-#ifndef NH_RENDERER_INITIALIZE_H
-#define NH_RENDERER_INITIALIZE_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_RENDERER_COMMON_INITIALIZE_H
+#define NH_RENDERER_COMMON_INITIALIZE_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -11,15 +9,8 @@
 
 #include "Includes.h"
 
-#endif
+NH_API_RESULT nh_renderer_initialize(
+);
 
-/** @addtogroup lib_nh-css_functions
- *  @{
- */
+#endif // NH_RENDERER_COMMON_INITIALIZE_H
 
-    NH_API_RESULT nh_renderer_initialize(
-    );
-    
-/** @} */
-
-#endif 

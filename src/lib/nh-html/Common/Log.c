@@ -10,47 +10,20 @@
 
 #include "Log.h"
 
-#include "../../nh-core/System/Logger.h"
-
+#include "../../nh-core/Logger/Logger.h"
 #include "../../nh-dom/Interfaces/Attr.h"
 #include "../../nh-dom/Interfaces/Text.h"
 #include "../../nh-dom/Interfaces/NamedNodeMap.h"
 #include "../../nh-dom/Interfaces/Element.h"
 #include "../../nh-dom/Interfaces/NodeList.h"
-
 #include "../../nh-webidl/Runtime/Object.h"
-
 #include "../../nh-encoding/Encodings/UTF32.h"
 #include "../../nh-encoding/Encodings/UTF8.h"
 
 #include <stdio.h>
 #include <string.h>
 
-// LOG EXECUTION FLOW ==============================================================================
-
-NH_API_RESULT _nh_html_logBegin(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_begin(file_p, function_p);
-}
-
-NH_API_RESULT _nh_html_logEnd(
-    const char *file_p, const char *function_p)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return NH_SUCCESS;}
-//    return _nh_end(file_p, function_p);
-}
-
-NH_API_RESULT _nh_html_logDiagnosticEnd(
-    const char *file_p, const char *function_p, NH_API_RESULT result, int line)
-{
-//    if (!NH_CONFIG.Flags.Log.Flow.html) {return result;}
-//    _nh_diagnosticEnd(file_p, function_p, result, line);
-//    return result;
-}
-
-// LOG DOCUMENT TREE ===============================================================================
+// FUNCTIONS =======================================================================================
 
 #define MAX_INDENT 2047
 #define MAX_MESSAGE 4095
@@ -144,4 +117,3 @@ NH_API_RESULT nh_html_logDocument(
 
     return NH_API_SUCCESS;
 }
-
