@@ -389,9 +389,10 @@ nh-renderer.so: $(LIB_NHRENDERER)
 nh-css.so: $(LIB_NHCSS)
 nh-url.so: $(LIB_NHURL)
 
-# Create dirs
 create_lib_dir:
 	mkdir -p lib
+download_ttyr: 
+	git submodule update --init --checkout --force external/TTyr/
 
 # Custom compiler flags
 $(OBJ_FILES_NHCORE): CFLAGS += -Isrc/lib
@@ -443,7 +444,7 @@ $(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/usr/include/freetype2 -I/usr/include/harf
 # Rule to link object files into the shared libraries
 $(LIB_NHAPI): create_lib_dir $(OBJ_FILES_NHAPI)
 	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHAPI) $(LDFLAGS_NHAPI)
-$(LIB_NHCORE): create_lib_dir $(OBJ_FILES_NHCORE)
+$(LIB_NHCORE): create_lib_dir download_ttyr $(OBJ_FILES_NHCORE)
 	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHCORE) $(LDFLAGS_NHCORE)
 $(LIB_NHWSI): create_lib_dir $(OBJ_FILES_NHWSI)
 	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHWSI) $(LDFLAGS_NHWSI)
@@ -495,4 +496,4 @@ clean:
 	rm -f $(OBJ_FILES_FREETYPE_GL) $(LIB_FREETYPE_GL)
 	rm -rf lib
 
-.PHONY: all lib clean
+.PHONY: all clean create_lib_dir download_ttyr

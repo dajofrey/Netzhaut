@@ -18,7 +18,7 @@ The documentation for this project is fully contained in this README.
 ### 1. Get sources using [Git](https://git-scm.com/)
 ```bash 
 git clone https://github.com/dajofrey/Netzhaut
-cd Netzhaut && git submodule update --init --recursive && git submodule update --init --checkout --force external/TTyr/
+cd Netzhaut && git submodule update --init --recursive
 ```
 
 ### 2. Compile using [Make](https://en.wikipedia.org/wiki/Make_\(software\))
