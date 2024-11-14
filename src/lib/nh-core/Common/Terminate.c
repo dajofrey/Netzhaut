@@ -40,7 +40,7 @@ NH_API_RESULT nh_core_terminate(
 
     // Now, everything should have been freed which was used by other modules.
     // Next, we free all core data.
-    nh_core_freeLogger();
+    nh_core_freeLogger(NULL);
     nh_core_freeIndexMap();
 
     nh_core_freeGlobalConfig();

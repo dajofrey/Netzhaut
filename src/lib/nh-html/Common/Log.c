@@ -80,7 +80,7 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
         nh_core_appendFormatToString(&Message, "%s%s (%s)", indent_p, tag_p, Object_p->Interface_p->name_p);
     }
 
-    nh_core_sendLogMessage(node_p, NULL, Message.p);
+    nh_core_log(node_p, NULL, Message.p);
     nh_core_freeString(&Attributes);
     nh_core_freeString(&Message);
 

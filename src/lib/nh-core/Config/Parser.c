@@ -25,8 +25,8 @@
 
 typedef struct nh_ConfigParser {
     nh_ConfigToken *Token_p;
-    nh_RawConfig *Config_p;
-    nh_RawConfig *GlobalConfig_p;
+    nh_core_RawConfig *Config_p;
+    nh_core_RawConfig *GlobalConfig_p;
 } nh_ConfigParser;
 
 static NH_API_RESULT nh_core_parseRawConfigValues(
@@ -57,10 +57,10 @@ static NH_API_RESULT nh_core_parseConfigSetting(
 {
     if (!Parser_p->Token_p->string_p) {return NH_API_ERROR_BAD_STATE;}
 
-    nh_RawConfigSetting *Setting_p = malloc(sizeof(nh_RawConfigSetting));
+    nh_core_RawConfigSetting *Setting_p = malloc(sizeof(nh_core_RawConfigSetting));
     NH_CORE_CHECK_NULL(Setting_p)
 
-    memset(Setting_p, 0, sizeof(nh_RawConfigSetting));
+    memset(Setting_p, 0, sizeof(nh_core_RawConfigSetting));
     char *string_p = Parser_p->Token_p->string_p;
 
     int c = 0, c2 = 0;
@@ -95,7 +95,7 @@ static NH_API_RESULT nh_core_parseConfigSetting(
 
     if (Parser_p->GlobalConfig_p) {
         for (int i = 0; i < Parser_p->GlobalConfig_p->Settings.size; ++i) {
-            nh_RawConfigSetting *DefaultSetting_p = Parser_p->GlobalConfig_p->Settings.pp[i];
+            nh_core_RawConfigSetting *DefaultSetting_p = Parser_p->GlobalConfig_p->Settings.pp[i];
             if (!DefaultSetting_p->Default_p && DefaultSetting_p->module == Setting_p->module && !strcmp(DefaultSetting_p->name_p, Setting_p->name_p)) {
                 Setting_p->Default_p = DefaultSetting_p;
                 break;
@@ -134,7 +134,7 @@ static NH_API_RESULT nh_core_parseConfigToken(
 }
 
 NH_API_RESULT nh_core_parseRawConfig(
-    nh_RawConfig *Config_p, char *data_p, int length, nh_RawConfig *GlobalConfig_p)
+    nh_core_RawConfig *Config_p, char *data_p, int length, nh_core_RawConfig *GlobalConfig_p)
 {
     nh_ConfigTokenizer Tokenizer;
     nh_core_tokenizeConfig(&Tokenizer, data_p, length);
@@ -154,10 +154,10 @@ NH_API_RESULT nh_core_parseRawConfig(
 }
 
 NH_API_RESULT nh_core_freeRawConfig(
-    nh_RawConfig *Config_p)
+    nh_core_RawConfig *Config_p)
 {
     for (int i = 0; i < Config_p->Settings.size; ++i) {
-        nh_RawConfigSetting *Setting_p = Config_p->Settings.pp[i];
+        nh_core_RawConfigSetting *Setting_p = Config_p->Settings.pp[i];
         if (Setting_p->Default_p == NULL) {
             nh_core_free(Setting_p->name_p);
         } 
@@ -166,7 +166,7 @@ NH_API_RESULT nh_core_freeRawConfig(
 
     nh_core_freeList(&Config_p->Settings, true);
 
-    memset(Config_p, 0, sizeof(nh_RawConfig));
+    memset(Config_p, 0, sizeof(nh_core_RawConfig));
 
     return NH_API_SUCCESS;
 }

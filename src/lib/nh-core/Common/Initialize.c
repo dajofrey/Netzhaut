@@ -27,15 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// INIT ============================================================================================
-
-static NH_API_RESULT nh_core_startWorkloads()
-{
-    nh_core_activateWorkload(nh_core_initSystemUpdater, nh_core_runSystemUpdater, NULL, NULL, NULL, false);
-    NH_CORE_CHECK(nh_core_startConfigUpdater())
-
-    return NH_API_SUCCESS;
-}
+// FUNCTIONS =======================================================================================
 
 nh_core_Loader *nh_core_initialize(
     char *path_p, char *config_p, int length)
@@ -46,13 +38,17 @@ nh_core_Loader *nh_core_initialize(
         nh_core_appendConfig(config_p, length, true);
     }
 
-    nh_core_initLogger();
     nh_core_initMemory();
     nh_core_initProcessPool();
+    nh_core_initLogger(NULL);
+
+    // Next call may block if nh-core.logger.block:1
+    nh_core_startLoggerWorkload();
+
     nh_core_createIndexMap();
     nh_core_initSystem();
-
-    nh_core_startWorkloads();
+    nh_core_startSystemWorkload();
+    nh_core_startConfigWorkload();
 
     return nh_core_initLoader(false, false);
 }

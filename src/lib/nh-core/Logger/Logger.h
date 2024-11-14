@@ -1,5 +1,5 @@
-#ifndef NH_CORE_SYSTEM_LOGGER_H
-#define NH_CORE_SYSTEM_LOGGER_H
+#ifndef NH_CORE_LOGGER_LOGGER_H
+#define NH_CORE_LOGGER_LOGGER_H
 
 // LICENSE NOTICE ==================================================================================
 
@@ -13,6 +13,7 @@
 
 #include "../Util/String.h"
 #include "../Util/List.h"
+#include "../Util/Time.h"
 
 #include "../Common/Includes.h"
 
@@ -27,25 +28,30 @@ typedef struct nh_core_LoggerNode {
 
 typedef struct nh_core_Logger {
     nh_core_LoggerNode Root;
+    int client_fd;
+    int state;
+    bool pause;
+    nh_core_SystemTime PauseStart;
+    nh_core_SystemTime LastFlush;
+    nh_api_logCallback_f callback_f;
+    nh_core_String Buffer;
+    int totalMessages;
 } nh_core_Logger;
-
-// DATA ============================================================================================
-
-extern nh_core_Logger NH_LOGGER;
 
 // FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_core_initLogger(
+nh_core_Logger *nh_core_getLogger(
 );
 
-NH_API_RESULT nh_core_freeLogger(
+void nh_core_initLogger(
+    nh_core_Logger *Logger_p
 );
 
-NH_API_RESULT nh_core_addLogCallback(
-    nh_api_logCallback_f logCallback_f
+void nh_core_freeLogger(
+    nh_core_Logger *Logger_p
 );
 
-NH_API_RESULT nh_core_sendLogMessage(
+NH_API_RESULT nh_core_log(
     char *node_p, char *options_p, char *message_p
 );
 
@@ -57,4 +63,8 @@ void nh_core_dump(
     char *node_p
 ); 
 
-#endif // NH_CORE_SYSTEM_LOGGER_H
+NH_API_RESULT nh_core_handleLogMessage(
+    nh_core_Logger *Logger_p, char *node_p, char *options_p, char *message_p
+);
+
+#endif // NH_CORE_LOGGER_LOGGER_H

@@ -66,6 +66,8 @@ SRC_FILES_NHCORE = \
     System/Process.c \
     Logger/Logger.c \
     Logger/Monitor.c \
+    Logger/Client.c \
+    Logger/Server.c \
     Util/MediaType.c \
     Util/HashMap.c \
     Util/Time.c \

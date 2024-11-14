@@ -27,8 +27,10 @@ const char *NH_CORE_SETTING_NAMES_PP[] = {
     "debug.toConsole",
     "debug.level",
     "logger.on",
-    "logger.ipc",
     "logger.port",
+    "logger.block",
+    "monitor.port",
+    "monitor.name",
 };
 
 // FUNCTIONS =======================================================================================
@@ -54,13 +56,20 @@ static NH_API_RESULT nh_core_getSetting(
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->loggerOn = atoi(Setting_p->pp[0]) == 1;
             break;
-        case NH_CORE_SETTING_LOGGER_IPC :
-            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->loggerIPC = atoi(Setting_p->pp[0]) == 1;
-            break;
         case NH_CORE_SETTING_LOGGER_PORT :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->loggerPort = atoi(Setting_p->pp[0]);
+        case NH_CORE_SETTING_LOGGER_BLOCK :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->loggerBlock = atoi(Setting_p->pp[0]);
+            break;
+        case NH_CORE_SETTING_MONITOR_PORT :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->monitorPort = atoi(Setting_p->pp[0]);
+            break;
+        case NH_CORE_SETTING_MONITOR_NAME :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            strcpy(Config_p->monitorName_p, Setting_p->pp[0]);
             break;
     }
 

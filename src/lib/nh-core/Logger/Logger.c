@@ -9,49 +9,49 @@
 // INCLUDES ========================================================================================
 
 #include "Logger.h"
+#include "Client.h"
+
+#include "../Common/Config.h"
 #include "../System/Thread.h"
 #include "../System/Process.h"
 #include "../System/Memory.h"
 
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
 // DATA =======================================================================================
 
-#define MAX_LOGGER_CALLBACKS 8
-static nh_api_logCallback_f CALLBACKS_PP[MAX_LOGGER_CALLBACKS] = {NULL};
-
-nh_core_Logger NH_LOGGER;
+static nh_core_Logger NH_LOGGER;
 
 // FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_core_addLogCallback(
-    nh_api_logCallback_f logCallback_f)
+nh_core_Logger *nh_core_getLogger()
 {
-    NH_API_RESULT result = NH_API_ERROR_BAD_STATE;
-    for (int i = 0; i < MAX_LOGGER_CALLBACKS; ++i) {
-        if (CALLBACKS_PP[i] == NULL) {
-            CALLBACKS_PP[i] = logCallback_f;
-            result = NH_API_SUCCESS;
-            break;
-        }
-    }
- 
-    return result;
+    return &NH_LOGGER;
 }
 
-NH_API_RESULT nh_core_initLogger()
+void nh_core_setLogCallback(
+    nh_core_Logger *Logger_p, nh_api_logCallback_f logCallback_f)
 {
-    NH_LOGGER.Root.name_p   = NULL;
-    NH_LOGGER.Root.Parent_p = NULL;
-    NH_LOGGER.Root.Children = nh_core_initList(8);
-    NH_LOGGER.Root.Messages = nh_core_initList(255);
+    if (Logger_p == NULL) {Logger_p = &NH_LOGGER;}
 
-    for (int i = 0; i < MAX_LOGGER_CALLBACKS; ++i) {
-        CALLBACKS_PP[i] = NULL;
-    }
+    Logger_p->callback_f = logCallback_f;
+}
 
-    return NH_API_SUCCESS;
+void nh_core_initLogger(
+    nh_core_Logger *Logger_p)
+{
+    if (Logger_p == NULL) {Logger_p = &NH_LOGGER;}
+   
+    memset(Logger_p, 0, sizeof(nh_core_Logger));
+
+    Logger_p->Root.name_p   = NULL;
+    Logger_p->Root.Parent_p = NULL;
+    Logger_p->Root.Children = nh_core_initList(8);
+    Logger_p->Root.Messages = nh_core_initList(255);
+    Logger_p->callback_f = NULL;
+    Logger_p->Buffer = nh_core_initString(256001);
 }
 
 static void nh_core_freeLoggerNode(
@@ -65,15 +65,14 @@ static void nh_core_freeLoggerNode(
     }
 
     nh_core_freeList(&Node_p->Children, true);
-
-    return;
 }
 
-NH_API_RESULT nh_core_freeLogger()
+void nh_core_freeLogger(
+    nh_core_Logger *Logger_p)
 {
-    nh_core_freeLoggerNode(&NH_LOGGER.Root);
+    if (Logger_p == NULL) {Logger_p = &NH_LOGGER;}
 
-    return NH_API_SUCCESS;
+    nh_core_freeLoggerNode(&(Logger_p->Root));
 }
 
 typedef struct nh_core_LoggerOption {
@@ -200,9 +199,9 @@ static NH_API_RESULT nh_core_addLogMessage(
 }
 
 static NH_API_RESULT nh_core_updateLogger(
-    char *node_p, char *options_p, char *message_p)
+    nh_core_Logger *Logger_p, char *node_p, char *options_p, char *message_p)
 {
-    nh_core_LoggerNode *Node_p = nh_core_getLoggerNode(&NH_LOGGER.Root, node_p);
+    nh_core_LoggerNode *Node_p = nh_core_getLoggerNode(&Logger_p->Root, node_p);
     if (Node_p == NULL) {return NH_API_ERROR_BAD_STATE;}
 
     nh_core_Array ParsedOptions = nh_core_initArray(sizeof(nh_core_LoggerOption), 1);
@@ -220,25 +219,41 @@ static NH_API_RESULT nh_core_updateLogger(
 
     nh_core_freeArray(&ParsedOptions);
 
+     Logger_p->totalMessages++;
+
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_core_sendLogMessage(
-    char *node_p, char *options_p, char *message_p)
+NH_API_RESULT nh_core_handleLogMessage(
+    nh_core_Logger *Logger_p, char *node_p, char *options_p, char *message_p)
 {
-    if (!node_p || !message_p) {return NH_API_ERROR_BAD_STATE;}
+    if (node_p == NULL || message_p == NULL || Logger_p == NULL) {return NH_API_ERROR_BAD_STATE;}
 
     // send to logger
-    if (nh_core_updateLogger(node_p, options_p, message_p) != NH_API_SUCCESS) {return NH_API_ERROR_BAD_STATE;}
-
-    // send to callbacks
-    for (int i = 0; i < MAX_LOGGER_CALLBACKS && CALLBACKS_PP[i] != NULL; ++i) {
-        CALLBACKS_PP[i](node_p, options_p, message_p);
+    if (nh_core_updateLogger(Logger_p, node_p, options_p, message_p) != NH_API_SUCCESS) {
+        return NH_API_ERROR_BAD_STATE;
     }
 
-    // send to IPC
+    // send to callback
+    if (Logger_p->callback_f != NULL) {Logger_p->callback_f(node_p, options_p, message_p);}
+
+    // send to peer-monitor
+    if (Logger_p->state == 2) {
+        if (Logger_p->Buffer.length == 256000) {
+            nh_core_waitForCompletion(nh_core_getWorkload(Logger_p), NH_SIGNAL_OK);
+        }
+        char send_p[256] = {0};
+        snprintf(send_p, sizeof(send_p)-1, "%s\x1F%s\x1F%s", node_p, options_p, message_p);
+        nh_core_appendToString(&Logger_p->Buffer, send_p, 256);
+    }
 
     return NH_API_SUCCESS;
+}
+
+NH_API_RESULT nh_core_log(
+    char *node_p, char *options_p, char *message_p)
+{
+    return nh_core_handleLogMessage(&NH_LOGGER, node_p, options_p, message_p);
 }
 
 void nh_core_getUniqueLogId(
@@ -247,8 +262,6 @@ void nh_core_getUniqueLogId(
     int thread = nh_core_getThreadIndex();
     nh_core_SystemTime SystemTime = nh_core_getSystemTime();
     sprintf(logId_p, "THREAD<%d>TIME<%lus,%lums>", thread, SystemTime.seconds, SystemTime.milliseconds);
-
-    return;
 }
 
 void nh_core_dump(
@@ -260,4 +273,98 @@ void nh_core_dump(
             puts(Node_p->Messages.pp[i]);
         }
     }
+}
+
+static NH_SIGNAL nh_core_runLoggerWorkload(
+    void *args_p)
+{
+    nh_core_Logger *Logger_p = args_p;
+
+    if (nh_core_getConfig().loggerPort == 0) {
+        if (Logger_p->state > 0) {
+            // TODO
+            Logger_p->state = 0;
+        }
+        return NH_SIGNAL_IDLE;
+    }
+
+    if (Logger_p->pause) {
+        if (nh_core_getSystemTimeDiffInSeconds(Logger_p->PauseStart, nh_core_getSystemTime()) < 1.0) {
+            return NH_SIGNAL_IDLE;
+        }
+        Logger_p->pause = false;
+    }
+
+    switch (Logger_p->state) {
+        case 0 :
+            if ((Logger_p->client_fd = nh_core_connectToMonitor(nh_core_getConfig().loggerPort)) > 0) {
+                Logger_p->state = 1;
+            }
+            break;
+        case 1 :
+            if (nh_core_checkIfMonitorConnectionEstablished(Logger_p->client_fd) == NH_API_SUCCESS) {
+                Logger_p->state = 2;
+            } else {
+                nh_core_disconnectFromMonitor(Logger_p->client_fd);
+                Logger_p->client_fd = 0;
+                Logger_p->state = 0;
+                Logger_p->pause = true;
+                Logger_p->PauseStart = nh_core_getSystemTime();
+                Logger_p->LastFlush = nh_core_getSystemTime();
+            }
+            break;
+        case 2 :
+        {
+            bool flush = nh_core_getSystemTimeDiffInSeconds(Logger_p->LastFlush, nh_core_getSystemTime()) > 0.5;
+ 
+            if (Logger_p->Buffer.length < 256000 && !flush) {
+                return NH_SIGNAL_IDLE;
+            }
+            int send = nh_core_sendMessageToMonitor(
+                Logger_p->client_fd, Logger_p->Buffer.p, Logger_p->Buffer.length);
+            while (send == -1) {
+                send = nh_core_sendMessageToMonitor(Logger_p->client_fd, Logger_p->Buffer.p, Logger_p->Buffer.length);
+            }
+            nh_core_freeString(&Logger_p->Buffer);
+            Logger_p->Buffer = nh_core_initString(256001);
+            while (nh_core_waitForMonitorAck(Logger_p->client_fd) == -1) {
+                usleep(10);
+            }
+            Logger_p->LastFlush = nh_core_getSystemTime();
+            break;
+        }
+    }
+
+    return NH_SIGNAL_OK;
+}
+
+static void *nh_core_initLoggerWorkload(
+    nh_core_Workload *Workload_p)
+{
+    static char *name_p = "Logger Workload";
+    static char *path_p = "nh-core/Logger/Logger.c";
+
+    Workload_p->name_p = name_p;
+    Workload_p->path_p = path_p;
+    Workload_p->module = NH_MODULE_CORE;
+    Workload_p->args_p = &NH_LOGGER;
+
+    NH_LOGGER.state = 0;
+    NH_LOGGER.pause = false;
+
+    if (nh_core_getConfig().loggerBlock) {
+        while (NH_LOGGER.state != 2) {
+            if (nh_core_runLoggerWorkload(Workload_p->args_p) == NH_SIGNAL_IDLE) {
+                usleep(100);
+            }
+        }
+    }
+
+    return Workload_p->args_p;
+}
+
+NH_API_RESULT nh_core_startLoggerWorkload() 
+{
+    nh_core_activateWorkload(nh_core_initLoggerWorkload, nh_core_runLoggerWorkload, NULL, NULL, NULL, false);
+    return NH_API_SUCCESS;
 }

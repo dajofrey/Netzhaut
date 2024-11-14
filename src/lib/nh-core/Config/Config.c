@@ -21,11 +21,11 @@
 
 // DATA ============================================================================================
 
-static nh_RawConfig NH_GLOBAL_CONFIG;
+static nh_core_RawConfig NH_GLOBAL_CONFIG;
 
-// GET CONFIG ======================================================================================
+// FUNCTIONS =======================================================================================
 
-nh_RawConfig *nh_core_getGlobalConfig()
+nh_core_RawConfig *nh_core_getGlobalConfig()
 {
     return &NH_GLOBAL_CONFIG;
 }
@@ -33,10 +33,10 @@ nh_RawConfig *nh_core_getGlobalConfig()
 nh_core_List *nh_core_getGlobalConfigSetting(
     char *namespace_p, int _module, const char *name_p)
 {
-    nh_RawConfigSetting *DefaultSetting_p = NULL;
+    nh_core_RawConfigSetting *DefaultSetting_p = NULL;
 
     for (int i = 0; i < NH_GLOBAL_CONFIG.Settings.size; ++i) {
-        nh_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[i];
+        nh_core_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[i];
 
         // Get default setting.
         if (!Setting_p->Default_p && Setting_p->module == _module && !strcmp(Setting_p->name_p, name_p)) {
@@ -66,14 +66,11 @@ nh_core_List *nh_core_getGlobalConfigSetting(
     return &DefaultSetting_p->Values;
 }
 
-// OVERWRITE =======================================================================================
-
-static nh_RawConfig nh_core_initRawConfig()
+nh_core_RawConfig nh_core_initRawConfig()
 {
-    nh_RawConfig Config;
-    memset(&Config, 0, sizeof(nh_RawConfig));
+    nh_core_RawConfig Config;
+    memset(&Config, 0, sizeof(nh_core_RawConfig));
     Config.Settings = nh_core_initList(32);
-
     return Config;
 }
 
@@ -108,17 +105,17 @@ static nh_core_List nh_core_copyConfigValues(
 NH_API_RESULT nh_core_appendConfig(
     char *data_p, int length, bool overwrite)
 {
-    nh_RawConfig Config = nh_core_initRawConfig();
+    nh_core_RawConfig Config = nh_core_initRawConfig();
     nh_core_parseRawConfig(&Config, data_p, length, nh_core_getGlobalConfig());
 
     for (int i = 0; i < Config.Settings.size; ++i) {
-        nh_RawConfigSetting *NewSetting_p = Config.Settings.pp[i];
+        nh_core_RawConfigSetting *NewSetting_p = Config.Settings.pp[i];
 
         bool found = false;
 
         // Overwrite default setting if no namespace.
         for (int j = 0; j < NH_GLOBAL_CONFIG.Settings.size && strlen(NewSetting_p->namespace_p) == 0; ++j) {
-            nh_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
+            nh_core_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
             if (Setting_p == NewSetting_p->Default_p) {
 
                 found = true;
@@ -138,7 +135,7 @@ NH_API_RESULT nh_core_appendConfig(
 
         // Overwrite custom setting if namespace.
         for (int j = 0; j < NH_GLOBAL_CONFIG.Settings.size && strlen(NewSetting_p->namespace_p) > 0; ++j) {
-            nh_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
+            nh_core_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
             if (strlen(Setting_p->namespace_p) == 0) {continue;}
             if (!strcmp(Setting_p->namespace_p, NewSetting_p->namespace_p) && Setting_p->Default_p == NewSetting_p->Default_p) {
 
@@ -160,10 +157,10 @@ NH_API_RESULT nh_core_appendConfig(
 
             // If no matching global config setting was found, we have to add it if it's valid.
  
-            nh_RawConfigSetting *Allocated_p = malloc(sizeof(nh_RawConfigSetting));
+            nh_core_RawConfigSetting *Allocated_p = malloc(sizeof(nh_core_RawConfigSetting));
             NH_CORE_CHECK_MEM(Allocated_p)
 
-            memset(Allocated_p, 0, sizeof(nh_RawConfigSetting));
+            memset(Allocated_p, 0, sizeof(nh_core_RawConfigSetting));
 
             Allocated_p->name_p = malloc(sizeof(char)*(strlen(NewSetting_p->name_p)+1));
             strcpy(Allocated_p->name_p, NewSetting_p->name_p);
@@ -220,8 +217,6 @@ NH_API_RESULT nh_core_overwriteGlobalConfigSettingInt(
 
     return NH_API_SUCCESS;
 }
-
-// INIT/FREE =======================================================================================
 
 NH_API_RESULT nh_core_initGlobalConfig()
 {

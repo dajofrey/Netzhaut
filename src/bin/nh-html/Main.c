@@ -16,13 +16,13 @@
 int main(
     int argc, char **argv_pp) 
 {
-    if (nh_api_initialize(NULL, NULL, 0) != NH_API_SUCCESS) {
-        puts("API initialization failed. Exiting.\n");
+    if (argc < 2 || argc > 3) {
+        puts("Invalid argument count. Exiting.");
         return 1;
     }
 
-    if (argc != 2) {
-        puts("Path expected. Exiting.");
+    if (nh_api_initialize(NULL, argc > 2 ? argv_pp[2] : NULL, argc > 2 ? strlen(argv_pp[2]) : 0) != NH_API_SUCCESS) {
+        puts("API initialization failed. Exiting.\n");
         return 1;
     }
 

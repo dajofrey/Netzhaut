@@ -26,7 +26,7 @@
 //{
 //    char message_p[127] = {'\0'};
 //    sprintf(message_p, "[%s:%d:%s](FINISH)", NH_ECMASCRIPT_LOG_PREFIX, NH_ECMASCRIPT_LOG_CATEGORY_LOGGING);
-//    nh_core_sendLogMessage(message_p);
+//    nh_core_log(message_p);
 //
 //return NH_API_SUCCESS;
 //}
@@ -41,7 +41,7 @@ NH_API_RESULT nh_ecmascript_logDecoder(
 //            message_p, "[nh-ecmascript:%p:Decoder]{%s}", handle_p,
 //            nh_encoding_getDescription(Codepoints_p->p[i])
 //        );
-//        nh_core_sendLogMessage(message_p);
+//        nh_core_log(message_p);
 //    }
 
     return NH_API_SUCCESS;
@@ -67,7 +67,7 @@ NH_API_RESULT nh_ecmascript_logLexer(
 //            handle_p, NH_ECMASCRIPT_INPUT_ELEMENTS_PP[InputElement_p->type], String.p 
 //        );
 //
-//        nh_core_sendLogMessage(message_p);
+//        nh_core_log(message_p);
 //        nh_core_freeString(&String);
 //    }
 
@@ -94,7 +94,7 @@ NH_API_RESULT nh_ecmascript_logParseTree(
 
     char addr_p[255];
     sprintf(addr_p, "nh-ecmascript:%p:ParseTree", handle_p);
-    nh_core_sendLogMessage(addr_p, NULL, message_p);
+    nh_core_log(addr_p, NULL, message_p);
 
     branch_p[depth] = true;
     if (Parent_p != NULL &&  ParseNode_p == Parent_p->Children.pp[Parent_p->Children.size - 1]) {

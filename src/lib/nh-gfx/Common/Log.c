@@ -25,7 +25,7 @@ void nh_gfx_logFont(
 
     char message_p[1024];
     sprintf(message_p, "%s | %s | %s", Font_p->Family.name_p, Font_p->Style.name_p, Font_p->id_p);
-    nh_core_sendLogMessage(node_p, NULL, message_p);
+    nh_core_log(node_p, NULL, message_p);
 
     memset(message_p, 0, 1024);
     sprintf(message_p, "  generic :");
@@ -39,19 +39,19 @@ void nh_gfx_logFont(
     }
 
     if (genericCount == 0) {sprintf(message_p + strlen(message_p), " none");}
-    nh_core_sendLogMessage(node_p, NULL, message_p);
+    nh_core_log(node_p, NULL, message_p);
 
     memset(message_p, 0, 1024);
     sprintf(message_p, "  weight  : %d", Font_p->Style.weight);
-    nh_core_sendLogMessage(node_p, NULL, message_p);
+    nh_core_log(node_p, NULL, message_p);
 
     memset(message_p, 0, 1024);
     sprintf(message_p, "  italic  : %s", Font_p->Style.italic ? "true" : "false");
-    nh_core_sendLogMessage(node_p, NULL, message_p);
+    nh_core_log(node_p, NULL, message_p);
 
     memset(message_p, 0, 1024);
     sprintf(message_p, "  oblique : %s", Font_p->Style.oblique ? "true" : "false");
-    nh_core_sendLogMessage(node_p, NULL, message_p);
+    nh_core_log(node_p, NULL, message_p);
 
     return;
 }
@@ -59,7 +59,7 @@ void nh_gfx_logFont(
 void nh_gfx_logVulkanValidation(
     char *message_p)
 {
-    nh_core_sendLogMessage("nh-gfx:VulkanValidation", NULL, message_p);
+    nh_core_log("nh-gfx:VulkanValidation", NULL, message_p);
     return;
 }
            

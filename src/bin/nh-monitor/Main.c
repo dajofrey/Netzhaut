@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include <stdlib.h>
 
 static ttyr_tty_TTY *TTY_p = NULL;
@@ -92,6 +93,15 @@ int main(
     if (nh_api_initialize(NULL, NULL, 0) != NH_API_SUCCESS) {
         puts("API initialization failed. Exiting.");
         return 1;
+    }
+
+    if (argc > 1) {
+        char config_p[128] = {0};
+        sprintf(config_p, "nh-core.monitor.port:%d;", atoi(argv_pp[1]));  
+        if (nh_api_loadConfig(config_p, strlen(config_p)) != NH_API_SUCCESS) {
+            puts("Setting monitor port failed. Exiting.");
+            return 1;
+        }
     }
 
     if (openMonitor()) {

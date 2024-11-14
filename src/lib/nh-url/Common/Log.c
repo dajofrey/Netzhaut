@@ -61,7 +61,7 @@ NH_API_RESULT nh_url_logIDNAMappingTable(
                 break; 
         }
 
-        nh_core_sendLogMessage("nh-url:IDNAMappingTable", NULL, message_p);
+        nh_core_log("nh-url:IDNAMappingTable", NULL, message_p);
 
         memset(message_p, 0, 1024);
     }

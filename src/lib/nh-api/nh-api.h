@@ -13,7 +13,6 @@
 #include "nh-renderer.h"
 #include "nh-html.h"
 #include "nh-ecmascript.h"
-#include "nh-monitor.h"
 
 #endif
 

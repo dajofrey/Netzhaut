@@ -83,12 +83,7 @@
     NH_API_RESULT nh_core_freeSystem(
     );
 
-    void *nh_core_initSystemUpdater(
-        nh_core_Workload *Workload_p
-    );
-
-    NH_SIGNAL nh_core_runSystemUpdater(
-        void *args_p
+    NH_API_RESULT nh_core_startSystemWorkload(
     );
 
 /** @} */

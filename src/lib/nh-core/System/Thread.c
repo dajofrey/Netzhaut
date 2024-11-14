@@ -179,7 +179,7 @@ static NH_API_RESULT nh_core_runWorkload(
     return NH_API_SUCCESS;
 }
 
-int nh_core_runThreadWorkloads()
+int nh_core_run()
 {
     nh_core_ThreadPool *ThreadPool_p = &NH_PROCESS_POOL.Main.ThreadPool;
 
@@ -199,7 +199,7 @@ int nh_core_runThreadWorkloads()
         }
     }
 
-    nh_core_logThread(ThreadPool_p, Thread_p);
+//    nh_core_logThread(ThreadPool_p, Thread_p);
 
     if (idle) {nh_sleepMs(10);}
 
@@ -335,7 +335,7 @@ static void nh_core_assignToThread(
     return;
 }
 
-static void nh_core_waitForCompletion(
+void nh_core_waitForCompletion(
     nh_core_Workload *Workload_p, NH_SIGNAL signal)
 {
     // If the thread that handles the workload is executing this code, 

@@ -125,10 +125,6 @@ typedef void (*nh_api_logCallback_f)(
     char *node_p, char *options_p, char *message_p
 );
 
-typedef NH_API_RESULT (*nh_api_addLogCallback_f)(
-    nh_api_logCallback_f logCallback_f
-);
-
 // FUNCTIONS =======================================================================================
 
 /**
@@ -165,7 +161,7 @@ NH_API_RESULT nh_api_terminate(
 /**
  * Todo. 
  */
-NH_API_RESULT nh_api_addLogCallback(
+void nh_api_setLogCallback(
     nh_api_logCallback_f logCallback_f
 );
 
@@ -216,5 +212,18 @@ void *nh_api_getLoader(
 void *nh_api_dump( 
     char *node_p
 ); 
+
+/**
+ * Todo.
+ */
+void *nh_api_createMonitorInterface(
+);
+
+/**
+ * Todo.
+ */
+void nh_api_freeMonitorInterface(
+    void *Interface_p
+);
 
 #endif // NH_API_NH_CORE_H

@@ -32,8 +32,21 @@ typedef void  *(*nh_core_initialize_f)(
     char *path_p, char *config_p, int length 
 ); 
 
+typedef int (*nh_core_run_f)( 
+);
 typedef void (*nh_core_dump_f)( 
     char *node_p
+);
+typedef void (*nh_api_setLogCallback_f)(
+    void *Logger_p, nh_api_logCallback_f logCallback_f
+);
+
+// TYPEDEFS ========================================================================================
+
+typedef void *(*nh_core_createMonitorInterface_f)(
+);
+typedef void (*nh_core_freeMonitorInterface_f)(
+    void *Interface_p
 );
 
 // FUNCTIONS =======================================================================================
@@ -140,8 +153,8 @@ NH_API_RESULT nh_api_terminate()
 
 int nh_api_run()
 {
-    nh_core_runThreadWorkloads_f runThreadWorkloads_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_runThreadWorkloads");
-    return runThreadWorkloads_f ? runThreadWorkloads_f() : -1;
+    nh_core_run_f run_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_run");
+    return run_f ? run_f() : -1;
 }
 
 bool nh_api_keepRunning()
@@ -150,11 +163,12 @@ bool nh_api_keepRunning()
     return keepRunning_f ? keepRunning_f() : false;
 }
 
-NH_API_RESULT nh_api_addLogCallback(
+void nh_api_setLogCallback(
     nh_api_logCallback_f logCallback_f)
 {
-    nh_api_addLogCallback_f addLogCallback_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_addLogCallback");
-    return addLogCallback_f ? addLogCallback_f(logCallback_f) : NH_API_ERROR_BAD_STATE;
+    nh_api_setLogCallback_f setLogCallback_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_setLogCallback");
+    if (setLogCallback_f != NULL) {setLogCallback_f(NULL, logCallback_f);}
+    return;
 }
 
 nh_api_Workload *nh_api_getWorkload(
@@ -204,3 +218,17 @@ void *nh_api_dump(
     if (dump_f) {dump_f(node_p);}
     return;
 }
+
+void *nh_api_createMonitorInterface()
+{
+    nh_core_createMonitorInterface_f createMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_createMonitorInterface");
+    return createMonitorInterface_f ? createMonitorInterface_f() : NULL;
+}
+
+void nh_api_freeMonitorInterface(
+    void *Interface_p)
+{
+    nh_core_freeMonitorInterface_f freeMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_freeMonitorInterface");
+    freeMonitorInterface_f(Interface_p);
+}
+

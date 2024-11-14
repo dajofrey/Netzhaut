@@ -37,13 +37,12 @@ typedef struct nh_ConfigUpdater {
 
 static nh_ConfigUpdater NH_CONFIG_UPDATER;
 
-// INIT/FREE =======================================================================================
-// The next functions comprise the in/exit points of nhterminal.
+// FUNCTIONS =======================================================================================
 
-static void *nh_core_initConfigUpdater(
+static void *nh_core_initConfigWorkload(
     nh_core_Workload *Workload_p)
 {
-    static char *name_p = "Config Updater";
+    static char *name_p = "Config Workload";
     static char *path_p = "nh-core/Config/Updater.c";
 
     Workload_p->name_p = name_p;
@@ -51,9 +50,9 @@ static void *nh_core_initConfigUpdater(
     Workload_p->module = NH_MODULE_CORE;
 
     // Normalize global config.
-    nh_RawConfig *Config_p = nh_core_getGlobalConfig();
+    nh_core_RawConfig *Config_p = nh_core_getGlobalConfig();
     for (int i = 0; i < Config_p->Settings.size; ++i) {
-        ((nh_RawConfigSetting*)Config_p->Settings.pp[i])->mark = false;
+        ((nh_core_RawConfigSetting*)Config_p->Settings.pp[i])->mark = false;
     }
 
     NH_CONFIG_UPDATER.Files = nh_core_initList(4);
@@ -61,17 +60,14 @@ static void *nh_core_initConfigUpdater(
     return &NH_CONFIG_UPDATER;
 }
 
-static void nh_core_freeConfigUpdater(
+static void nh_core_freeConfigWorkload(
     void *p)
 {
     nh_core_freeList(&NH_CONFIG_UPDATER.Files, true);
     return;
 }
 
-// RUN LOOP ========================================================================================
-// The next functions comprise the top-level of the nhterminal run loop.
-
-static NH_SIGNAL nh_core_runConfigUpdater(
+static NH_SIGNAL nh_core_runConfigWorkload(
     void *args_p) 
 {
     NH_SIGNAL signal = NH_SIGNAL_IDLE;
@@ -91,9 +87,9 @@ static NH_SIGNAL nh_core_runConfigUpdater(
 //        }
     }
 
-    nh_RawConfig *Config_p = nh_core_getGlobalConfig();
+    nh_core_RawConfig *Config_p = nh_core_getGlobalConfig();
     for (int i = 0; i < Config_p->Settings.size; ++i) {
-//        nh_RawConfigSetting *Setting_p = Config_p->Settings.pp[i];
+//        nh_core_RawConfigSetting *Setting_p = Config_p->Settings.pp[i];
 //        if (!Setting_p->mark) {continue;}
 //        nh_core_Workload *Workloads_p = nh_core_getWorkloads();
 //        for (int j = 0; j < NH_MAX_WORKLOADS; ++j) {
@@ -108,9 +104,6 @@ static NH_SIGNAL nh_core_runConfigUpdater(
     return signal;
 }
 
-// COMMANDS ========================================================================================
-// The next functions are executed by nh_terminal_cmd_* functions.
-
 typedef enum NH_CONFIG_UPDATER_COMMAND_E {
     NH_CONFIG_UPDATER_COMMAND_REGISTER_CONFIG,
     NH_CONFIG_UPDATER_COMMAND_LOAD_CONFIG,
@@ -119,7 +112,7 @@ typedef enum NH_CONFIG_UPDATER_COMMAND_E {
 /**
  * Here, most commands that came in through the API are handled.
  */
-static NH_SIGNAL nh_core_runConfigUpdaterCommand(
+static NH_SIGNAL nh_core_runConfigWorkloadCommand(
     void *p, nh_core_WorkloadCommand *Command_p)
 {
     switch (Command_p->type)
@@ -148,6 +141,14 @@ static NH_SIGNAL nh_core_runConfigUpdaterCommand(
         }
         case NH_CONFIG_UPDATER_COMMAND_LOAD_CONFIG :
         {
+            nh_core_RawConfig Config = nh_core_initRawConfig();
+            nh_core_parseRawConfig(&Config, Command_p->p, Command_p->length, NULL);
+            if (Config.Settings.size <= 0) {break;}
+            for (int i = 0; i < Config.Settings.size; ++i) {
+                nh_core_RawConfigSetting *Setting_p = Config.Settings.pp[i];
+                nh_core_overwriteGlobalConfigSetting(
+                    NULL, Setting_p->module, Setting_p->name_p, Setting_p->Values.pp[0]);
+            }
             break;
         }
     }
@@ -155,14 +156,11 @@ static NH_SIGNAL nh_core_runConfigUpdaterCommand(
     return NH_SIGNAL_OK;
 }
 
-// API =============================================================================================
-// The next functions are called by lib/netzhaut/nhterminal.h functions.
-
-NH_API_RESULT nh_core_startConfigUpdater()
+NH_API_RESULT nh_core_startConfigWorkload()
 {
     NH_CORE_CHECK_NULL(nh_core_activateWorkload(
-        nh_core_initConfigUpdater, nh_core_runConfigUpdater, nh_core_freeConfigUpdater,
-        nh_core_runConfigUpdaterCommand, NULL, false))
+        nh_core_initConfigWorkload, nh_core_runConfigWorkload, nh_core_freeConfigWorkload,
+        nh_core_runConfigWorkloadCommand, NULL, false))
 
     return NH_API_SUCCESS;
 }

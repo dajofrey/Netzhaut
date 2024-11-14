@@ -18,11 +18,11 @@
  */
 
     NH_API_RESULT nh_core_parseRawConfig(
-        nh_RawConfig *Config_p, char *data_p, int length, nh_RawConfig *GlobalConfig_p
+        nh_core_RawConfig *Config_p, char *data_p, int length, nh_core_RawConfig *GlobalConfig_p
     );
 
     NH_API_RESULT nh_core_freeRawConfig(
-        nh_RawConfig *Config_p
+        nh_core_RawConfig *Config_p
     );
 
 /** @} */

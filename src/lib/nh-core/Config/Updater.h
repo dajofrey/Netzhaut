@@ -32,7 +32,7 @@
  *  @{
  */
 
-    NH_API_RESULT nh_core_startConfigUpdater(
+    NH_API_RESULT nh_core_startConfigWorkload(
     );
 
 /** @} */

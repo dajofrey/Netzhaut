@@ -21,9 +21,7 @@ void nh_core_debug(
     char *message_p)
 {
     nh_core_logDebugMessage(message_p);
-
-    nh_core_Config Config = nh_core_getConfig();
-    if (Config.debugToConsole) {
+    if (nh_core_getConfig().debugToConsole) {
         puts(message_p);
     }
 }

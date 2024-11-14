@@ -21,7 +21,7 @@
 NH_API_RESULT nh_encoding_logUnicodeCodepointDescriptions()
 {
     for (int i = 0; i < NH_ENCODING_UNICODE_DATA_COUNT; ++i) {
-        nh_core_sendLogMessage("nh-encoding:Unicode", NULL, (char*)NH_ENCODING_UNICODE_DATA_PP[i]);
+        nh_core_log("nh-encoding:Unicode", NULL, (char*)NH_ENCODING_UNICODE_DATA_PP[i]);
     }
     return NH_API_SUCCESS;
 }

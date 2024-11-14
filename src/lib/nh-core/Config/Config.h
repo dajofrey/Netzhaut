@@ -27,18 +27,18 @@
  *  @{
  */
 
-    typedef struct nh_RawConfigSetting {
+    typedef struct nh_core_RawConfigSetting {
         int module;
         char *name_p;
         char namespace_p[255];
-        struct nh_RawConfigSetting *Default_p;
+        struct nh_core_RawConfigSetting *Default_p;
         nh_core_List Values;
         bool mark;
-    } nh_RawConfigSetting;
+    } nh_core_RawConfigSetting;
 
-    typedef struct nh_RawConfig {
+    typedef struct nh_core_RawConfig {
         nh_core_List Settings;
-    } nh_RawConfig;
+    } nh_core_RawConfig;
 
 /** @} */
 
@@ -46,13 +46,16 @@
  *  @{
  */
 
+    nh_core_RawConfig nh_core_initRawConfig(
+    );
+
     NH_API_RESULT nh_core_initGlobalConfig(
     );
 
     void nh_core_freeGlobalConfig(
     );
 
-    nh_RawConfig *nh_core_getGlobalConfig(
+    nh_core_RawConfig *nh_core_getGlobalConfig(
     );
 
     nh_core_List *nh_core_getGlobalConfigSetting(

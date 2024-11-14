@@ -26,11 +26,11 @@
     #include <sys/sysinfo.h>
 #endif
 
-// DATA ===========================================================================================
+// DATA ============================================================================================
 
 nh_System NH_SYSTEM;
 
-// CPU =============================================================================================
+// FUNCTIONS =======================================================================================
 
 static NH_API_RESULT nh_core_getCPUAttr(
     char *src, char *dest) 
@@ -97,8 +97,6 @@ static NH_API_RESULT nh_core_getCPUInfo()
     return NH_API_SUCCESS;
 }
 
-// OTHER ===========================================================================================
-
 static bool nh_core_littleEndian()
 {
     unsigned int x = 1;
@@ -131,8 +129,6 @@ static NH_API_RESULT nh_core_getOtherInfo()
 
     return NH_API_SUCCESS;
 }
-
-// SYSTEM ==========================================================================================
 
 static void nh_core_logSystem()
 {
@@ -199,12 +195,10 @@ NH_API_RESULT nh_core_freeSystem()
     return NH_API_SUCCESS;
 }
 
-// UPDATER =========================================================================================
-
-void *nh_core_initSystemUpdater(
+static void *nh_core_initSystemWorkload(
     nh_core_Workload *Workload_p)
 {
-    static char *name_p = "System Updater";
+    static char *name_p = "System Workload";
     static char *path_p = "nh-core/System/System.c";
 
     Workload_p->name_p = name_p;
@@ -214,7 +208,7 @@ void *nh_core_initSystemUpdater(
     return NH_SIGNAL_OK;
 }
 
-NH_SIGNAL nh_core_runSystemUpdater(
+static NH_SIGNAL nh_core_runSystemWorkload(
     void *args_p)
 {
     if (nh_core_getSystemTimeDiffInSeconds(NH_SYSTEM.Updater.LastUpdate, nh_core_getSystemTime()) < NH_SYSTEM.Updater.updateIntervalInSeconds) {
@@ -225,4 +219,10 @@ NH_SIGNAL nh_core_runSystemUpdater(
     NH_SYSTEM.Updater.LastUpdate = nh_core_getSystemTime();
 
     return NH_SIGNAL_OK;
+}
+
+NH_API_RESULT nh_core_startSystemWorkload() 
+{
+    nh_core_activateWorkload(nh_core_initSystemWorkload, nh_core_runSystemWorkload, NULL, NULL, NULL, false);
+    return NH_API_SUCCESS;
 }

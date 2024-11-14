@@ -15,8 +15,10 @@ typedef enum NH_CORE_SETTING_E {
     NH_CORE_SETTING_DEBUG_TO_CONSOLE,
     NH_CORE_SETTING_DEBUG_LEVEL,
     NH_CORE_SETTING_LOGGER_ON,
-    NH_CORE_SETTING_LOGGER_IPC,
     NH_CORE_SETTING_LOGGER_PORT,
+    NH_CORE_SETTING_LOGGER_BLOCK,
+    NH_CORE_SETTING_MONITOR_PORT,
+    NH_CORE_SETTING_MONITOR_NAME,
     NH_CORE_SETTING_E_COUNT,
 } NH_CORE_SETTING_E;
 
@@ -25,8 +27,10 @@ typedef struct nh_core_Config {
     bool debugToConsole;
     int debugLevel;
     bool loggerOn;
-    bool loggerIPC;
-    bool loggerPort;
+    int loggerPort;
+    bool loggerBlock;
+    int monitorPort;
+    char monitorName_p[64];
 } nh_core_Config;
 
 nh_core_Config nh_core_getConfig(

@@ -4,14 +4,13 @@ Netzhaut is a **multi-purpose open-source Web-Browser-Engine** written from scra
 Web-Browser-Engines are software systems which run web content on client machines. 
 Popular examples are Chromium (Chrome), Gecko (Firefox) and WebKit (Safari).
 
-The project is currently in the **EXPERIMENTAL** phase and thus not usable. 
-
-The documentation for this project is fully contained in this README.
+The project is currently in the **EXPERIMENTAL** phase.
 
 ## Contents
   
  - [Build](#Build)
  - [Binaries](#Binaries)
+ - [Config](#Config)
 
 ## Build
 
@@ -34,15 +33,22 @@ Parses a file containing CSS rules and dumps the parsing result.
 ```bash
 ./nh-css <file-path> [Tokens | Rules | Objects]
 ```
+`file-path` File-path to CSS file.  
+`Tokens` If specified, prints CSS tokens.  
+`Rules` If specified, prints CSS rules.  
+`Objects` If specified, prints CSS objects.
 
 ### nh-html
-Parses an HTML file.
+Displays an HTML file.
 ```bash
-./nh-html <file-path>
+./nh-html <file-path> [config-options]
 ```
+`file-path` File-path to HTML file.  
+`config-options` If specified, passes custom config-options to Netzhaut.
 
 ### nh-monitor
 Launches a CLI interface for monitoring.
 ```bash
 ./nh-monitor [port]
 ```
+`port` If specified, monitors another Netzhaut process over localhost TCP.

@@ -10,9 +10,11 @@
 
 #include "Monitor.h"
 #include "Logger.h"
+#include "Server.h"
 
 #include "../System/Memory.h"
 #include "../Util/Time.h"
+#include "../Common/Config.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
 #include "../../../../external/TTyr/src/lib/ttyr-api/ttyr-tty.h"
 
@@ -26,35 +28,24 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-// TYPES ===========================================================================================
-
-typedef struct nh_core_MonitorNode {
-    nh_core_LoggerNode *LoggerNode_p;
-    bool isOpen;
-    bool isCurrent;
-    bool isSelected;
-    bool hasFocus;
-    long focusedRow;
-    long offset;
-    int peak;
-    nh_core_List Children;
-    struct nh_core_MonitorNode *Parent_p;
-} nh_core_MonitorNode;
-
-typedef struct nh_core_MonitorView {
-    int height;
-    int screenCursor;
-    int rowOffset;
-} nh_core_MonitorView;
-
-typedef struct nh_core_Monitor {
-    nh_core_MonitorView View;
-    nh_core_MonitorNode Root;
-    nh_core_SystemTime LastUpdate;
-    double updateIntervalInSeconds;
-} nh_core_Monitor;
-
 // FUNCTIONS =======================================================================================
+
+static nh_core_MonitorNode nh_core_initMonitorNode(
+    nh_core_LoggerNode *LoggerNode_p, bool isOpen, nh_core_MonitorNode *Parent_p)
+{
+    nh_core_MonitorNode Node = {0};
+    Node.Children     = nh_core_initList(8);
+    Node.LoggerNode_p = LoggerNode_p;
+    Node.isOpen       = isOpen;
+    Node.isCurrent    = false;
+    Node.isSelected   = false;
+    Node.hasFocus     = false;
+    Node.focusedRow   = 0;
+    Node.offset       = 0;
+    Node.peak         = 0;
+    Node.Parent_p     = Parent_p;
+    return Node; 
+}
 
 static NH_API_RESULT nh_core_updateMonitorNode(
     nh_core_LoggerNode *LoggerNode_p, nh_core_MonitorNode *MonitorNode_p)
@@ -68,18 +59,7 @@ static NH_API_RESULT nh_core_updateMonitorNode(
         {
             NextMonitorNode_p = nh_core_allocate(sizeof(nh_core_MonitorNode));
             NH_CORE_CHECK_MEM(NextMonitorNode_p)
-
-            NextMonitorNode_p->Children     = nh_core_initList(8);
-            NextMonitorNode_p->LoggerNode_p = NextLoggerNode_p;
-            NextMonitorNode_p->isOpen       = false;
-            NextMonitorNode_p->isCurrent    = false;
-            NextMonitorNode_p->isSelected   = false;
-            NextMonitorNode_p->hasFocus     = false;
-            NextMonitorNode_p->focusedRow   = 0;
-            NextMonitorNode_p->offset       = 0;
-            NextMonitorNode_p->peak         = 0;
-            NextMonitorNode_p->Parent_p     = MonitorNode_p;
-
+            *NextMonitorNode_p = nh_core_initMonitorNode(NextLoggerNode_p, false, MonitorNode_p);
             nh_core_appendToList(&MonitorNode_p->Children, NextMonitorNode_p);
         }
 
@@ -140,6 +120,17 @@ static void nh_core_getMonitorNodes(
     return;
 }
 
+static void nh_core_freeMonitorNodes(
+    nh_core_MonitorNode *Node_p)
+{
+    for (int i = 0; i < Node_p->Children.size; ++i) {
+        nh_core_freeMonitorNodes(Node_p->Children.pp[i]);
+    } 
+    nh_core_freeList(&Node_p->Children, true);
+
+    return;
+}
+
 static int nh_core_getMonitorNodeDepth(
     nh_core_MonitorNode *Node_p)
 {
@@ -152,26 +143,100 @@ static int nh_core_getMonitorNodeDepth(
     return depth;
 }
 
-static int nh_core_getCategoryListingWidth(
-    nh_core_Monitor *Monitor_p)
+int nh_core_splitByTwoPluses(
+    char *input, char **part1, char **part2, char **part3) 
 {
-    nh_core_List Nodes = nh_core_initList(16);
-    nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
-
-    int maxWidth = 0;
-    nh_core_MonitorNode *Node_p = NULL;
-    for (int i = 0; (Node_p = nh_core_getFromList(&Nodes, i)) != NULL; ++i) {
-        int width = (nh_core_getMonitorNodeDepth(Node_p) * 2) + strlen(Node_p->LoggerNode_p->name_p);
-        if (width > maxWidth) {
-            maxWidth = width;
-        }
+    // Find the first occurrence of '+'
+    char *first_plus = strchr(input, '\x1F');
+    if (first_plus == NULL) {
+        return 0;  // First '+' not found
     }
 
-    nh_core_freeList(&Nodes, false);
+    // Find the second occurrence of '+'
+    char *second_plus = strchr(first_plus + 1, '\x1F');
+    if (second_plus == NULL) {
+        return 0;  // Second '+' not found
+    }
 
-    return maxWidth + 2;
+    // Split the string into three parts
+    *first_plus = '\0';         // End the first part
+    *part1 = input;             // First part starts at the beginning
+
+    if (first_plus + 1 == second_plus) {
+        // If there's nothing between the two pluses, set part2 to NULL
+        *part2 = NULL;
+    } else {
+        // Otherwise, set part2 to the substring between the pluses
+        *part2 = first_plus + 1;
+        *second_plus = '\0';    // End the second part
+    }
+
+    *part3 = second_plus + 1;   // Third part starts after the second '+'
+    return 1;  // Split successful
 }
 
+static NH_API_RESULT nh_core_updatePeerMonitor(
+    nh_core_Monitor *Monitor_p)
+{
+    static char buffer_p[256001] = {0};
+
+    switch (Monitor_p->Peer.state)
+    {
+        case 0:
+            Monitor_p->Peer.server_fd = nh_core_createMonitorSocket(nh_core_getConfig().monitorPort);
+            if (Monitor_p->Peer.server_fd < 0) {
+                break;
+            }
+            Monitor_p->Peer.state = 1;
+            break;
+
+        case 1:
+            Monitor_p->Peer.client_socket = nh_core_acceptLogger(Monitor_p->Peer.server_fd);
+            if (Monitor_p->Peer.client_socket < 0) {
+                break;
+            }
+            Monitor_p->Peer.state = 2;
+            break;
+
+        case 2:
+        case 3:
+        {
+            int received = 0, counter = 0;
+            do {
+                memset(buffer_p, 0, sizeof(buffer_p));
+                received = nh_core_receiveMessageFromLogger(Monitor_p->Peer.client_socket, buffer_p, sizeof(buffer_p)-1, 256);
+                if (received == 0) {
+                    // Connection closed bro.
+                    nh_core_closeMonitorSockets(Monitor_p->Peer.client_socket, Monitor_p->Peer.server_fd);
+                    nh_core_freeLogger(&Monitor_p->Peer.Logger);
+                    nh_core_initLogger(&Monitor_p->Peer.Logger);
+                    nh_core_freeMonitorNodes(&Monitor_p->Root);
+                    Monitor_p->Peer.Root = nh_core_initMonitorNode(NULL, true, NULL);
+                    Monitor_p->Peer.state = 0;
+                    break;
+                }
+                if (received < 0) {break;}
+                nh_core_sendLoggerMessageAck(Monitor_p->Peer.client_socket);
+                char *buffer1_p = NULL;
+                char *buffer2_p = NULL;
+                char *buffer3_p = NULL;
+                for (int i = 0; i < received; i += 256) {
+                    if (nh_core_splitByTwoPluses(buffer_p+i, &buffer1_p, &buffer2_p, &buffer3_p)) {
+                        nh_core_handleLogMessage(&(Monitor_p->Peer.Logger), buffer1_p, buffer2_p, buffer3_p);
+                    } else {
+                        puts("sgewegew");
+                        exit(0);
+                    }
+                }
+                Monitor_p->Peer.Root.LoggerNode_p = &(Monitor_p->Peer.Logger.Root);
+                Monitor_p->Peer.state = 3;
+            } while (counter++ < 100);
+
+            break;
+        }
+    }
+}
+ 
 static NH_API_RESULT nh_core_updateMonitor(
     ttyr_tty_Program *Program_p)
 {
@@ -179,21 +244,23 @@ static NH_API_RESULT nh_core_updateMonitor(
 
     nh_core_SystemTime Now = nh_core_getSystemTime();
     if (nh_core_getSystemTimeDiffInSeconds(Monitor_p->LastUpdate, Now) < Monitor_p->updateIntervalInSeconds) {
-        // Skip update if update-interval not met.
         return NH_API_SUCCESS;
     }
 
-    bool init = Monitor_p->Root.Children.size == 0;
+    nh_core_MonitorNode *Root_p = Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root);
 
-    nh_core_updateMonitorNode(&NH_LOGGER.Root, &Monitor_p->Root);
+    bool init = Root_p->Children.size == 0;
+    nh_core_updateMonitorNode(Root_p->LoggerNode_p, Root_p);
 
-    if (init && Monitor_p->Root.Children.size > 0) {
-        ((nh_core_MonitorNode*)Monitor_p->Root.Children.pp[0])->isCurrent = true;
+    if (init && Root_p->Children.size > 0) {
+        ((nh_core_MonitorNode*)Root_p->Children.pp[0])->isCurrent = true;
+    }
+
+    if (nh_core_getConfig().monitorPort > 0) {
+        nh_core_updatePeerMonitor(Monitor_p);
     }
 
     Monitor_p->LastUpdate = Now;
-
-    // force screen refresh
     Program_p->refresh = true;
 
     return NH_API_SUCCESS;
@@ -206,7 +273,7 @@ static nh_core_List nh_core_getSelectedMonitorNodes(
 {
     nh_core_List SelectedNodes = nh_core_initList(8);
     nh_core_List Nodes = nh_core_initList(32);
-    nh_core_getMonitorNodes(&Monitor_p->Root, &Nodes);
+    nh_core_getMonitorNodes(Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes);
 
     for (int i = 0; i < Nodes.size; ++i) {
         if (((nh_core_MonitorNode*)Nodes.pp[i])->isSelected) {
@@ -272,7 +339,7 @@ static void nh_core_moveCursorVertically(
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
 
     nh_core_List Nodes = nh_core_initList(16);
-    nh_core_getPreviewNodes(&Monitor_p->Root, &Nodes);
+    nh_core_getPreviewNodes(Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes);
     int index;
     for (index = 0; index < Nodes.size && Nodes.pp[index] != Current_p; ++index);
 
@@ -376,7 +443,9 @@ static NH_API_RESULT nh_core_handleMonitorInput(
     NH_ENCODING_UTF32 c = Event.Keyboard.codepoint;
 
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
-    nh_core_MonitorNode *Current_p = nh_core_getCurrentMonitorNode(&Monitor_p->Root);
+    nh_core_MonitorNode *Current_p = 
+        nh_core_getCurrentMonitorNode(
+            Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root));
     if (Current_p == NULL) {return NH_API_SUCCESS;}
 
     nh_core_MonitorNode *Node_p = nh_core_getFocusedMonitorNode(Monitor_p);
@@ -543,58 +612,45 @@ static NH_API_RESULT nh_core_drawSelected(
     nh_core_Monitor *Monitor_p, ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
     nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
-    cols = SelectedNodes.size > 0 ? cols / SelectedNodes.size : cols;
+    if (SelectedNodes.size <= 0) {return NH_API_SUCCESS;}
 
-    for (int i = 0; i < SelectedNodes.size; ++i)
-    {
-        nh_core_MonitorNode *SelectedNode_p = SelectedNodes.pp[i]; 
-
-        if (SelectedNode_p->focusedRow > rows - 1) {
-            SelectedNode_p->offset++;
-            SelectedNode_p->focusedRow = rows - 1;
-        }
-        else if (SelectedNode_p->focusedRow < 0) {
-            if (SelectedNode_p->offset > 0) {SelectedNode_p->offset--;}
-            SelectedNode_p->focusedRow = 0;
-        }
-
-        nh_core_List *Messages_p = &SelectedNode_p->LoggerNode_p->Messages;
-        char *message_p = nh_core_getFromList(Messages_p, row + SelectedNode_p->offset);
-
-        if (message_p != NULL) 
-        {
-            if (SelectedNode_p->hasFocus && SelectedNode_p->focusedRow == row && strlen(message_p) > cols) {
-                for (int i = 0; i < SelectedNode_p->peak && strlen(message_p) > cols; ++i) {
-                    message_p = message_p + (cols - 1);
-                }
-            }
-
-            if (SelectedNode_p->hasFocus && SelectedNode_p->focusedRow == row) {
-                nh_core_setNextGlyph(Glyphs_pp, ' ');
-                nh_core_setNextGlyph(Glyphs_pp, '>');
-                nh_core_setNextGlyph(Glyphs_pp, ' ');
-            }
-            else {
-                nh_core_setNextGlyph(Glyphs_pp, ' ');
-                nh_core_setNextGlyph(Glyphs_pp, ' ');
-                nh_core_setNextGlyph(Glyphs_pp, ' ');
-            }
-
-            int length = strlen(message_p) + 1 > cols ? cols - 1: strlen(message_p);
-            for (int i = 0; i < length; ++i) {
-                nh_core_setNextGlyph(Glyphs_pp, message_p[i]);
-            }
+    nh_core_MonitorNode *SelectedNode_p = SelectedNodes.pp[0]; 
  
-            for (int j = 0; j < cols - (length + 1); ++j) {
-                nh_core_setNextGlyph(Glyphs_pp, ' ');
+    if (SelectedNode_p->focusedRow > rows - 1) {
+        SelectedNode_p->offset++;
+        SelectedNode_p->focusedRow = rows - 1;
+    }
+    else if (SelectedNode_p->focusedRow < 0) {
+        if (SelectedNode_p->offset > 0) {SelectedNode_p->offset--;}
+        SelectedNode_p->focusedRow = 0;
+    }
+ 
+    nh_core_List *Messages_p = &SelectedNode_p->LoggerNode_p->Messages;
+    char *message_p = nh_core_getFromList(Messages_p, row + SelectedNode_p->offset);
+    if (message_p != NULL) 
+    {
+        if (SelectedNode_p->hasFocus && SelectedNode_p->focusedRow == row && strlen(message_p) > cols) {
+            for (int i = 0; i < SelectedNode_p->peak && strlen(message_p) > cols; ++i) {
+                message_p = message_p + (cols - 1);
             }
+        }
+ 
+        if (SelectedNode_p->hasFocus && SelectedNode_p->focusedRow == row) {
+            nh_core_setNextGlyph(Glyphs_pp, ' ');
+            nh_core_setNextGlyph(Glyphs_pp, '>');
+            nh_core_setNextGlyph(Glyphs_pp, ' ');
         }
         else {
-            for (int j = 0; j < cols; ++j) {nh_core_setNextGlyph(Glyphs_pp, ' ');}
+            nh_core_setNextGlyph(Glyphs_pp, ' ');
+            nh_core_setNextGlyph(Glyphs_pp, ' ');
+            nh_core_setNextGlyph(Glyphs_pp, ' ');
+        }
+ 
+        int length = strlen(message_p) > cols - 3 ? cols - 3: strlen(message_p);
+        for (int i = 0; i < length; ++i) {
+            nh_core_setNextGlyph(Glyphs_pp, message_p[i]);
         }
     }
-
-//    if (SelectedNodes.size == 0) {nh_core_drawHelp(Glyphs_pp, row, cols, rows);}
 
     nh_core_freeList(&SelectedNodes, false);
 
@@ -610,7 +666,8 @@ static NH_API_RESULT nh_core_drawMonitorRow(
 
     int tmp = -1;
     nh_core_List Nodes = nh_core_initList(16);
-    nh_core_getPreviewNodes(&Monitor_p->Root, &Nodes);
+    nh_core_getPreviewNodes(
+        Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes);
 
     ttyr_tty_Glyph *Tmp_p = Glyphs_p;
     for (int i = 0; i < width; ++i) {
@@ -618,18 +675,67 @@ static NH_API_RESULT nh_core_drawMonitorRow(
     }
     Glyphs_p = Tmp_p;
 
-    if (row == 0) {
-        char title_p[] = " Netzhaut Console ";
-        for (int i = 0; i < width - strlen(title_p); ++i) {
+    if (Monitor_p->Peer.state > 0 && Monitor_p->Peer.state < 3) {
+        if (row == 0) {
+            for (int i = 0; i < width - strlen(nh_core_getConfig().monitorName_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, '-');
+            }
+            for (int i = 0; i < strlen(nh_core_getConfig().monitorName_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, nh_core_getConfig().monitorName_p[i]);
+            }
+        } else if (row == 1) {
+            char state_p[64] = {0};
+            switch (Monitor_p->Peer.state) {
+                case 0: 
+                    sprintf(state_p, "Trying to open port %d", nh_core_getConfig().monitorPort);
+                    break;
+                case 1: 
+                    sprintf(state_p, "Listening on 127.0.0.1:%d", nh_core_getConfig().monitorPort);
+                    break;
+                case 2:
+                    sprintf(state_p, "Accepted connection, waiting for messages");
+                    break;
+            }
+            for (int i = 0; i < strlen(state_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, state_p[i]);
+            } 
+        } else if (row == 2) {
+            char title_p[255] = {0};
+            sprintf(title_p, " Peer Mode ");
+            for (int i = 0; i < width - strlen(title_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, '-');
+            }
+            for (int i = 0; i < strlen(title_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
+            }
+        } else if (row == height - 2) {
+            char title_p[255] = {0};
+            sprintf(title_p, " %d lines ", Monitor_p->Peer.Logger.totalMessages);
+            for (int i = 0; i < width - strlen(title_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, '-');
+            }
+            for (int i = 0; i < strlen(title_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
+            }
+        } else if (row == height - 1) {
+            char footer_p[244] = {0};
+            sprintf(footer_p, "[w][a][s][d] Navigate"); 
+            for (int i = 0; i < strlen(footer_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, footer_p[i]);
+            }
+        }
+    } else if (row == 0) {
+        for (int i = 0; i < width - strlen(nh_core_getConfig().monitorName_p); ++i) {
             nh_core_setNextGlyph(&Glyphs_p, '-');
         }
-        for (int i = 0; i < strlen(title_p); ++i) {
-            nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
+        for (int i = 0; i < strlen(nh_core_getConfig().monitorName_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, nh_core_getConfig().monitorName_p[i]);
         }
     } else if (row == 1) {
         OFFSET = 0;
         nh_core_List Nodes2 = nh_core_initList(16);
-        nh_core_getMonitorNodes2(&Monitor_p->Root, &Nodes2);
+        nh_core_getMonitorNodes2(
+            Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes2);
         nh_core_MonitorNode *LastNode_p = NULL;
         for (int i = 0; i < Nodes2.size; ++i) {
             nh_core_MonitorNode *Node2_p = Nodes2.pp[i];
@@ -683,17 +789,36 @@ static NH_API_RESULT nh_core_drawMonitorRow(
             }
         }
     } else if ((row-1) == Nodes.size || row == 2) {
-        for (int i = 0; i < width; ++i) {
+        char title_p[255] = {0};
+        if (Monitor_p->Peer.state > 0) {
+            sprintf(title_p, " Peer Mode ");
+        } else {
+            sprintf(title_p, " Local Mode ");
+        }
+        for (int i = 0; i < width - strlen(title_p); ++i) {
             nh_core_setNextGlyph(&Glyphs_p, '-');
         }
-    } else if (row == height - 2) {
-        for (int i = 0; i < width; ++i) {
-            nh_core_setNextGlyph(&Glyphs_p, '-');
-        }
-    } else if (row == height - 1) {
-        char title_p[] = " [:] Command-line [/] Search ";
         for (int i = 0; i < strlen(title_p); ++i) {
             nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
+        }
+    } else if (row == height - 2) {
+        char title_p[255] = {0};
+        if (Monitor_p->Peer.state > 0) {
+            sprintf(title_p, " %d lines ", Monitor_p->Peer.Logger.totalMessages);
+        } else {
+            sprintf(title_p, " %d lines ", nh_core_getLogger()->totalMessages);
+        }
+        for (int i = 0; i < width - strlen(title_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, '-');
+        }
+        for (int i = 0; i < strlen(title_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
+        }
+    } else if (row == height - 1) {
+        char footer_p[244] = {0};
+        sprintf(footer_p, "[w][a][s][d] Navigate"); 
+        for (int i = 0; i < strlen(footer_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, footer_p[i]);
         }
     } else {
         NH_CORE_CHECK(nh_core_drawSelected(Monitor_p, &Glyphs_p, row - 3, width, height - 5))
@@ -704,24 +829,21 @@ static NH_API_RESULT nh_core_drawMonitorRow(
     return NH_API_SUCCESS;
 }
 
-// INIT/DESTROY ====================================================================================
-
 static void *nh_core_initMonitor(
     void *arg_p)
 {
     nh_core_Monitor *Monitor_p = nh_core_allocate(sizeof(nh_core_Monitor));
     NH_CORE_CHECK_MEM_2(NULL, Monitor_p)
 
-    memset(&Monitor_p->View, 0, sizeof(nh_core_MonitorView));
+    memset(Monitor_p, 0, sizeof(nh_core_Monitor));
 
-    Monitor_p->LastUpdate     = nh_core_getSystemTime();
+    Monitor_p->LastUpdate = nh_core_getSystemTime();
     Monitor_p->updateIntervalInSeconds = 1.0;
 
-    Monitor_p->Root.LoggerNode_p = &NH_LOGGER.Root;
-    Monitor_p->Root.isOpen       = true;
-    Monitor_p->Root.isCurrent    = false;
-    Monitor_p->Root.Children     = nh_core_initList(4);
-    Monitor_p->Root.Parent_p     = NULL;
+    Monitor_p->Root = nh_core_initMonitorNode(&(nh_core_getLogger()->Root), true, NULL);
+    Monitor_p->Peer.Root = nh_core_initMonitorNode(NULL, true, NULL);
+
+    nh_core_initLogger(&Monitor_p->Peer.Logger);
 
     return Monitor_p;
 }
@@ -733,8 +855,6 @@ static void nh_core_destroyMonitor(
 
     return;
 }
-
-// PROTOTYPE =======================================================================================
 
 void *nh_core_createMonitorInterface()
 {

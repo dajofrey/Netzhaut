@@ -37,19 +37,19 @@ NH_API_RESULT nh_core_logThread(
         {
             sprintf(message_p, "%s", Workload_p->name_p);
             sprintf(option_p, "replace=%d", count++);
-            nh_core_sendLogMessage(id_p, option_p, message_p);
+            nh_core_log(id_p, option_p, message_p);
     
             memset(message_p, 0, 255);
 
             sprintf(message_p, "  busy : %d", Workload_p->SignalCounter.ok);
             sprintf(option_p, "replace=%d", count++);
-            nh_core_sendLogMessage(id_p, option_p, message_p);
+            nh_core_log(id_p, option_p, message_p);
 
             memset(message_p, 0, 255);
 
             sprintf(message_p, "  idle : %d", Workload_p->SignalCounter.idle);
             sprintf(option_p, "replace=%d", count++);
-            nh_core_sendLogMessage(id_p, option_p, message_p);
+            nh_core_log(id_p, option_p, message_p);
 
             memset(message_p, 0, 255);
             memset(option_p, 0, 255);
@@ -123,7 +123,7 @@ NH_API_RESULT nh_core_logModules()
         }
 
         sprintf(option_p, "replace=%d", i);
-        nh_core_sendLogMessage("nh-core:Modules", option_p, message_p);
+        nh_core_log("nh-core:Modules", option_p, message_p);
 
         memset(message_p, 0, 255);
         memset(option_p, 0, 255);
@@ -138,7 +138,7 @@ void nh_core_logSystemInfo(
 {
     char option_p[64] = {'\0'};
     sprintf(option_p, "replace=%d", line);
-    nh_core_sendLogMessage("nh-core:System", option_p, info_p);
+    nh_core_log("nh-core:System", option_p, info_p);
 
     return;
 }
@@ -146,7 +146,7 @@ void nh_core_logSystemInfo(
 void nh_core_logDebugMessage(
     char *message_p)
 {
-    nh_core_sendLogMessage("nh-core:Debug", NULL, message_p);
+    nh_core_log("nh-core:Debug", NULL, message_p);
 
     return;
 }

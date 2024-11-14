@@ -37,7 +37,7 @@ NH_API_RESULT nh_webidl_logTokens(
         sprintf(node_p, dirty ? "nh-webidl:Parser:%s:TokensDirty" : "nh-webidl:Parser:%s:TokensClean", fragmentName_p);
         sprintf(message_p, "%s [%s]", NH_WEBIDL_TOKENS_PP[Token_p->type], String.p);
 
-        nh_core_sendLogMessage(node_p, NULL, message_p);
+        nh_core_log(node_p, NULL, message_p);
 
         nh_core_freeString(&String);
 
@@ -69,7 +69,7 @@ static NH_API_RESULT nh_webidl_logParseTreeRecursively(
     }
 
     sprintf(node_p, "nh-webidl:Parser:%s:ParseTree", fragmentName_p);
-    nh_core_sendLogMessage(node_p, NULL, message_p);
+    nh_core_log(node_p, NULL, message_p);
 
     branch_p[depth] = true;
     if (Parent_p != NULL && ParseNode_p == Parent_p->Children.pp[Parent_p->Children.size - 1]) {
@@ -126,11 +126,11 @@ NH_API_RESULT nh_webidl_logFragment(
             sprintf(
                 message_p, "Inherits %s (%s)", Interface_p->Inheritance_p->interface_p, Interface_p->Inheritance_p->specification_p ? Interface_p->Inheritance_p->specification_p : Interface_p->Specification_p->name_p
             );
-            nh_core_sendLogMessage(node_p, NULL, message_p);
+            nh_core_log(node_p, NULL, message_p);
             memset(message_p, 0, 1023);
         }
 
-        nh_core_sendLogMessage(node_p, NULL, "Members:");
+        nh_core_log(node_p, NULL, "Members:");
 
         for (int j = 0; j < Interface_p->Members.length; ++j) 
         {
@@ -138,7 +138,7 @@ NH_API_RESULT nh_webidl_logFragment(
             sprintf(
                 message_p, "  %s %s", NH_WEBIDL_PARSE_NODE_NAMES_PP[InterfaceMember_p->Node_p->type], InterfaceMember_p->name_p == NULL ? "null" : InterfaceMember_p->name_p
             );
-            nh_core_sendLogMessage(node_p, NULL, message_p);
+            nh_core_log(node_p, NULL, message_p);
             memset(message_p, 0, 1023);
         }
     }

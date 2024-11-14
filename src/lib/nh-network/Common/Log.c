@@ -31,7 +31,7 @@ NH_NETWORK_BEGIN()
 //
 //        if (nh_core_appendFormatToString(&String, "%s\n", data_p) != NH_SUCCESS) {NH_NETWORK_SILENT_END()}
 //
-//        nh_core_sendLogMessage(String.bytes_p);
+//        nh_core_log(String.bytes_p);
 //        nh_core_freeString(&String);
 //    }
 
@@ -49,7 +49,7 @@ NH_NETWORK_BEGIN()
 //
 //        if (nh_core_appendFormatToString(&String, "%s\n", data_p) != NH_SUCCESS) {NH_NETWORK_SILENT_END()}
 //
-//        nh_core_sendLogMessage(String.bytes_p);
+//        nh_core_log(String.bytes_p);
 //        nh_core_freeString(&String);
 //    }
 

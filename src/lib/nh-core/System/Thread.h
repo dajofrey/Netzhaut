@@ -108,9 +108,6 @@
  *  @{
  */
 
-    typedef int (*nh_core_runThreadWorkloads_f)(
-    );
-
     typedef bool (*nh_core_keepRunning_f)(
     );
 
@@ -131,9 +128,6 @@
         nh_core_ThreadPool *ThreadPool_p
     );
  
-    int nh_core_runThreadWorkloads(
-    );
-    
     bool nh_core_keepRunning(
     );
 
@@ -186,6 +180,10 @@
 
     NH_API_RESULT nh_sleepMs(
         int milliseconds
+    );
+
+    void nh_core_waitForCompletion(
+        nh_core_Workload *Workload_p, NH_SIGNAL signal
     );
 
 /** @} */
