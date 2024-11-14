@@ -301,7 +301,7 @@ NH_API_RESULT nh_css_logFilter(
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
 
-    sprintf(node_p, "%s%s:%s->Filter", LogContext_p->topLevelId_p, LogContext_p->nodeId_p, LogContext_p->indent_p);
+    sprintf(node_p, "%s%s:Filter", LogContext_p->topLevelId_p, LogContext_p->nodeId_p);
 
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i)
     {
@@ -374,7 +374,7 @@ NH_API_RESULT nh_css_logSpecifiedValues(
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
 
-    sprintf(node_p, "%s%s:%s->Specified", LogContext_p->topLevelId_p, LogContext_p->nodeId_p, LogContext_p->indent_p);
+    sprintf(node_p, "%s%s:Specified", LogContext_p->topLevelId_p, LogContext_p->nodeId_p);
 
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i)
     {
@@ -394,7 +394,7 @@ NH_API_RESULT nh_css_logComputedValues(
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
 
-    sprintf(node_p, "%s%s:%s->Computed", LogContext_p->topLevelId_p, LogContext_p->nodeId_p, LogContext_p->indent_p);
+    sprintf(node_p, "%s%s:Computed", LogContext_p->topLevelId_p, LogContext_p->nodeId_p);
 
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {
         nh_core_log(node_p, NULL, (char*)NH_CSS_PROPERTY_NAMES_PP[i]);

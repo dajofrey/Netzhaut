@@ -34,6 +34,16 @@ int nh_core_createMonitorSocket(
         return -1;
     }
 
+    // Set the receive timeout for accept()
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 50000; // 50ms
+    if (setsockopt(server_fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
+        perror("setsockopt failed");
+        close(server_fd);
+        exit(EXIT_FAILURE);
+    }
+
     memset(&address, 0, sizeof(struct sockaddr_in));
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
@@ -84,16 +94,6 @@ int nh_core_acceptLogger(
 
     setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, &buffer_size_send, sizeof(buffer_size_send));
     setsockopt(client_socket, SOL_SOCKET, SO_RCVBUF, &buffer_size, sizeof(buffer_size));
-
-    // Set a timeout for recv() in blocking mode
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 50000;
-    if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
-        perror("Error setting socket timeout");
-        close(client_socket);
-        return -1;
-    }
 
     return client_socket;
 }

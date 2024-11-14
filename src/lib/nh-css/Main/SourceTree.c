@@ -127,7 +127,7 @@ static nh_css_LogContext nh_css_updateLogContext(
     memset(Context.indent_p, 0, 1024);
     for (int i = 0; i < depth; ++i) {Context.indent_p[i] = ' ';}
 
-    sprintf(Context.nodeId_p, ":%s%s#%d", Context.indent_p, nh_dom_getLocalName(Element_p)->p, *Context.nr_p);
+    sprintf(Context.nodeId_p, ":%s#%d", nh_dom_getLocalName(Element_p)->p, *Context.nr_p);
 
     return Context;
 }
