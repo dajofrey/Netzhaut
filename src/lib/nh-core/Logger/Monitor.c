@@ -34,16 +34,13 @@ static nh_core_MonitorNode nh_core_initMonitorNode(
     nh_core_LoggerNode *LoggerNode_p, bool isOpen, nh_core_MonitorNode *Parent_p)
 {
     nh_core_MonitorNode Node = {0};
+    memset(&Node, 0, sizeof(nh_core_MonitorNode));
+
     Node.Children     = nh_core_initList(8);
     Node.LoggerNode_p = LoggerNode_p;
     Node.isOpen       = isOpen;
-    Node.isCurrent    = false;
-    Node.isSelected   = false;
-    Node.hasFocus     = false;
-    Node.focusedRow   = 0;
-    Node.offset       = 0;
-    Node.peak         = 0;
     Node.Parent_p     = Parent_p;
+
     return Node; 
 }
 
@@ -332,7 +329,6 @@ static nh_core_MonitorNode *nh_core_getCurrentMonitorNode(
     return NULL;
 }
 
-
 static void nh_core_moveCursorVertically(
     ttyr_tty_Program *Program_p, nh_core_MonitorNode *Current_p, int key) 
 {
@@ -340,32 +336,30 @@ static void nh_core_moveCursorVertically(
 
     nh_core_List Nodes = nh_core_initList(16);
     nh_core_getPreviewNodes(Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes);
+
     int index;
     for (index = 0; index < Nodes.size && Nodes.pp[index] != Current_p; ++index);
 
     switch (key) 
     {
         case 'w' :
-            if (index > 0) 
-            {
-                Current_p->isCurrent = false;
-                Current_p->isOpen = false;
-                ((nh_core_MonitorNode*)Nodes.pp[index - 1])->isCurrent = true;
-
-                if (Monitor_p->View.screenCursor == 0 && Monitor_p->View.rowOffset > 0) {Monitor_p->View.rowOffset--;}
-                else if (Monitor_p->View.screenCursor > 0) {Monitor_p->View.screenCursor--;}
-            }
+            if (index <= 0) {break;}
+            Current_p->isCurrent = false;
+            Current_p->isOpen = false;
+            ((nh_core_MonitorNode*)Nodes.pp[index - 1])->isCurrent = true;
+            if (Current_p->Parent_p->nodesYCursor > 0)      {Current_p->Parent_p->nodesYCursor--;}
+            else if (Current_p->Parent_p->nodesYOffset > 0) {Current_p->Parent_p->nodesYOffset--;}
             break;
         case 's' :
-            if (Nodes.size > index + 1) 
-            {
-                Current_p->isCurrent = false;
-                Current_p->isOpen = false;
-                ((nh_core_MonitorNode*)Nodes.pp[index + 1])->isCurrent = true;
-
-                if (Monitor_p->View.screenCursor < Monitor_p->View.height - 1) {Monitor_p->View.screenCursor++;}
-                else {Monitor_p->View.rowOffset++;}
-            }
+            if (Nodes.size == index+1) {break;}
+            if (Current_p->Parent_p->nodesYCursor < Nodes.size && Current_p->Parent_p->nodesYCursor < Monitor_p->height/2-2) {
+                Current_p->Parent_p->nodesYCursor++;
+            } else {
+                Current_p->Parent_p->nodesYOffset++;
+            } 
+            Current_p->isCurrent = false;
+            Current_p->isOpen = false;
+            ((nh_core_MonitorNode*)Nodes.pp[index + 1])->isCurrent = true;
             break;
     }
 
@@ -448,13 +442,34 @@ static NH_API_RESULT nh_core_handleMonitorInput(
             Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root));
     if (Current_p == NULL) {return NH_API_SUCCESS;}
 
+    nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
+    bool selected = SelectedNodes.size > 0;
+    nh_core_freeList(&SelectedNodes, false);
+
     nh_core_MonitorNode *Node_p = nh_core_getFocusedMonitorNode(Monitor_p);
 
     switch (c)
     {
-        case 'w' :
         case 's' :
-            nh_core_moveCursorVertically(Program_p, Current_p, c);
+            if (selected) {
+                if (Node_p != NULL && Node_p->LoggerNode_p->Messages.size > Node_p->focusedRow + 1) {
+                    Node_p->focusedRow++;
+                    Node_p->peak = 0;
+                }
+            } else {
+                nh_core_moveCursorVertically(Program_p, Current_p, c);
+            }
+            break;
+
+        case 'w' :
+            if (selected) {
+                if (Node_p != NULL) {
+                    Node_p->focusedRow--;
+                    Node_p->peak = 0;
+                }
+            } else {
+                nh_core_moveCursorVertically(Program_p, Current_p, c);
+            }
             break;
 
         case 'f' :
@@ -467,19 +482,6 @@ static NH_API_RESULT nh_core_handleMonitorInput(
             break;
         case 'l' :
             if (Node_p != NULL) {Node_p->peak++;}
-            break;
-
-        case 'j' :
-            if (Node_p != NULL && Node_p->LoggerNode_p->Messages.size > Node_p->focusedRow + 1) {
-                Node_p->focusedRow++;
-                Node_p->peak = 0;
-            }
-            break;
-        case 'k' :
-            if (Node_p != NULL) {
-                Node_p->focusedRow--;
-                Node_p->peak = 0;
-            }
             break;
 
         case 'a' :
@@ -498,22 +500,8 @@ static NH_API_RESULT nh_core_handleMonitorInput(
                 Current_p->Parent_p->isOpen = false;
                 Current_p->Parent_p->isCurrent = true;
                 Current_p->Parent_p->hasFocus = true;
+                Current_p->Parent_p->nodesYOffset = 0;
             }
-
-//            for (int i = 0; i < Current_p->Parent_p->Children.size; ++i) 
-//            {
-//                nh_core_MonitorNode *Sibling_p = Current_p->Parent_p->Children.pp[i];
-//                Sibling_p->isCurrent = false;
-//                if (Sibling_p->isSelected) {
-//                    nh_core_unselectMonitorNode(Monitor_p, Sibling_p);
-//                    Sibling_p->isCurrent = true;
-//                } 
-//            }
-//            Current_p->Parent_p->isOpen = false;
-//            Current_p->Parent_p->isCurrent = true;
-//            if (Current_p->isSelected) {
-//                 nh_core_unselectMonitorNode(Monitor_p, Current_p);
-//            }
             break;
 
         case 'd' :
@@ -568,46 +556,6 @@ static void nh_core_setNextReverseGlyph(
     return;
 }
 
-static const char *help_pp[] =
-{
-    "Netzhaut Monitor                             ",
-    "",
-    "- Keyboard Controls -                        ",
-    "",
-    "[w][a][s][d] Navigate logging categories.    ",
-    "[h][j][k][l] Navigate log entries.           ",
-    "[f][g]       Jump to left/right selected log.",
-    "[c]          Copy selected log entry.        ",
-    "[b]          Toggle logging categories.      ",
-    "[q]          Quit.                           ",
-    "",
-};
-
-static NH_API_RESULT nh_core_drawHelp(
-    ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
-{
-    int entries = sizeof(help_pp) / sizeof(help_pp[0]);
-    int begin = (rows / 2) - (entries / 2);
-
-    if (row >= begin && row < begin + entries) {
-        int sides = cols < strlen(help_pp[row-begin]) ? 0 
-            : (cols - strlen(help_pp[row - begin])) / 2;
-        for (int i = 0; i < sides; ++i) {
-            nh_core_setNextGlyph(Glyphs_pp, ' ');
-        }
-        for (int i = 0; i < strlen(help_pp[row - begin]) && i < cols; ++i) {
-            nh_core_setNextGlyph(Glyphs_pp, help_pp[row - begin][i]);
-        }
-    }
-    else {
-        for (int i = 0; i < cols; ++i) {
-            nh_core_setNextGlyph(Glyphs_pp, ' ');
-        }
-    }
-
-    return NH_API_SUCCESS;
-}
-
 static NH_API_RESULT nh_core_drawSelected(
     nh_core_Monitor *Monitor_p, ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
@@ -657,12 +605,11 @@ static NH_API_RESULT nh_core_drawSelected(
     return NH_API_SUCCESS;
 }
 
-int OFFSET = 0;
 static NH_API_RESULT nh_core_drawMonitorRow(
     ttyr_tty_Program *Program_p, ttyr_tty_Glyph *Glyphs_p, int width, int height, int row)
 {
     nh_core_Monitor *Monitor_p = Program_p->handle_p;
-    Monitor_p->View.height = height;
+    Monitor_p->height = height;
 
     int tmp = -1;
     nh_core_List Nodes = nh_core_initList(16);
@@ -677,11 +624,12 @@ static NH_API_RESULT nh_core_drawMonitorRow(
 
     if (Monitor_p->Peer.state > 0 && Monitor_p->Peer.state < 3) {
         if (row == 0) {
-            for (int i = 0; i < width - strlen(nh_core_getConfig().monitorName_p); ++i) {
+            char title_p[] = " Log Selector ";
+            for (int i = 0; i < width - strlen(title_p); ++i) {
                 nh_core_setNextGlyph(&Glyphs_p, '-');
             }
-            for (int i = 0; i < strlen(nh_core_getConfig().monitorName_p); ++i) {
-                nh_core_setNextGlyph(&Glyphs_p, nh_core_getConfig().monitorName_p[i]);
+            for (int i = 0; i < strlen(title_p); ++i) {
+                nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
             }
         } else if (row == 1) {
             char state_p[64] = {0};
@@ -701,7 +649,12 @@ static NH_API_RESULT nh_core_drawMonitorRow(
             } 
         } else if (row == 2) {
             char title_p[255] = {0};
-            sprintf(title_p, " Peer Mode ");
+            if (Monitor_p->Peer.state > 0) {
+                sprintf(title_p, " Log Viewer ");
+            } else {
+                sprintf(title_p, " Log Viewer ");
+        }
+ 
             for (int i = 0; i < width - strlen(title_p); ++i) {
                 nh_core_setNextGlyph(&Glyphs_p, '-');
             }
@@ -710,7 +663,7 @@ static NH_API_RESULT nh_core_drawMonitorRow(
             }
         } else if (row == height - 2) {
             char title_p[255] = {0};
-            sprintf(title_p, " %d lines ", Monitor_p->Peer.Logger.totalMessages);
+            sprintf(title_p, " %s | %d logs ", nh_core_getConfig().monitorName_p, Monitor_p->Peer.Logger.totalLogs);
             for (int i = 0; i < width - strlen(title_p); ++i) {
                 nh_core_setNextGlyph(&Glyphs_p, '-');
             }
@@ -725,14 +678,15 @@ static NH_API_RESULT nh_core_drawMonitorRow(
             }
         }
     } else if (row == 0) {
-        for (int i = 0; i < width - strlen(nh_core_getConfig().monitorName_p); ++i) {
+        char title_p[] = " Log Selector ";
+        for (int i = 0; i < width - strlen(title_p); ++i) {
             nh_core_setNextGlyph(&Glyphs_p, '-');
         }
-        for (int i = 0; i < strlen(nh_core_getConfig().monitorName_p); ++i) {
-            nh_core_setNextGlyph(&Glyphs_p, nh_core_getConfig().monitorName_p[i]);
+        for (int i = 0; i < strlen(title_p); ++i) {
+            nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
         }
     } else if (row == 1) {
-        OFFSET = 0;
+        Monitor_p->nodesXOffset = 0;
         nh_core_List Nodes2 = nh_core_initList(16);
         nh_core_getMonitorNodes2(
             Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes2);
@@ -740,10 +694,10 @@ static NH_API_RESULT nh_core_drawMonitorRow(
         for (int i = 0; i < Nodes2.size; ++i) {
             nh_core_MonitorNode *Node2_p = Nodes2.pp[i];
             if (Nodes2.size == i+1 && !Node2_p->isSelected) {
-                Node2_p = Node2_p->Parent_p->Children.pp[0];
+                Node2_p = Node2_p->Parent_p->Children.pp[Node2_p->Parent_p->nodesYOffset];
             }
             if (LastNode_p) {
-                OFFSET +=strlen(LastNode_p->LoggerNode_p->name_p);
+                Monitor_p->nodesXOffset +=strlen(LastNode_p->LoggerNode_p->name_p);
             }
             nh_core_setNextGlyph(&Glyphs_p, ' ');
             if (Nodes2.size == i+1) {
@@ -763,13 +717,13 @@ static NH_API_RESULT nh_core_drawMonitorRow(
             }
             LastNode_p = Node2_p;
             if (Nodes2.size > i+1) {
-                OFFSET += 3;
+                Monitor_p->nodesXOffset += 3;
             }
         }
-    } else if (Nodes.size > 1 && (row-1) < Nodes.size) {
-        nh_core_MonitorNode *Node_p = nh_core_getFromList(&Nodes, row-1);
+    } else if (Nodes.size > 1 && (row-1) < Nodes.size && row < height/2) {
+        nh_core_MonitorNode *Node_p = nh_core_getFromList(&Nodes, (row-1)+((nh_core_MonitorNode*)Nodes.pp[0])->Parent_p->nodesYOffset);
         if (Node_p) {
-            for (int i = 0; i < OFFSET; ++i) {
+            for (int i = 0; i < Monitor_p->nodesXOffset; ++i) {
                 nh_core_setNextGlyph(&Glyphs_p, ' ');
             }
             if (Node_p->isCurrent) {
@@ -788,13 +742,8 @@ static NH_API_RESULT nh_core_drawMonitorRow(
                 nh_core_setNextGlyph(&Glyphs_p, Node_p->LoggerNode_p->name_p[i]);
             }
         }
-    } else if ((row-1) == Nodes.size || row == 2) {
-        char title_p[255] = {0};
-        if (Monitor_p->Peer.state > 0) {
-            sprintf(title_p, " Peer Mode ");
-        } else {
-            sprintf(title_p, " Local Mode ");
-        }
+    } else if ((row-1) == Nodes.size || row == 2 || ((Nodes.size > height/2) && row == height/2)) {
+        char title_p[] = " Log Viewer ";
         for (int i = 0; i < width - strlen(title_p); ++i) {
             nh_core_setNextGlyph(&Glyphs_p, '-');
         }
@@ -804,9 +753,9 @@ static NH_API_RESULT nh_core_drawMonitorRow(
     } else if (row == height - 2) {
         char title_p[255] = {0};
         if (Monitor_p->Peer.state > 0) {
-            sprintf(title_p, " %d lines ", Monitor_p->Peer.Logger.totalMessages);
+            sprintf(title_p, " %s | 127.0.0.1@%d | %d logs ", nh_core_getConfig().monitorName_p, nh_core_getConfig().monitorPort, Monitor_p->Peer.Logger.totalLogs);
         } else {
-            sprintf(title_p, " %d lines ", nh_core_getLogger()->totalMessages);
+            sprintf(title_p, " %s | %d logs ", nh_core_getConfig().monitorName_p, nh_core_getLogger()->totalLogs);
         }
         for (int i = 0; i < width - strlen(title_p); ++i) {
             nh_core_setNextGlyph(&Glyphs_p, '-');

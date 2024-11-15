@@ -219,7 +219,7 @@ static NH_API_RESULT nh_core_updateLogger(
 
     nh_core_freeArray(&ParsedOptions);
 
-     Logger_p->totalMessages++;
+     Logger_p->totalLogs++;
 
     return NH_API_SUCCESS;
 }

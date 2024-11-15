@@ -35,7 +35,7 @@ typedef struct nh_core_Logger {
     nh_core_SystemTime LastFlush;
     nh_api_logCallback_f callback_f;
     nh_core_String Buffer;
-    int totalMessages;
+    int totalLogs;
 } nh_core_Logger;
 
 // FUNCTIONS =======================================================================================
