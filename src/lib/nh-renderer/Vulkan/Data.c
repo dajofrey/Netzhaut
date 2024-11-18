@@ -45,9 +45,9 @@ static NH_API_RESULT nh_renderer_createVulkanTextFragmentData(
 
     nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
 
-    int x = Fragment_p->Block.Position.x;
-    int y = Fragment_p->Block.Position.y;
-    float z = Fragment_p->Block.depth;
+    int x = Fragment_p->ContentBox.Position.x;
+    int y = Fragment_p->ContentBox.Position.y;
+    float z = Fragment_p->ContentBox.depth;
 
     for (int i = 0; i < Fragment_p->Text.Values.Text.Segments.length; ++i)
     {

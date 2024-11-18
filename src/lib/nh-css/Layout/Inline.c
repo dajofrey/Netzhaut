@@ -98,8 +98,8 @@ static NH_API_RESULT nh_css_computeTextFragment(
 {
     NH_CORE_CHECK(nh_css_computeTextValues(Fragment_p))
 
-    Fragment_p->Block.Size.width = Fragment_p->Text.Values.textWidth;
-    Fragment_p->Block.Size.height = Fragment_p->Text.Values.textHeight;
+    Fragment_p->ContentBox.Size.width = Fragment_p->Text.Values.textWidth;
+    Fragment_p->ContentBox.Size.height = Fragment_p->Text.Values.textHeight;
 
     return NH_API_SUCCESS;
 }
@@ -126,7 +126,7 @@ static nh_css_Fragment *nh_css_splitTextFragment(
     unsigned int fullLength = Fragment_p->Text.length;
     Fragment_p->Text.length = newLength;
 
-    int prevWidth = Fragment_p->Block.Size.width;
+    int prevWidth = Fragment_p->ContentBox.Size.width;
 
     // recompute text fragment 
     NH_CORE_CHECK_2(NULL, nh_css_computeTextFragment(Fragment_p))
@@ -146,15 +146,15 @@ static nh_css_Fragment *nh_css_splitTextFragment(
 static NH_API_RESULT nh_css_arrangeUsingLineBox(
     nh_css_InlineFormattingContext *Context_p, nh_css_Fragment *Fragment_p)
 {
-    Fragment_p->Block.Position.x = Context_p->LineBox_p->currentX;
-    Fragment_p->Block.Position.y = Context_p->LineBox_p->Position.y;
+    Fragment_p->ContentBox.Position.x = Context_p->LineBox_p->currentX;
+    Fragment_p->ContentBox.Position.y = Context_p->LineBox_p->Position.y;
 
     NH_CORE_CHECK(nh_css_computeTextFragment(Fragment_p))
 
-    Context_p->LineBox_p->currentX += Fragment_p->Block.Size.width;
+    Context_p->LineBox_p->currentX += Fragment_p->ContentBox.Size.width;
 
-    if (Context_p->LineBox_p->Size.height < Fragment_p->Block.Size.height) {
-        Context_p->LineBox_p->Size.height = Fragment_p->Block.Size.height;
+    if (Context_p->LineBox_p->Size.height < Fragment_p->ContentBox.Size.height) {
+        Context_p->LineBox_p->Size.height = Fragment_p->ContentBox.Size.height;
     }
     nh_css_updateInlineFormattingContextHeight(Context_p);
 
@@ -180,7 +180,7 @@ static NH_API_RESULT nh_css_arrangeTextFragment(
         do {
             newLength = nh_gfx_getFittingTextLength(
                 &(*Fragment_pp)->Text.Values.Text,
-                Context_p->LineBox_p->Size.width - ((Context_p->LineBox_p->currentX - (*Fragment_pp)->Block.Size.width) - Context_p->LineBox_p->Position.x)
+                Context_p->LineBox_p->Size.width - ((Context_p->LineBox_p->currentX - (*Fragment_pp)->ContentBox.Size.width) - Context_p->LineBox_p->Position.x)
             );
             if (newLength == 0 && Context_p->LineBox_p->shortened) {
                 nh_css_shiftLineBoxDownward(Canvas_p, Context_p->LineBox_p);
@@ -227,9 +227,9 @@ nh_css_Fragment *nh_css_splitInlineBox(
 static void nh_css_updateInlineBoxSize(
     nh_css_Fragment *Fragment_p, nh_css_Fragment *Child_p)
 {
-    Fragment_p->Block.Size.width += Child_p->Block.Size.width;
-    if (Fragment_p->Block.Size.height < Child_p->Block.Size.height) {
-        Fragment_p->Block.Size.height = Child_p->Block.Size.height;
+    Fragment_p->ContentBox.Size.width += Child_p->ContentBox.Size.width;
+    if (Fragment_p->ContentBox.Size.height < Child_p->ContentBox.Size.height) {
+        Fragment_p->ContentBox.Size.height = Child_p->ContentBox.Size.height;
     }
 
     return;
@@ -243,8 +243,8 @@ static NH_API_RESULT nh_css_arrangeInlineBox(
         if (!Canvas_p->_float) {nh_css_offsetLineBoxFromFloats(Canvas_p, Context_p->LineBox_p);}
     }
 
-    (*Fragment_pp)->Block.Position.x = Context_p->LineBox_p->currentX;
-    (*Fragment_pp)->Block.Position.y = Context_p->LineBox_p->Position.y;
+    (*Fragment_pp)->ContentBox.Position.x = Context_p->LineBox_p->currentX;
+    (*Fragment_pp)->ContentBox.Position.y = Context_p->LineBox_p->Position.y;
 
     NH_CORE_CHECK(nh_css_computeBoxValues(*Fragment_pp))
 
@@ -281,7 +281,7 @@ static NH_API_RESULT nh_css_arrangeInlineBox(
 static void nh_css_alignTextRecursively(
     nh_css_Fragment *Fragment_p, int value)
 {
-    Fragment_p->Block.Position.x += value;
+    Fragment_p->ContentBox.Position.x += value;
 
     for (int j = 0; j < Fragment_p->Children.size; ++j) {
         nh_css_Fragment *Child_p = Fragment_p->Children.pp[j];
@@ -300,13 +300,13 @@ static NH_API_RESULT nh_css_alignText(
         nh_css_Fragment *RootInline_p = LineBox_p->RootInline_p;
 
         if (RootInline_p->Box.Values.textAlignAll == NH_CSS_TEXT_ALIGN_CENTER) {
-            int diff = LineBox_p->Size.width - RootInline_p->Block.Size.width;
+            int diff = LineBox_p->Size.width - RootInline_p->ContentBox.Size.width;
             if (diff > 0) {
                 nh_css_alignTextRecursively(LineBox_p->RootInline_p, diff / 2);
             }
         }
         else if (RootInline_p->Box.Values.textAlignAll == NH_CSS_TEXT_ALIGN_RIGHT) {
-            int diff = LineBox_p->Size.width - RootInline_p->Block.Size.width;
+            int diff = LineBox_p->Size.width - RootInline_p->ContentBox.Size.width;
             if (diff > 0) {
                 nh_css_alignTextRecursively(LineBox_p->RootInline_p, diff);
             }
@@ -321,7 +321,7 @@ NH_API_RESULT nh_css_arrangeInlineFormattingContext(
 {
     NH_CORE_CHECK(nh_css_computeBoxValues(Fragment_p))
 
-    nh_css_PixelBox Container = nh_css_getContentBox(&Fragment_p->Parent_p->Block, &Fragment_p->Box.Values);
+    nh_css_PixelBox Container = nh_css_getContentBox(&Fragment_p->Parent_p->ContentBox, &Fragment_p->Box.Values);
     Container.Position.y += yOffset;
 
 //    NH_CORE_CHECK(nh_css_collapse(Fragment_p))

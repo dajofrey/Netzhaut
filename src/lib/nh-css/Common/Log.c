@@ -547,11 +547,11 @@ static NH_API_RESULT nh_css_logFragment(
     nh_core_log(logId_p, NULL, message_p);
     memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 
-    sprintf(message_p, "%sPosition : x:%d,y:%d,z:%f", indent_p, Fragment_p->Block.Position.x, Fragment_p->Block.Position.y, Fragment_p->Block.depth);
+    sprintf(message_p, "%sPosition : x:%d,y:%d,z:%f", indent_p, Fragment_p->ContentBox.Position.x, Fragment_p->ContentBox.Position.y, Fragment_p->ContentBox.depth);
     nh_core_log(logId_p, NULL, message_p);
     memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 
-    sprintf(message_p, "%sSize     : width:%d,height:%d", indent_p, Fragment_p->Block.Size.width, Fragment_p->Block.Size.height);
+    sprintf(message_p, "%sSize     : width:%d,height:%d", indent_p, Fragment_p->ContentBox.Size.width, Fragment_p->ContentBox.Size.height);
     nh_core_log(logId_p, NULL, message_p);
     memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 

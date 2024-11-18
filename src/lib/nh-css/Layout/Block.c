@@ -63,35 +63,37 @@ NH_API_RESULT nh_css_collapse(
 NH_API_RESULT nh_css_arrangeBlockFormattingContext(
     nh_css_Canvas *Canvas_p, nh_css_Fragment *Fragment_p, int *advance_p)
 {
+    // First, let's compute CSS property values for this fragment.
     NH_CORE_CHECK(nh_css_computeBoxValues(Fragment_p))
 
     if (Fragment_p->Parent_p) {
         NH_CORE_CHECK(nh_css_collapse(Fragment_p, advance_p))
 
-        // The block of the new fragment is based on the most inner box (content box) of the parent.
-        Fragment_p->Block = nh_css_getContentBox(&Fragment_p->Parent_p->Block, &Fragment_p->Box.Values);
-        Fragment_p->Block.Position.y += *advance_p;
-        Fragment_p->Block.Size.height = 0;
+        // The content-box of the new fragment is based on the content-box of the parent.
+        Fragment_p->ContentBox = nh_css_getContentBox(&Fragment_p->Parent_p->ContentBox, &Fragment_p->Box.Values);
+        Fragment_p->ContentBox.Position.y += *advance_p;
+        Fragment_p->ContentBox.Size.height = 0;
     }
 
+    // Handle explicit content-box width.
     if (Fragment_p->Box.Values.Width.type == NH_CSS_BOX_SIZING_PERCENTAGE) {
-        Fragment_p->Block.Size.width = (int)((float)Fragment_p->Block.Size.width * (Fragment_p->Box.Values.Width.percentage/100.0f));
+        Fragment_p->ContentBox.Size.width = (int)((float)Fragment_p->ContentBox.Size.width * (Fragment_p->Box.Values.Width.percentage/100.0f));
     }
     else if (Fragment_p->Box.Values.Width.type == NH_CSS_BOX_SIZING_LENGTH) {
-        Fragment_p->Block.Size.width = Fragment_p->Box.Values.Width.value;
+        Fragment_p->ContentBox.Size.width = Fragment_p->Box.Values.Width.value;
     }
 
-    // Handle auto.
+    // Handle auto margin, border and padding.
     if (Fragment_p->Parent_p) {
-        int halfOffset = (Fragment_p->Parent_p->Block.Size.width - Fragment_p->Block.Size.width)/2;
+        int halfOffset = (Fragment_p->Parent_p->ContentBox.Size.width - Fragment_p->ContentBox.Size.width)/2;
         if (Fragment_p->Box.Values.MarginLeft.type == NH_CSS_BOX_SIZING_AUTO) {
             Fragment_p->Box.Values.MarginLeft.value = halfOffset;
-            Fragment_p->Block.Size.width += halfOffset;
         }
         if (Fragment_p->Box.Values.MarginRight.type == NH_CSS_BOX_SIZING_AUTO) {
             Fragment_p->Box.Values.MarginRight.value = halfOffset;
-            Fragment_p->Block.Size.width += halfOffset;
         }
+        nh_css_updateContentBoxPosition(Fragment_p);
+        Fragment_p->ContentBox.Position.y += *advance_p;
     }
 
     if (Fragment_p->Box.Values._float != NH_CSS_FLOAT_NONE) {
@@ -113,7 +115,7 @@ NH_API_RESULT nh_css_arrangeBlockFormattingContext(
 
         if (Child_p->Box.Values._float != NH_CSS_FLOAT_NONE) {continue;}
 
-        if (Child_p->Block.Size.height == 0) {
+        if (Child_p->ContentBox.Size.height == 0) {
             Child_p->Box.Values.marginTop = 0;
             Child_p->Box.Values.marginBottom = 0;
         }
@@ -121,17 +123,17 @@ NH_API_RESULT nh_css_arrangeBlockFormattingContext(
         for (int j = 0; j < (newFragments + 1); ++j) 
         {
             Child_p = Fragment_p->Children.pp[i + j];
-            nh_css_PixelBox ChildMarginBox = nh_css_getMarginBox(&Child_p->Block, &Child_p->Box.Values);
+            nh_css_PixelBox ChildMarginBox = nh_css_getMarginBox(Child_p);
 
-            if (ChildMarginBox.Position.y == (Fragment_p->Block.Position.y + advance)) {
+            if (ChildMarginBox.Position.y == (Fragment_p->ContentBox.Position.y + advance)) {
                 // the child did not move its y axis position; advance by its height;
                 advance += ChildMarginBox.Size.height;
-                if (advance > Fragment_p->Block.Size.height) {Fragment_p->Block.Size.height = advance;}
+                if (advance > Fragment_p->ContentBox.Size.height) {Fragment_p->ContentBox.Size.height = advance;}
             }
             else {
                 // the child moved its y axis position; advance by its height and position offset;
-                advance += (ChildMarginBox.Position.y + ChildMarginBox.Size.height) - (Fragment_p->Block.Position.y + Fragment_p->Block.Size.height);
-                if (advance > Fragment_p->Block.Size.height) {Fragment_p->Block.Size.height = advance;}
+                advance += (ChildMarginBox.Position.y + ChildMarginBox.Size.height) - (Fragment_p->ContentBox.Position.y + Fragment_p->ContentBox.Size.height);
+                if (advance > Fragment_p->ContentBox.Size.height) {Fragment_p->ContentBox.Size.height = advance;}
             }
         }
 

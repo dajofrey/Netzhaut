@@ -52,6 +52,10 @@ int nh_css_getMaxY(
     nh_css_PixelBox Box
 );
 
+void nh_css_updateContentBoxPosition(
+    nh_css_Fragment *Fragment_p
+);
+
 nh_css_PixelBox nh_css_getContentBox(
     nh_css_PixelBox *ContainingBlock_p, nh_css_BoxValues *Values_p
 );
@@ -65,7 +69,7 @@ nh_css_PixelBox nh_css_getBorderBox(
 );
 
 nh_css_PixelBox nh_css_getMarginBox(
-    nh_css_PixelBox *ContentBox_p, nh_css_BoxValues *Values_p
+    nh_css_Fragment *Fragment_p
 );
 
 #endif // NH_CSS_LAYOUT_BOX_MODEL_H

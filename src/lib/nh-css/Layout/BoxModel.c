@@ -10,6 +10,7 @@
 
 #include "BoxModel.h"
 
+#include "../Main/FragmentTree.h"
 #include "../../nh-gfx/Base/Viewport.h"
 
 #include <string.h>
@@ -56,6 +57,15 @@ int nh_css_getMaxY(
     return Box.Position.y + Box.Size.height;
 }
 
+void nh_css_updateContentBoxPosition(
+    nh_css_Fragment *Fragment_p)
+{
+    nh_css_PixelBox ContentBox = nh_css_getContentBox(&Fragment_p->Parent_p->ContentBox, &Fragment_p->Box.Values); 
+
+    Fragment_p->ContentBox.Position.x = ContentBox.Position.x;
+    Fragment_p->ContentBox.Position.y = ContentBox.Position.y;
+}
+
 nh_css_PixelBox nh_css_getContentBox(
     nh_css_PixelBox *ContainingBlock_p, nh_css_BoxValues *Values_p)
 {
@@ -98,16 +108,16 @@ nh_css_PixelBox nh_css_getBorderBox(
 }
 
 nh_css_PixelBox nh_css_getMarginBox(
-    nh_css_PixelBox *ContentBox_p, nh_css_BoxValues *Values_p)
+    nh_css_Fragment *Fragment_p)
 {
     nh_css_PixelBox Box;
 
-    Box.Position.x  = ContentBox_p->Position.x - Values_p->MarginLeft.value - Values_p->borderLeft - Values_p->paddingLeft;
-    Box.Position.y  = ContentBox_p->Position.y - Values_p->marginTop - Values_p->borderTop - Values_p->paddingTop;
-    Box.Size.width  = ContentBox_p->Size.width + Values_p->MarginRight.value + Values_p->MarginLeft.value + Values_p->paddingRight + Values_p->paddingLeft + Values_p->borderRight + Values_p->borderLeft;
-    Box.Size.height = ContentBox_p->Size.height + Values_p->marginBottom + Values_p->marginTop + Values_p->paddingBottom + Values_p->paddingTop + Values_p->borderBottom + Values_p->borderTop;
+    Box.Position.x  = Fragment_p->ContentBox.Position.x - Fragment_p->Box.Values.MarginLeft.value - Fragment_p->Box.Values.borderLeft - Fragment_p->Box.Values.paddingLeft;
+    Box.Position.y  = Fragment_p->ContentBox.Position.y - Fragment_p->Box.Values.marginTop - Fragment_p->Box.Values.borderTop - Fragment_p->Box.Values.paddingTop;
+    Box.Size.width  = Fragment_p->ContentBox.Size.width + Fragment_p->Box.Values.MarginRight.value + Fragment_p->Box.Values.MarginLeft.value + Fragment_p->Box.Values.paddingRight + Fragment_p->Box.Values.paddingLeft + Fragment_p->Box.Values.borderRight + Fragment_p->Box.Values.borderLeft;
+    Box.Size.height = Fragment_p->ContentBox.Size.height + Fragment_p->Box.Values.marginBottom + Fragment_p->Box.Values.marginTop + Fragment_p->Box.Values.paddingBottom + Fragment_p->Box.Values.paddingTop + Fragment_p->Box.Values.borderBottom + Fragment_p->Box.Values.borderTop;
 
-    Box.depth = ContentBox_p->depth;
+    Box.depth = Fragment_p->ContentBox.depth;
 
     return Box;
 }

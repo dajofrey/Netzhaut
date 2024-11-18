@@ -33,7 +33,7 @@ static float nh_css_getDepth(
 void nh_css_getFragmentDepth(
     nh_css_Fragment *Fragment_p)
 {
-    Fragment_p->Block.depth = nh_css_getDepth(Fragment_p);
+    Fragment_p->ContentBox.depth = nh_css_getDepth(Fragment_p);
 
     for (int i = 0; i < Fragment_p->Children.size; ++i) {
         nh_css_getFragmentDepth(Fragment_p->Children.pp[i]);
@@ -41,4 +41,3 @@ void nh_css_getFragmentDepth(
 
     return;
 }
-

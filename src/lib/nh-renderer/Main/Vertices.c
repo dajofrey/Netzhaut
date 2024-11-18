@@ -99,9 +99,9 @@ int nh_renderer_getBackgroundVertices(
     int triangleCount = 0;
     nh_Triangle Triangles_p[1024] = {0.0f};
 
-    nh_css_PixelBox MarginBox = nh_css_getMarginBox(&Fragment_p->Block, &Fragment_p->Box.Values);
+    nh_css_PixelBox MarginBox = nh_css_getMarginBox(Fragment_p);
     nh_renderer_ClipBox PaddingBox = nh_renderer_convertToClipBox(Viewport_p, nh_css_getPaddingBox(&MarginBox, &Fragment_p->Box.Values)); 
-    nh_renderer_ClipBox ContentBox = nh_renderer_convertToClipBox(Viewport_p, Fragment_p->Block); 
+    nh_renderer_ClipBox ContentBox = nh_renderer_convertToClipBox(Viewport_p, Fragment_p->ContentBox); 
     
     float radii_p[4] = {0, 0, 0, 0};
 //    radii_p[0] = Fragment_p->Values.borderTopLeftRadius;
@@ -147,7 +147,7 @@ int nh_renderer_getBorderVertices(
     nh_gfx_Viewport *Viewport_p, nh_css_Fragment *Fragment_p, float *vertices_p, char *side_p, 
     int cornerTriangleCount)
 {
-    nh_css_PixelBox MarginBox = nh_css_getMarginBox(&Fragment_p->Block, &Fragment_p->Box.Values);
+    nh_css_PixelBox MarginBox = nh_css_getMarginBox(Fragment_p);
     nh_renderer_ClipBox PaddingBox = nh_renderer_convertToClipBox(Viewport_p, nh_css_getPaddingBox(&MarginBox, &Fragment_p->Box.Values)); 
     nh_renderer_ClipBox BorderBox  = nh_renderer_convertToClipBox(Viewport_p, nh_css_getBorderBox(&MarginBox, &Fragment_p->Box.Values));
 

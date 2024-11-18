@@ -27,6 +27,7 @@ nh_css_Fragment nh_css_initFragment(
     nh_css_BoxTreeNode *Node_p, nh_css_Fragment *Parent_p, NH_CSS_FRAGMENT type, nh_api_CanvasType *Type_p)
 {
     nh_css_Fragment Fragment;
+    memset(&Fragment, 0 , sizeof(nh_css_Fragment));
 
     Fragment.type     = type;
     Fragment.Node_p   = Node_p;
@@ -34,15 +35,9 @@ nh_css_Fragment nh_css_initFragment(
     Fragment.Children = nh_core_initList(8);
     Fragment.data_p   = NULL;
 
-    Fragment.Block.Position.x  = 0;
-    Fragment.Block.Position.y  = 0;
-    Fragment.Block.Size.width  = 0;
-    Fragment.Block.Size.height = 0;
-    Fragment.Block.depth       = 0;
-
     if (!Node_p->Parent_p && !Fragment.Parent_p && Type_p) {
-        Fragment.Block.Size.width  = Type_p->Size.width;
-        Fragment.Block.Size.height = Type_p->Size.height;
+        Fragment.ContentBox.Size.width  = Type_p->Size.width;
+        Fragment.ContentBox.Size.height = Type_p->Size.height;
     }
 
     return Fragment;

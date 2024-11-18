@@ -46,7 +46,7 @@
         NH_CSS_FRAGMENT type;
         nh_css_BoxFragment Box;
         nh_css_TextFragment Text;
-        nh_css_PixelBox Block;
+        nh_css_PixelBox ContentBox;
         struct nh_css_Fragment *Parent_p;
         nh_css_BoxTreeNode *Node_p;
         nh_core_List Children;
