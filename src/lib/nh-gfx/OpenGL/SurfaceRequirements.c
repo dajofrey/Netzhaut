@@ -44,8 +44,8 @@ static int VISUAL_DATA_P[] = {
     None 
 }; 
 
-NH_API_RESULT nh_opengl_createSurfaceRequirements(
-    nh_opengl_SurfaceRequirements *Requirements_p)
+NH_API_RESULT nh_gfx_createOpenGLSurfaceRequirements(
+    nh_gfx_OpenGLSurfaceRequirements *Requirements_p)
 {
     Requirements_p->Ids = nh_core_initArray(sizeof(VisualID), 8);
 
@@ -80,8 +80,8 @@ NH_API_RESULT nh_opengl_createSurfaceRequirements(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_opengl_freeSurfaceRequirements(
-    nh_opengl_SurfaceRequirements *Requirements_p)
+NH_API_RESULT nh_gfx_freeOpenGLSurfaceRequirements(
+    nh_gfx_OpenGLSurfaceRequirements *Requirements_p)
 {
     nh_core_freeArray(&Requirements_p->Ids);
 

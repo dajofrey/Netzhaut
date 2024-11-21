@@ -19,11 +19,11 @@
 
 // FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_vk_prepareRendering(
+NH_API_RESULT nh_gfx_prepareVulkanRendering(
     nh_gfx_VulkanSurface *Surface_p
 );
 
-NH_API_RESULT nh_vk_render(
+NH_API_RESULT nh_gfx_renderVulkan(
     nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p
 );
 

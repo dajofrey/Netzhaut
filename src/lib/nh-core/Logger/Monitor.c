@@ -347,15 +347,15 @@ static void nh_core_moveCursorVertically(
             Current_p->isCurrent = false;
             Current_p->isOpen = false;
             ((nh_core_MonitorNode*)Nodes.pp[index - 1])->isCurrent = true;
-            if (Current_p->Parent_p->nodesYCursor > 0)      {Current_p->Parent_p->nodesYCursor--;}
-            else if (Current_p->Parent_p->nodesYOffset > 0) {Current_p->Parent_p->nodesYOffset--;}
+            if (Current_p->Parent_p->selectYCursor > 0)      {Current_p->Parent_p->selectYCursor--;}
+            else if (Current_p->Parent_p->selectYOffset > 0) {Current_p->Parent_p->selectYOffset--;}
             break;
         case 's' :
             if (Nodes.size == index+1) {break;}
-            if (Current_p->Parent_p->nodesYCursor < Nodes.size && Current_p->Parent_p->nodesYCursor < Monitor_p->height/2-2) {
-                Current_p->Parent_p->nodesYCursor++;
+            if (Current_p->Parent_p->selectYCursor < Nodes.size && Current_p->Parent_p->selectYCursor < Monitor_p->height/2-2) {
+                Current_p->Parent_p->selectYCursor++;
             } else {
-                Current_p->Parent_p->nodesYOffset++;
+                Current_p->Parent_p->selectYOffset++;
             } 
             Current_p->isCurrent = false;
             Current_p->isOpen = false;
@@ -453,6 +453,11 @@ static NH_API_RESULT nh_core_handleMonitorInput(
         case 's' :
             if (selected) {
                 if (Node_p != NULL && Node_p->LoggerNode_p->Messages.size > Node_p->focusedRow + 1) {
+                    if (Monitor_p->viewCursor < Monitor_p->viewHeight-1) {
+                        Monitor_p->viewCursor++;
+                    } else {
+                        Monitor_p->viewOffset++;
+                    }
                     Node_p->focusedRow++;
                     Node_p->peak = 0;
                 }
@@ -463,9 +468,14 @@ static NH_API_RESULT nh_core_handleMonitorInput(
 
         case 'w' :
             if (selected) {
-                if (Node_p != NULL) {
+                if (Node_p->focusedRow > 0) {
                     Node_p->focusedRow--;
                     Node_p->peak = 0;
+                }
+                if (Monitor_p->viewCursor > 0) {
+                    Monitor_p->viewCursor--;
+                } else if (Monitor_p->viewOffset > 0) {
+                    Monitor_p->viewOffset--;
                 }
             } else {
                 nh_core_moveCursorVertically(Program_p, Current_p, c);
@@ -500,7 +510,7 @@ static NH_API_RESULT nh_core_handleMonitorInput(
                 Current_p->Parent_p->isOpen = false;
                 Current_p->Parent_p->isCurrent = true;
                 Current_p->Parent_p->hasFocus = true;
-                Current_p->Parent_p->nodesYOffset = 0;
+                Current_p->Parent_p->selectYOffset = 0;
             }
             break;
 
@@ -511,6 +521,8 @@ static NH_API_RESULT nh_core_handleMonitorInput(
                 Current_p->isSelected = true;
                 Current_p->hasFocus = true;
                 Current_p->isCurrent = true;
+                Monitor_p->viewOffset = 0;
+                Monitor_p->viewCursor = 0;
             } else {
                 ((nh_core_MonitorNode*)Current_p->Children.pp[0])->isCurrent = true;
             }
@@ -562,28 +574,20 @@ static NH_API_RESULT nh_core_drawSelected(
     nh_core_List SelectedNodes = nh_core_getSelectedMonitorNodes(Monitor_p);
     if (SelectedNodes.size <= 0) {return NH_API_SUCCESS;}
 
+    Monitor_p->viewHeight = rows;
     nh_core_MonitorNode *SelectedNode_p = SelectedNodes.pp[0]; 
  
-    if (SelectedNode_p->focusedRow > rows - 1) {
-        SelectedNode_p->offset++;
-        SelectedNode_p->focusedRow = rows - 1;
-    }
-    else if (SelectedNode_p->focusedRow < 0) {
-        if (SelectedNode_p->offset > 0) {SelectedNode_p->offset--;}
-        SelectedNode_p->focusedRow = 0;
-    }
- 
     nh_core_List *Messages_p = &SelectedNode_p->LoggerNode_p->Messages;
-    char *message_p = nh_core_getFromList(Messages_p, row + SelectedNode_p->offset);
+    char *message_p = nh_core_getFromList(Messages_p, row + Monitor_p->viewOffset);
     if (message_p != NULL) 
     {
-        if (SelectedNode_p->hasFocus && SelectedNode_p->focusedRow == row && strlen(message_p) > cols) {
+        if (SelectedNode_p->hasFocus && Monitor_p->viewCursor == row && strlen(message_p) > cols) {
             for (int i = 0; i < SelectedNode_p->peak && strlen(message_p) > cols; ++i) {
                 message_p = message_p + (cols - 1);
             }
         }
  
-        if (SelectedNode_p->hasFocus && SelectedNode_p->focusedRow == row) {
+        if (SelectedNode_p->hasFocus && Monitor_p->viewCursor == row) {
             nh_core_setNextGlyph(Glyphs_pp, ' ');
             nh_core_setNextGlyph(Glyphs_pp, '>');
             nh_core_setNextGlyph(Glyphs_pp, ' ');
@@ -686,7 +690,7 @@ static NH_API_RESULT nh_core_drawMonitorRow(
             nh_core_setNextGlyph(&Glyphs_p, title_p[i]);
         }
     } else if (row == 1) {
-        Monitor_p->nodesXOffset = 0;
+        Monitor_p->selectXOffset = 0;
         nh_core_List Nodes2 = nh_core_initList(16);
         nh_core_getMonitorNodes2(
             Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes2);
@@ -694,10 +698,10 @@ static NH_API_RESULT nh_core_drawMonitorRow(
         for (int i = 0; i < Nodes2.size; ++i) {
             nh_core_MonitorNode *Node2_p = Nodes2.pp[i];
             if (Nodes2.size == i+1 && !Node2_p->isSelected) {
-                Node2_p = Node2_p->Parent_p->Children.pp[Node2_p->Parent_p->nodesYOffset];
+                Node2_p = Node2_p->Parent_p->Children.pp[Node2_p->Parent_p->selectYOffset];
             }
             if (LastNode_p) {
-                Monitor_p->nodesXOffset +=strlen(LastNode_p->LoggerNode_p->name_p);
+                Monitor_p->selectXOffset +=strlen(LastNode_p->LoggerNode_p->name_p);
             }
             nh_core_setNextGlyph(&Glyphs_p, ' ');
             if (Nodes2.size == i+1) {
@@ -717,13 +721,13 @@ static NH_API_RESULT nh_core_drawMonitorRow(
             }
             LastNode_p = Node2_p;
             if (Nodes2.size > i+1) {
-                Monitor_p->nodesXOffset += 3;
+                Monitor_p->selectXOffset += 3;
             }
         }
     } else if (Nodes.size > 1 && (row-1) < Nodes.size && row < height/2) {
-        nh_core_MonitorNode *Node_p = nh_core_getFromList(&Nodes, (row-1)+((nh_core_MonitorNode*)Nodes.pp[0])->Parent_p->nodesYOffset);
+        nh_core_MonitorNode *Node_p = nh_core_getFromList(&Nodes, (row-1)+((nh_core_MonitorNode*)Nodes.pp[0])->Parent_p->selectYOffset);
         if (Node_p) {
-            for (int i = 0; i < Monitor_p->nodesXOffset; ++i) {
+            for (int i = 0; i < Monitor_p->selectXOffset; ++i) {
                 nh_core_setNextGlyph(&Glyphs_p, ' ');
             }
             if (Node_p->isCurrent) {

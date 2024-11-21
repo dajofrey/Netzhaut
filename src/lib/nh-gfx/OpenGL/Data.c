@@ -19,9 +19,9 @@
 
 // CREATE ==========================================================================================
 
-nh_opengl_Data nh_opengl_initData()
+nh_gfx_OpenGLData nh_gfx_initOpenGLData()
 {
-    nh_opengl_Data Data;
+    nh_gfx_OpenGLData Data;
     Data.type = 0;
     Data.size = 0;
     Data.p = NULL;
@@ -30,13 +30,13 @@ nh_opengl_Data nh_opengl_initData()
     return Data;
 }
 
-static nh_opengl_Data *nh_opengl_createData(
-    nh_opengl_Data *Data_p, NH_GFX_OPENGL_DATA_E type, int size, char *data_p, char **data_pp)
+static nh_gfx_OpenGLData *nh_gfx_createOpenGLData(
+    nh_gfx_OpenGLData *Data_p, NH_GFX_OPENGL_DATA_E type, int size, char *data_p, char **data_pp)
 {
     if (!Data_p) {
-        Data_p = nh_core_allocate(sizeof(nh_opengl_Data));
+        Data_p = nh_core_allocate(sizeof(nh_gfx_OpenGLData));
         NH_CORE_CHECK_MEM_2(NULL, Data_p)
-        *Data_p = nh_opengl_initData();
+        *Data_p = nh_gfx_initOpenGLData();
         Data_p->autoFree = true;
     }
 
@@ -54,15 +54,15 @@ static nh_opengl_Data *nh_opengl_createData(
     return Data_p;
 }
 
-nh_opengl_Data *nh_opengl_disableDataAutoFree(
-    nh_opengl_Data *Data_p)
+nh_gfx_OpenGLData *nh_gfx_disableOpenGLDataAutoFree(
+    nh_gfx_OpenGLData *Data_p)
 {
     Data_p->autoFree = false;
     return Data_p;
 }
 
-void nh_opengl_freeData(
-    nh_opengl_Data *Data_p)
+void nh_gfx_freeOpenGLData(
+    nh_gfx_OpenGLData *Data_p)
 {
     if (!Data_p) {return ;}
     if (Data_p->p != NULL && Data_p->size > 0) {nh_core_free(Data_p->p);}
@@ -72,69 +72,69 @@ void nh_opengl_freeData(
 
 // DATA ============================================================================================
 
-nh_opengl_Data *nh_opengl_glboolean(
-    nh_opengl_Data *Data_p, GLboolean data)
+nh_gfx_OpenGLData *nh_gfx_glboolean(
+    nh_gfx_OpenGLData *Data_p, GLboolean data)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBOOLEAN, sizeof(GLboolean), (char*)&data, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLBOOLEAN, sizeof(GLboolean), (char*)&data, NULL);
 }
 
-nh_opengl_Data *nh_opengl_glbyte(
-    nh_opengl_Data *Data_p, GLbyte *data_p, int length)
+nh_gfx_OpenGLData *nh_gfx_glbyte(
+    nh_gfx_OpenGLData *Data_p, GLbyte *data_p, int length)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, sizeof(GLbyte)*length, (char*)data_p, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, sizeof(GLbyte)*length, (char*)data_p, NULL);
 }
 
-nh_opengl_Data *nh_opengl_glubyte(
-    nh_opengl_Data *Data_p, GLubyte *data_p, int length)
+nh_gfx_OpenGLData *nh_gfx_glubyte(
+    nh_gfx_OpenGLData *Data_p, GLubyte *data_p, int length)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLUBYTE, sizeof(GLubyte)*length, (unsigned char*)data_p, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLUBYTE, sizeof(GLubyte)*length, (unsigned char*)data_p, NULL);
 }
 
-nh_opengl_Data *nh_opengl_glint(
-    nh_opengl_Data *Data_p, GLint data)
+nh_gfx_OpenGLData *nh_gfx_glint(
+    nh_gfx_OpenGLData *Data_p, GLint data)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLINT, sizeof(GLint), (char*)&data, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLINT, sizeof(GLint), (char*)&data, NULL);
 }
 
-nh_opengl_Data *nh_opengl_gluint(
-    nh_opengl_Data *Data_p, GLuint data)
+nh_gfx_OpenGLData *nh_gfx_gluint(
+    nh_gfx_OpenGLData *Data_p, GLuint data)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLUINT, sizeof(GLuint), (char*)&data, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLUINT, sizeof(GLuint), (char*)&data, NULL);
 }
 
-nh_opengl_Data *nh_opengl_glfloat(
-    nh_opengl_Data *Data_p, GLfloat data)
+nh_gfx_OpenGLData *nh_gfx_glfloat(
+    nh_gfx_OpenGLData *Data_p, GLfloat data)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLFLOAT, sizeof(GLfloat), (char*)&data, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLFLOAT, sizeof(GLfloat), (char*)&data, NULL);
 }
 
-nh_opengl_Data *nh_opengl_glsizei(
-    nh_opengl_Data *Data_p, GLsizei data)
+nh_gfx_OpenGLData *nh_gfx_glsizei(
+    nh_gfx_OpenGLData *Data_p, GLsizei data)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEI, sizeof(GLsizei), (char*)&data, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEI, sizeof(GLsizei), (char*)&data, NULL);
 }
 
-nh_opengl_Data *nh_opengl_glsizeiptr(
-    nh_opengl_Data *Data_p, GLsizeiptr data)
+nh_gfx_OpenGLData *nh_gfx_glsizeiptr(
+    nh_gfx_OpenGLData *Data_p, GLsizeiptr data)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEIPTR, sizeof(GLsizeiptr), (char*)&data, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLSIZEIPTR, sizeof(GLsizeiptr), (char*)&data, NULL);
 }
 
-nh_opengl_Data *nh_opengl_glchar(
-    nh_opengl_Data *Data_p, GLchar *data_p, int length, GLchar **data_pp)
+nh_gfx_OpenGLData *nh_gfx_glchar(
+    nh_gfx_OpenGLData *Data_p, GLchar *data_p, int length, GLchar **data_pp)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, length, (char*)data_p, (char**)data_pp);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLBYTE, length, (char*)data_p, (char**)data_pp);
 }
 
-nh_opengl_Data *nh_opengl_glenum(
-    nh_opengl_Data *Data_p, GLenum data)
+nh_gfx_OpenGLData *nh_gfx_glenum(
+    nh_gfx_OpenGLData *Data_p, GLenum data)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_GLENUM, sizeof(GLenum), (char*)&data, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_GLENUM, sizeof(GLenum), (char*)&data, NULL);
 }
 
-nh_opengl_Data *nh_opengl_pointer(
-    nh_opengl_Data *Data_p, void *p)
+nh_gfx_OpenGLData *nh_gfx_glpointer(
+    nh_gfx_OpenGLData *Data_p, void *p)
 {
-    return nh_opengl_createData(Data_p, NH_GFX_OPENGL_DATA_POINTER, 0, p, NULL);
+    return nh_gfx_createOpenGLData(Data_p, NH_GFX_OPENGL_DATA_POINTER, 0, p, NULL);
 }
 

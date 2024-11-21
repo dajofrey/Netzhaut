@@ -17,7 +17,7 @@
 // STRUCTS =========================================================================================
 
 typedef struct nh_gfx_SurfaceRequirements {
-    nh_opengl_SurfaceRequirements OpenGL;
+    nh_gfx_OpenGLSurfaceRequirements OpenGL;
 } nh_gfx_SurfaceRequirements;
 
 // FUNCTIONS =======================================================================================

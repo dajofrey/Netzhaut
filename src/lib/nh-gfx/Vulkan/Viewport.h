@@ -15,29 +15,29 @@
 
 // STRUCTS =========================================================================================
 
-typedef struct nh_vk_Viewport {
+typedef struct nh_gfx_VulkanViewport {
     VkCommandBuffer CommandBuffers_p[6];
     VkCommandBuffer *CommandBuffers_pp[3];
     int images;
-} nh_vk_Viewport;
+} nh_gfx_VulkanViewport;
 
 // FUNCTIONS =======================================================================================
 
 typedef struct nh_gfx_Viewport nh_gfx_Viewport;
 
-NH_API_RESULT nh_vk_createViewport(
+NH_API_RESULT nh_gfx_createVulkanViewport(
     nh_gfx_Viewport *Viewport_p
 );
 
-void nh_vk_destroyViewport(
+void nh_gfx_destroyVulkanViewport(
     nh_gfx_Viewport *Viewport_p
 );
 
-NH_API_RESULT nh_vk_beginRecording(
+NH_API_RESULT nh_gfx_beginVulkanRecording(
     nh_gfx_Viewport *Viewport_p
 );
 
-NH_API_RESULT nh_vk_endRecording(
+NH_API_RESULT nh_gfx_endVulkanRecording(
     nh_gfx_Viewport *Viewport_p
 );
 

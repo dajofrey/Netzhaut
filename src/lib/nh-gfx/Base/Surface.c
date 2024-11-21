@@ -93,7 +93,7 @@ static void *nh_gfx_initSurface(
     Surface_p->Settings.BackgroundColor.a = 1.0f;
 
     Surface_p->Vulkan = nh_gfx_initVulkanSurface();
-    Surface_p->OpenGL = nh_opengl_initSurface();
+    Surface_p->OpenGL = nh_gfx_initOpenGLSurface();
 
     switch (Surface_p->api)
     {
@@ -103,7 +103,7 @@ static void *nh_gfx_initSurface(
                 nh_gfx_createVulkanSurface(&Surface_p->Vulkan, Surface_p->Window_p, NH_VULKAN.GPUs.pp[0]))
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            NH_CORE_CHECK_2(NULL, nh_opengl_createSurface(&Surface_p->OpenGL, Surface_p->Window_p)) 
+            NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLSurface(&Surface_p->OpenGL, Surface_p->Window_p)) 
             break;
         default : return NULL;
     }
@@ -129,7 +129,7 @@ void nh_gfx_freeSurface(
             nh_gfx_destroyVulkanSurface(&Surface_p->Vulkan, true);
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            nh_opengl_destroySurface(&Surface_p->OpenGL, Surface_p->Window_p);
+            nh_gfx_destroyOpenGLSurface(&Surface_p->OpenGL, Surface_p->Window_p);
             break;
     }
 
@@ -192,7 +192,7 @@ static NH_API_RESULT nh_gfx_prepareRendering(
 
     switch (Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN : result = nh_vk_prepareRendering(&Surface_p->Vulkan); break;
+        case NH_API_GRAPHICS_BACKEND_VULKAN : result = nh_gfx_prepareVulkanRendering(&Surface_p->Vulkan); break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : result = NH_API_SUCCESS; break;
     }
 
@@ -213,12 +213,12 @@ static NH_API_RESULT nh_gfx_render(
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
 
-            NH_CORE_CHECK(nh_vk_render(Surface_p, &SortedViewports))
+            NH_CORE_CHECK(nh_gfx_renderVulkan(Surface_p, &SortedViewports))
             break;
 
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
 
-            NH_CORE_CHECK(nh_opengl_render(Surface_p, &SortedViewports))
+            NH_CORE_CHECK(nh_gfx_renderOpenGL(Surface_p, &SortedViewports))
             break;
 
         default : return NH_API_ERROR_BAD_STATE;

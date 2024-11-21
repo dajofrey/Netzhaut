@@ -145,4 +145,3 @@ nh_wsi_WindowConfig nh_wsi_getWindowConfig(
 
     return Config;
 }
-

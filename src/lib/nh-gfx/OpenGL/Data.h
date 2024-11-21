@@ -49,13 +49,13 @@
  *  @{
  */
 
-    typedef struct nh_opengl_Data {
+    typedef struct nh_gfx_OpenGLData {
         NH_GFX_OPENGL_DATA_E type;
 	void *p;
         void *pp;
         int size;
         bool autoFree;
-    } nh_opengl_Data;
+    } nh_gfx_OpenGLData;
 
 /** @} */
 
@@ -63,59 +63,59 @@
  *  @{
  */
 
-    nh_opengl_Data *nh_opengl_glboolean(
-        nh_opengl_Data *Data_p, GLboolean data
+    nh_gfx_OpenGLData *nh_gfx_glboolean(
+        nh_gfx_OpenGLData *Data_p, GLboolean data
     );
     
-    nh_opengl_Data *nh_opengl_glbyte(
-        nh_opengl_Data *Data_p, GLbyte *data_p, int length
+    nh_gfx_OpenGLData *nh_gfx_glbyte(
+        nh_gfx_OpenGLData *Data_p, GLbyte *data_p, int length
     );
 
-    nh_opengl_Data *nh_opengl_glubyte(
-        nh_opengl_Data *Data_p, GLubyte *data_p, int length
+    nh_gfx_OpenGLData *nh_gfx_glubyte(
+        nh_gfx_OpenGLData *Data_p, GLubyte *data_p, int length
     );
     
-    nh_opengl_Data *nh_opengl_glint(
-        nh_opengl_Data *Data_p, GLint data
+    nh_gfx_OpenGLData *nh_gfx_glint(
+        nh_gfx_OpenGLData *Data_p, GLint data
     );
     
-    nh_opengl_Data *nh_opengl_gluint(
-        nh_opengl_Data *Data_p, GLuint data
+    nh_gfx_OpenGLData *nh_gfx_gluint(
+        nh_gfx_OpenGLData *Data_p, GLuint data
     );
     
-    nh_opengl_Data *nh_opengl_glfloat(
-        nh_opengl_Data *Data_p, GLfloat data
+    nh_gfx_OpenGLData *nh_gfx_glfloat(
+        nh_gfx_OpenGLData *Data_p, GLfloat data
     );
 
-    nh_opengl_Data *nh_opengl_glsizei(
-        nh_opengl_Data *Data_p, GLsizei data
+    nh_gfx_OpenGLData *nh_gfx_glsizei(
+        nh_gfx_OpenGLData *Data_p, GLsizei data
     );
 
-    nh_opengl_Data *nh_opengl_glsizeiptr(
-        nh_opengl_Data *Data_p, GLsizeiptr data
+    nh_gfx_OpenGLData *nh_gfx_glsizeiptr(
+        nh_gfx_OpenGLData *Data_p, GLsizeiptr data
     );
 
-    nh_opengl_Data *nh_opengl_glchar(
-        nh_opengl_Data *Data_p, GLchar *data_p, int length, GLchar **data_pp
+    nh_gfx_OpenGLData *nh_gfx_glchar(
+        nh_gfx_OpenGLData *Data_p, GLchar *data_p, int length, GLchar **data_pp
     );
 
-    nh_opengl_Data *nh_opengl_glenum(
-        nh_opengl_Data *Data_p, GLenum data
+    nh_gfx_OpenGLData *nh_gfx_glenum(
+        nh_gfx_OpenGLData *Data_p, GLenum data
     );
 
-    nh_opengl_Data *nh_opengl_pointer(
-        nh_opengl_Data *Data_p, void *p
+    nh_gfx_OpenGLData *nh_gfx_glpointer(
+        nh_gfx_OpenGLData *Data_p, void *p
     );
 
-    nh_opengl_Data nh_opengl_initData(
+    nh_gfx_OpenGLData nh_gfx_initOpenGLData(
     );
 
-    nh_opengl_Data *nh_opengl_disableDataAutoFree(
-        nh_opengl_Data *Data_p
+    nh_gfx_OpenGLData *nh_gfx_disableOpenGLDataAutoFree(
+        nh_gfx_OpenGLData *Data_p
     );
 
-    void nh_opengl_freeData(
-        nh_opengl_Data *Data_p
+    void nh_gfx_freeOpenGLData(
+        nh_gfx_OpenGLData *Data_p
     );
 
 /** @} */

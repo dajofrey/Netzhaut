@@ -1,7 +1,5 @@
-#ifndef NH_GFX_COMMON_CONFIG_H
-#define NH_GFX_COMMON_CONFIG_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_GFX_CONFIG_H
+#define NH_GFX_CONFIG_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -10,34 +8,14 @@
  */
 
 #include "Includes.h"
+#include <stddef.h>
 
-#endif // DOXYGEN_SHOULD_SKIP_THIS
+typedef struct nh_gfx_Config {
+    nh_api_PixelSize ViewportSize;
+    nh_api_PixelPosition ViewportPosition;
+} nh_gfx_Config;
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+nh_gfx_Config nh_gfx_getConfig(
+);
 
-    typedef struct nh_gfx_Config {
-        double gamma;
-    } nh_gfx_Config;
-
-/** @} */
-
-/** @addtogroup lib_nh-core_vars
- *  @{
- */
-
-    extern nh_gfx_Config NH_GFX_CONFIG;
-
-/** @} */
-
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
-
-    void _nh_gfx_initConfig(
-    );
-
-/** @} */
-
-#endif // NH_GFX_COMMON_CONFIG_H
+#endif

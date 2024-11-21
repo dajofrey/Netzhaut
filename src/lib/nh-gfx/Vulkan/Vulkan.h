@@ -16,21 +16,21 @@
 
 // STRUCTS =========================================================================================
 
-typedef struct nh_vk_Vulkan {
+typedef struct nh_gfx_Vulkan {
     nh_gfx_VulkanHost Host;
     nh_core_List GPUs;
-} nh_vk_Vulkan;
+} nh_gfx_Vulkan;
 
 // DATA ============================================================================================
 
-extern nh_vk_Vulkan NH_VULKAN;
+extern nh_gfx_Vulkan NH_VULKAN;
 
 // FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_vk_initVulkan(
+NH_API_RESULT nh_gfx_initVulkan(
 );
 
-NH_API_RESULT nh_vk_terminateVulkan(
+NH_API_RESULT nh_gfx_terminateVulkan(
 );
 
 #endif // NH_GFX_VULKAN_VULKAN_H 

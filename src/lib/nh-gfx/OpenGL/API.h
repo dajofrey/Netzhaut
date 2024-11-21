@@ -396,11 +396,11 @@
  *  @{
  */
 
-    NH_GFX_OPENGL_COMMAND_E nh_opengl_getCommandType(
+    NH_GFX_OPENGL_COMMAND_E nh_gfx_getOpenGLCommandType(
         char *name_p
     );
 
-    int nh_opengl_getCommandParameterCount(
+    int nh_gfx_getOpenGLCommandParameterCount(
         NH_GFX_OPENGL_COMMAND_E type
     );
 

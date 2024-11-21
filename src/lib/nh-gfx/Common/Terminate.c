@@ -28,8 +28,8 @@ NH_API_RESULT nh_gfx_terminate()
     nh_gfx_terminateFontManager();
     nh_gfx_freeSurfaceRequirements();
 
-//    nh_vk_terminateVulkan();
-    nh_opengl_terminateOpenGL();
+//    nh_gfx_terminateVulkan();
+    nh_gfx_terminateOpenGL();
 
     return NH_API_SUCCESS;
 }

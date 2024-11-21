@@ -67,4 +67,7 @@ NH_API_RESULT nh_core_handleLogMessage(
     nh_core_Logger *Logger_p, char *node_p, char *options_p, char *message_p
 );
 
+NH_API_RESULT nh_core_startLoggerWorkload(
+);
+
 #endif // NH_CORE_LOGGER_LOGGER_H

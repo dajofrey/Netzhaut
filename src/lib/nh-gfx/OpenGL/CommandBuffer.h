@@ -1,69 +1,47 @@
-#ifndef NH_OPENGL_COMMAND_BUFFER_H
-#define NH_OPENGL_COMMAND_BUFFER_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-/**
- * Netzhaut - Web Browser Engine
- * Copyright (C) 2022  Dajo Frey
- * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
- */
+#ifndef NH_GFX_OPENGL_COMMAND_BUFFER_H
+#define NH_GFX_OPENGL_COMMAND_BUFFER_H
 
 #include "Data.h"
 #include "API.h"
 #include "../Common/Includes.h"
 #include "../../nh-core/Util/List.h"
 
-#endif
+typedef struct nh_gfx_OpenGLCommand {
+    NH_GFX_OPENGL_COMMAND_E type;
+    nh_gfx_OpenGLData Result;
+    nh_core_List Arguments;
+    bool autoFree;
+} nh_gfx_OpenGLCommand;
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+typedef struct nh_gfx_OpenGLCommandBuffer {
+    nh_core_List Commands;
+} nh_gfx_OpenGLCommandBuffer;
 
-    typedef struct nh_opengl_Command {
-        NH_GFX_OPENGL_COMMAND_E type;
-        nh_opengl_Data Result;
-	nh_core_List Arguments;
-        bool autoFree;
-    } nh_opengl_Command;
-    
-    typedef struct nh_opengl_CommandBuffer {
-        nh_core_List Commands;
-    } nh_opengl_CommandBuffer;
+nh_gfx_OpenGLCommandBuffer nh_gfx_initOpenGLCommandBuffer(
+);
 
-/** @} */
+nh_gfx_OpenGLCommand *nh_gfx_addOpenGLCommand(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p, char *name_p, ... 
+);
 
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
+void nh_gfx_freeOpenGLCommand(
+    nh_gfx_OpenGLCommand *Command_p
+);
 
-    nh_opengl_CommandBuffer nh_opengl_initCommandBuffer(
-    );
+nh_gfx_OpenGLCommand *nh_gfx_disableOpenGLCommandAutoFree(
+    nh_gfx_OpenGLCommand *Command_p
+);
 
-    nh_opengl_Command *nh_opengl_addCommand(
-        nh_opengl_CommandBuffer *CommandBuffer_p, char *name_p, ... 
-    );
+NH_API_RESULT nh_gfx_executeOpenGLCommandBuffer(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p
+);
 
-    void nh_opengl_freeCommand(
-        nh_opengl_Command *Command_p
-    );
+NH_API_RESULT nh_gfx_freeOpenGLCommandBuffer(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p
+);
 
-    nh_opengl_Command *nh_opengl_disableCommandAutoFree(
-        nh_opengl_Command *Command_p
-    );
+NH_API_RESULT nh_gfx_appendOpenGLCommandBuffer(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p, nh_gfx_OpenGLCommandBuffer *ToBeAppended_p
+);
 
-    NH_API_RESULT nh_opengl_executeCommandBuffer(
-        nh_opengl_CommandBuffer *CommandBuffer_p
-    );
-
-    NH_API_RESULT nh_opengl_freeCommandBuffer(
-        nh_opengl_CommandBuffer *CommandBuffer_p
-    );
-
-    NH_API_RESULT nh_opengl_appendCommandBuffer(
-        nh_opengl_CommandBuffer *CommandBuffer_p, nh_opengl_CommandBuffer *ToBeAppended_p
-    );
-
-/** @} */
-
-#endif
+#endif // NH_GFX_OPENGL_COMMAND_BUFFER_H

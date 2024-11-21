@@ -1,7 +1,5 @@
-#ifndef NH_OPENGL_SURFACE_H
-#define NH_OPENGL_SURFACE_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_GFX_OPENGL_SURFACE_H
+#define NH_GFX_OPENGL_SURFACE_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -15,36 +13,22 @@
 #include "../../nh-core/Util/Array.h"
 #include "../../nh-wsi/Window/Window.h"
 
-#endif
+typedef struct nh_gfx_OpenGLSurface {
+    GLXContext Context_p;
+    nh_gfx_OpenGLCommandBuffer *CommandBuffers_p;
+    unsigned int bufferCount;         
+    uint32_t currentBuffer;               
+} nh_gfx_OpenGLSurface;
 
-/** @addtogroup lib_nh-gfx_structs
- *  @{
- */
+nh_gfx_OpenGLSurface nh_gfx_initOpenGLSurface(
+);
 
-    typedef struct nh_opengl_Surface {
-        GLXContext Context_p;
-        nh_opengl_CommandBuffer *CommandBuffers_p;
-        unsigned int bufferCount;         
-        uint32_t currentBuffer;               
-    } nh_opengl_Surface;
+NH_API_RESULT nh_gfx_createOpenGLSurface(
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p
+);
 
-/** @} */
-
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
-
-    nh_opengl_Surface nh_opengl_initSurface(
-    );
-
-    NH_API_RESULT nh_opengl_createSurface(
-        nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p
-    );
-
-    NH_API_RESULT nh_opengl_destroySurface(
-        nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p
-    );
-
-/** @} */
+NH_API_RESULT nh_gfx_destroyOpenGLSurface(
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p
+);
 
 #endif

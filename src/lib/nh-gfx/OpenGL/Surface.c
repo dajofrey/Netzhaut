@@ -28,10 +28,10 @@
 
 // INIT ============================================================================================
 
-nh_opengl_Surface nh_opengl_initSurface()
+nh_gfx_OpenGLSurface nh_gfx_initOpenGLSurface()
 {
-    nh_opengl_Surface Surface;
-    Surface.Context_p = NULL;
+    nh_gfx_OpenGLSurface Surface;
+    memset(&Surface, 0, sizeof(nh_gfx_OpenGLSurface));
 
     return Surface;
 }
@@ -57,8 +57,8 @@ static int VISUAL_DATA_P[] = {
 typedef GLXContext (*glXCreateContextAttribsARBProc)
     (Display*, GLXFBConfig, GLXContext, Bool, const int*);
 
-static NH_API_RESULT nh_opengl_createOpenGLContext(
-    nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
+static NH_API_RESULT nh_gfx_createOpenGLContext(
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p)
 {
     int count = 0;
     GLXFBConfig *FrameBufferConfigurations_p = 
@@ -110,21 +110,21 @@ static NH_API_RESULT nh_opengl_createOpenGLContext(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_opengl_createSurface(
-    nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
+NH_API_RESULT nh_gfx_createOpenGLSurface(
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p)
 {
-    NH_CORE_CHECK(nh_opengl_createOpenGLContext(Surface_p, Window_p))
+    NH_CORE_CHECK(nh_gfx_createOpenGLContext(Surface_p, Window_p))
 
     int bufferCount = 3;
 
-    Surface_p->CommandBuffers_p = nh_core_allocate(sizeof(nh_opengl_CommandBuffer)*bufferCount);
+    Surface_p->CommandBuffers_p = nh_core_allocate(sizeof(nh_gfx_OpenGLCommandBuffer)*bufferCount);
     NH_CORE_CHECK_MEM(Surface_p->CommandBuffers_p)
 
     Surface_p->bufferCount = bufferCount;
     Surface_p->currentBuffer = 0;
 
     for (int i = 0; i < Surface_p->bufferCount; ++i) {
-         Surface_p->CommandBuffers_p[i] = nh_opengl_initCommandBuffer();
+         Surface_p->CommandBuffers_p[i] = nh_gfx_initOpenGLCommandBuffer();
     }
 
     return NH_API_SUCCESS;
@@ -132,8 +132,8 @@ NH_API_RESULT nh_opengl_createSurface(
 
 // DESTROY =========================================================================================
 
-NH_API_RESULT nh_opengl_destroySurface(
-    nh_opengl_Surface *Surface_p, nh_wsi_Window *Window_p)
+NH_API_RESULT nh_gfx_destroyOpenGLSurface(
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p)
 {
     glXDestroyContext(Window_p->X11.Common_p->Display_p, Surface_p->Context_p);
     nh_core_free(Surface_p->CommandBuffers_p);

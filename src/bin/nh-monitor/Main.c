@@ -66,12 +66,7 @@ static int openMonitor()
         return 1;
     }
  
-    nh_api_PixelPosition Position = {0};
-    nh_api_PixelSize Size; 
-    Size.width  = 700; 
-    Size.height = 700; 
- 
-    nh_api_Viewport *Viewport_p = nh_api_createViewport(Surface_p, Position, Size); 
+    nh_api_Viewport *Viewport_p = nh_api_createViewport(Surface_p, NULL, NULL); 
     if (!Viewport_p) {
         puts("Opening viewport failed.");
         return 1;

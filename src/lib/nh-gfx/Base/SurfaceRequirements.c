@@ -38,13 +38,13 @@ nh_gfx_SurfaceRequirements *nh_gfx_getSurfaceRequirements()
 
 NH_API_RESULT nh_gfx_createSurfaceRequirements()
 {
-    NH_CORE_CHECK(nh_opengl_createSurfaceRequirements(&Requirements.OpenGL))
+    NH_CORE_CHECK(nh_gfx_createOpenGLSurfaceRequirements(&Requirements.OpenGL))
     return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_gfx_freeSurfaceRequirements()
 {
-    NH_CORE_CHECK(nh_opengl_freeSurfaceRequirements(&Requirements.OpenGL))
+    NH_CORE_CHECK(nh_gfx_freeOpenGLSurfaceRequirements(&Requirements.OpenGL))
     return NH_API_SUCCESS;
 }
 

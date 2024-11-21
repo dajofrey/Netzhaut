@@ -10,7 +10,6 @@
 
 #include "Initialize.h"
 #include "IndexMap.h"
-#include "Config.h"
 #include "Macros.h"
 
 #include "../Vulkan/Vulkan.h"
@@ -27,13 +26,11 @@
 
 NH_API_RESULT nh_gfx_initialize()
 {
-    _nh_gfx_initConfig();
-
     NH_CORE_CHECK(nh_gfx_createIndexMap())
     NH_CORE_CHECK(nh_gfx_initializeFontManager())
     NH_CORE_CHECK(nh_gfx_createSurfaceRequirements())
 
-    nh_vk_initVulkan();
-    nh_opengl_initOpenGL();
+    nh_gfx_initVulkan();
+    nh_gfx_initOpenGL();
 }
 

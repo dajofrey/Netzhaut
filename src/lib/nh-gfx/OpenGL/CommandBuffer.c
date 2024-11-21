@@ -21,25 +21,25 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-// COMMAND BUFFER ==================================================================================
+// FUNCTIONS =======================================================================================
 
-nh_opengl_CommandBuffer nh_opengl_initCommandBuffer()
+nh_gfx_OpenGLCommandBuffer nh_gfx_initOpenGLCommandBuffer()
 {
-    nh_opengl_CommandBuffer CommandBuffer;
+    nh_gfx_OpenGLCommandBuffer CommandBuffer;
     CommandBuffer.Commands = nh_core_initList(64);
 
     return CommandBuffer;
 }
 
-void nh_opengl_freeCommand(
-    nh_opengl_Command *Command_p)
+void nh_gfx_freeOpenGLCommand(
+    nh_gfx_OpenGLCommand *Command_p)
 {
     if (!Command_p) {return ;}
 
     for (int i = 0; i < Command_p->Arguments.size; ++i) {
-        nh_opengl_Data *Data_p = Command_p->Arguments.pp[i];
+        nh_gfx_OpenGLData *Data_p = Command_p->Arguments.pp[i];
         if (Data_p->autoFree) {
-            nh_opengl_freeData(Data_p);
+            nh_gfx_freeOpenGLData(Data_p);
         }
     }
 
@@ -49,29 +49,29 @@ void nh_opengl_freeCommand(
     return;
 }
 
-nh_opengl_Command *nh_opengl_addCommand(
-    nh_opengl_CommandBuffer *CommandBuffer_p, char *name_p, ...)
+nh_gfx_OpenGLCommand *nh_gfx_addOpenGLCommand(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p, char *name_p, ...)
 {
-    nh_opengl_Command *Command_p = nh_core_allocate(sizeof(nh_opengl_Command));
+    nh_gfx_OpenGLCommand *Command_p = nh_core_allocate(sizeof(nh_gfx_OpenGLCommand));
     NH_CORE_CHECK_MEM_2(NULL, Command_p)
 
-    NH_GFX_OPENGL_COMMAND_E type = nh_opengl_getCommandType(name_p);
+    NH_GFX_OPENGL_COMMAND_E type = nh_gfx_getOpenGLCommandType(name_p);
     if (type == NH_GFX_OPENGL_COMMAND_UNDEFINED) {
         nh_core_free(Command_p);
         return NULL;
     }
 
-    int arguments = nh_opengl_getCommandParameterCount(type);
+    int arguments = nh_gfx_getOpenGLCommandParameterCount(type);
 
     Command_p->type = type;
     Command_p->autoFree = true;
     Command_p->Arguments = nh_core_initList(arguments);
-    Command_p->Result = nh_opengl_initData();
+    Command_p->Result = nh_gfx_initOpenGLData();
 
     va_list args_p;
     va_start(args_p, name_p);
     for(int i = 0; i < arguments; i++) {
-        nh_opengl_Data *Data_p = va_arg(args_p, nh_opengl_Data*);
+        nh_gfx_OpenGLData *Data_p = va_arg(args_p, nh_gfx_OpenGLData*);
         nh_core_appendToList(&Command_p->Arguments, Data_p);
     }
     va_end(args_p);
@@ -81,8 +81,8 @@ nh_opengl_Command *nh_opengl_addCommand(
     return Command_p;
 }
 
-nh_opengl_Command *nh_opengl_disableCommandAutoFree(
-    nh_opengl_Command *Command_p)
+nh_gfx_OpenGLCommand *nh_gfx_disableOpenGLCommandAutoFree(
+    nh_gfx_OpenGLCommand *Command_p)
 {
     Command_p->autoFree = false;
     Command_p->Result.autoFree = false;
@@ -90,33 +90,33 @@ nh_opengl_Command *nh_opengl_disableCommandAutoFree(
     return Command_p;
 }
 
-NH_API_RESULT nh_opengl_executeCommandBuffer(
-    nh_opengl_CommandBuffer *CommandBuffer_p)
+NH_API_RESULT nh_gfx_executeOpenGLCommandBuffer(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p)
 {
     for (int i = 0; i < CommandBuffer_p->Commands.size; ++i) {
-        nh_opengl_executeCommand(CommandBuffer_p->Commands.pp[i]);
+        nh_gfx_executeOpenGLCommand(CommandBuffer_p->Commands.pp[i]);
     }
 
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_opengl_freeCommandBuffer(
-    nh_opengl_CommandBuffer *CommandBuffer_p)
+NH_API_RESULT nh_gfx_freeOpenGLCommandBuffer(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p)
 {
     for (int i = 0; i < CommandBuffer_p->Commands.size; ++i) {
-        if (((nh_opengl_Command*)CommandBuffer_p->Commands.pp[i])->autoFree) {
-            nh_opengl_freeCommand(CommandBuffer_p->Commands.pp[i]);
+        if (((nh_gfx_OpenGLCommand*)CommandBuffer_p->Commands.pp[i])->autoFree) {
+            nh_gfx_freeOpenGLCommand(CommandBuffer_p->Commands.pp[i]);
         }
     }
 
     nh_core_freeList(&CommandBuffer_p->Commands, false);
-    *CommandBuffer_p = nh_opengl_initCommandBuffer();
+    *CommandBuffer_p = nh_gfx_initOpenGLCommandBuffer();
 
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_opengl_appendCommandBuffer(
-    nh_opengl_CommandBuffer *CommandBuffer_p, nh_opengl_CommandBuffer *ToBeAppended_p)
+NH_API_RESULT nh_gfx_appendOpenGLCommandBuffer(
+    nh_gfx_OpenGLCommandBuffer *CommandBuffer_p, nh_gfx_OpenGLCommandBuffer *ToBeAppended_p)
 {
     for (int i = 0; i < ToBeAppended_p->Commands.size; ++i) {
         nh_core_appendToList(&CommandBuffer_p->Commands, ToBeAppended_p->Commands.pp[i]);
@@ -124,4 +124,3 @@ NH_API_RESULT nh_opengl_appendCommandBuffer(
 
     return NH_API_SUCCESS;
 }
-

@@ -36,8 +36,8 @@ typedef struct nh_gfx_ViewportOwner {
 typedef struct nh_gfx_Viewport {
     nh_gfx_ViewportOwner Owner;
     nh_gfx_Surface *Surface_p;
-    nh_vk_Viewport Vulkan;
-    nh_opengl_Viewport OpenGL;
+    nh_gfx_VulkanViewport Vulkan;
+    nh_gfx_OpenGLViewport OpenGL;
     struct {
         nh_api_PixelSize Size;
         nh_api_PixelPosition Position;    
@@ -45,7 +45,7 @@ typedef struct nh_gfx_Viewport {
         nh_css_Color BorderColor;
         bool border;
         int borderWidth;
-        unsigned int priority;     /**<Defines rendering order. 0 is highest priority aka frontmost viewport. Lesser priorities ascend to +infinity.*/
+        unsigned int priority; /**<Defines rendering order. 0 is highest priority aka frontmost viewport. Lesser priorities ascend to +infinity.*/
     } Settings;
     struct {
         int newestBuffers_p[3];    
@@ -55,16 +55,6 @@ typedef struct nh_gfx_Viewport {
         bool atomic;
     } Sync;
 } nh_gfx_Viewport;
-
-// TYPEDEFS ========================================================================================
-
-typedef nh_gfx_Viewport *(*nh_gfx_createViewport_f)(
-    nh_gfx_Surface *Surface_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
-);
-
-typedef NH_API_RESULT (*nh_gfx_configureViewport_f)(
-    nh_gfx_Viewport *Viewport_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
-);
 
 // FUNCTIONS =======================================================================================
 
@@ -84,4 +74,4 @@ void nh_gfx_destroyViewport(
     nh_gfx_Surface *Surface_p, nh_gfx_Viewport *Viewport_p
 );
 
-#endif
+#endif // NH_GFX_VIEWPORT_H

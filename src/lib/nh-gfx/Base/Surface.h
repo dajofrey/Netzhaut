@@ -28,7 +28,7 @@ typedef struct nh_gfx_Surface {
     NH_API_GRAPHICS_BACKEND_E api;
     nh_wsi_Window *Window_p;
     nh_gfx_VulkanSurface Vulkan;
-    nh_opengl_Surface OpenGL;
+    nh_gfx_OpenGLSurface OpenGL;
     nh_core_List Viewports;
     struct {
         nh_css_Color BackgroundColor;

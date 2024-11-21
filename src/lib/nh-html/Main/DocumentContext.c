@@ -34,12 +34,8 @@ nh_core_List NH_HTML_DOCUMENT_CONTEXTS;
 static nh_html_DocumentContext nh_html_initDocumentContext()
 {
     nh_html_DocumentContext DocumentContext;
+    memset(&DocumentContext, 0, sizeof(nh_html_DocumentContext));
     DocumentContext.Documents = nh_core_initList(64);
-    DocumentContext.Document_p = NULL;
-    DocumentContext.scripting = false;
-    DocumentContext.browsingContext = false;
-    DocumentContext.LayoutEngine_p = NULL;
-
     return DocumentContext;
 }
 
@@ -96,4 +92,3 @@ NH_API_RESULT nh_html_loadBytes(
 
     return NH_API_SUCCESS;
 }
-

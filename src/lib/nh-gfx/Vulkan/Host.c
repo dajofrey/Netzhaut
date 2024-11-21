@@ -26,17 +26,17 @@
 #define VALIDATION_LAYER "VK_LAYER_KHRONOS_validation"
 #define VALIDATION_EXTENSION "VK_EXT_debug_utils"
 
-static NH_API_RESULT nh_vk_createInstance(
+static NH_API_RESULT nh_gfx_createVulkanInstance(
     nh_gfx_VulkanHost *Host_p, bool validation
 );
-static NH_API_RESULT nh_vk_createMessenger(
+static NH_API_RESULT nh_gfx_createVulkanMessenger(
     nh_gfx_VulkanHost *Host_p
 );
 
-static bool nh_vk_validationLayerSupported(
+static bool nh_gfx_vulkanValidationLayerSupported(
     nh_gfx_VulkanHost *Host_p
 ); 
-static bool nh_vk_validationExtensionSupported(
+static bool nh_gfx_vulkanValidationExtensionSupported(
     nh_gfx_VulkanHost *Host_p
 ); 
 
@@ -51,7 +51,7 @@ NH_API_RESULT nh_gfx_createVulkanHost(
     Host_p->Functions.vkEnumerateInstanceExtensionProperties = vkEnumerateInstanceExtensionProperties;
     Host_p->Functions.vkEnumerateInstanceLayerProperties     = vkEnumerateInstanceLayerProperties;
    
-    NH_CORE_CHECK(nh_vk_createInstance(Host_p, validation))
+    NH_CORE_CHECK(nh_gfx_createVulkanInstance(Host_p, validation))
 
     Host_p->Functions.vkDestroyInstance                   = vkDestroyInstance;
     Host_p->Functions.vkGetPhysicalDeviceMemoryProperties = vkGetPhysicalDeviceMemoryProperties;
@@ -77,7 +77,7 @@ NH_API_RESULT nh_gfx_createVulkanHost(
     Host_p->validation = validation;
 
     if (validation) {
-        Host_p->validation = nh_vk_createMessenger(Host_p) == NH_API_SUCCESS;
+        Host_p->validation = nh_gfx_createVulkanMessenger(Host_p) == NH_API_SUCCESS;
     }
 
     return NH_API_SUCCESS;
@@ -118,7 +118,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 
 // INSTANCE ========================================================================================
 
-static NH_API_RESULT nh_vk_createInstance(
+static NH_API_RESULT nh_gfx_createVulkanInstance(
     nh_gfx_VulkanHost *Host_p, bool validation)
 {
     VkApplicationInfo VkApplicationInfo = 
@@ -152,11 +152,11 @@ static NH_API_RESULT nh_vk_createInstance(
         .flags                   = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
     };
 
-    if ((nh_vk_validationLayerSupported(Host_p) == false) || !validation) {
+    if ((nh_gfx_vulkanValidationLayerSupported(Host_p) == false) || !validation) {
         InstanceInfo.enabledLayerCount = 0;
     }
     
-    if ((nh_vk_validationExtensionSupported(Host_p) == false) || !validation) {
+    if ((nh_gfx_vulkanValidationExtensionSupported(Host_p) == false) || !validation) {
         InstanceInfo.enabledExtensionCount   = 3;
         InstanceInfo.ppEnabledExtensionNames = instanceExtensions2_pp;
     }
@@ -170,7 +170,7 @@ static NH_API_RESULT nh_vk_createInstance(
 
 // MESSENGER =======================================================================================
 
-static NH_API_RESULT nh_vk_createMessenger(
+static NH_API_RESULT nh_gfx_createVulkanMessenger(
     nh_gfx_VulkanHost* Host_p) 
 {
     VkDebugUtilsMessengerCreateInfoEXT Info = 
@@ -190,7 +190,7 @@ static NH_API_RESULT nh_vk_createMessenger(
         .pUserData       = VK_NULL_HANDLE
     };
    
-    if (nh_vk_validationLayerSupported(Host_p) == false ||  nh_vk_validationExtensionSupported(Host_p) == false) {
+    if (nh_gfx_vulkanValidationLayerSupported(Host_p) == false ||  nh_gfx_vulkanValidationExtensionSupported(Host_p) == false) {
         return NH_API_VULKAN_ERROR_VALIDATION_NOT_SUPPORTED;
     }
 
@@ -208,7 +208,7 @@ static NH_API_RESULT nh_vk_createMessenger(
 
 // VALIDATION LAYER ================================================================================
 
-static bool nh_vk_validationLayerSupported(
+static bool nh_gfx_vulkanValidationLayerSupported(
     nh_gfx_VulkanHost *Host_p) 
 {
     int availableLayerCount = 0;
@@ -234,7 +234,7 @@ static bool nh_vk_validationLayerSupported(
 
 // VALIDATION EXTENSION ============================================================================
 
-static bool nh_vk_validationExtensionSupported(
+static bool nh_gfx_vulkanValidationExtensionSupported(
     nh_gfx_VulkanHost *Host_p) 
 {
     uint32_t propCount = 0; 

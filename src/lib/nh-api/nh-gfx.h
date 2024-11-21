@@ -54,7 +54,7 @@ nh_api_Surface *nh_api_createSurface(
  * Todo.
  */
 nh_api_Viewport *nh_api_createViewport(
-    nh_api_Surface *Surface_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
+    nh_api_Surface *Surface_p, nh_api_PixelPosition *Position_p, nh_api_PixelSize *Size_p
 );
 
 /**

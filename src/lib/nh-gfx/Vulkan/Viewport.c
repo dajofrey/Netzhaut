@@ -17,7 +17,7 @@
 
 // RESOURCES =======================================================================================
 
-NH_API_RESULT nh_vk_createViewport(
+NH_API_RESULT nh_gfx_createVulkanViewport(
     nh_gfx_Viewport *Viewport_p)
 {
     nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
@@ -36,7 +36,7 @@ NH_API_RESULT nh_vk_createViewport(
     return NH_API_SUCCESS;
 }
 
-void nh_vk_destroyViewport(
+void nh_gfx_destroyVulkanViewport(
     nh_gfx_Viewport *Viewport_p)
 {
     nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
@@ -53,7 +53,7 @@ void nh_vk_destroyViewport(
 
 // RECORD ==========================================================================================
 
-static VkRect2D nh_vk_getDefaultScissor(
+static VkRect2D nh_gfx_getDefaultVulkanScissor(
     nh_api_PixelSize Size)
 {
     VkOffset2D Offset = {
@@ -73,7 +73,7 @@ static VkRect2D nh_vk_getDefaultScissor(
     return Scissor;
 }
 
-NH_API_RESULT nh_vk_beginRecording(
+NH_API_RESULT nh_gfx_beginVulkanRecording(
     nh_gfx_Viewport *Viewport_p)
 {
     nh_gfx_VulkanDriver *Driver_p = &Viewport_p->Surface_p->Vulkan.GPU_p->Driver;
@@ -131,7 +131,7 @@ NH_API_RESULT nh_vk_beginRecording(
             .maxDepth = 1.0f 
         };
 
-        VkRect2D Scissor = nh_vk_getDefaultScissor(Viewport_p->Settings.Size); 
+        VkRect2D Scissor = nh_gfx_getDefaultVulkanScissor(Viewport_p->Settings.Size); 
         Scissor.offset.x = Viewport_p->Settings.Position.x;
         Scissor.offset.y = Viewport_p->Settings.Position.y;
 
@@ -155,7 +155,7 @@ NH_API_RESULT nh_vk_beginRecording(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_vk_endRecording(
+NH_API_RESULT nh_gfx_endVulkanRecording(
     nh_gfx_Viewport *Viewport_p)
 {
     for (int i = 0; i < Viewport_p->Vulkan.images; ++i) {
@@ -165,4 +165,3 @@ NH_API_RESULT nh_vk_endRecording(
 
     return NH_API_SUCCESS;
 }
-

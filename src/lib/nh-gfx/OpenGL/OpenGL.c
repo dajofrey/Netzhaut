@@ -12,7 +12,7 @@
 
 // FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_opengl_initOpenGL()
+NH_API_RESULT nh_gfx_initOpenGL()
 {
     if (!sogl_loadOpenGL()) {
         const char **failures_pp = sogl_getFailures();
@@ -24,7 +24,7 @@ NH_API_RESULT nh_opengl_initOpenGL()
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_opengl_terminateOpenGL()
+NH_API_RESULT nh_gfx_terminateOpenGL()
 {
     sogl_cleanup();
 

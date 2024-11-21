@@ -20,29 +20,25 @@
 #include <stdio.h>
 #include <unistd.h>
 
-// DATA =======================================================================================
-
-static nh_core_Logger NH_LOGGER;
-
 // FUNCTIONS =======================================================================================
 
 nh_core_Logger *nh_core_getLogger()
 {
-    return &NH_LOGGER;
+    static nh_core_Logger Logger;
+    return &Logger;
 }
 
 void nh_core_setLogCallback(
     nh_core_Logger *Logger_p, nh_api_logCallback_f logCallback_f)
 {
-    if (Logger_p == NULL) {Logger_p = &NH_LOGGER;}
-
+    if (Logger_p == NULL) {Logger_p = nh_core_getLogger();}
     Logger_p->callback_f = logCallback_f;
 }
 
 void nh_core_initLogger(
     nh_core_Logger *Logger_p)
 {
-    if (Logger_p == NULL) {Logger_p = &NH_LOGGER;}
+    if (Logger_p == NULL) {Logger_p = nh_core_getLogger();}
    
     memset(Logger_p, 0, sizeof(nh_core_Logger));
 
@@ -70,7 +66,7 @@ static void nh_core_freeLoggerNode(
 void nh_core_freeLogger(
     nh_core_Logger *Logger_p)
 {
-    if (Logger_p == NULL) {Logger_p = &NH_LOGGER;}
+    if (Logger_p == NULL) {Logger_p = nh_core_getLogger();}
 
     nh_core_freeLoggerNode(&(Logger_p->Root));
 }
@@ -253,7 +249,7 @@ NH_API_RESULT nh_core_handleLogMessage(
 NH_API_RESULT nh_core_log(
     char *node_p, char *options_p, char *message_p)
 {
-    return nh_core_handleLogMessage(&NH_LOGGER, node_p, options_p, message_p);
+    return nh_core_handleLogMessage(nh_core_getLogger(), node_p, options_p, message_p);
 }
 
 void nh_core_getUniqueLogId(
@@ -267,7 +263,7 @@ void nh_core_getUniqueLogId(
 void nh_core_dump(
     char *node_p)
 {
-    nh_core_LoggerNode *Node_p = nh_core_getLoggerNode(&NH_LOGGER.Root, node_p);
+    nh_core_LoggerNode *Node_p = nh_core_getLoggerNode(&nh_core_getLogger()->Root, node_p);
     if (Node_p) {
         for (int i = 0; i < Node_p->Messages.size; ++i) {
             puts(Node_p->Messages.pp[i]);
@@ -347,13 +343,13 @@ static void *nh_core_initLoggerWorkload(
     Workload_p->name_p = name_p;
     Workload_p->path_p = path_p;
     Workload_p->module = NH_MODULE_CORE;
-    Workload_p->args_p = &NH_LOGGER;
+    Workload_p->args_p = nh_core_getLogger();
 
-    NH_LOGGER.state = 0;
-    NH_LOGGER.pause = false;
+    nh_core_getLogger()->state = 0;
+    nh_core_getLogger()->pause = false;
 
     if (nh_core_getConfig().loggerBlock) {
-        while (NH_LOGGER.state != 2) {
+        while (nh_core_getLogger()->state != 2) {
             if (nh_core_runLoggerWorkload(Workload_p->args_p) == NH_SIGNAL_IDLE) {
                 usleep(100);
             }

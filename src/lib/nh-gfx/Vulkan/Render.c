@@ -28,7 +28,7 @@
 
 // FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_vk_prepareRendering(
+NH_API_RESULT nh_gfx_prepareVulkanRendering(
     nh_gfx_VulkanSurface *Surface_p)
 {
     VkResult result = Surface_p->GPU_p->Driver.Functions.vkAcquireNextImageKHR(
@@ -41,7 +41,7 @@ NH_API_RESULT nh_vk_prepareRendering(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_vk_clearSurface(
+static NH_API_RESULT nh_gfx_clearVulkanSurface(
     nh_gfx_Surface *Surface_p, nh_gfx_VulkanDriver *Driver_p)
 {
     VkCommandBuffer *CommandBuffer_p = &Surface_p->Vulkan.CommandBuffers_p[Surface_p->Vulkan.currentImage];
@@ -94,7 +94,7 @@ static NH_API_RESULT nh_vk_clearSurface(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_vk_render( // TODO multi GPU rendering
+NH_API_RESULT nh_gfx_renderVulkan( // TODO multi GPU rendering
     nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p)
 {
     VkSemaphore *Semaphores_pp[2] = {&Surface_p->Vulkan.Sync.Semaphore_p[0], &Surface_p->Vulkan.Sync.Semaphore_p[1]};
@@ -103,7 +103,7 @@ NH_API_RESULT nh_vk_render( // TODO multi GPU rendering
     NH_CORE_CHECK_MEM(Commands_p)
 
     // insert clear commandbuffer
-    NH_CORE_CHECK(nh_vk_clearSurface(Surface_p, &Surface_p->Vulkan.GPU_p->Driver))
+    NH_CORE_CHECK(nh_gfx_clearVulkanSurface(Surface_p, &Surface_p->Vulkan.GPU_p->Driver))
     Commands_p[0] = Surface_p->Vulkan.CommandBuffers_p[Surface_p->Vulkan.currentImage];
 
     // get viewport commandbuffers

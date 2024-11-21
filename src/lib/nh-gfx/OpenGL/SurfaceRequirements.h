@@ -20,9 +20,9 @@
  *  @{
  */
 
-    typedef struct nh_opengl_SurfaceRequirements {
+    typedef struct nh_gfx_OpenGLSurfaceRequirements {
         nh_core_Array Ids; // Contains visualid's that are glx framebuffer compatible. This is used for WSI window creation.
-    } nh_opengl_SurfaceRequirements;
+    } nh_gfx_OpenGLSurfaceRequirements;
 
 /** @} */
 
@@ -30,12 +30,12 @@
  *  @{
  */
 
-    NH_API_RESULT nh_opengl_createSurfaceRequirements(
-        nh_opengl_SurfaceRequirements *Requirements_p
+    NH_API_RESULT nh_gfx_createOpenGLSurfaceRequirements(
+        nh_gfx_OpenGLSurfaceRequirements *Requirements_p
     );
 
-    NH_API_RESULT nh_opengl_freeSurfaceRequirements(
-        nh_opengl_SurfaceRequirements *Requirements_p
+    NH_API_RESULT nh_gfx_freeOpenGLSurfaceRequirements(
+        nh_gfx_OpenGLSurfaceRequirements *Requirements_p
     );
 
 /** @} */

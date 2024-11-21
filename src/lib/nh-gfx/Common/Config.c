@@ -10,14 +10,61 @@
 
 #include "Config.h"
 
+#include "../../nh-core/Config/Config.h"
+#include "../../nh-core/System/Memory.h"
+
+#include <string.h>
+#include <stdlib.h>
+
 // DATA ============================================================================================
 
-nh_gfx_Config NH_GFX_CONFIG;
+static const char *NAMES_PP[] = {
+    "viewport.width",
+    "viewport.height",
+    "viewport.x",
+    "viewport.y",
+};
 
-// INIT CONFIG =====================================================================================
+static size_t NAMES_PP_COUNT = sizeof(NAMES_PP) / sizeof(NAMES_PP[0]);
 
-void _nh_gfx_initConfig()
+// FUNCTIONS =======================================================================================
+
+static NH_API_RESULT nh_gfx_getSetting(
+    nh_gfx_Config *Config_p, char *namespace_p, int index)
 {
-    NH_GFX_CONFIG.gamma = 2.2f;
+    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, NH_MODULE_GFX, NAMES_PP[index]);
+    NH_CORE_CHECK_NULL(Setting_p)
+
+    switch (index) {
+        case 0 :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->ViewportSize.width = atoi(Setting_p->pp[0]);
+            break;
+        case 1 :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->ViewportSize.height = atoi(Setting_p->pp[0]);
+            break;
+        case 2 :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->ViewportPosition.x = atoi(Setting_p->pp[0]);
+            break;
+        case 3 :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->ViewportPosition.y = atoi(Setting_p->pp[0]);
+            break;
+    }
+
+    return NH_API_SUCCESS;
 }
 
+nh_gfx_Config nh_gfx_getConfig()
+{
+    nh_gfx_Config Config;
+    memset(&Config, 0, sizeof(nh_gfx_Config));
+
+    for (int i = 0; i < NAMES_PP_COUNT; ++i) {
+        nh_gfx_getSetting(&Config, NULL, i);
+    }
+
+    return Config;
+}

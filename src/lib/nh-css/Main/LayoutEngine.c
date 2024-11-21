@@ -55,7 +55,7 @@ static void *nh_css_initLayoutEngine(
     LayoutEngine_p->CanvasTypes = nh_core_initArray(sizeof(nh_api_CanvasType), 2);
     LayoutEngine_p->Layout_p = NULL;
 
-return LayoutEngine_p;
+    return LayoutEngine_p;
 }
 
 static nh_css_Canvas *nh_css_getCanvas(
@@ -159,4 +159,3 @@ nh_css_LayoutEngine *nh_css_createLayoutEngine(
 
     return LayoutEngine_p;
 }
-

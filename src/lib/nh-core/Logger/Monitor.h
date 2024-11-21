@@ -21,8 +21,8 @@ typedef struct nh_core_MonitorNode {
     int peak;
     nh_core_List Children;
     struct nh_core_MonitorNode *Parent_p;
-    int nodesYCursor;
-    int nodesYOffset;
+    int selectYCursor;
+    int selectYOffset;
 } nh_core_MonitorNode;
 
 /**
@@ -42,7 +42,10 @@ typedef struct nh_core_Monitor {
     nh_core_SystemTime LastUpdate;
     double updateIntervalInSeconds;
     int height;
-    int nodesXOffset;
+    int viewHeight;
+    int viewCursor;
+    int viewOffset;
+    int selectXOffset;
 } nh_core_Monitor;
 
 #endif // NH_CORE_LOGGER_MONITOR_H

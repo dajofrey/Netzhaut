@@ -13,7 +13,7 @@
 #include "../Vulkan/Viewport.h"
 #include "../OpenGL/Viewport.h"
 
-#include "../Common/Macros.h"
+#include "../Common/Config.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/System/Thread.h"
@@ -24,7 +24,7 @@
 // FUNCTIONS =======================================================================================
 
 nh_gfx_Viewport *nh_gfx_createViewport(
-    nh_gfx_Surface *Surface_p, nh_api_PixelPosition Position, nh_api_PixelSize Size)
+    nh_gfx_Surface *Surface_p, nh_api_PixelPosition *Position_p, nh_api_PixelSize *Size_p)
 {
     NH_CORE_CHECK_NULL_2(NULL, Surface_p)
 
@@ -48,8 +48,6 @@ nh_gfx_Viewport *nh_gfx_createViewport(
  
     Viewport_p->Settings.border   = false;
     Viewport_p->Settings.borderWidth = 0;
-    Viewport_p->Settings.Size     = Size;
-    Viewport_p->Settings.Position = Position;
     Viewport_p->Settings.priority = 0;
 
     Viewport_p->Sync.newestBuffers_p[0] = 0;
@@ -60,13 +58,27 @@ nh_gfx_Viewport *nh_gfx_createViewport(
     Viewport_p->Sync.render          = false;
     Viewport_p->Sync.atomic          = false;
 
+    if (Size_p != NULL) {
+        Viewport_p->Settings.Size = *Size_p;
+    } else {
+        Viewport_p->Settings.Size.width = nh_gfx_getConfig().ViewportSize.width;
+        Viewport_p->Settings.Size.height = nh_gfx_getConfig().ViewportSize.height;
+    }
+
+    if (Position_p != NULL) {
+        Viewport_p->Settings.Position = *Position_p;
+    } else {
+        Viewport_p->Settings.Position.x = nh_gfx_getConfig().ViewportPosition.x;
+        Viewport_p->Settings.Position.y = nh_gfx_getConfig().ViewportPosition.y;
+    }
+
     switch (Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
-            NH_CORE_CHECK_2(NULL, nh_vk_createViewport(Viewport_p)) 
+            NH_CORE_CHECK_2(NULL, nh_gfx_createVulkanViewport(Viewport_p)) 
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            NH_CORE_CHECK_2(NULL, nh_opengl_createViewport(Viewport_p)) 
+            NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLViewport(Viewport_p)) 
             break;
 
         default : return NULL;
@@ -83,10 +95,10 @@ void nh_gfx_destroyViewport(
     switch (Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
-            nh_vk_destroyViewport(Viewport_p); 
+            nh_gfx_destroyVulkanViewport(Viewport_p); 
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            nh_opengl_destroyViewport(Viewport_p);
+            nh_gfx_destroyOpenGLViewport(Viewport_p);
             break;
     }
 
@@ -150,10 +162,10 @@ NH_API_RESULT nh_gfx_beginRecording(
     switch (Viewport_p->Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
-            NH_CORE_CHECK(nh_vk_beginRecording(Viewport_p))
+            NH_CORE_CHECK(nh_gfx_beginVulkanRecording(Viewport_p))
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            NH_CORE_CHECK(nh_opengl_beginRecording(Viewport_p))
+            NH_CORE_CHECK(nh_gfx_beginOpenGLRecording(Viewport_p))
             break;
     }
 
@@ -166,10 +178,10 @@ NH_API_RESULT nh_gfx_endRecording(
     switch (Viewport_p->Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
-            NH_CORE_CHECK(nh_vk_endRecording(Viewport_p))
+            NH_CORE_CHECK(nh_gfx_endVulkanRecording(Viewport_p))
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            NH_CORE_CHECK(nh_opengl_endRecording(Viewport_p))
+            NH_CORE_CHECK(nh_gfx_endOpenGLRecording(Viewport_p))
             break;
         default : return NH_API_ERROR_BAD_STATE;
     }

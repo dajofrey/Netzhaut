@@ -30,35 +30,35 @@
 
 // DECLARE =========================================================================================
 
-static NH_API_RESULT nh_vk_createPhysicalDevice(
+static NH_API_RESULT nh_gfx_createVulkanPhysicalDevice(
     nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, char *name_p
 );
-static NH_API_RESULT nh_vk_createDevice(
+static NH_API_RESULT nh_gfx_createVulkanDevice(
     nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, uint32_t *graphicsQueue_p, uint32_t *computeQueue_p
 );
-static NH_API_RESULT nh_vk_createDescriptorPool(
+static NH_API_RESULT nh_gfx_createVulkanDescriptorPool(
     nh_gfx_VulkanDriver *Driver_p
 );
-static NH_API_RESULT nh_vk_createCommandPools(
+static NH_API_RESULT nh_gfx_createVulkanCommandPools(
     nh_gfx_VulkanDriver *Driver_p, uint32_t graphicsQueue, uint32_t computeQueue
 );
-static NH_API_RESULT nh_vk_createRenderPass(
+static NH_API_RESULT nh_gfx_createVulkanRenderPass(
     nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p
 );
 
-static NH_API_RESULT nh_vk_getSurfaceFormat(
+static NH_API_RESULT nh_gfx_getVulkanSurfaceFormat(
     nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, VkSurfaceFormatKHR *surfaceFormat_p
 );
-static bool nh_vk_deviceIsSuitable(
+static bool nh_gfx_vulkanDeviceIsSuitable(
     nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device
 );
-static bool nh_vk_deviceSupportsExtensions(
+static bool nh_gfx_vulkanDeviceSupportsExtensions(
     nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device
 );
-static uint32_t nh_vk_getQueueFamily(
+static uint32_t nh_gfx_getVulkanQueueFamily(
     nh_gfx_VulkanHost *Host, nh_gfx_VulkanDriver *Driver_p, VkQueueFlagBits queueFlag
 );
-static NH_API_RESULT nh_vk_chooseSwapSurfaceFormat(
+static NH_API_RESULT nh_gfx_chooseVulkanSwapSurfaceFormat(
     VkSurfaceFormatKHR availableFormats[], VkSurfaceFormatKHR *surfaceFormat_p
 );
 
@@ -70,7 +70,7 @@ LRESULT CALLBACK WindowProc(
 
 // VALIDATE ========================================================================================
 
-static NH_API_RESULT nh_vk_validateFunctions(
+static NH_API_RESULT nh_gfx_validateVulkanFunctions(
     nh_gfx_VulkanDriver *Driver_p)
 {
     NH_CORE_CHECK_NULL(Driver_p->Functions.vkCreateFence)
@@ -171,11 +171,11 @@ NH_API_RESULT nh_gfx_createVulkanDriver(
     // create
     uint32_t graphicsQueue = 0, computeQueue = 0;
 
-    NH_CORE_CHECK(nh_vk_createPhysicalDevice(Host_p, Driver_p, name_p))
-    NH_CORE_CHECK(nh_vk_createDevice(Host_p, Driver_p, &graphicsQueue, &computeQueue))
-    NH_CORE_CHECK(nh_vk_createDescriptorPool(Driver_p))
-    NH_CORE_CHECK(nh_vk_createCommandPools(Driver_p, graphicsQueue, computeQueue))
-    NH_CORE_CHECK(nh_vk_createRenderPass(Host_p, Driver_p))
+    NH_CORE_CHECK(nh_gfx_createVulkanPhysicalDevice(Host_p, Driver_p, name_p))
+    NH_CORE_CHECK(nh_gfx_createVulkanDevice(Host_p, Driver_p, &graphicsQueue, &computeQueue))
+    NH_CORE_CHECK(nh_gfx_createVulkanDescriptorPool(Driver_p))
+    NH_CORE_CHECK(nh_gfx_createVulkanCommandPools(Driver_p, graphicsQueue, computeQueue))
+    NH_CORE_CHECK(nh_gfx_createVulkanRenderPass(Host_p, Driver_p))
 
     return NH_API_SUCCESS;;
 }
@@ -205,7 +205,7 @@ void nh_gfx_destroyVulkanDriver(
 
 // HELPER ==========================================================================================
 
-static NH_API_RESULT nh_vk_createPhysicalDevice(
+static NH_API_RESULT nh_gfx_createVulkanPhysicalDevice(
     nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, char *name_p)
 {
     VkInstance *Window_p = &Host_p->Instance;
@@ -231,7 +231,7 @@ static NH_API_RESULT nh_vk_createPhysicalDevice(
     NH_CORE_CHECK_NULL(Device_p)
 
     // add if suitable
-    if (nh_vk_deviceIsSuitable(Host_p, *Device_p))
+    if (nh_gfx_vulkanDeviceIsSuitable(Host_p, *Device_p))
     {        
         Driver_p->PhysicalDevice = *Device_p;
 
@@ -254,11 +254,11 @@ static NH_API_RESULT nh_vk_createPhysicalDevice(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_vk_createDevice(
+static NH_API_RESULT nh_gfx_createVulkanDevice(
     nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, uint32_t *graphicsQueue_p, uint32_t *computeQueue_p)
 {
-    *graphicsQueue_p = nh_vk_getQueueFamily(Host_p, Driver_p, VK_QUEUE_GRAPHICS_BIT);
-    *computeQueue_p  = nh_vk_getQueueFamily(Host_p, Driver_p, VK_QUEUE_COMPUTE_BIT);
+    *graphicsQueue_p = nh_gfx_getVulkanQueueFamily(Host_p, Driver_p, VK_QUEUE_GRAPHICS_BIT);
+    *computeQueue_p  = nh_gfx_getVulkanQueueFamily(Host_p, Driver_p, VK_QUEUE_COMPUTE_BIT);
 
     if (*graphicsQueue_p == -1 || *computeQueue_p == -1) {return NH_API_ERROR_BAD_STATE;}
 
@@ -298,7 +298,7 @@ static NH_API_RESULT nh_vk_createDevice(
         Host_p->Functions.vkCreateDevice(Driver_p->PhysicalDevice, &DeviceInfo, VK_NULL_HANDLE, &Driver_p->Device))
 
     volkLoadDeviceTable(&Driver_p->Functions, Driver_p->Device);
-    NH_CORE_CHECK(nh_vk_validateFunctions(Driver_p))
+    NH_CORE_CHECK(nh_gfx_validateVulkanFunctions(Driver_p))
 
     for (unsigned int i = 0; i < queueCount; ++i) {
         Driver_p->Functions.vkGetDeviceQueue(
@@ -312,7 +312,7 @@ static NH_API_RESULT nh_vk_createDevice(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_vk_createDescriptorPool(
+static NH_API_RESULT nh_gfx_createVulkanDescriptorPool(
     nh_gfx_VulkanDriver *Driver_p)
 {
     VkDescriptorPoolSize PoolSizes_p[] =
@@ -338,7 +338,7 @@ static NH_API_RESULT nh_vk_createDescriptorPool(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_vk_createCommandPools(
+static NH_API_RESULT nh_gfx_createVulkanCommandPools(
     nh_gfx_VulkanDriver *Driver_p, uint32_t graphicsQueue, uint32_t computeQueue)
 {
     for (int i = 0; i < NH_MAX_THREADS; ++i)
@@ -358,7 +358,7 @@ static NH_API_RESULT nh_vk_createCommandPools(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_vk_getSurfaceFormat(
+static NH_API_RESULT nh_gfx_getVulkanSurfaceFormat(
     nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, VkSurfaceFormatKHR *surfaceFormat_p)
 {
     VkInstance *Window_p = &Host_p->Instance;
@@ -442,14 +442,14 @@ static NH_API_RESULT nh_vk_getSurfaceFormat(
     UnregisterClassA(CLASS_NAME, hinstance);
 #endif
 
-    nh_vk_chooseSwapSurfaceFormat(SurfaceFormats_p, surfaceFormat_p);
+    nh_gfx_chooseVulkanSwapSurfaceFormat(SurfaceFormats_p, surfaceFormat_p);
 
     nh_core_free(SurfaceFormats_p);
 
     return NH_API_SUCCESS;
 }
 
-static bool nh_vk_deviceIsSuitable(
+static bool nh_gfx_vulkanDeviceIsSuitable(
     nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device)
 {
     uint32_t queueFamilyCount = 0;
@@ -483,10 +483,10 @@ static bool nh_vk_deviceIsSuitable(
 #undef GRAPHICS
 #undef COMPUTE
 
-    return nh_vk_deviceSupportsExtensions(Host_p, Device) && queueFamiliesSupported;
+    return nh_gfx_vulkanDeviceSupportsExtensions(Host_p, Device) && queueFamiliesSupported;
 }
 
-static bool nh_vk_deviceSupportsExtensions(
+static bool nh_gfx_vulkanDeviceSupportsExtensions(
     nh_gfx_VulkanHost *Host_p, VkPhysicalDevice Device) 
 {
     const char* requiredExtensions_p = {"VK_KHR_swapchain"};
@@ -525,7 +525,7 @@ static bool nh_vk_deviceSupportsExtensions(
     return false;
 }
 
-static uint32_t nh_vk_getQueueFamily(
+static uint32_t nh_gfx_getVulkanQueueFamily(
     nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, VkQueueFlagBits queueFlag) 
 {   
     VkInstance *Window_p = &Host_p->Instance;
@@ -633,7 +633,7 @@ static uint32_t nh_vk_getQueueFamily(
     return -1;
 }
 
-static NH_API_RESULT nh_vk_chooseSwapSurfaceFormat(
+static NH_API_RESULT nh_gfx_chooseVulkanSwapSurfaceFormat(
     VkSurfaceFormatKHR availableFormats[], VkSurfaceFormatKHR *surfaceFormat_p) 
 {
     if (availableFormats[0].format == VK_FORMAT_UNDEFINED) 
@@ -657,11 +657,11 @@ static NH_API_RESULT nh_vk_chooseSwapSurfaceFormat(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_vk_createRenderPass(
+static NH_API_RESULT nh_gfx_createVulkanRenderPass(
     nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p)
 {
     VkSurfaceFormatKHR SurfaceFormat;
-    NH_CORE_CHECK(nh_vk_getSurfaceFormat(Host_p, Driver_p, &SurfaceFormat))
+    NH_CORE_CHECK(nh_gfx_getVulkanSurfaceFormat(Host_p, Driver_p, &SurfaceFormat))
 
     VkAttachmentDescription colorAttachment = 
     {

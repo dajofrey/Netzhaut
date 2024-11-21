@@ -25,6 +25,13 @@
 typedef nh_gfx_SurfaceRequirements *(*nh_gfx_getSurfaceRequirements_f)( 
 ); 
 
+typedef nh_gfx_Viewport *(*nh_gfx_createViewport_f)(
+    nh_gfx_Surface *Surface_p, nh_api_PixelPosition *Position_p, nh_api_PixelSize *Size_p
+);
+typedef NH_API_RESULT (*nh_gfx_configureViewport_f)(
+    nh_gfx_Viewport *Viewport_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
+);
+
 // FUNCTIONS =======================================================================================
 
 nh_api_SurfaceRequirements *nh_api_getSurfaceRequirements()
@@ -43,11 +50,11 @@ nh_api_Surface *nh_api_createSurface(
 }
 
 nh_api_Viewport *nh_api_createViewport(
-    nh_api_Surface *Surface_p, nh_api_PixelPosition Position, nh_api_PixelSize Size)
+    nh_api_Surface *Surface_p, nh_api_PixelPosition *Position_p, nh_api_PixelSize *Size_p)
 {
     nh_core_Loader *Loader_p = nh_api_getLoader();
     nh_gfx_createViewport_f createViewport_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_GFX, 0, "nh_gfx_createViewport");
-    return createViewport_f ? createViewport_f(Surface_p, Position, Size) : NULL;
+    return createViewport_f ? createViewport_f(Surface_p, Position_p, Size_p) : NULL;
 }
 
 NH_API_RESULT nh_api_configureViewport(

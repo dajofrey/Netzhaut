@@ -97,7 +97,7 @@ static void nh_gfx_destroyVulkanSurfaceKHR(
     return;
 }
 
-static NH_API_RESULT nh_vk_chooseSurfaceFormat(
+static NH_API_RESULT nh_gfx_chooseVulkanSurfaceFormat(
     VkSurfaceFormatKHR availableFormats[], VkSurfaceFormatKHR *format_p) 
 {
     if (availableFormats[0].format == VK_FORMAT_UNDEFINED) { 
@@ -117,7 +117,7 @@ static NH_API_RESULT nh_vk_chooseSurfaceFormat(
     return NH_API_SUCCESS;;
 }
 
-static VkPresentModeKHR nh_vk_choosePresentMode(
+static VkPresentModeKHR nh_gfx_chooseVulkanPresentMode(
     const VkPresentModeKHR *presentModes_p, int count) 
 {
     for (int i = 0; i < count; ++i) {
@@ -127,7 +127,7 @@ static VkPresentModeKHR nh_vk_choosePresentMode(
     return -1;;
 }
 
-static NH_API_RESULT nh_vk_createSwapchain(
+static NH_API_RESULT nh_gfx_createVulkanSwapchain(
     nh_gfx_VulkanDriver *Driver_p, VkSurfaceKHR *SurfaceKHR_p, nh_gfx_VulkanSurface *Surface_p, 
     uint32_t graphicsQueueFamily)
 {
@@ -146,7 +146,7 @@ static NH_API_RESULT nh_vk_createSwapchain(
         *Device_p, *SurfaceKHR_p, &formatCount, SurfaceFormats_p
     ); 
     VkSurfaceFormatKHR SurfaceFormat;
-    nh_vk_chooseSurfaceFormat(SurfaceFormats_p, &SurfaceFormat);
+    nh_gfx_chooseVulkanSurfaceFormat(SurfaceFormats_p, &SurfaceFormat);
 
     // choose present mode
     uint32_t presentModeCount;
@@ -160,7 +160,7 @@ static NH_API_RESULT nh_vk_createSwapchain(
     NH_VULKAN.Host.Functions.vkGetPhysicalDeviceSurfacePresentModesKHR(
         *Device_p, *SurfaceKHR_p, &presentModeCount, presentModes_p
     ); 
-    VkPresentModeKHR presentMode = nh_vk_choosePresentMode(presentModes_p, presentModeCount);
+    VkPresentModeKHR presentMode = nh_gfx_chooseVulkanPresentMode(presentModes_p, presentModeCount);
     if (presentMode == -1) {return NH_API_ERROR_BAD_STATE;}
 
     // choose swapchain extent
@@ -239,7 +239,7 @@ static NH_API_RESULT nh_vk_createSwapchain(
     return NH_API_SUCCESS;      
 }
 
-static NH_API_RESULT nh_vk_createDepthStencil(
+static NH_API_RESULT nh_gfx_createVulkanDepthStencil(
     nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanSurface *Surface_p) 
 {
     // prepare
@@ -353,7 +353,7 @@ static NH_API_RESULT nh_vk_createDepthStencil(
     return NH_API_SUCCESS;;
 }
 
-static NH_API_RESULT nh_vk_createFramebuffer(
+static NH_API_RESULT nh_gfx_createVulkanFramebuffer(
     nh_gfx_VulkanDriver *Driver_p, nh_gfx_VulkanSurface *Surface_p)
 {  
     VkFramebufferCreateInfo FramebufferInfo = 
@@ -420,11 +420,11 @@ NH_API_RESULT nh_gfx_createVulkanSurface(
     Surface_p->Swapchain.ImageView_p = nh_core_allocate(sizeof(VkImageView) * Surface_p->imageCount);
     NH_CORE_CHECK_MEM(Surface_p->Swapchain.ImageView_p)
 
-    NH_CORE_CHECK(nh_vk_createSwapchain(&GPU_p->Driver, Surface_p->SurfaceKHR_p, Surface_p, 0))
+    NH_CORE_CHECK(nh_gfx_createVulkanSwapchain(&GPU_p->Driver, Surface_p->SurfaceKHR_p, Surface_p, 0))
     
     // depth/stencil and framebuffer
-    NH_CORE_CHECK(nh_vk_createDepthStencil(&GPU_p->Driver, Surface_p))
-    NH_CORE_CHECK(nh_vk_createFramebuffer(&GPU_p->Driver, Surface_p))
+    NH_CORE_CHECK(nh_gfx_createVulkanDepthStencil(&GPU_p->Driver, Surface_p))
+    NH_CORE_CHECK(nh_gfx_createVulkanFramebuffer(&GPU_p->Driver, Surface_p))
 
     // synchronisation resources
     VkFenceCreateInfo FenceInfo = {.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};

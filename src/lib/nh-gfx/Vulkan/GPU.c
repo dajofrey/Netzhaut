@@ -21,7 +21,7 @@
 
 // FUNCTIONS =======================================================================================
 
-static NH_API_RESULT nh_vk_prepareDetectedGPUs(
+static NH_API_RESULT nh_gfx_prepareDetectedVulkanGPUs(
     nh_core_List *GPUs_p, nh_gfx_VulkanHost *Host_p)
 {
     int detectedCount = 0;
@@ -61,7 +61,7 @@ static NH_API_RESULT nh_vk_prepareDetectedGPUs(
 NH_API_RESULT nh_gfx_initVulkanGPUs(
     nh_core_List *GPUs_p, nh_gfx_VulkanHost *Host_p)
 {
-    NH_CORE_CHECK(nh_vk_prepareDetectedGPUs(GPUs_p, Host_p))
+    NH_CORE_CHECK(nh_gfx_prepareDetectedVulkanGPUs(GPUs_p, Host_p))
 
     for (int i = 0; i < GPUs_p->size; i++) 
     {

@@ -1,7 +1,5 @@
-#ifndef NH_OPENGL_COMMANDS_H
-#define NH_OPENGL_COMMANDS_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_GFX_OPENGL_COMMANDS_H
+#define NH_GFX_OPENGL_COMMANDS_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -10,19 +8,10 @@
  */
 
 #include "CommandBuffer.h"
-
 #include "../Common/Includes.h"
 
-#endif
-
-/** @addtogroup lib_nh-gfx_functions
- *  @{
- */
-
-    NH_API_RESULT nh_opengl_executeCommand(
-        nh_opengl_Command *Command_p
-    );
-
-/** @} */
+NH_API_RESULT nh_gfx_executeOpenGLCommand(
+    nh_gfx_OpenGLCommand *Command_p
+);
 
 #endif

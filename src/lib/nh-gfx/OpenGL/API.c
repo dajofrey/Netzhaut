@@ -746,7 +746,7 @@ size_t NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P_COUNT =
 
 // GET TYPE ========================================================================================
 
-NH_GFX_OPENGL_COMMAND_E nh_opengl_getCommandType(
+NH_GFX_OPENGL_COMMAND_E nh_gfx_getOpenGLCommandType(
     char *name_p)
 {
     NH_GFX_OPENGL_COMMAND_E *index_p = nh_core_getFromHashMap(&NH_GFX_INDEXMAP.OpenGLCommandNames, name_p);
@@ -754,7 +754,7 @@ NH_GFX_OPENGL_COMMAND_E nh_opengl_getCommandType(
     return *index_p;
 }
 
-int nh_opengl_getCommandParameterCount(
+int nh_gfx_getOpenGLCommandParameterCount(
     NH_GFX_OPENGL_COMMAND_E type)
 {
     return NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P[type];
