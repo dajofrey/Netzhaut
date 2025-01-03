@@ -10,6 +10,25 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+static nh_api_Viewport *Viewport_p = NULL;
+
+static void handleInput( 
+    nh_api_Window *Window_p, nh_api_WSIEvent Event) 
+{
+    static float scroll = 0.0f;
+    switch (Event.type) 
+    { 
+        case NH_API_WSI_EVENT_MOUSE : 
+            scroll = Event.Mouse.trigger == NH_API_TRIGGER_UP ? scroll - 0.01f : scroll + 0.01f;
+            if (Event.Mouse.type == NH_API_MOUSE_SCROLL) {
+	        nh_api_scroll(Viewport_p, scroll);
+            }
+            break; 
+        case NH_API_WSI_EVENT_WINDOW : 
+            break; 
+    } 
+} 
+
 /** 
  * Routine of opening a webpage using cli. 
  */
@@ -46,7 +65,7 @@ int main(
         return 1;
     }
 
-    nh_api_Viewport *Viewport_p = nh_api_createViewport(Surface_p, NULL, NULL);
+    Viewport_p = nh_api_createViewport(Surface_p, NULL, NULL);
     if (!Viewport_p) {
         puts("Creating viewport failed. Exiting.");
         return 1;
@@ -78,6 +97,8 @@ int main(
         puts("Loading bytes into document failed. Exiting.");
         return 1;
     }
+
+    nh_api_setWindowEventListener(Window_p, handleInput);
 
     while (1) {
         int result = nh_api_run();

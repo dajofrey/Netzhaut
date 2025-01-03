@@ -54,6 +54,7 @@ typedef struct nh_gfx_Viewport {
         bool render;              
         bool atomic;
     } Sync;
+    float scroll;
 } nh_gfx_Viewport;
 
 // FUNCTIONS =======================================================================================

@@ -58,6 +58,8 @@ nh_gfx_Viewport *nh_gfx_createViewport(
     Viewport_p->Sync.render          = false;
     Viewport_p->Sync.atomic          = false;
 
+    Viewport_p->scroll = 0;
+
     if (Size_p != NULL) {
         Viewport_p->Settings.Size = *Size_p;
     } else {
@@ -209,5 +211,12 @@ NH_API_RESULT nh_gfx_claimViewport(
     Viewport_p->Owner.type = owner;
     Viewport_p->Owner.p = owner_p;
 
+    return NH_API_SUCCESS;
+}
+
+NH_API_RESULT nh_gfx_scroll(
+    nh_gfx_Viewport *Viewport_p, float amount)
+{
+    Viewport_p->scroll = amount;
     return NH_API_SUCCESS;
 }

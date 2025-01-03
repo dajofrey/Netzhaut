@@ -49,6 +49,14 @@ nh_renderer_ClipBox nh_renderer_convertToClipBox(
 
 // HELPER ==========================================================================================
 
+static void nh_renderer_manipulateVertices(
+    nh_gfx_Viewport *Viewport_p, float *vertices_p, int count, int offset)
+{
+    for (int i = 0, j = 0; Viewport_p->scroll != 0 && vertices_p != NULL && i < count; ++i, j++) {
+        if (j == 1) {vertices_p[i] += Viewport_p->scroll; j = -2 - offset;}
+    }
+}
+
 //static void nh_renderer_getTextureTriangles(
 //    nh_Triangle Triangles_p[2], nh_renderer_ClipBox Box)
 //{
@@ -100,8 +108,8 @@ int nh_renderer_getBackgroundVertices(
     nh_Triangle Triangles_p[1024] = {0.0f};
 
     nh_css_PixelBox MarginBox = nh_css_getMarginBox(Fragment_p);
-    nh_renderer_ClipBox PaddingBox = nh_renderer_convertToClipBox(Viewport_p, nh_css_getPaddingBox(&MarginBox, &Fragment_p->Box.Values)); 
-    nh_renderer_ClipBox ContentBox = nh_renderer_convertToClipBox(Viewport_p, Fragment_p->ContentBox); 
+    nh_renderer_ClipBox PaddingBox = nh_renderer_convertToClipBox(Viewport_p, nh_css_getPaddingBox(&MarginBox, &Fragment_p->Box.Values));
+    nh_renderer_ClipBox ContentBox = nh_renderer_convertToClipBox(Viewport_p, Fragment_p->ContentBox);
     
     float radii_p[4] = {0, 0, 0, 0};
 //    radii_p[0] = Fragment_p->Values.borderTopLeftRadius;
@@ -118,6 +126,8 @@ int nh_renderer_getBackgroundVertices(
 //        nh_scrollTriangles(Viewport_p, Triangles_p, triangleCount);
         nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, false);
     }
+
+    nh_renderer_manipulateVertices(Viewport_p, vertices_p, triangleCount*9, 0);
 
     return triangleCount * 9;
 }
@@ -165,6 +175,8 @@ int nh_renderer_getBorderVertices(
 
 //    nh_scrollTriangles(Viewport_p, Triangles_p, triangleCount);
     nh_trianglesToArray(Triangles_p, vertices_p, triangleCount, false);
+
+    nh_renderer_manipulateVertices(Viewport_p, vertices_p, triangleCount*9, 0);
 
     return triangleCount * 9;
 }
@@ -267,6 +279,7 @@ NH_API_RESULT nh_renderer_getTextVertices(
 
     nh_gfx_destroyHarfBuzzBuffer(Buffer);
 
+    nh_renderer_manipulateVertices(Viewport_p, vertices_p, 20 * glyphs, 2);
+
     return NH_API_SUCCESS;
 }
-

@@ -64,4 +64,11 @@ NH_API_RESULT nh_api_configureViewport(
     nh_api_Viewport *Viewport_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
 );
 
+/**
+ * Todo.
+ */
+NH_API_RESULT nh_api_scroll(
+    nh_api_Viewport *Viewport_p, float amount
+);
+
 #endif // NH_API_NH_GFX_H

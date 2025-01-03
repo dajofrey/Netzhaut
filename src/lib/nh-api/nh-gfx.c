@@ -31,6 +31,9 @@ typedef nh_gfx_Viewport *(*nh_gfx_createViewport_f)(
 typedef NH_API_RESULT (*nh_gfx_configureViewport_f)(
     nh_gfx_Viewport *Viewport_p, nh_api_PixelPosition Position, nh_api_PixelSize Size
 );
+typedef NH_API_RESULT (*nh_gfx_scroll_f)(
+    nh_gfx_Viewport *Viewport_p, float amount 
+);
 
 // FUNCTIONS =======================================================================================
 
@@ -63,4 +66,12 @@ NH_API_RESULT nh_api_configureViewport(
     nh_core_Loader *Loader_p = nh_api_getLoader();
     nh_gfx_configureViewport_f configureViewport_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_GFX, 0, "nh_gfx_configureViewport");
     return configureViewport_f ? configureViewport_f(Viewport_p, Position, Size) : NH_API_ERROR_BAD_STATE;
+}
+
+NH_API_RESULT nh_api_scroll(
+    nh_api_Viewport *Viewport_p, float amount)
+{
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_gfx_scroll_f scroll_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_GFX, 0, "nh_gfx_scroll");
+    return scroll_f ? scroll_f(Viewport_p, amount) : NH_API_ERROR_BAD_STATE;
 }

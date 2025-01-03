@@ -288,4 +288,3 @@ nh_gfx_VulkanBuffer *nh_renderer_getVulkanBufferFromIndex(
 
     return NULL;
 }
-

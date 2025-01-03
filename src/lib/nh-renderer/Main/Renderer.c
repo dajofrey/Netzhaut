@@ -113,7 +113,7 @@ static NH_SIGNAL nh_renderer_updateRenders(
     for (int i = 0; i < Renderer_p->RenderTargets.length; ++i) {
         nh_renderer_RenderTarget *RenderTarget_p = 
             ((nh_renderer_RenderTarget*)Renderer_p->RenderTargets.p)+i;
-        if (!RenderTarget_p->render) {continue;}
+//        if (!RenderTarget_p->render) {continue;}
         nh_css_Canvas *Canvas_p = 
             nh_renderer_getCanvas(Renderer_p->LayoutEngine_p->Layout_p, RenderTarget_p);
         if (!Canvas_p) {continue;}
@@ -166,4 +166,3 @@ NH_API_RESULT nh_renderer_addViewport(
  
     return NH_API_SUCCESS;
 }
-
