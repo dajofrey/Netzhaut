@@ -43,7 +43,7 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
     }
     indent_p[depth * 2 - 1] = '-';
 
-    nh_dom_Element *Element_p = nh_dom_getElement(Object_p);
+    nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Object_p);
 
     if (Element_p) {
         nh_core_List *Attributes_p = nh_dom_getAttrList(nh_dom_getNamedNodeMap(Element_p));
@@ -64,7 +64,7 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
         nh_core_appendFormatToString(&Message, "%s%s (%s) %s", indent_p, tag_p, Object_p->Interface_p->name_p, Attributes.p);
     }
     else if (!Element_p && !strcmp(Object_p->Interface_p->name_p, "Text")) {
-        nh_webidl_DOMString *DOMString_p = nh_dom_getTextString(((nh_dom_Text*)Object_p));
+        nh_webidl_DOMString *DOMString_p = nh_dom_getTextString(((nh_webidl_Object*)Object_p));
         nh_encoding_UTF32String String = nh_encoding_decodeUTF8(DOMString_p->p, DOMString_p->length, NULL);
         nh_encoding_UTF32String NewString = nh_encoding_replaceNonCharactersExpressively(&String);
         nh_encoding_UTF8String ReplaceString = nh_encoding_encodeUTF8(NewString.p, NewString.length);
@@ -89,9 +89,9 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
 
     memset(indent_p, 0, MAX_INDENT);
     
-    nh_dom_NodeList *NodeList_p = nh_webidl_getAttribute(Object_p, "childNodes");
+    nh_webidl_Object *NodeList_p = nh_webidl_getAttribute(Object_p, "childNodes");
     NH_CORE_CHECK_NULL(NodeList_p)
-    NH_WEBIDL_UNSIGNED_LONG length = nh_dom_getNodeListLength(NodeList_p);
+    NH_WEBIDL_UNSIGNED_LONG length = NH_WEBIDL_GET_DOM_NODEListLength(NodeList_p);
 
     for (NH_WEBIDL_UNSIGNED_LONG i = 0; i < length; ++i) {
         NH_CORE_CHECK(nh_html_logDocumentRecursively(

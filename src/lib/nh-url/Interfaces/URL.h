@@ -19,40 +19,40 @@
  *  @{
  */
 
-    nh_css_RuleObject *nh_css_getCSSRule(
+    nh_webidl_Object *nh_css_getCSSRule(
         nh_webidl_Object *Object_p
     );
 
     void nh_css_setCSSRuleType(
-        nh_css_RuleObject *CSSRule_p, NH_CSS_RULE type
+        nh_webidl_Object *CSSRule_p, NH_CSS_RULE type
     );
     
     void nh_css_setCSSRuleName(
-        nh_css_RuleObject *CSSRule_p, nh_encoding_UTF32String *Name_p
+        nh_webidl_Object *CSSRule_p, nh_encoding_UTF32String *Name_p
     );
     
     void nh_css_setCSSRulePrelude(
-        nh_css_RuleObject *CSSRule_p, nh_core_Array Prelude
+        nh_webidl_Object *CSSRule_p, nh_core_Array Prelude
     );
     
     void nh_css_setCSSRuleBlock(
-        nh_css_RuleObject *CSSRule_p, nh_css_SimpleBlock Block
+        nh_webidl_Object *CSSRule_p, nh_css_SimpleBlock Block
     );
 
     NH_CSS_RULE nh_css_getCSSRuleType(
-        nh_css_RuleObject *CSSRule_p
+        nh_webidl_Object *CSSRule_p
     );
     
     nh_encoding_UTF32String *nh_css_getCSSRuleName(
-        nh_css_RuleObject *CSSRule_p
+        nh_webidl_Object *CSSRule_p
     );
     
     nh_core_Array *nh_css_getCSSRulePrelude(
-        nh_css_RuleObject *CSSRule_p
+        nh_webidl_Object *CSSRule_p
     );
     
     nh_css_SimpleBlock *nh_css_getCSSRuleBlock(
-        nh_css_RuleObject *CSSRule_p
+        nh_webidl_Object *CSSRule_p
     );
 
 /** @} */

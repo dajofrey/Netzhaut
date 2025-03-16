@@ -30,21 +30,15 @@ NH_API_RESULT nh_css_initializeCSSRule(
     return NH_API_SUCCESS;
 }
 
-nh_css_RuleObject *nh_css_getRule(
-    nh_webidl_Object *Object_p)
-{
-    return (nh_css_RuleObject*)nh_webidl_getObject(Object_p, "CSS", "CSSRule");
-}
-
 void nh_css_setRuleData(
-    nh_css_RuleObject *Rule_p, nh_css_Rule Rule)
+    nh_webidl_Object *Rule_p, nh_css_Rule Rule)
 {
     *((nh_css_Rule*)((nh_webidl_Object*)Rule_p)->internal_p) = Rule;
     return;
 }
 
 nh_css_Rule *nh_css_getRuleData(
-    nh_css_RuleObject *Rule_p)
+    nh_webidl_Object *Rule_p)
 {
     return (nh_css_Rule*)((nh_webidl_Object*)Rule_p)->internal_p;
 }

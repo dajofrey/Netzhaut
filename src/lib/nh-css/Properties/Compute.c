@@ -32,7 +32,7 @@
 
 typedef struct nh_css_ComputeVariables {
     NH_CSS_PROPERTY property;
-    nh_dom_Node *Node_p;
+    nh_webidl_Object *Node_p;
     nh_core_Array *SpecifiedValues_p;
     nh_core_List *ComputedValues_p;
     nh_css_Value **ComputedValue_pp;
@@ -133,7 +133,7 @@ static NH_API_RESULT nh_css_computeLength(
             else {
                 nh_webidl_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
                 NH_CORE_CHECK_NULL(Parent_p)
-                nh_core_List *ParentValues_p = nh_dom_getComputedPropertyValues(nh_dom_getNode(Parent_p));
+                nh_core_List *ParentValues_p = nh_dom_getComputedPropertyValues(NH_WEBIDL_GET_DOM_NODE(Parent_p));
                 NH_CORE_CHECK_NULL(ParentValues_p)
                 NewValue_p->number = Variables_p->SpecifiedValue_p->number * ((nh_css_Value*)ParentValues_p->pp[NH_CSS_PROPERTY_FONT_SIZE])->number;
                 *Variables_p->ComputedValue_pp = NewValue_p;
@@ -440,7 +440,7 @@ static NH_API_RESULT nh_css_computeFontWeight(
         {
             nh_webidl_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
             NH_CORE_CHECK_NULL(Parent_p)
-            nh_core_List *ParentValues_p = nh_dom_getComputedPropertyValues(nh_dom_getNode(Parent_p));
+            nh_core_List *ParentValues_p = nh_dom_getComputedPropertyValues(NH_WEBIDL_GET_DOM_NODE(Parent_p));
             NH_CORE_CHECK_NULL(ParentValues_p)
             *ComputedValue_pp = nh_core_allocate(sizeof(nh_css_Value));
             NH_CORE_CHECK_MEM(*ComputedValue_pp)
@@ -838,6 +838,57 @@ static NH_API_RESULT nh_css_computeBorderRadius(
     return nh_css_computeBorderRadiusValue(Variables_p);
 }
 
+static NH_API_RESULT nh_css_computeBorderRadiusShorthand(
+    nh_css_ComputeVariables *Variables_p)
+{
+    // TODO https://www.w3.org/TR/css-backgrounds-3/#propdef-border-radius
+
+    nh_core_Array *SpecifiedValues_p = Variables_p->SpecifiedValues_p;
+    nh_core_List *ComputedValues_p = Variables_p->ComputedValues_p;
+
+    nh_css_Value *Value_p = &((nh_css_Value*)SpecifiedValues_p->p)[NH_CSS_PROPERTY_BORDER_RADIUS];
+    nh_css_Value *SecondValue_p = NULL;
+    nh_css_Value *ThirdValue_p = NULL;
+    nh_css_Value *FourthValue_p = NULL;
+
+    if (Value_p->Common.Next_p) {
+        SecondValue_p = Value_p->Common.Next_p;
+    }
+    if (SecondValue_p && SecondValue_p->Common.Next_p) {
+        ThirdValue_p = SecondValue_p->Common.Next_p;
+    }
+    if (ThirdValue_p && ThirdValue_p->Common.Next_p) {
+        FourthValue_p = ThirdValue_p->Common.Next_p;
+    }
+
+    if (FourthValue_p) {
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_LEFT_RADIUS] = Value_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_RIGHT_RADIUS] = SecondValue_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_RIGHT_RADIUS] = ThirdValue_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_LEFT_RADIUS] = FourthValue_p;
+    }
+    else if (ThirdValue_p) {
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_LEFT_RADIUS] = Value_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_RIGHT_RADIUS] = SecondValue_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_RIGHT_RADIUS] = ThirdValue_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_LEFT_RADIUS] = SecondValue_p;
+    }
+    else if (SecondValue_p) {
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_LEFT_RADIUS] = Value_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_RIGHT_RADIUS] = SecondValue_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_RIGHT_RADIUS] = Value_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_LEFT_RADIUS] = SecondValue_p;
+    }
+    else if (Value_p) {
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_LEFT_RADIUS] = Value_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_TOP_RIGHT_RADIUS] = Value_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_RIGHT_RADIUS] = Value_p;
+        ComputedValues_p->pp[NH_CSS_PROPERTY_BORDER_BOTTOM_LEFT_RADIUS] = Value_p;
+    }
+
+    return NH_API_SUCCESS;
+}
+
 // BORDER ==========================================================================================
 
 static NH_API_RESULT nh_css_computeBorderShorthand(
@@ -1025,7 +1076,7 @@ static NH_API_RESULT nh_css_computeSize(
 // BLOCKIFY ========================================================================================
 
 static NH_API_RESULT nh_css_blockify(
-    nh_dom_Node *Node_p, nh_core_List *ComputedValues_p)
+    nh_webidl_Object *Node_p, nh_core_List *ComputedValues_p)
 {
     nh_css_Value *Display_p = ComputedValues_p->pp[NH_CSS_PROPERTY_DISPLAY];
 
@@ -1045,7 +1096,7 @@ static NH_API_RESULT nh_css_blockify(
 }
 
 static NH_API_RESULT nh_css_blockifyNode(
-    nh_dom_Node *Node_p, nh_core_List *ComputedValues_p)
+    nh_webidl_Object *Node_p, nh_core_List *ComputedValues_p)
 {
     nh_css_Value *Float_p = ComputedValues_p->pp[NH_CSS_PROPERTY_FLOAT];
 
@@ -1098,7 +1149,7 @@ static NH_API_RESULT nh_css_computeSpecifiedValue(
         case NH_CSS_PROPERTY_BORDER_COLOR               : break;
         case NH_CSS_PROPERTY_BORDER_SPACING             : break;
         case NH_CSS_PROPERTY_BORDER_STYLE               : return nh_css_computeBorderStyleShorthand(Variables_p);
-        case NH_CSS_PROPERTY_BORDER_RADIUS              : break;
+        case NH_CSS_PROPERTY_BORDER_RADIUS              : return nh_css_computeBorderRadiusShorthand(Variables_p);
         case NH_CSS_PROPERTY_BORDER_TOP                 : break;
         case NH_CSS_PROPERTY_BORDER_RIGHT               : break;
         case NH_CSS_PROPERTY_BORDER_BOTTOM              : break;
@@ -1226,7 +1277,7 @@ static NH_API_RESULT nh_css_computeSpecifiedValue(
 }
 
 NH_API_RESULT nh_css_computeSpecifiedValues(
-    nh_css_LogContext *LogContext_p, nh_dom_Node *Node_p)
+    nh_css_LogContext *LogContext_p, nh_webidl_Object *Node_p)
 {
     nh_core_List ComputedValues = nh_core_initList(NH_CSS_PROPERTY_COUNT);
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {
@@ -1244,7 +1295,6 @@ NH_API_RESULT nh_css_computeSpecifiedValues(
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_WRITING_MODE))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_DIRECTION))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_TEXT_ORIENTATION))
-
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_AZIMUTH))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BACKGROUND_ATTACHMENT))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BACKGROUND_COLOR))
@@ -1277,6 +1327,7 @@ NH_API_RESULT nh_css_computeSpecifiedValues(
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BORDER_TOP_RIGHT_RADIUS))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BORDER_BOTTOM_LEFT_RADIUS))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BORDER_BOTTOM_RIGHT_RADIUS))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BORDER_RADIUS))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BORDER))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_BOTTOM))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_CAPTION_SIDE))
@@ -1303,37 +1354,37 @@ NH_API_RESULT nh_css_computeSpecifiedValues(
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_HEIGHT))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LEFT))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LETTER_SPACING))
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LINE_HEIGHT))      
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LIST_STYLE_IMAGE)) 
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LINE_HEIGHT))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LIST_STYLE_IMAGE))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LIST_STYLE_POSITION))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LIST_STYLE_TYPE))
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LIST_STYLE))        
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_RIGHT))         
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_LEFT))          
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_TOP))       
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_LIST_STYLE))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_RIGHT))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_LEFT))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_TOP))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_BOTTOM))
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN))    
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_BLOCK_START))
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_BLOCK_END))  
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_INLINE_START))   
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_INLINE_END)) 
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_BLOCK))   
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_BLOCK_END))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_INLINE_START))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_INLINE_END))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_BLOCK))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MARGIN_INLINE))
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MAX_HEIGHT))       
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MAX_WIDTH))          
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MIN_HEIGHT))           
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MIN_WIDTH))          
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_ORPHANS))           
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE_COLOR)) 
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE_STYLE))       
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE_WIDTH))       
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE))       
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OVERFLOW))             
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_TOP))           
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_RIGHT))         
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_BOTTOM))       
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_LEFT))      
-    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING))        
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MAX_HEIGHT))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MAX_WIDTH))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MIN_HEIGHT))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_MIN_WIDTH))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_ORPHANS))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE_COLOR))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE_STYLE))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE_WIDTH))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OUTLINE))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_OVERFLOW))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_TOP))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_RIGHT))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_BOTTOM))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING_LEFT))
+    NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PADDING))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PAGE_BREAK_AFTER))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PAGE_BREAK_BEFORE))
     NH_CORE_CHECK(nh_css_computeSpecifiedValue(&Variables, NH_CSS_PROPERTY_PAGE_BREAK_INSIDE))   
@@ -1384,7 +1435,7 @@ NH_API_RESULT nh_css_computeSpecifiedValues(
 // FREE ============================================================================================
 
 NH_API_RESULT nh_css_freeComputedValues(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
     nh_core_List *ComputedValues_p = nh_dom_getComputedPropertyValues(Node_p);
     NH_CORE_CHECK_NULL(ComputedValues_p)

@@ -9,8 +9,6 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "../Interfaces.h"
-
 #include "../../nh-api/nh-dom.h"
 #include "../../nh-api/nh-webidl.h"
 

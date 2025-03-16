@@ -350,12 +350,12 @@ static NH_API_RESULT nh_css_getInitialValue(
 }
 
 static NH_API_RESULT nh_css_getDefaultValue(
-    nh_dom_Node *Node_p, NH_CSS_PROPERTY property, nh_css_Value *Value_p)
+    nh_webidl_Object *Node_p, NH_CSS_PROPERTY property, nh_css_Value *Value_p)
 {
     nh_webidl_Object *Parent_p = nh_dom_getParentElement(Node_p);
 
     if (NH_CSS_PROPERTY_INHERITED_P[property] && Parent_p) {
-        nh_core_List *ComputedValues_p = nh_dom_getComputedPropertyValues(nh_dom_getNode(Parent_p));
+        nh_core_List *ComputedValues_p = nh_dom_getComputedPropertyValues(NH_WEBIDL_GET_DOM_NODE(Parent_p));
         *Value_p = *((nh_css_Value*)ComputedValues_p->pp[property]);
     }
     else {
@@ -366,7 +366,7 @@ static NH_API_RESULT nh_css_getDefaultValue(
 }
 
 static NH_API_RESULT nh_css_getSpecifiedValue(
-    nh_dom_Node *Node_p, NH_CSS_PROPERTY property, nh_css_Value *Value_p, nh_css_Filter *Filter_p)
+    nh_webidl_Object *Node_p, NH_CSS_PROPERTY property, nh_css_Value *Value_p, nh_css_Filter *Filter_p)
 {
     nh_core_List *OrderedList_p = Filter_p->CandidateLists.pp[property];
 
@@ -381,10 +381,10 @@ static NH_API_RESULT nh_css_getSpecifiedValue(
 }
 
 NH_API_RESULT nh_css_setSpecifiedValues(
-    nh_css_LogContext *LogContext_p, nh_dom_Element *Element_p, nh_css_StyleSheetListObject *AuthorStyleSheets_p, 
+    nh_css_LogContext *LogContext_p, nh_webidl_Object *Element_p, nh_webidl_Object *AuthorStyleSheets_p, 
     nh_core_List UserStyleSheets)
 {
-    nh_dom_Node *Node_p = nh_dom_getNode((nh_webidl_Object*)Element_p);
+    nh_webidl_Object *Node_p = NH_WEBIDL_GET_DOM_NODE((nh_webidl_Object*)Element_p);
     if (nh_dom_getSpecifiedPropertyValues(Node_p)->length > 0) {return NH_API_ERROR_BAD_STATE;}
 
     nh_css_Filter Filter = nh_css_filter(Element_p, AuthorStyleSheets_p, UserStyleSheets);
@@ -412,7 +412,7 @@ NH_API_RESULT nh_css_setSpecifiedValues(
 }
 
 NH_API_RESULT nh_css_freeSpecifiedValues(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
     nh_core_Array *SpecifiedValues_p = nh_dom_getSpecifiedPropertyValues(Node_p);
     NH_CORE_CHECK_NULL(SpecifiedValues_p)

@@ -70,7 +70,7 @@ static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
         {
             FormattingElement_p = Parser_p->ActiveFormattingElements.pp[i];
             if (!FormattingElement_p) {break;} // check marker
-            nh_dom_Element *Element_p = nh_dom_getElement(FormattingElement_p);
+            nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(FormattingElement_p);
             if (Element_p && !strcmp(nh_dom_getLocalName(Element_p)->p, Subject_p->p)) {
                 break;
             }
@@ -145,7 +145,7 @@ void nh_html_runAdoptionAgencyAlgorithm(
 {
     nh_webidl_DOMString *Subject_p = &Token_p->StartOrEndTag.TagName;
     nh_webidl_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
-    nh_dom_Element *Element_p = nh_dom_getElement(CurrentNode_p);
+    nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(CurrentNode_p);
 
 
     if (!strcmp(Subject_p->p, "b")) {inB = true;}

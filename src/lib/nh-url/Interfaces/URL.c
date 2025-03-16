@@ -47,15 +47,15 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 
 // API =============================================================================================
 
-nh_css_RuleObject *nh_css_getCSSRule(
+nh_webidl_Object *nh_css_getCSSRule(
     nh_webidl_Object *Object_p)
 {
 NH_CSS_BEGIN()
-NH_CSS_END((nh_css_RuleObject*)nh_webidl_getObject(Object_p, "CSS", "CSSRule"))
+NH_CSS_END((nh_webidl_Object*)nh_webidl_getObject(Object_p, "CSS", "CSSRule"))
 }
 
 void nh_css_setCSSRuleType(
-    nh_css_RuleObject *CSSRule_p, NH_CSS_RULE type)
+    nh_webidl_Object *CSSRule_p, NH_CSS_RULE type)
 {
 NH_CSS_BEGIN()
 
@@ -65,7 +65,7 @@ NH_CSS_SILENT_END()
 }
 
 void nh_css_setCSSRuleName(
-    nh_css_RuleObject *CSSRule_p, nh_encoding_UTF32String *Name_p)
+    nh_webidl_Object *CSSRule_p, nh_encoding_UTF32String *Name_p)
 {
 NH_CSS_BEGIN()
 
@@ -75,7 +75,7 @@ NH_CSS_SILENT_END()
 }
 
 void nh_css_setCSSRulePrelude(
-    nh_css_RuleObject *CSSRule_p, nh_core_Array Prelude)
+    nh_webidl_Object *CSSRule_p, nh_core_Array Prelude)
 {
 NH_CSS_BEGIN()
 
@@ -85,7 +85,7 @@ NH_CSS_SILENT_END()
 }
 
 void nh_css_setCSSRuleBlock(
-    nh_css_RuleObject *CSSRule_p, nh_css_SimpleBlock Block)
+    nh_webidl_Object *CSSRule_p, nh_css_SimpleBlock Block)
 {
 NH_CSS_BEGIN()
 
@@ -95,28 +95,28 @@ NH_CSS_SILENT_END()
 }
 
 NH_CSS_RULE nh_css_getCSSRuleType(
-    nh_css_RuleObject *CSSRule_p)
+    nh_webidl_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
 NH_CSS_END(((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->type)
 }
 
 nh_encoding_UTF32String *nh_css_getCSSRuleName(
-    nh_css_RuleObject *CSSRule_p)
+    nh_webidl_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
 NH_CSS_END(((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Name_p)
 }
 
 nh_core_Array *nh_css_getCSSRulePrelude(
-    nh_css_RuleObject *CSSRule_p)
+    nh_webidl_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
 NH_CSS_END(&((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Prelude)
 }
 
 nh_css_SimpleBlock *nh_css_getCSSRuleBlock(
-    nh_css_RuleObject *CSSRule_p)
+    nh_webidl_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
 NH_CSS_END(&((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Block)

@@ -16,20 +16,16 @@
 
 // FUNCTIONS =======================================================================================
 
-nh_webidl_Object *nh_css_getCSSStyleRule(
-    nh_webidl_Object *Object_p
-);
-
 nh_css_SelectorParseNode *nh_css_getCSSStyleRuleSelectors(
     nh_webidl_Object *CSSStyleRule_p
 );
 
-nh_css_StyleDeclarationObject *nh_css_getStyleRuleDeclaration(
+nh_webidl_Object *nh_css_getStyleRuleDeclaration(
     nh_webidl_Object *CSSStyleRule_p
 );
 
 nh_webidl_Object *nh_css_createStyleRule(
-    nh_css_SelectorParseNode *Selectors_p, nh_css_StyleDeclarationObject *CSSStyleDeclaration_p
+    nh_css_SelectorParseNode *Selectors_p, nh_webidl_Object *CSSStyleDeclaration_p
 );
 
 #endif // NH_CSS_INTERFACES_STYLE_RULE_H

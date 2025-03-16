@@ -16,16 +16,12 @@
 
 // FUNCTIONS =======================================================================================
 
-nh_css_RuleObject *nh_css_getRule(
-    nh_webidl_Object *Object_p
-);
-
 void nh_css_setRuleData(
-    nh_css_RuleObject *Rule_p, nh_css_Rule Rule
+    nh_webidl_Object *Rule_p, nh_css_Rule Rule
 );
 
 nh_css_Rule *nh_css_getRuleData(
-    nh_css_RuleObject *Rule_p
+    nh_webidl_Object *Rule_p
 );
 
 #endif // NH_CSS_INTERFACES_RULE_H

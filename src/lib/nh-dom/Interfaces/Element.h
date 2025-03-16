@@ -17,10 +17,6 @@
  *  @{
  */
 
-    nh_dom_Element *nh_dom_getElement(
-        nh_webidl_Object *Object_p
-    );
-
     nh_webidl_Object *nh_dom_createElement(
         nh_webidl_Object *Document_p, nh_webidl_DOMString *LocalName_p, nh_webidl_DOMString *Namespace_p, 
         nh_webidl_DOMString *NamespacePrefix_p, nh_webidl_DOMString *Is_p, bool synchronousCustomElements, 
@@ -32,35 +28,35 @@
     );
 
     nh_webidl_DOMString *nh_dom_getNamespaceURI(
-        nh_dom_Element *Element_p
+        nh_webidl_Object *Element_p
     );
 
     nh_webidl_DOMString *nh_dom_getTagName(
-        nh_dom_Element *Element_p
+        nh_webidl_Object *Element_p
     );
 
-    nh_dom_NamedNodeMap *nh_dom_getNamedNodeMap(
-        nh_dom_Element *Element_p
+    nh_webidl_Object *nh_dom_getNamedNodeMap(
+        nh_webidl_Object *Element_p
     );
 
-    nh_dom_Attr *nh_dom_getAttrByNamespaceAndLocalName(
-        nh_dom_Element *Element_p, nh_webidl_DOMString *Namespace_p, nh_webidl_DOMString *LocalName_p
+    nh_webidl_Object *nh_dom_getAttrByNamespaceAndLocalName(
+        nh_webidl_Object *Element_p, nh_webidl_DOMString *Namespace_p, nh_webidl_DOMString *LocalName_p
     );
     
-    nh_dom_Attr *nh_dom_getAttrByLocalName(
+    nh_webidl_Object *nh_dom_getAttrByLocalName(
         nh_webidl_Object *DOMElement_p, char *localName_p
     );
 
     NH_API_RESULT nh_dom_replaceAttr(
-        nh_dom_Element *Element_p, nh_dom_Attr *OldAttr_p, nh_dom_Attr *NewAttr_p
+        nh_webidl_Object *Element_p, nh_webidl_Object *OldAttr_p, nh_webidl_Object *NewAttr_p
     );
     
     NH_API_RESULT nh_dom_appendAttr(
-        nh_dom_Element *Element_p, nh_dom_Attr *Attr_p
+        nh_webidl_Object *Element_p, nh_webidl_Object *Attr_p
     );
     
-    nh_dom_Attr *nh_dom_setAttr(
-        nh_dom_Element *Element_p, nh_dom_Attr *Attr_p
+    nh_webidl_Object *nh_dom_setAttr(
+        nh_webidl_Object *Element_p, nh_webidl_Object *Attr_p
     );
 
 /** @} */

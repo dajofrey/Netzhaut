@@ -77,7 +77,7 @@ static bool nh_css_matchIdSelector(
     nh_css_Token *HashTok_p = ((nh_css_SelectorParseNode*)IdSelector_p->Children.pp[0])->Token_p;
     nh_encoding_UTF8String Identifier = nh_encoding_encodeUTF8(HashTok_p->Hash.Value.p, HashTok_p->Hash.Value.length);
 
-    nh_dom_Attr *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "id");
+    nh_webidl_Object *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "id");
     if (Attr_p) {
         nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attr_p);
         if (!strcmp(Value_p->p, Identifier.p)) {
@@ -98,7 +98,7 @@ static bool nh_css_matchClassSelector(
     nh_css_Token *IdentTok_p = ((nh_css_SelectorParseNode*)ClassSelector_p->Children.pp[1])->Token_p;
     nh_encoding_UTF8String Identifier = nh_encoding_encodeUTF8(IdentTok_p->Other.Value.p, IdentTok_p->Other.Value.length);
 
-    nh_dom_Attr *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "class");
+    nh_webidl_Object *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "class");
     if (Attr_p) {
         nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attr_p);
         if (!strcmp(Value_p->p, Identifier.p)) {

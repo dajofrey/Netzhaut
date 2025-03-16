@@ -38,14 +38,14 @@ NH_API_RESULT nh_dom_initializeAttr(
     return NH_API_SUCCESS;
 }
 
-nh_dom_Attr *nh_dom_createAttr(
+nh_webidl_Object *nh_dom_createAttr(
     nh_webidl_Object *Document_p, nh_webidl_DOMString *LocalName_p, nh_webidl_DOMString *Namespace_p, 
-    nh_webidl_DOMString *NamespacePrefix_p, nh_dom_Element *OwnerElement_p, nh_webidl_DOMString *Value_p)
+    nh_webidl_DOMString *NamespacePrefix_p, nh_webidl_Object *OwnerElement_p, nh_webidl_DOMString *Value_p)
 {
     NH_CORE_CHECK_NULL_2(NULL, Document_p)
     NH_CORE_CHECK_NULL_2(NULL, LocalName_p)
 
-    nh_dom_Attr *Attr_p = (nh_dom_Attr*)nh_webidl_createObject("DOM", "Attr");
+    nh_webidl_Object *Attr_p = (nh_webidl_Object*)nh_webidl_createObject("DOM", "Attr");
     NH_CORE_CHECK_NULL_2(NULL, Attr_p)
 
     ((nh_webidl_Object*)Attr_p)->Attributes.pp[0] = Namespace_p;
@@ -57,38 +57,38 @@ nh_dom_Attr *nh_dom_createAttr(
 
     nh_webidl_appendToDOMString(((nh_webidl_Object*)Attr_p)->Attributes.pp[4], Value_p->p, Value_p->length);
 
-    NH_CORE_CHECK_2(NULL, nh_dom_setNodeDocument(nh_dom_getNode((nh_webidl_Object*)Attr_p), Document_p))
+    NH_CORE_CHECK_2(NULL, nh_dom_setNodeDocument(NH_WEBIDL_GET_DOM_NODE((nh_webidl_Object*)Attr_p), Document_p))
 
     return Attr_p;
 }
 
 nh_webidl_DOMString *nh_dom_getAttrNamespace(
-    nh_dom_Attr *Attr_p)
+    nh_webidl_Object *Attr_p)
 {
     return ((nh_webidl_Object*)Attr_p)->Attributes.pp[0];
 }
 
 nh_webidl_DOMString *nh_dom_getAttrLocalName(
-    nh_dom_Attr *Attr_p)
+    nh_webidl_Object *Attr_p)
 {
     return ((nh_webidl_Object*)Attr_p)->Attributes.pp[2];
 }
 
 void nh_dom_setAttrElement(
-    nh_dom_Attr *Attr_p, nh_dom_Element *Element_p)
+    nh_webidl_Object *Attr_p, nh_webidl_Object *Element_p)
 {
     ((nh_webidl_Object*)Attr_p)->Attributes.pp[5] = Element_p;
     return;
 }
 
-nh_dom_Element *nh_dom_getAttrElement(
-    nh_dom_Attr *Attr_p)
+nh_webidl_Object *nh_dom_getAttrElement(
+    nh_webidl_Object *Attr_p)
 {
     return ((nh_webidl_Object*)Attr_p)->Attributes.pp[5];
 }
 
 nh_webidl_DOMString *nh_dom_getAttrValue(
-    nh_dom_Attr *Attr_p)
+    nh_webidl_Object *Attr_p)
 {
     return ((nh_webidl_Object*)Attr_p)->Attributes.pp[4];
 }

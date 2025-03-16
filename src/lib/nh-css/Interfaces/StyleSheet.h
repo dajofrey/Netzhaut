@@ -17,20 +17,16 @@
  *  @{
  */
 
-    nh_css_StyleSheetObject *nh_css_getStyleSheet(
-        nh_webidl_Object *Object_p
-    );
-
     nh_webidl_Object *nh_css_getRuleList(
         nh_webidl_Object *CSSStyleSheet_p
     );
 
     void nh_css_setStyleSheetTokens(
-        nh_css_StyleSheetObject *StyleSheet_p, nh_core_Array Tokens
+        nh_webidl_Object *StyleSheet_p, nh_core_Array Tokens
     );
 
     nh_webidl_Object *nh_css_findCounterStyleRule(
-        nh_css_StyleSheetObject *StyleSheet_p, char *name_p
+        nh_webidl_Object *StyleSheet_p, char *name_p
     );
 
 /** @} */

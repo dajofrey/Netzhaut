@@ -84,8 +84,8 @@ void nh_html_updateImageData(
     char *selectedSource_p = NULL;
     int selectedPixelDensity = -1;
 
-    nh_dom_Attr *Attr_p = nh_dom_getAttrByLocalName(
-        nh_dom_getElement((nh_webidl_Object*)Image_p), "src"
+    nh_webidl_Object *Attr_p = nh_dom_getAttrByLocalName(
+        NH_WEBIDL_GET_DOM_ELEMENT((nh_webidl_Object*)Image_p), "src"
     );
 
     nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attr_p);
@@ -103,12 +103,3 @@ void nh_html_updateImageData(
 //    exit(0);
 //    }
 }
-
-// API =============================================================================================
-
-void *nh_html_getHTMLImageElement(
-    nh_webidl_Object *Object_p)
-{
-    return nh_webidl_getObject(Object_p, "HTML", "HTMLImageElement");
-}
-

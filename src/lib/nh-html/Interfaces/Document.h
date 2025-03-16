@@ -1,5 +1,5 @@
-#ifndef NH_HTML_DOCUMENT_H
-#define NH_HTML_DOCUMENT_H
+#ifndef NH_HTML_INTERFACES_DOCUMENT_H
+#define NH_HTML_INTERFACES_DOCUMENT_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -21,10 +21,6 @@
 
     nh_webidl_Object *nh_html_createDocument(
         nh_html_DocumentContext *Context_p
-    );
-
-    nh_webidl_Object *nh_html_getDocument(
-        nh_webidl_Object *Object_p
     );
 
 /** @} */

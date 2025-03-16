@@ -54,7 +54,7 @@
     );
 
     NH_API_RESULT nh_css_computeCanvas(
-        nh_css_Canvas *Canvas_p, nh_webidl_Object *HTMLElement_p, nh_css_StyleSheetListObject *StyleSheets_p
+        nh_css_Canvas *Canvas_p, nh_webidl_Object *HTMLElement_p, nh_webidl_Object *StyleSheets_p
     );
 
     nh_api_CanvasType nh_css_createCanvasType(

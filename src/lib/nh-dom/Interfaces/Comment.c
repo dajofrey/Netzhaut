@@ -31,12 +31,12 @@ NH_API_RESULT nh_dom_initializeComment(
 
 // INTERNAL ========================================================================================
 
-nh_dom_Comment *nh_dom_createComment(
+nh_webidl_Object *nh_dom_createComment(
     nh_webidl_DOMString DOMString)
 {
     nh_webidl_Object *Comment_p = nh_webidl_createObject("DOM", "Comment");
     NH_CORE_CHECK_MEM_2(NULL, Comment_p)
-    NH_CORE_CHECK_2(NULL, nh_dom_appendToCharacterData((nh_dom_CharacterData*)Comment_p->Parent_p, DOMString))
-    return (nh_dom_Comment*)Comment_p;
+    NH_CORE_CHECK_2(NULL, nh_dom_appendToCharacterData((nh_webidl_Object*)Comment_p->Parent_p, DOMString))
+    return (nh_webidl_Object*)Comment_p;
 }
 

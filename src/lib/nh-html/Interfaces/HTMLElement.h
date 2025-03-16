@@ -18,10 +18,6 @@
  *  @{
  */
 
-    void *nh_html_getHTMLElement(
-        nh_webidl_Object *Object_p
-    );
-    
     void nh_html_setToken(
         void *HTMLElement_p, nh_html_Token *Token_p
     );

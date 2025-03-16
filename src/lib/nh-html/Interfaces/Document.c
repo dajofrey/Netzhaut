@@ -36,13 +36,7 @@ nh_webidl_Object *nh_html_createDocument(
 
     // The node document of a document is that document itself. 
     // All nodes have a node document at all times. 
-    nh_dom_setNodeDocument(nh_dom_getNode(Document_p), Document_p);
+    nh_dom_setNodeDocument(NH_WEBIDL_GET_DOM_NODE(Document_p), Document_p);
 
     return Document_p;
-}
-
-nh_webidl_Object *nh_html_getDocument(
-    nh_webidl_Object *Object_p)
-{
-    return nh_webidl_getObject(Object_p, "HTML", "Document");
 }

@@ -26,7 +26,7 @@
         nh_webidl_Object *Document_p
     );
 
-    nh_css_StyleSheetListObject *nh_css_getStyleSheetList(
+    nh_webidl_Object *nh_css_getStyleSheetList(
         nh_webidl_Object *Document_p
     );
 

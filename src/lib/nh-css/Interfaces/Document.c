@@ -43,7 +43,7 @@ nh_css_Layout *nh_css_getLayout(
     return Document_p->internal_p;
 }
 
-nh_css_StyleSheetListObject *nh_css_getStyleSheetList(
+nh_webidl_Object *nh_css_getStyleSheetList(
     nh_webidl_Object *Document_p)
 {
     return Document_p->Attributes.pp[0];

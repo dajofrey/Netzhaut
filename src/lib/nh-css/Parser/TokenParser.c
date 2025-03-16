@@ -397,7 +397,7 @@ nh_webidl_Object *nh_css_parseStyleSheet(
     NH_CORE_CHECK_2(NULL, nh_css_logObjects(CSSStyleSheet_p, nh_css_getRuleListData(nh_css_getRuleList(CSSStyleSheet_p))))
 
     if (Document_p) {
-        nh_css_StyleSheetListObject *StyleSheetList_p = nh_css_getStyleSheetList(Document_p);
+        nh_webidl_Object *StyleSheetList_p = nh_css_getStyleSheetList(Document_p);
         nh_css_appendToStyleSheetList(StyleSheetList_p, CSSStyleSheet_p);
     }
 

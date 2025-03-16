@@ -26,34 +26,22 @@
 #include <string.h>
 #include <ctype.h>
 
-// DECLARE =========================================================================================
-
-typedef struct nh_dom_Element {
-    int TODO;
-} nh_dom_Element;
-
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_dom_initializeElement(
     nh_webidl_Object *Element_p)
 {
-    Element_p->internal_p = nh_core_allocate(sizeof(nh_dom_Element));
+    Element_p->internal_p = nh_core_allocate(sizeof(nh_webidl_Object));
     NH_CORE_CHECK_MEM(Element_p->internal_p)
 
-    Element_p->Attributes.pp[9] = nh_dom_createNamedNodeMap((nh_dom_Element*)Element_p);
+    Element_p->Attributes.pp[9] = nh_dom_createNamedNodeMap((nh_webidl_Object*)Element_p);
     NH_CORE_CHECK_MEM(Element_p->Attributes.pp[9])
 
     return NH_API_SUCCESS;
 }
 
-nh_dom_Element *nh_dom_getElement(
-    nh_webidl_Object *Object_p)
-{
-    return (nh_dom_Element*)nh_webidl_getObject(Object_p, "DOM", "Element");
-}
-
 static nh_webidl_DOMString *nh_dom_allocateQualifiedName(
-    nh_dom_Element *Element_p)
+    nh_webidl_Object *Element_p)
 {
     nh_webidl_DOMString *QualifiedName_p = nh_core_allocate(sizeof(nh_webidl_DOMString));
     NH_CORE_CHECK_MEM_2(NULL, QualifiedName_p)
@@ -77,7 +65,7 @@ static nh_webidl_DOMString *nh_dom_allocateQualifiedName(
 
 // https://dom.spec.whatwg.org/#element-html-uppercased-qualified-name
 static nh_webidl_DOMString *nh_dom_allocateHTMLUppercasedQualifiedName(
-    nh_dom_Element *Element_p)
+    nh_webidl_Object *Element_p)
 {
     nh_webidl_DOMString *QualifiedName_p = nh_dom_allocateQualifiedName(Element_p);
     NH_CORE_CHECK_NULL_2(NULL, QualifiedName_p)
@@ -108,7 +96,7 @@ nh_webidl_Object *nh_dom_createElement(
     nh_webidl_Object *Object_p = nh_webidl_createObjectFromInterface(Interface_p);
     NH_CORE_CHECK_NULL_2(NULL, Object_p)
 
-    nh_dom_Element *Element_p = nh_dom_getElement(Object_p);
+    nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Object_p);
     NH_CORE_CHECK_NULL_2(NULL, Element_p)
 
     ((nh_webidl_Object*)Element_p)->Attributes.pp[0] = Namespace_p;
@@ -117,13 +105,13 @@ nh_webidl_Object *nh_dom_createElement(
     ((nh_webidl_Object*)Element_p)->Attributes.pp[3] = nh_dom_allocateHTMLUppercasedQualifiedName(Element_p);
 
     NH_CORE_CHECK_NULL_2(NULL, ((nh_webidl_Object*)Element_p)->Attributes.pp[3])
-    NH_CORE_CHECK_2(NULL, nh_dom_setNodeDocument(nh_dom_getNode((nh_webidl_Object*)Element_p), Document_p))
+    NH_CORE_CHECK_2(NULL, nh_dom_setNodeDocument(NH_WEBIDL_GET_DOM_NODE((nh_webidl_Object*)Element_p), Document_p))
 
     return Object_p;
 }
 
 nh_webidl_DOMString *nh_dom_getNamespaceURI(
-    nh_dom_Element *Element_p)
+    nh_webidl_Object *Element_p)
 {
     return ((nh_webidl_Object*)Element_p)->Attributes.pp[0];
 }
@@ -135,27 +123,27 @@ nh_webidl_DOMString *nh_dom_getLocalName(
 }
 
 nh_webidl_DOMString *nh_dom_getTagName(
-    nh_dom_Element *Element_p)
+    nh_webidl_Object *Element_p)
 {
     return ((nh_webidl_Object*)Element_p)->Attributes.pp[3];
 }
 
-nh_dom_NamedNodeMap *nh_dom_getNamedNodeMap(
-    nh_dom_Element *Element_p)
+nh_webidl_Object *nh_dom_getNamedNodeMap(
+    nh_webidl_Object *Element_p)
 {
     return ((nh_webidl_Object*)Element_p)->Attributes.pp[9];
 }
 
 // ATTRIBUTES ======================================================================================
 
-nh_dom_Attr *nh_dom_getAttrByNamespaceAndLocalName(
-    nh_dom_Element *Element_p, nh_webidl_DOMString *Namespace_p, nh_webidl_DOMString *LocalName_p)
+nh_webidl_Object *nh_dom_getAttrByNamespaceAndLocalName(
+    nh_webidl_Object *Element_p, nh_webidl_DOMString *Namespace_p, nh_webidl_DOMString *LocalName_p)
 {
     nh_core_List *AttrList_p = nh_dom_getAttrList(((nh_webidl_Object*)Element_p)->Attributes.pp[9]);
 
     for (int i = 0; i < AttrList_p->size; ++i) 
     {
-        nh_dom_Attr *Attr_p = AttrList_p->pp[i];
+        nh_webidl_Object *Attr_p = AttrList_p->pp[i];
 
         nh_webidl_DOMString *AttrNamespace_p = nh_dom_getAttrNamespace(Attr_p);
         nh_webidl_DOMString *AttrLocalName_p = nh_dom_getAttrLocalName(Attr_p);
@@ -170,14 +158,14 @@ nh_dom_Attr *nh_dom_getAttrByNamespaceAndLocalName(
     return NULL;
 }
 
-nh_dom_Attr *nh_dom_getAttrByLocalName(
+nh_webidl_Object *nh_dom_getAttrByLocalName(
     nh_webidl_Object *DOMElement_p, char *localName_p)
 {
     nh_core_List *AttrList_p = nh_dom_getAttrList(DOMElement_p->Attributes.pp[9]);
 
     for (int i = 0; i < AttrList_p->size; ++i) 
     {
-        nh_dom_Attr *Attr_p = AttrList_p->pp[i];
+        nh_webidl_Object *Attr_p = AttrList_p->pp[i];
         nh_webidl_DOMString *AttrLocalName_p = nh_dom_getAttrLocalName(Attr_p);
 
         if (!strcmp(AttrLocalName_p->p, localName_p)) {
@@ -189,7 +177,7 @@ nh_dom_Attr *nh_dom_getAttrByLocalName(
 }
 
 NH_API_RESULT nh_dom_replaceAttr(
-    nh_dom_Element *Element_p, nh_dom_Attr *OldAttr_p, nh_dom_Attr *NewAttr_p)
+    nh_webidl_Object *Element_p, nh_webidl_Object *OldAttr_p, nh_webidl_Object *NewAttr_p)
 {
     // TODO handle attr changes
 
@@ -207,7 +195,7 @@ NH_API_RESULT nh_dom_replaceAttr(
 }
 
 NH_API_RESULT nh_dom_appendAttr(
-    nh_dom_Element *Element_p, nh_dom_Attr *Attr_p)
+    nh_webidl_Object *Element_p, nh_webidl_Object *Attr_p)
 {
     // TODO handle attr changes
 
@@ -218,15 +206,15 @@ NH_API_RESULT nh_dom_appendAttr(
     return NH_API_SUCCESS;
 }
 
-nh_dom_Attr *nh_dom_setAttr(
-    nh_dom_Element *Element_p, nh_dom_Attr *Attr_p)
+nh_webidl_Object *nh_dom_setAttr(
+    nh_webidl_Object *Element_p, nh_webidl_Object *Attr_p)
 {
-    nh_dom_Element *AttrElement_p = nh_dom_getAttrElement(Attr_p);
+    nh_webidl_Object *AttrElement_p = nh_dom_getAttrElement(Attr_p);
     if (AttrElement_p != NULL || Element_p != AttrElement_p) {
         return NULL; 
     }
 
-    nh_dom_Attr *OldAttr_p = nh_dom_getAttrByNamespaceAndLocalName(
+    nh_webidl_Object *OldAttr_p = nh_dom_getAttrByNamespaceAndLocalName(
         Element_p, nh_dom_getAttrNamespace(Attr_p), nh_dom_getAttrLocalName(Attr_p)
     );
 

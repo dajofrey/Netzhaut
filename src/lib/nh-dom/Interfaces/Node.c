@@ -26,13 +26,13 @@
 #define NODE_TYPE Node_p->Attributes.pp[0]
 #define NODE_NAME Node_p->Attributes.pp[1] 
 
-typedef struct nh_dom_NodeInternal {
+typedef struct nh_dom_Internal {
     nh_webidl_Object *Document_p;
     nh_core_List RegisteredObservers;
     nh_core_Array SpecifiedPropertyValues;
     nh_core_List ComputedPropertyValues;
     bool updateAnnotations;
-} nh_dom_NodeInternal;
+} nh_dom_Internal;
 
 // INITIALIZE ======================================================================================
 
@@ -88,122 +88,113 @@ static NH_API_RESULT nh_dom_setNodeType(
 NH_API_RESULT nh_dom_initializeNode(
     nh_webidl_Object *Node_p)
 {
-    Node_p->internal_p = nh_core_allocate(sizeof(nh_dom_NodeInternal));
+    Node_p->internal_p = nh_core_allocate(sizeof(nh_dom_Internal));
     NH_CORE_CHECK_MEM(Node_p->internal_p)
 
-    ((nh_dom_NodeInternal*)Node_p->internal_p)->Document_p = NULL;
-    ((nh_dom_NodeInternal*)Node_p->internal_p)->RegisteredObservers = nh_core_initList(8);
+    ((nh_dom_Internal*)Node_p->internal_p)->Document_p = NULL;
+    ((nh_dom_Internal*)Node_p->internal_p)->RegisteredObservers = nh_core_initList(8);
 
     NH_CORE_CHECK(nh_dom_setNodeType(Node_p))
 
     Node_p->Attributes.pp[7] = nh_dom_createNodeList();
     NH_CORE_CHECK_MEM(Node_p->Attributes.pp[7])
 
-    ((nh_dom_NodeInternal*)Node_p->internal_p)->SpecifiedPropertyValues = nh_core_initArray(0, 0);
-    ((nh_dom_NodeInternal*)Node_p->internal_p)->ComputedPropertyValues  = nh_core_initList(0);
-    ((nh_dom_NodeInternal*)Node_p->internal_p)->updateAnnotations       = true;
+    ((nh_dom_Internal*)Node_p->internal_p)->SpecifiedPropertyValues = nh_core_initArray(0, 0);
+    ((nh_dom_Internal*)Node_p->internal_p)->ComputedPropertyValues  = nh_core_initList(0);
+    ((nh_dom_Internal*)Node_p->internal_p)->updateAnnotations       = true;
 
     return NH_API_SUCCESS;
 }
 
 // INTERNAL ========================================================================================
 
-nh_dom_Node *nh_dom_getNode(
-    nh_webidl_Object *Object_p)
-{
-    return (nh_dom_Node*)nh_webidl_getObject(Object_p, "DOM", "Node");
-}
-
 NH_API_RESULT nh_dom_appendToNode(
-    nh_dom_Node *Node_p, nh_webidl_Object *Child_p)
+    nh_webidl_Object *Node_p, nh_webidl_Object *Child_p)
 {
-    return nh_dom_appendToNodeList(((nh_webidl_Object*)Node_p)->Attributes.pp[7], Child_p);
+    return nh_dom_appendToNodeList(Node_p->Attributes.pp[7], Child_p);
 }
 
 NH_API_RESULT nh_dom_insertIntoNode(
-    nh_dom_Node *Node_p, nh_webidl_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index)
+    nh_webidl_Object *Node_p, nh_webidl_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index)
 {
-    return nh_dom_insertIntoNodeList(((nh_webidl_Object*)Node_p)->Attributes.pp[7], Child_p, index);
+    return nh_dom_insertIntoNodeList(Node_p->Attributes.pp[7], Child_p, index);
 }
 
 nh_core_List *nh_dom_getNodeChildren(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
-    return nh_dom_getNodeList(((nh_webidl_Object*)Node_p)->Attributes.pp[7]);
+    return NH_WEBIDL_GET_DOM_NODEList(Node_p->Attributes.pp[7]);
 }
 
 NH_API_RESULT nh_dom_setNodeDocument(
-    nh_dom_Node *Node_p, nh_webidl_Object *NodeDocument_p)
+    nh_webidl_Object *Node_p, nh_webidl_Object *NodeDocument_p)
 {
-    ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->Document_p = NodeDocument_p;
+    ((nh_dom_Internal*)Node_p->internal_p)->Document_p = NodeDocument_p;
     return NH_API_SUCCESS;
 }
 
 nh_webidl_Object *nh_dom_getNodeDocument(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
-    return ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->Document_p;
+    return ((nh_dom_Internal*)Node_p->internal_p)->Document_p;
 }
 
 NH_API_RESULT nh_dom_setSpecifiedPropertyValues(
-    nh_dom_Node *Node_p, nh_core_Array SpecifiedPropertyValues)
+    nh_webidl_Object *Node_p, nh_core_Array SpecifiedPropertyValues)
 {
-    ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->SpecifiedPropertyValues
-        = SpecifiedPropertyValues;
+    ((nh_dom_Internal*)Node_p->internal_p)->SpecifiedPropertyValues = SpecifiedPropertyValues;
     return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_dom_setComputedPropertyValues(
-    nh_dom_Node *Node_p, nh_core_List ComputedPropertyValues)
+    nh_webidl_Object *Node_p, nh_core_List ComputedPropertyValues)
 {
-    ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->ComputedPropertyValues
-        = ComputedPropertyValues;
+    ((nh_dom_Internal*)Node_p->internal_p)->ComputedPropertyValues = ComputedPropertyValues;
     return NH_API_SUCCESS;
 }
 
 nh_core_Array *nh_dom_getSpecifiedPropertyValues(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
-    return &((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->SpecifiedPropertyValues;
+    return &((nh_dom_Internal*)Node_p->internal_p)->SpecifiedPropertyValues;
 }
 
 nh_core_List *nh_dom_getComputedPropertyValues(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
-    return &((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->ComputedPropertyValues;
+    return &((nh_dom_Internal*)Node_p->internal_p)->ComputedPropertyValues;
 }
 
 bool nh_dom_getUpdateAnnotationsFlag(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
-    return ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->updateAnnotations;
+    return ((nh_dom_Internal*)Node_p->internal_p)->updateAnnotations;
 }
 
 NH_API_RESULT nh_dom_setUpdateAnnotationsFlag(
-    nh_dom_Node *Node_p, bool update)
+    nh_webidl_Object *Node_p, bool update)
 {
-    ((nh_dom_NodeInternal*)((nh_webidl_Object*)Node_p)->internal_p)->updateAnnotations = update;
+    ((nh_dom_Internal*)Node_p->internal_p)->updateAnnotations = update;
     return NH_API_SUCCESS;
 }
 
 void nh_dom_setParentNode(
-    nh_dom_Node *Node_p, nh_webidl_Object *Parent_p)
+    nh_webidl_Object *Node_p, nh_webidl_Object *Parent_p)
 {
     if (nh_webidl_getObject(Parent_p, "DOM", "Element")) {
-       ((nh_webidl_Object*)Node_p)->Attributes.pp[6] = Parent_p;
+       Node_p->Attributes.pp[6] = Parent_p;
     }
-    ((nh_webidl_Object*)Node_p)->Attributes.pp[5] = Parent_p;
+    Node_p->Attributes.pp[5] = Parent_p;
 }
 
 nh_webidl_Object *nh_dom_getParentNode(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
-    return ((nh_webidl_Object*)Node_p)->Attributes.pp[5];
+    return Node_p->Attributes.pp[5];
 }
 
 nh_webidl_Object *nh_dom_getParentElement(
-    nh_dom_Node *Node_p)
+    nh_webidl_Object *Node_p)
 {
     return ((nh_webidl_Object*)Node_p)->Attributes.pp[6];
 }
-

@@ -13,7 +13,7 @@
 
 #include "../Common/Includes.h"
 
-extern nh_css_StyleSheetObject *NH_CSS_DEFAULT_STYLE_SHEET_P;
+extern nh_webidl_Object *NH_CSS_DEFAULT_STYLE_SHEET_P;
 
 typedef struct nh_css_ComponentValueData {
     nh_core_Array Tokens;

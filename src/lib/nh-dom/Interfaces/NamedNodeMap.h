@@ -16,16 +16,16 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-    nh_dom_NamedNodeMap *nh_dom_createNamedNodeMap(
-        nh_dom_Element *Element_p
+    nh_webidl_Object *nh_dom_createNamedNodeMap(
+        nh_webidl_Object *Element_p
     );
 
-    nh_dom_Attr* nh_dom_getAttr(
-        nh_dom_NamedNodeMap *NamedNodeMap_p, NH_WEBIDL_UNSIGNED_LONG index
+    nh_webidl_Object* nh_dom_getAttr(
+        nh_webidl_Object *NamedNodeMap_p, NH_WEBIDL_UNSIGNED_LONG index
     );
 
     nh_core_List *nh_dom_getAttrList(
-        nh_dom_NamedNodeMap *NamedNodeMap_p
+        nh_webidl_Object *NamedNodeMap_p
     );
 
 /** @} */

@@ -27,7 +27,7 @@
 
 // DATA ============================================================================================
 
-nh_css_StyleSheetObject *NH_CSS_DEFAULT_STYLE_SHEET_P = NULL;
+nh_webidl_Object *NH_CSS_DEFAULT_STYLE_SHEET_P = NULL;
 	
 // FUNCTIONS =======================================================================================
 

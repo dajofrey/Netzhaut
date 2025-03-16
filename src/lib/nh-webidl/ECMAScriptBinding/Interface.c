@@ -47,4 +47,3 @@ NH_API_RESULT nh_webidl_createInterfaceObjects(
 
     return NH_API_SUCCESS;
 }
-

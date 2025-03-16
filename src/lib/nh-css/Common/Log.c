@@ -251,8 +251,8 @@ NH_API_RESULT nh_css_logObjects(
         nh_core_log(node_p, NULL, message_p);
         memset(message_p, 0, NH_CSS_MAX_MESSAGE);
 
-        if (nh_css_getCSSStyleRule(Rule_p)) {
-            NH_CORE_CHECK(nh_css_logStyleRule(node_p, message_p, indent_p, nh_css_getCSSStyleRule(Rule_p)))
+        if (NH_WEBIDL_GET_CSS_STYLE_RULE(Rule_p)) {
+            NH_CORE_CHECK(nh_css_logStyleRule(node_p, message_p, indent_p, NH_WEBIDL_GET_CSS_STYLE_RULE(Rule_p)))
         }
 
         memset(message_p, 0, NH_CSS_MAX_MESSAGE);

@@ -31,7 +31,7 @@ NH_API_RESULT nh_css_initializeStyleSheetList(
 }
 
 NH_API_RESULT nh_css_appendToStyleSheetList(
-    nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_StyleSheetObject *StyleSheet_p)
+    nh_webidl_Object *StyleSheetList_p, nh_webidl_Object *StyleSheet_p)
 {
     nh_core_appendToList(((nh_webidl_Object*)StyleSheetList_p)->internal_p, StyleSheet_p);
 
@@ -39,7 +39,7 @@ NH_API_RESULT nh_css_appendToStyleSheetList(
 }
 
 nh_core_List *nh_css_getStyleSheetListData(
-    nh_css_StyleSheetListObject *StyleSheetList_p)
+    nh_webidl_Object *StyleSheetList_p)
 {
     return ((nh_webidl_Object*)StyleSheetList_p)->internal_p;
 }

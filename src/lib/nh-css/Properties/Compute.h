@@ -19,11 +19,11 @@
  */
 
     NH_API_RESULT nh_css_computeSpecifiedValues(
-        nh_css_LogContext *LogContext_p, nh_dom_Node *Node_p
+        nh_css_LogContext *LogContext_p, nh_webidl_Object *Node_p
     );
 
     NH_API_RESULT nh_css_freeComputedValues(
-        nh_dom_Node *Node_p
+        nh_webidl_Object *Node_p
     );
 
 /** @} */

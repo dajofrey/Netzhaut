@@ -16,7 +16,7 @@
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_appendToRuleList(
-    nh_css_RuleListObject *RuleList_p, nh_webidl_Object *Object_p
+    nh_webidl_Object *RuleList_p, nh_webidl_Object *Object_p
 );
 
 nh_core_List *nh_css_getRuleListData(

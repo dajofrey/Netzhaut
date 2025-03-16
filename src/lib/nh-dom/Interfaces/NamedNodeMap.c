@@ -21,41 +21,41 @@
 
 // DECLARE =========================================================================================
 
-typedef struct nh_dom_NamedNodeMapInternal {
-    nh_dom_Element *Element_p;
+typedef struct nh_dom_Internal {
+    nh_webidl_Object *Element_p;
     nh_core_List AttributeList;
-} nh_dom_NamedNodeMapInternal;
+} nh_dom_Internal;
 
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_dom_initializeNamedNodeMap(
     nh_webidl_Object *NamedNodeMap_p)
 {
-    NamedNodeMap_p->internal_p = nh_core_allocate(sizeof(nh_dom_NamedNodeMapInternal));
+    NamedNodeMap_p->internal_p = nh_core_allocate(sizeof(nh_dom_Internal));
     NH_CORE_CHECK_MEM(NamedNodeMap_p->internal_p)
 
-    ((nh_dom_NamedNodeMapInternal*)NamedNodeMap_p->internal_p)->AttributeList = nh_core_initList(8);
-    NamedNodeMap_p->Attributes.pp[0] = &((nh_dom_NamedNodeMapInternal*)NamedNodeMap_p->internal_p)->AttributeList.size;
+    ((nh_dom_Internal*)NamedNodeMap_p->internal_p)->AttributeList = nh_core_initList(8);
+    NamedNodeMap_p->Attributes.pp[0] = &((nh_dom_Internal*)NamedNodeMap_p->internal_p)->AttributeList.size;
 
     return NH_API_SUCCESS;
 }
 
-nh_dom_NamedNodeMap *nh_dom_createNamedNodeMap(
-    nh_dom_Element *Element_p)
+nh_webidl_Object *nh_dom_createNamedNodeMap(
+    nh_webidl_Object *Element_p)
 {
     nh_webidl_Object *NamedNodeMap_p = nh_webidl_createObject("DOM", "NamedNodeMap");
     NH_CORE_CHECK_MEM_2(NULL, NamedNodeMap_p)
 
-    ((nh_dom_NamedNodeMapInternal*)NamedNodeMap_p->internal_p)->Element_p = Element_p;
+    ((nh_dom_Internal*)NamedNodeMap_p->internal_p)->Element_p = Element_p;
 
-    return (nh_dom_NamedNodeMap*)NamedNodeMap_p;
+    return (nh_webidl_Object*)NamedNodeMap_p;
 }
 
-nh_dom_Attr* nh_dom_getAttr(
-    nh_dom_NamedNodeMap *NamedNodeMap_p, NH_WEBIDL_UNSIGNED_LONG index)
+nh_webidl_Object* nh_dom_getAttr(
+    nh_webidl_Object *NamedNodeMap_p, NH_WEBIDL_UNSIGNED_LONG index)
 {
     nh_core_List *AttributeList_p = 
-        &((nh_dom_NamedNodeMapInternal*)((nh_webidl_Object*)NamedNodeMap_p)->internal_p)->AttributeList;
+        &((nh_dom_Internal*)((nh_webidl_Object*)NamedNodeMap_p)->internal_p)->AttributeList;
 
     if (index >= AttributeList_p->size) {
         return NULL;
@@ -65,7 +65,7 @@ nh_dom_Attr* nh_dom_getAttr(
 }
 
 nh_core_List *nh_dom_getAttrList(
-    nh_dom_NamedNodeMap *NamedNodeMap_p)
+    nh_webidl_Object *NamedNodeMap_p)
 {
-    return &((nh_dom_NamedNodeMapInternal*)((nh_webidl_Object*)NamedNodeMap_p)->internal_p)->AttributeList;
+    return &((nh_dom_Internal*)((nh_webidl_Object*)NamedNodeMap_p)->internal_p)->AttributeList;
 }

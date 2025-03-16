@@ -1,5 +1,5 @@
-#ifndef NH_HTML_HTML_IMAGE_ELEMENT_H
-#define NH_HTML_HTML_IMAGE_ELEMENT_H
+#ifndef NH_HTML_INTERFACES_HTML_IMAGE_ELEMENT_H
+#define NH_HTML_INTERFACES_HTML_IMAGE_ELEMENT_H
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -21,10 +21,6 @@
         nh_webidl_Object *Image_p
     );
 
-    void *nh_html_getHTMLImageElement(
-        nh_webidl_Object *Object_p
-    );
-    
     void nh_html_updateImageData(
         void *Image_p, bool restartAnimations
     );

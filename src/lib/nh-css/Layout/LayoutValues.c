@@ -57,10 +57,12 @@ static int nh_css_getLengthPercentage(
     nh_css_Fragment *Fragment_p, nh_css_Value *Value_p)
 {
     if (Value_p->Common.type == NH_CSS_VALUE_FUNCTION) {
-        // TODO
+        puts("ssaaadafafdsd");
+        exit(0);
     }
     else if (Value_p->Common.type == NH_CSS_VALUE_PERCENTAGE) {
-        // TODO
+        puts("gasadddddddddddddf");
+        exit(0);
     }
     else if (Value_p->Common.type == NH_CSS_VALUE_PX) {
         return (int)Value_p->number;

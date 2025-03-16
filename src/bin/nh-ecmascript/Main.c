@@ -46,4 +46,3 @@ int main(
 
     nh_api_terminate();
 }
-

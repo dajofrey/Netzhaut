@@ -40,13 +40,13 @@ NH_API_RESULT nh_dom_initializeNodeList(
 
 // INTERNAL ========================================================================================
 
-nh_dom_NodeList *nh_dom_createNodeList()
+nh_webidl_Object *nh_dom_createNodeList()
 {
-    return (nh_dom_NodeList*)nh_webidl_createObject("DOM", "NodeList");
+    return (nh_webidl_Object*)nh_webidl_createObject("DOM", "NodeList");
 }
 
 NH_API_RESULT nh_dom_appendToNodeList(
-    nh_dom_NodeList *NodeList_p, nh_webidl_Object *Node_p)
+    nh_webidl_Object *NodeList_p, nh_webidl_Object *Node_p)
 {
     nh_core_appendToList(((nh_webidl_Object*)NodeList_p)->internal_p, Node_p);
 
@@ -54,7 +54,7 @@ NH_API_RESULT nh_dom_appendToNodeList(
 }
 
 NH_API_RESULT nh_dom_insertIntoNodeList(
-    nh_dom_NodeList *NodeList_p, nh_webidl_Object *Node_p, NH_WEBIDL_UNSIGNED_LONG index)
+    nh_webidl_Object *NodeList_p, nh_webidl_Object *Node_p, NH_WEBIDL_UNSIGNED_LONG index)
 {
     nh_core_insertIntoList(((nh_webidl_Object*)NodeList_p)->internal_p, Node_p, index);
 
@@ -62,19 +62,19 @@ NH_API_RESULT nh_dom_insertIntoNodeList(
 }
 
 nh_webidl_Object *nh_dom_getFromNodeList(
-    nh_dom_NodeList *NodeList_p, NH_WEBIDL_UNSIGNED_LONG index)
+    nh_webidl_Object *NodeList_p, NH_WEBIDL_UNSIGNED_LONG index)
 {
     return ((nh_core_List*)((nh_webidl_Object*)NodeList_p)->internal_p)->pp[index];
 }
 
-NH_WEBIDL_UNSIGNED_LONG nh_dom_getNodeListLength(
-    nh_dom_NodeList *NodeList_p)
+NH_WEBIDL_UNSIGNED_LONG NH_WEBIDL_GET_DOM_NODEListLength(
+    nh_webidl_Object *NodeList_p)
 {
     return *((NH_WEBIDL_UNSIGNED_LONG*)((nh_webidl_Object*)NodeList_p)->Attributes.pp[0]);
 }
 
-nh_core_List *nh_dom_getNodeList(
-    nh_dom_NodeList *NodeList_p)
+nh_core_List *NH_WEBIDL_GET_DOM_NODEList(
+    nh_webidl_Object *NodeList_p)
 {
     return ((nh_webidl_Object*)NodeList_p)->internal_p;
 }

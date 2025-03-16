@@ -184,19 +184,19 @@ static nh_core_Array nh_css_getDeclarations(
 }
 
 static NH_API_RESULT nh_css_parseQualifiedRule(
-    nh_css_Rule *Rule_p, nh_css_RuleListObject *RuleList_p)
+    nh_css_Rule *Rule_p, nh_webidl_Object *RuleList_p)
 {
     nh_css_SelectorParseNode *Selectors_p = nh_css_parseSelectorList(Rule_p->Prelude);
     NH_CORE_CHECK_NULL(Selectors_p)
 
     nh_core_Array Declarations = nh_css_getDeclarations(Rule_p);
 
-    nh_css_StyleDeclarationObject *StyleDeclaration_p = nh_css_createStyleDeclaration(Declarations);
+    nh_webidl_Object *StyleDeclaration_p = nh_css_createStyleDeclaration(Declarations);
     NH_CORE_CHECK_NULL(StyleDeclaration_p)
     nh_webidl_Object *CSSStyleRule_p = nh_css_createStyleRule(Selectors_p, StyleDeclaration_p);
     NH_CORE_CHECK_NULL(CSSStyleRule_p)
 
-    nh_css_setRuleData(nh_css_getRule(CSSStyleRule_p), *Rule_p);
+    nh_css_setRuleData(NH_WEBIDL_GET_CSS_RULE(CSSStyleRule_p), *Rule_p);
     nh_css_appendToRuleList(RuleList_p, CSSStyleRule_p);
 
     return NH_API_SUCCESS;
@@ -205,7 +205,7 @@ static NH_API_RESULT nh_css_parseQualifiedRule(
 // AT RULES ========================================================================================
 
 static NH_API_RESULT nh_css_parseAtRule(
-    nh_css_Rule *Rule_p, nh_css_RuleListObject *RuleList_p)
+    nh_css_Rule *Rule_p, nh_webidl_Object *RuleList_p)
 {
     if (Rule_p->Prelude.length <= 0) {
         return NH_API_ERROR_BAD_STATE;
@@ -221,7 +221,7 @@ static NH_API_RESULT nh_css_parseAtRule(
 
     if (Object_p) {
         nh_css_appendToRuleList(RuleList_p, Object_p);
-        nh_css_setRuleData(nh_css_getRule(Object_p), *Rule_p);
+        nh_css_setRuleData(NH_WEBIDL_GET_CSS_RULE(Object_p), *Rule_p);
     }
 
     nh_encoding_freeUTF8(&Name);
@@ -232,7 +232,7 @@ static NH_API_RESULT nh_css_parseAtRule(
 // PARSE ===========================================================================================
 
 NH_API_RESULT nh_css_parseRules(
-    nh_core_Array *Rules_p, nh_css_RuleListObject *RuleList_p)
+    nh_core_Array *Rules_p, nh_webidl_Object *RuleList_p)
 {
     for (int i = 0; i < Rules_p->length; ++i) 
     {

@@ -1,6 +1,6 @@
 # Define the compiler and compile flags
 CC = gcc
-CFLAGS = -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib
+CFLAGS = -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration
 
 # Define the linker and linker flags
 LD = gcc

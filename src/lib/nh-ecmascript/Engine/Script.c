@@ -115,4 +115,3 @@ nh_ecmascript_Completion nh_ecmascript_evaluateScript(
 
     return Result;
 }
-

@@ -27,7 +27,7 @@
 
 // FUNCTIONS =======================================================================================
 
-nh_css_CounterStyleRuleObject *nh_css_createCounterStyleRule(
+nh_webidl_Object *nh_css_createCounterStyleRule(
     nh_core_Array Declaration)
 {
     nh_webidl_Object *CounterStyleRule_p = nh_webidl_createObject("CSS", "CSSCounterStyleRule");
@@ -38,17 +38,11 @@ nh_css_CounterStyleRuleObject *nh_css_createCounterStyleRule(
 
     *((nh_core_Array*)CounterStyleRule_p->internal_p) = Declaration;
 
-    return (nh_css_CounterStyleRuleObject*)CounterStyleRule_p;
-}
-
-nh_css_CounterStyleRuleObject *nh_css_getCounterStyleRule(
-    nh_webidl_Object *Object_p)
-{
-    return (nh_css_CounterStyleRuleObject*)nh_webidl_getObject(Object_p, "CSS", "CSSCounterStyleRule");
+    return (nh_webidl_Object*)CounterStyleRule_p;
 }
 
 static nh_css_Declaration *nh_css_getCounterStyleRuleDeclaration(
-    nh_css_CounterStyleRuleObject *CounterStyleRule_p, char *declaration_p)
+    nh_webidl_Object *CounterStyleRule_p, char *declaration_p)
 {
     nh_core_Array *Declarations_p = ((nh_webidl_Object*)CounterStyleRule_p)->internal_p;
     for (int i = 0; i < Declarations_p->length; ++i) {
@@ -62,7 +56,7 @@ static nh_css_Declaration *nh_css_getCounterStyleRuleDeclaration(
 }
 
 nh_encoding_UTF32String nh_css_calculateMarkerString(
-    nh_css_CounterStyleRuleObject *CounterStyleRule_p)
+    nh_webidl_Object *CounterStyleRule_p)
 {
     nh_encoding_UTF32String Marker = nh_encoding_initUTF32(16);
 

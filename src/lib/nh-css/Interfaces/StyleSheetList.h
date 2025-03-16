@@ -18,11 +18,11 @@
  */
 
     NH_API_RESULT nh_css_appendToStyleSheetList(
-        nh_css_StyleSheetListObject *StyleSheetList_p, nh_css_StyleSheetObject *StyleSheet_p
+        nh_webidl_Object *StyleSheetList_p, nh_webidl_Object *StyleSheet_p
     );
 
     nh_core_List *nh_css_getStyleSheetListData(
-        nh_css_StyleSheetListObject *StyleSheetList_p
+        nh_webidl_Object *StyleSheetList_p
     );
 
 /** @} */
