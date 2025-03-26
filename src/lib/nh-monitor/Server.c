@@ -10,6 +10,8 @@
 
 #include "Server.h"
 
+#include "../nh-core/Util/Debug.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,7 +31,7 @@ int nh_monitor_createMonitorSocket(
     struct sockaddr_in address;
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        puts("Socket failed");
+        nh_core_debug("Socket failed");
         return -1;
     }
 
@@ -49,13 +51,13 @@ int nh_monitor_createMonitorSocket(
     address.sin_port = htons(port);
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        puts("Bind failed");
+        nh_core_debug("Bind failed");
         close(server_fd);
         return -1;
     }
 
     if (listen(server_fd, 3) < 0) {
-        puts("Listen failed");
+        nh_core_debug("Listen failed");
         close(server_fd);
         return -1;
     }
@@ -83,7 +85,7 @@ int nh_monitor_acceptLogger(
     char info_p[255] = {0};
     snprintf(info_p, sizeof(info_p), "Accepted a client connection from %s:%d",
              inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-    puts(info_p);
+    nh_core_debug(info_p);
 
     int flags = fcntl(client_socket, F_GETFL, 0);
     fcntl(client_socket, F_SETFL, flags);
@@ -125,7 +127,7 @@ int nh_monitor_receiveMessageFromLogger(
     }
 
     if (totalReceived != size) {
-        puts("Received data mismatch");
+        nh_core_debug("Received data mismatch");
         exit(0);
     }
 
