@@ -213,17 +213,4 @@ void *nh_api_dump(
     char *node_p
 ); 
 
-/**
- * Todo.
- */
-void *nh_api_createMonitorInterface(
-);
-
-/**
- * Todo.
- */
-void nh_api_freeMonitorInterface(
-    void *Interface_p
-);
-
 #endif // NH_API_NH_CORE_H

@@ -12,7 +12,7 @@
 #include "About.h"
 
 #include "../Loader/Loader.h"
-#include "../Logger/Logger.h"
+#include "../Util/Debug.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -117,6 +117,9 @@ NH_API_RESULT nh_core_logModules()
                 case NH_MODULE_URL :
                     ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_URL_VERSION_P");
                     break;
+                case NH_MODULE_MONITOR :
+                    ver_p = NH_LOADER.loadSymbol_f(i, NH_LOADER.Modules_p[i].major, "NH_MONITOR_VERSION_P");
+                    break;
             }
             if (!ver_p) {return NH_API_ERROR_BAD_STATE;}
             sprintf(message_p, "%s%s : ver.%d.%d.%d.%d", NH_MODULE_NAMES_PP[i], indent_p, ver_p[0], ver_p[1], ver_p[2], ver_p[3]);
@@ -139,14 +142,6 @@ void nh_core_logSystemInfo(
     char option_p[64] = {'\0'};
     sprintf(option_p, "replace=%d", line);
     nh_core_log("nh-core:System", option_p, info_p);
-
-    return;
-}
-
-void nh_core_logDebugMessage(
-    char *message_p)
-{
-    nh_core_log("nh-core:Debug", NULL, message_p);
 
     return;
 }

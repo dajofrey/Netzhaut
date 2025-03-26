@@ -83,6 +83,10 @@
 
 // FUNCTIONS =======================================================================================
 
+void nh_core_log(
+    char *node_p, char *option_p, char *message_p
+);
+
 void nh_core_debug(
     char *message_p
 );

@@ -15,7 +15,6 @@
 #include "../System/Memory.h"
 #include "../System/Process.h"
 #include "../System/Thread.h"
-#include "../Logger/Logger.h"
 #include "../Loader/Loader.h"
 #include "../Config/Config.h"
 
@@ -40,9 +39,7 @@ NH_API_RESULT nh_core_terminate(
 
     // Now, everything should have been freed which was used by other modules.
     // Next, we free all core data.
-    nh_core_freeLogger(NULL);
     nh_core_freeIndexMap();
-
     nh_core_freeGlobalConfig();
 
     // Great. Now what remains to be done is for nh-api/nh-core.c to close this module aka the nh-core library

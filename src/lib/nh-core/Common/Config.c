@@ -18,58 +18,27 @@
 #include <termios.h>
 #include <unistd.h>
 
-// DATA ============================================================================================
-
-static nh_core_Config NH_CORE_CONFIG;
-
-const char *NH_CORE_SETTING_NAMES_PP[] = {
-    "loader.unload",
-    "debug.toConsole",
-    "debug.level",
-    "logger.on",
-    "logger.port",
-    "logger.block",
-    "monitor.port",
-    "monitor.name",
-};
-
 // FUNCTIONS =======================================================================================
 
 static NH_API_RESULT nh_core_getSetting(
-    nh_core_Config *Config_p, NH_CORE_SETTING_E setting)
+    nh_core_Config *Config_p, int option, char *option_p)
 {
-    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(
-        NULL, NH_MODULE_CORE, NH_CORE_SETTING_NAMES_PP[setting]);
+    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, NH_MODULE_CORE, option_p);
 
     NH_CORE_CHECK_NULL(Setting_p)
 
-    switch (setting) {
-        case NH_CORE_SETTING_LOADER_UNLOAD :
+    switch (option) {
+        case 0 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->loaderUnload = atoi(Setting_p->pp[0]) == 1;
             break;
-        case NH_CORE_SETTING_DEBUG_TO_CONSOLE :
+        case 1 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->debugToConsole = atoi(Setting_p->pp[0]) == 1;
+            Config_p->monitor_on = atoi(Setting_p->pp[0]) == 1;
             break;
-        case NH_CORE_SETTING_LOGGER_ON :
+        case 2 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->loggerOn = atoi(Setting_p->pp[0]) == 1;
-            break;
-        case NH_CORE_SETTING_LOGGER_PORT :
-            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->loggerPort = atoi(Setting_p->pp[0]);
-        case NH_CORE_SETTING_LOGGER_BLOCK :
-            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->loggerBlock = atoi(Setting_p->pp[0]);
-            break;
-        case NH_CORE_SETTING_MONITOR_PORT :
-            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->monitorPort = atoi(Setting_p->pp[0]);
-            break;
-        case NH_CORE_SETTING_MONITOR_NAME :
-            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            strcpy(Config_p->monitorName_p, Setting_p->pp[0]);
+            Config_p->dump_on = atoi(Setting_p->pp[0]) == 1;
             break;
     }
 
@@ -81,8 +50,16 @@ static nh_core_Config nh_core_getStaticConfig()
     nh_core_Config Config; 
     memset(&Config, 0, sizeof(nh_core_Config)); 
 
-    for (int i = 0; i < NH_CORE_SETTING_E_COUNT; ++i) { 
-        nh_core_getSetting(&Config, i); 
+    static const char *options_pp[] = {
+        "loader.unload",
+        "debug.monitor_on",
+        "debug.dump_on",
+    };
+
+    int options = sizeof(options_pp)/sizeof(options_pp[0]);
+
+    for (int i = 0; i < options; ++i) { 
+        nh_core_getSetting(&Config, i, options_pp[i]); 
     } 
 
     return Config; 
@@ -108,7 +85,7 @@ nh_core_Config nh_core_getConfig()
     nh_core_Config Config = nh_core_getStaticConfig();
 
     if (nh_core_consoleInRawMode() == 1) {
-        Config.debugToConsole = false;
+        Config.dump_on = false;
     }
 
     return Config;

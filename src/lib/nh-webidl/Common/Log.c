@@ -11,7 +11,7 @@
 #include "Log.h"
 
 #include "../Runtime/Definitions.h"
-#include "../../nh-core/Logger/Logger.h"
+#include "../../nh-core/Util/Debug.h"
 
 #include <string.h>
 #include <stdio.h>

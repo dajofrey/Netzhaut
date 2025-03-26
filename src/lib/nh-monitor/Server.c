@@ -9,7 +9,6 @@
 // INCLUDES  =======================================================================================
 
 #include "Server.h"
-#include "../Util/Debug.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,14 +22,14 @@
 
 // FUNCTIONS =======================================================================================
 
-int nh_core_createMonitorSocket(
+int nh_monitor_createMonitorSocket(
     int port)
 {
     int server_fd;
     struct sockaddr_in address;
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        nh_core_debug("Socket failed");
+        puts("Socket failed");
         return -1;
     }
 
@@ -50,13 +49,13 @@ int nh_core_createMonitorSocket(
     address.sin_port = htons(port);
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        nh_core_debug("Bind failed");
+        puts("Bind failed");
         close(server_fd);
         return -1;
     }
 
     if (listen(server_fd, 3) < 0) {
-        nh_core_debug("Listen failed");
+        puts("Listen failed");
         close(server_fd);
         return -1;
     }
@@ -70,7 +69,7 @@ int nh_core_createMonitorSocket(
     return server_fd;
 }
 
-int nh_core_acceptLogger(
+int nh_monitor_acceptLogger(
     int server_fd) 
 {
     struct sockaddr_in client_addr;
@@ -84,7 +83,7 @@ int nh_core_acceptLogger(
     char info_p[255] = {0};
     snprintf(info_p, sizeof(info_p), "Accepted a client connection from %s:%d",
              inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-    nh_core_debug(info_p);
+    puts(info_p);
 
     int flags = fcntl(client_socket, F_GETFL, 0);
     fcntl(client_socket, F_SETFL, flags);
@@ -98,14 +97,14 @@ int nh_core_acceptLogger(
     return client_socket;
 }
 
-void nh_core_closeMonitorSockets(
+void nh_monitor_closeMonitorSockets(
     int client_socket, int server_fd)
 {
     close(client_socket);
     close(server_fd);
 }
 
-int nh_core_receiveMessageFromLogger(
+int nh_monitor_receiveMessageFromLogger(
     int socket, char *buffer, int size, int modulo) 
 {
     size_t totalReceived = 0;
@@ -133,7 +132,7 @@ int nh_core_receiveMessageFromLogger(
     return totalReceived;
 }
 
-int nh_core_sendLoggerMessageAck(
+int nh_monitor_sendLoggerMessageAck(
     int client_fd) 
 {
     const char *ack_message = "ACK";

@@ -8,11 +8,17 @@
 
 // INCLUDES ========================================================================================
 
-#include "Log.h"
+#include "Terminate.h"
+#include "../Logger.h"
 
-#include "../../nh-core/Util/Debug.h"
-
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-// FUNCTIONS =======================================================================================
+// DEBUG ===========================================================================================
+
+NH_API_RESULT nh_monitor_terminate()
+{
+    nh_monitor_freeLogger(NULL);
+    return NH_API_SUCCESS;
+}

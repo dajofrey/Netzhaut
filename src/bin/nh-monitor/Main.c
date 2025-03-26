@@ -90,13 +90,16 @@ int main(
         return 1;
     }
 
-    if (argc > 1) {
+    if (argc == 2) {
         char config_p[128] = {0};
-        sprintf(config_p, "nh-core.monitor.port:%d;", atoi(argv_pp[1]));  
+        sprintf(config_p, "nh-monitor.server_port:%d;", atoi(argv_pp[1]));  
         if (nh_api_loadConfig(config_p, strlen(config_p)) != NH_API_SUCCESS) {
-            puts("Setting monitor port failed. Exiting.");
+            puts("Setting server_port failed. Exiting.");
             return 1;
         }
+    } else {
+        puts("Bad argument count. Exiting.");
+        return 1;
     }
 
     if (openMonitor()) {

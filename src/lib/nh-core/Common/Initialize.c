@@ -16,10 +16,10 @@
 #include "../System/Memory.h"
 #include "../System/Process.h"
 #include "../System/Thread.h"
-#include "../Logger/Logger.h"
 #include "../Loader/Loader.h"
 #include "../Config/Config.h"
 #include "../Config/Updater.h"
+#include "../Util/Debug.h"
 
 #include <dlfcn.h>
 #include <stddef.h>
@@ -40,15 +40,16 @@ nh_core_Loader *nh_core_initialize(
 
     nh_core_initMemory();
     nh_core_initProcessPool();
-    nh_core_initLogger(NULL);
-
-    // Next call may block if nh-core.logger.block:1
-    nh_core_startLoggerWorkload();
-
     nh_core_createIndexMap();
     nh_core_initSystem();
     nh_core_startSystemWorkload();
     nh_core_startConfigWorkload();
 
-    return nh_core_initLoader(false, false);
+    nh_core_Loader *Loader_p = nh_core_initLoader(false, false);
+    if (Loader_p == NULL) {return NULL;}
+
+    // Do not delete, this might block execution for monitor to catch up. 
+    nh_core_debug("Init complete.");
+
+    return Loader_p;
 }

@@ -11,6 +11,7 @@
 #include "Tokenizer.h"
 #include "Parser.h"
 #include "TreeConstruction.h"
+#include "NamedCharacterReferences.h"
 
 #include "../../nh-core/Util/ArrayList.h"
 #include "../../nh-core/System/Memory.h"
@@ -49,7 +50,7 @@ nh_html_Tokenizer nh_html_initTokenizer(
     Tokenizer.TemporaryBuffer = nh_webidl_initUSVString(64);
     Tokenizer.Parser_p        = Parser_p;
 
-return Tokenizer;
+    return Tokenizer;
 }
 
 // HELPER ==========================================================================================
@@ -68,7 +69,7 @@ static bool nh_html_isAppropriateEndTagToken(
         }
     } 
 
-return false;
+    return false;
 }
 
 static NH_API_RESULT nh_html_resetTemporaryBuffer(
@@ -77,13 +78,13 @@ static NH_API_RESULT nh_html_resetTemporaryBuffer(
     nh_webidl_freeUSVString(&Tokenizer_p->TemporaryBuffer);
     Tokenizer_p->TemporaryBuffer = nh_webidl_initUSVString(64);
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_newTokenizerError(
     nh_html_Tokenizer *Tokenizer_p, NH_HTML_PARSE_ERROR type)
 {
-return nh_html_newParseError(Tokenizer_p->Parser_p, Tokenizer_p->index, type);
+    return nh_html_newParseError(Tokenizer_p->Parser_p, Tokenizer_p->index, type);
 }
 
 static nh_html_Attribute *nh_html_newAttribute(
@@ -95,13 +96,13 @@ static nh_html_Attribute *nh_html_newAttribute(
     Attribute_p->Name = nh_webidl_initDOMString(16);
     Attribute_p->Value = nh_webidl_initDOMString(64);
 
-return Attribute_p;
+    return Attribute_p;
 }
 
 static nh_html_Attribute *nh_html_getCurrentAttribute(
     nh_html_Tokenizer *Tokenizer_p)
 {
-return &((nh_html_Attribute*)Tokenizer_p->Token_p->StartOrEndTag.Attributes.p)[Tokenizer_p->Token_p->StartOrEndTag.Attributes.length - 1];
+    return &((nh_html_Attribute*)Tokenizer_p->Token_p->StartOrEndTag.Attributes.p)[Tokenizer_p->Token_p->StartOrEndTag.Attributes.length - 1];
 }
 
 static NH_API_RESULT nh_html_emit(
@@ -109,9 +110,8 @@ static NH_API_RESULT nh_html_emit(
 {
     nh_core_appendToList(&Tokenizer_p->Emits, Tokenizer_p->Token_p);
     ((nh_html_Parser*)Tokenizer_p->Parser_p)->Token_p = Tokenizer_p->Token_p;
-    NH_CORE_CHECK(nh_html_dispatchTreeConstruction(Tokenizer_p->Parser_p))
 
-return NH_API_SUCCESS;
+    return nh_html_dispatchTreeConstruction(Tokenizer_p->Parser_p);
 }
 
 static nh_html_Token *nh_html_newToken(
@@ -147,7 +147,7 @@ static nh_html_Token *nh_html_newToken(
 
     Tokenizer_p->Token_p = Token_p;
 
-return Token_p;
+    return Token_p;
 }
 
 static NH_API_RESULT nh_html_newDOCTYPEToken(
@@ -157,7 +157,7 @@ static NH_API_RESULT nh_html_newDOCTYPEToken(
     NH_CORE_CHECK_MEM(Token_p)
     Token_p->DOCTYPE.forceQuirks = forceQuirks;
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_newCommentToken(
@@ -166,7 +166,7 @@ static NH_API_RESULT nh_html_newCommentToken(
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_COMMENT);
     NH_CORE_CHECK_MEM(Token_p)
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_newStartTagToken(
@@ -175,7 +175,7 @@ static NH_API_RESULT nh_html_newStartTagToken(
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_START_TAG);
     NH_CORE_CHECK_MEM(Token_p)
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_newEndTagToken(
@@ -184,7 +184,7 @@ static NH_API_RESULT nh_html_newEndTagToken(
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_END_TAG);
     NH_CORE_CHECK_MEM(Token_p)
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_emitCharacterToken(
@@ -193,18 +193,16 @@ static NH_API_RESULT nh_html_emitCharacterToken(
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_CHARACTER);
     NH_CORE_CHECK_MEM(Token_p)
     nh_webidl_appendUnicodeToDOMString(&Token_p->CommentOrCharacter.Data, &codepoint, 1);
-    nh_html_emit(Tokenizer_p);
 
-return NH_API_SUCCESS;
+    return nh_html_emit(Tokenizer_p);
 }
 
 static NH_API_RESULT nh_html_emitEOFToken(
     nh_html_Tokenizer *Tokenizer_p)
 {
     NH_CORE_CHECK_MEM(nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_END_OF_FILE))
-    nh_html_emit(Tokenizer_p);
 
-return NH_API_SUCCESS;
+    return nh_html_emit(Tokenizer_p);
 }
 
 static NH_API_RESULT nh_html_allocateDOCTYPEName(
@@ -214,7 +212,7 @@ static NH_API_RESULT nh_html_allocateDOCTYPEName(
     NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.Name_p)
     *Tokenizer_p->Token_p->DOCTYPE.Name_p = nh_webidl_initDOMString(16);
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_allocateDOCTYPEPublicIdentifier(
@@ -224,7 +222,7 @@ static NH_API_RESULT nh_html_allocateDOCTYPEPublicIdentifier(
     NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p)
     *Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = nh_webidl_initDOMString(16);
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_allocateDOCTYPESystemIdentifier(
@@ -237,7 +235,7 @@ static NH_API_RESULT nh_html_allocateDOCTYPESystemIdentifier(
         *Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = nh_webidl_initDOMString(16);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 // CONSUME =========================================================================================
@@ -260,7 +258,7 @@ static NH_API_RESULT nh_html_consumeData(
             return nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRCDATA(
@@ -282,7 +280,7 @@ static NH_API_RESULT nh_html_consumeRCDATA(
             return nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRAWTEXT(
@@ -300,7 +298,7 @@ static NH_API_RESULT nh_html_consumeRAWTEXT(
             return nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptData(
@@ -318,7 +316,7 @@ static NH_API_RESULT nh_html_consumeScriptData(
             return nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumePLAINTEXT(
@@ -333,7 +331,7 @@ static NH_API_RESULT nh_html_consumePLAINTEXT(
             return nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeTagOpen(
@@ -362,7 +360,7 @@ static NH_API_RESULT nh_html_consumeTagOpen(
             return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_DATA);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeEndTagOpen(
@@ -385,7 +383,7 @@ static NH_API_RESULT nh_html_consumeEndTagOpen(
             return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_BOGUS_COMMENT);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeTagName(
@@ -416,7 +414,7 @@ static NH_API_RESULT nh_html_consumeTagName(
             nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRCDATALessThanSign(
@@ -431,7 +429,7 @@ static NH_API_RESULT nh_html_consumeRCDATALessThanSign(
         return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RCDATA);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRCDATAEndTagOpen(
@@ -448,7 +446,7 @@ static NH_API_RESULT nh_html_consumeRCDATAEndTagOpen(
         return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RCDATA);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRCDATAEndTagName(
@@ -500,8 +498,6 @@ static NH_API_RESULT nh_html_consumeRCDATAEndTagName(
     }
 
     return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RCDATA);
-
-return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRAWTEXTLessThanSign(
@@ -516,7 +512,7 @@ static NH_API_RESULT nh_html_consumeRAWTEXTLessThanSign(
         return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RAWTEXT);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRAWTEXTEndTagOpen(
@@ -532,7 +528,7 @@ static NH_API_RESULT nh_html_consumeRAWTEXTEndTagOpen(
         return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RAWTEXT);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeRAWTEXTEndTagName(
@@ -584,8 +580,6 @@ static NH_API_RESULT nh_html_consumeRAWTEXTEndTagName(
     }
 
     return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_RAWTEXT);
-
-return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataLessThanSign(
@@ -607,7 +601,7 @@ static NH_API_RESULT nh_html_consumeScriptDataLessThanSign(
             return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEndTagOpen(
@@ -624,7 +618,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEndTagOpen(
         return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEndTagName(
@@ -676,8 +670,6 @@ static NH_API_RESULT nh_html_consumeScriptDataEndTagName(
     }
 
     return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA);
-
-return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscapeStart(
@@ -691,7 +683,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapeStart(
         return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscapeStartDash(
@@ -705,7 +697,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapeStartDash(
         return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA);
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscaped(
@@ -729,7 +721,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscaped(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscapedDash(
@@ -755,7 +747,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapedDash(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscapedDashDash(
@@ -784,7 +776,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapedDashDash(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscapedLessThanSign(
@@ -808,7 +800,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapedLessThanSign(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscapedEndTagOpen(
@@ -824,7 +816,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapedEndTagOpen(
         NH_CORE_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_ESCAPED))
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataEscapedEndTagName(
@@ -877,7 +869,7 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapedEndTagName(
 
     NH_CORE_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_ESCAPED))
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeStart(
@@ -919,7 +911,7 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeStart(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataDoubleEscaped(
@@ -944,7 +936,7 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscaped(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedDash(
@@ -970,7 +962,7 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedDash(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedDashDash(
@@ -999,7 +991,7 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedDashDash(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedLessThanSign(
@@ -1017,7 +1009,7 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapedLessThanSign(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeEnd(
@@ -1059,7 +1051,7 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeEnd(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBeforeAttributeName(
@@ -1089,7 +1081,7 @@ static NH_API_RESULT nh_html_consumeBeforeAttributeName(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 // TODO 13.2.5.33 When the user agent leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name, then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
@@ -1129,7 +1121,7 @@ static NH_API_RESULT nh_html_consumeAttributeName(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAfterAttributeName(
@@ -1158,7 +1150,7 @@ static NH_API_RESULT nh_html_consumeAfterAttributeName(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBeforeAttributeValue(
@@ -1187,7 +1179,7 @@ static NH_API_RESULT nh_html_consumeBeforeAttributeValue(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAttributeValueDoubleQuoted(
@@ -1212,7 +1204,7 @@ static NH_API_RESULT nh_html_consumeAttributeValueDoubleQuoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAttributeValueSingleQuoted(
@@ -1237,7 +1229,7 @@ static NH_API_RESULT nh_html_consumeAttributeValueSingleQuoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAttributeValueUnquoted(
@@ -1276,7 +1268,7 @@ static NH_API_RESULT nh_html_consumeAttributeValueUnquoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAfterAttributeValueQuoted(
@@ -1303,7 +1295,7 @@ static NH_API_RESULT nh_html_consumeAfterAttributeValueQuoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeSelfClosingStartTag(
@@ -1322,7 +1314,7 @@ static NH_API_RESULT nh_html_consumeSelfClosingStartTag(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBogusComment(
@@ -1344,7 +1336,7 @@ static NH_API_RESULT nh_html_consumeBogusComment(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeMarkupDeclarationOpen(
@@ -1394,7 +1386,7 @@ static NH_API_RESULT nh_html_consumeMarkupDeclarationOpen(
     NH_CORE_CHECK(nh_html_newCommentToken(Tokenizer_p))
     Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_BOGUS_COMMENT;
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentStart(
@@ -1415,7 +1407,7 @@ static NH_API_RESULT nh_html_consumeCommentStart(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentStartDash(
@@ -1440,7 +1432,7 @@ static NH_API_RESULT nh_html_consumeCommentStartDash(
         }
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeComment(
@@ -1465,7 +1457,7 @@ static NH_API_RESULT nh_html_consumeComment(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentLessThanSign(
@@ -1485,7 +1477,7 @@ static NH_API_RESULT nh_html_consumeCommentLessThanSign(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentLessThanSignBang(
@@ -1501,7 +1493,7 @@ static NH_API_RESULT nh_html_consumeCommentLessThanSignBang(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentLessThanSignBangDash(
@@ -1517,7 +1509,7 @@ static NH_API_RESULT nh_html_consumeCommentLessThanSignBangDash(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentLessThanSignBangDashDash(
@@ -1534,7 +1526,7 @@ static NH_API_RESULT nh_html_consumeCommentLessThanSignBangDashDash(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentEndDash(
@@ -1554,7 +1546,7 @@ static NH_API_RESULT nh_html_consumeCommentEndDash(
         }
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentEnd(
@@ -1581,7 +1573,7 @@ static NH_API_RESULT nh_html_consumeCommentEnd(
         }
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCommentEndBang(
@@ -1612,7 +1604,7 @@ static NH_API_RESULT nh_html_consumeCommentEndBang(
         }
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeDOCTYPE(
@@ -1635,7 +1627,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPE(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBeforeDOCTYPEName(
@@ -1680,7 +1672,7 @@ static NH_API_RESULT nh_html_consumeBeforeDOCTYPEName(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeDOCTYPEName(
@@ -1714,7 +1706,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEName(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAfterDOCTYPEName(
@@ -1761,7 +1753,7 @@ static NH_API_RESULT nh_html_consumeAfterDOCTYPEName(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAfterDOCTYPEPublicKeyword(
@@ -1796,7 +1788,7 @@ static NH_API_RESULT nh_html_consumeAfterDOCTYPEPublicKeyword(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBeforeDOCTYPEPublicIdentifier(
@@ -1830,7 +1822,7 @@ static NH_API_RESULT nh_html_consumeBeforeDOCTYPEPublicIdentifier(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierDoubleQuoted(
@@ -1857,7 +1849,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierDoubleQuoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierSingleQuoted(
@@ -1884,7 +1876,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierSingleQuoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAfterDOCTYPEPublicIdentifier(
@@ -1919,7 +1911,7 @@ static NH_API_RESULT nh_html_consumeAfterDOCTYPEPublicIdentifier(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBetweenDOCTYPEPublicAndSystemIdentifiers(
@@ -1951,7 +1943,7 @@ static NH_API_RESULT nh_html_consumeBetweenDOCTYPEPublicAndSystemIdentifiers(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAfterDOCTYPESystemKeyword(
@@ -1988,7 +1980,7 @@ static NH_API_RESULT nh_html_consumeAfterDOCTYPESystemKeyword(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBeforeDOCTYPESystemIdentifier(
@@ -2022,7 +2014,7 @@ static NH_API_RESULT nh_html_consumeBeforeDOCTYPESystemIdentifier(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierDoubleQuoted(
@@ -2049,7 +2041,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierDoubleQuoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierSingleQuoted(
@@ -2076,7 +2068,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierSingleQuoted(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeAfterDOCTYPESystemIdentifier(
@@ -2099,7 +2091,7 @@ static NH_API_RESULT nh_html_consumeAfterDOCTYPESystemIdentifier(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeBogusDOCTYPE(
@@ -2118,7 +2110,7 @@ static NH_API_RESULT nh_html_consumeBogusDOCTYPE(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCDATASection(
@@ -2134,7 +2126,7 @@ static NH_API_RESULT nh_html_consumeCDATASection(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCDATASectionBracket(
@@ -2151,7 +2143,7 @@ static NH_API_RESULT nh_html_consumeCDATASectionBracket(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
 static NH_API_RESULT nh_html_consumeCDATASectionEnd(
@@ -2172,9 +2164,10 @@ static NH_API_RESULT nh_html_consumeCDATASectionEnd(
             break;
     }
 
-return NH_API_SUCCESS;
+    return NH_API_SUCCESS;
 }
 
+// https://html.spec.whatwg.org/multipage/parsing.html#flush-code-points-consumed-as-a-character-reference
 static NH_API_RESULT nh_html_flushCharacterReference(
     nh_html_Tokenizer *Tokenizer_p)
 {
@@ -2216,10 +2209,35 @@ static NH_API_RESULT nh_html_consumeCharacterReference(
     return NH_API_SUCCESS;
 }
 
+// https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state
 static NH_API_RESULT nh_html_consumeNamedCharacterReference(
     nh_html_Tokenizer *Tokenizer_p)
 {
-    return NH_API_SUCCESS;
+    nh_html_resetTemporaryBuffer(Tokenizer_p);
+    NH_ENCODING_UTF32 bestMatch = 0;
+    int bestLength = 0;
+
+    while (Tokenizer_p->index < Tokenizer_p->InputStream.length) {
+        nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, Tokenizer_p->InputStream.p+Tokenizer_p->index, 1); 
+        Tokenizer_p->index++;
+        int length = 0;
+        nh_encoding_UTF8String UTF8 = nh_encoding_encodeUTF8(Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
+        NH_ENCODING_UTF32 match = nh_html_matchCharacterReferencesEntity(UTF8.p, &length); 
+        nh_encoding_freeUTF8(&UTF8);
+        if (length == 0 || length <= bestLength) {break;}
+        bestMatch = match;
+        bestLength = length;
+    }
+
+    if (bestMatch) {
+        nh_html_resetTemporaryBuffer(Tokenizer_p);
+        nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &bestMatch, 1); 
+        NH_CORE_CHECK(nh_html_flushCharacterReference(Tokenizer_p))
+        return nh_html_reconsume(Tokenizer_p, Tokenizer_p->returnState);
+    }
+
+    NH_CORE_CHECK(nh_html_flushCharacterReference(Tokenizer_p))
+    return nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_AMBIGUOUS_AMPERSAND);
 }
 
 // 13.2.5.74
@@ -2618,13 +2636,13 @@ static NH_API_RESULT nh_html_consume(
         case NH_HTML_TOKENIZATION_STATE_CDATA_SECTION_END                             : return nh_html_consumeCDATASectionEnd(Tokenizer_p);
         case NH_HTML_TOKENIZATION_STATE_CHARACTER_REFERENCE                           : return nh_html_consumeCharacterReference(Tokenizer_p);
         case NH_HTML_TOKENIZATION_STATE_NAMED_CHARACTER_REFERENCE                     : return nh_html_consumeNamedCharacterReference(Tokenizer_p);
-        case NH_HTML_TOKENIZATION_STATE_AMBIGUOUS_AMPERSAND                           : break; 
-        case NH_HTML_TOKENIZATION_STATE_NUMERIC_CHARACTER_REFERENCE                   : break; 
-        case NH_HTML_TOKENIZATION_STATE_HEXADECIMAL_CHARACTER_REFERENCE_START         : break; 
-        case NH_HTML_TOKENIZATION_STATE_DECIMAL_CHARACTER_REFERENCE_START             : break; 
-        case NH_HTML_TOKENIZATION_STATE_HEXADECIMAL_CHARACTER_REFERENCE               : break; 
-        case NH_HTML_TOKENIZATION_STATE_DECIMAL_CHARACTER_REFERENCE                   : break; 
-        case NH_HTML_TOKENIZATION_STATE_NUMERIC_CHARACTER_REFERENCE_END               : break; 
+        case NH_HTML_TOKENIZATION_STATE_AMBIGUOUS_AMPERSAND                           : puts("bafsdssssssss"); exit(0); break; 
+        case NH_HTML_TOKENIZATION_STATE_NUMERIC_CHARACTER_REFERENCE                   : puts("bafsdssssssss"); exit(0); break; 
+        case NH_HTML_TOKENIZATION_STATE_HEXADECIMAL_CHARACTER_REFERENCE_START         : puts("bafsdssssssss"); exit(0); break; 
+        case NH_HTML_TOKENIZATION_STATE_DECIMAL_CHARACTER_REFERENCE_START             : puts("bafsdssssssss"); exit(0); break; 
+        case NH_HTML_TOKENIZATION_STATE_HEXADECIMAL_CHARACTER_REFERENCE               : puts("bafsdssssssss"); exit(0); break; 
+        case NH_HTML_TOKENIZATION_STATE_DECIMAL_CHARACTER_REFERENCE                   : puts("bafsdssssssss"); exit(0); break; 
+        case NH_HTML_TOKENIZATION_STATE_NUMERIC_CHARACTER_REFERENCE_END               : puts("bafsdssssssss"); exit(0); break; 
 
     }
 
@@ -2642,4 +2660,3 @@ NH_API_RESULT nh_html_consumeNext(
 
     return nh_html_consume(Tokenizer_p);
 }
-

@@ -12,7 +12,7 @@
 #include "Macros/FLOW.h"
 
 #include "../../nh-core/Unicode.h"
-#include "../../nh-core/Logger/Logger.h"
+#include "../../nh-core/Util/Debug.h"
 
 #include <stdio.h>
 

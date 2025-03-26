@@ -10,7 +10,7 @@
 
 #include "Client.h"
 #include "Monitor.h"
-#include "../Common/Config.h"
+#include "Common/Config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,14 +24,14 @@
 
 // FUNCTIONS =======================================================================================
 
-int nh_core_connectToMonitor(
+int nh_monitor_connectToMonitor(
     int port)
 {
     int client_fd = 0;
     struct sockaddr_in server_address;
 
     if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        nh_core_debug("Socket creation failed");
+        puts("Socket creation failed");
         return -1;
     }
 
@@ -42,7 +42,7 @@ int nh_core_connectToMonitor(
 
     if (connect(client_fd, (struct sockaddr *)&server_address, sizeof(server_address)) < 0) {
         if (errno != EINPROGRESS) { // EINPROGRESS means connection is in progress
-            nh_core_debug("Connection failed immediately");
+            puts("Connection failed immediately");
             close(client_fd);
             return -1;
         }
@@ -57,7 +57,7 @@ int nh_core_connectToMonitor(
     return client_fd; // Connection initiated, not yet established
 }
 
-NH_API_RESULT nh_core_checkIfMonitorConnectionEstablished(
+NH_API_RESULT nh_monitor_checkIfMonitorConnectionEstablished(
     int client_fd) 
 {
     struct timeval timeout;
@@ -70,39 +70,39 @@ NH_API_RESULT nh_core_checkIfMonitorConnectionEstablished(
 
     int result = select(client_fd + 1, NULL, &write_fds, NULL, &timeout);
     if (result < 0) {
-        nh_core_debug("select failed");
+        puts("select failed");
         return NH_API_ERROR_BAD_STATE;
     } else if (result == 0) {
-        nh_core_debug("Connection timed out");
+        puts("Connection timed out");
         return NH_API_ERROR_BAD_STATE;
     } else if (FD_ISSET(client_fd, &write_fds)) {
         int error = 0;
         socklen_t len = sizeof(error);
         if (getsockopt(client_fd, SOL_SOCKET, SO_ERROR, &error, &len) < 0) {
-            nh_core_debug("getsockopt failed");
+            puts("getsockopt failed");
             return NH_API_ERROR_BAD_STATE;
         }
         if (error != 0) {
             char error_p[255];
             sprintf(error_p, "Connection failed: %s", strerror(error));
-            nh_core_debug(error_p);
+            puts(error_p);
             return NH_API_ERROR_BAD_STATE;
         }
-        nh_core_debug("Connection established successfully!");
+        puts("Connection established successfully!");
         return NH_API_SUCCESS;
     }
 
     return NH_API_ERROR_BAD_STATE;  // Default return if something unexpected occurs
 }
 
-NH_API_RESULT nh_core_disconnectFromMonitor(
+NH_API_RESULT nh_monitor_disconnectFromMonitor(
     int client_fd)
 {
     close(client_fd);
     return 0;
 }
 
-int nh_core_sendMessageToMonitor(
+int nh_monitor_sendMessageToMonitor(
     int client_socket, char *message_p, int length) 
 {
     int result = send(client_socket, message_p, length, 0);
@@ -112,7 +112,7 @@ int nh_core_sendMessageToMonitor(
     return result;
 }
 
-int nh_core_waitForMonitorAck(
+int nh_monitor_waitForMonitorAck(
     int client_fd) 
 {
     char ack_buffer[4] = {0}; // Assuming "ACK" as the acknowledgment message

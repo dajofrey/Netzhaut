@@ -28,8 +28,4 @@ void nh_core_logSystemInfo(
     char *info_p, int line
 );
 
-void nh_core_logDebugMessage( 
-    char *message_p
-);
-
 #endif // NH_CORE_COMMON_LOG_H

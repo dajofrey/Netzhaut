@@ -14,8 +14,6 @@
 
 #include "../../nh-gfx/Vulkan/GPU.h"
 #include "../../nh-gfx/Vulkan/Vulkan.h"
-
-#include "../../nh-core/Logger/Logger.h"
 #include "../../nh-core/System/Memory.h"
 
 #include <stdlib.h>

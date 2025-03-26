@@ -41,14 +41,6 @@ typedef void (*nh_api_setLogCallback_f)(
     void *Logger_p, nh_api_logCallback_f logCallback_f
 );
 
-// TYPEDEFS ========================================================================================
-
-typedef void *(*nh_core_createMonitorInterface_f)(
-);
-typedef void (*nh_core_freeMonitorInterface_f)(
-    void *Interface_p
-);
-
 // FUNCTIONS =======================================================================================
 
 static void *nh_api_openCoreLibrary(
@@ -218,17 +210,3 @@ void *nh_api_dump(
     if (dump_f) {dump_f(node_p);}
     return;
 }
-
-void *nh_api_createMonitorInterface()
-{
-    nh_core_createMonitorInterface_f createMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_createMonitorInterface");
-    return createMonitorInterface_f ? createMonitorInterface_f() : NULL;
-}
-
-void nh_api_freeMonitorInterface(
-    void *Interface_p)
-{
-    nh_core_freeMonitorInterface_f freeMonitorInterface_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_freeMonitorInterface");
-    freeMonitorInterface_f(Interface_p);
-}
-

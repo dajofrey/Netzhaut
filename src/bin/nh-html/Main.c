@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 static nh_api_Viewport *Viewport_p = NULL;
 

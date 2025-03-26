@@ -1,6 +1,6 @@
 # Define the compiler and compile flags
 CC = gcc
-CFLAGS = -std=gnu99 -Wl,-rpath,$(CURDIR)/lib,-rpath,$(CURDIR)/external/TTyr/lib
+CFLAGS = -g -std=gnu99 -Wl,-rpath,$(CURDIR)/lib,-rpath,$(CURDIR)/external/TTyr/lib
 
 # Define the linker and linker flags
 LD = gcc

@@ -37,4 +37,3 @@ NH_API_RESULT nh_api_loadBytes(
     nh_html_loadBytes_f loadBytes_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_HTML, 0, "nh_html_loadBytes");
     return loadBytes_f ? loadBytes_f(Context_p, bytes_p, size) : NH_API_ERROR_BAD_STATE;
 }
-

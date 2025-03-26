@@ -10,7 +10,7 @@ The project is currently in the **EXPERIMENTAL** phase.
   
  - [Build](#Build)
  - [Binaries](#Binaries)
- - [Config](#Config)
+ - [How-To](#How-To)
 
 ## Build
 
@@ -49,6 +49,18 @@ Displays an HTML file.
 ### nh-monitor
 Launches a CLI interface for monitoring.
 ```bash
-./nh-monitor [port]
+./nh-monitor <port>
 ```
-`port` If specified, monitors another Netzhaut process over localhost TCP.
+`port` Monitors another Netzhaut process over localhost TCP via port.
+
+## How-To
+
+### Use nh-monitor
+1. Run nh-monitor on port 50123 or any other open port.
+```bash
+./bin/nh-monitor 50123
+```
+2. Run nh-html with client-port specified and in block mode.
+```bash
+./bin/nh-html test.html "nh-monitor.client_port:50123;nh-monitor.block:1;nh-core.debug.monitor_on:1"
+```

@@ -127,6 +127,11 @@ static NH_API_RESULT nh_core_getOtherInfo()
     NH_SYSTEM.RAM.total    = total;
     NH_SYSTEM.RAM.free     = free;
 
+    memset(NH_SYSTEM.hostname_p, 0, NH_HOSTNAME_LENGTH);
+#ifdef __unix__
+    gethostname(NH_SYSTEM.hostname_p, NH_HOSTNAME_LENGTH);
+#endif
+
     return NH_API_SUCCESS;
 }
 
@@ -137,6 +142,14 @@ static void nh_core_logSystem()
     nh_GeneralTime Uptime = nh_humanizeSeconds(NH_SYSTEM.uptime);
 
     char log_p[255] = {'\0'};
+    sprintf(log_p, "HOST NAME  %s", NH_SYSTEM.hostname_p);
+    nh_core_logSystemInfo(log_p, 0);
+
+    memset(log_p, 0, 255); 
+    sprintf(log_p, NH_SYSTEM.littleEndian ? "ENDIANNESS Little-Endian (LE)" : "ENDIANNESS Big-Endian (BE)");
+    nh_core_logSystemInfo(log_p, 1);
+
+    memset(log_p, 0, 255); 
     sprintf(log_p, "LOCAL TIME %lu-%lu-%lu %lu:%lu:%lu", 
         NH_SYSTEM.LocalTime.years, NH_SYSTEM.LocalTime.months, NH_SYSTEM.LocalTime.days, NH_SYSTEM.LocalTime.hours, NH_SYSTEM.LocalTime.minutes, NH_SYSTEM.LocalTime.seconds
     );
@@ -169,23 +182,8 @@ static NH_API_RESULT nh_core_updateSystem()
 
 NH_API_RESULT nh_core_initSystem()
 {
-    NH_CORE_CHECK(nh_core_updateSystem())
-
     NH_SYSTEM.Updater.updateIntervalInSeconds = 1;
     NH_SYSTEM.Updater.LastUpdate = nh_core_getSystemTime();
-
-    memset(NH_SYSTEM.hostname_p, 0, NH_HOSTNAME_LENGTH);
-#ifdef __unix__
-    gethostname(NH_SYSTEM.hostname_p, NH_HOSTNAME_LENGTH);
-#endif
-
-    char log_p[255] = {'\0'};
-    sprintf(log_p, "HOST NAME  %s", NH_SYSTEM.hostname_p);
-    nh_core_logSystemInfo(log_p, 0);
-
-    memset(log_p, 0, 255); 
-    sprintf(log_p, NH_SYSTEM.littleEndian ? "ENDIANNESS Little-Endian (LE)" : "ENDIANNESS Big-Endian (BE)");
-    nh_core_logSystemInfo(log_p, 1);
 
     return NH_API_SUCCESS;
 }

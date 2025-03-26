@@ -10,7 +10,7 @@
 
 #include "Log.h"
 
-#include "../../nh-core/Logger/Logger.h"
+#include "../../nh-core/Util/Debug.h"
 
 #include <stdio.h>
 #include <string.h>

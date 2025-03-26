@@ -1,3 +1,6 @@
+#ifndef NH_MONITOR_COMMON_INCLUDES_H
+#define NH_MONITOR_COMMON_INCLUDES_H
+
 // LICENSE NOTICE ==================================================================================
 
 /**
@@ -8,11 +11,7 @@
 
 // INCLUDES ========================================================================================
 
-#include "Log.h"
-
+#include "../../nh-api/nh-core.h"
 #include "../../nh-core/Util/Debug.h"
 
-#include <stdio.h>
-#include <string.h>
-
-// FUNCTIONS =======================================================================================
+#endif // NH_MONITOR_COMMON_INCLUDES_H

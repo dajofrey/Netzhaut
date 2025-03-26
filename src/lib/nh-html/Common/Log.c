@@ -10,7 +10,7 @@
 
 #include "Log.h"
 
-#include "../../nh-core/Logger/Logger.h"
+#include "../../nh-core/Util/Debug.h"
 #include "../../nh-dom/Interfaces/Attr.h"
 #include "../../nh-dom/Interfaces/Text.h"
 #include "../../nh-dom/Interfaces/NamedNodeMap.h"

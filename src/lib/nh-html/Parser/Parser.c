@@ -137,4 +137,3 @@ NH_API_RESULT nh_html_parseDocument(
 
     return NH_API_SUCCESS;
 }
-

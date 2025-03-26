@@ -49,6 +49,7 @@ const char *NH_MODULE_NAMES_PP[] = {
     "nh-css",
     "nh-renderer",
     "nh-url",
+    "nh-monitor",
 };
 
 int nh_core_getModuleIndex(
@@ -138,6 +139,11 @@ static NH_API_RESULT nh_core_loadDependencies(
             break;
 
         case NH_MODULE_URL :
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
+            break;
+
+        case NH_MODULE_MONITOR : 
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
             break;
@@ -346,6 +352,9 @@ static bool nh_core_isUnloadAllowed(
             if (NH_LOADER.Modules_p[NH_MODULE_RENDERER].loaded == true) {
                 return false;    
             }
+            return true;
+
+        case NH_MODULE_MONITOR :
             return true;
     }
 

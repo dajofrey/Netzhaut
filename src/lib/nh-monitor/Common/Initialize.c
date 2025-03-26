@@ -8,10 +8,9 @@
 
 // INCLUDES ========================================================================================
 
-#include "Terminate.h"
-#include "IndexMap.h"
+#include "Initialize.h"
 
-#include "../Parser/NamedCharacterReferences.h"
+#include "../Logger.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -19,10 +18,12 @@
 
 // DEBUG ===========================================================================================
 
-NH_API_RESULT nh_html_terminate()
+NH_API_RESULT nh_monitor_initialize()
 {
-    nh_html_freeIndexMap();
-    nh_html_freeCharacterReferencesTrie();
+    nh_monitor_initLogger(NULL);
+
+    // This may block if nh-monitor.block is set.
+    nh_monitor_startLoggerWorkload();
+
     return NH_API_SUCCESS;
 }
-

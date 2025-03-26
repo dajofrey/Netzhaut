@@ -12,6 +12,7 @@
 #include "IndexMap.h"
 
 #include "../Main/DocumentContext.h"
+#include "../Parser/NamedCharacterReferences.h"
 
 #include "../../nh-core/Util/List.h"
 
@@ -24,7 +25,10 @@
 NH_API_RESULT nh_html_initialize()
 {
     NH_HTML_DOCUMENT_CONTEXTS = nh_core_initList(16);
+
     NH_CORE_CHECK(nh_html_createIndexMap())
+    NH_CORE_CHECK(nh_html_initCharacterReferencesTrie())
+
     return NH_API_SUCCESS;
 }
 

@@ -1,5 +1,5 @@
-#ifndef NH_CORE_LOGGER_LOGGER_H
-#define NH_CORE_LOGGER_LOGGER_H
+#ifndef NH_MONITOR_LOGGER_H
+#define NH_MONITOR_LOGGER_H
 
 // LICENSE NOTICE ==================================================================================
 
@@ -11,23 +11,21 @@
 
 // INCLUDES ========================================================================================
 
-#include "../Util/String.h"
-#include "../Util/List.h"
-#include "../Util/Time.h"
-
-#include "../Common/Includes.h"
+#include "../nh-core/Util/String.h"
+#include "../nh-core/Util/List.h"
+#include "../nh-core/Util/Time.h"
 
 // STRUCTS =========================================================================================
 
-typedef struct nh_core_LoggerNode {
+typedef struct nh_monitor_LoggerNode {
     char *name_p;
     nh_core_List Children;
     nh_core_List Messages;
-    struct nh_core_LoggerNode *Parent_p;
-} nh_core_LoggerNode;
+    struct nh_monitor_LoggerNode *Parent_p;
+} nh_monitor_LoggerNode;
 
-typedef struct nh_core_Logger {
-    nh_core_LoggerNode Root;
+typedef struct nh_monitor_Logger {
+    nh_monitor_LoggerNode Root;
     int client_fd;
     int state;
     bool pause;
@@ -36,38 +34,38 @@ typedef struct nh_core_Logger {
     nh_api_logCallback_f callback_f;
     nh_core_String Buffer;
     int totalLogs;
-} nh_core_Logger;
+} nh_monitor_Logger;
 
 // FUNCTIONS =======================================================================================
 
-nh_core_Logger *nh_core_getLogger(
+nh_monitor_Logger *nh_monitor_getLogger(
 );
 
-void nh_core_initLogger(
-    nh_core_Logger *Logger_p
+void nh_monitor_initLogger(
+    nh_monitor_Logger *Logger_p
 );
 
-void nh_core_freeLogger(
-    nh_core_Logger *Logger_p
+void nh_monitor_freeLogger(
+    nh_monitor_Logger *Logger_p
 );
 
-NH_API_RESULT nh_core_log(
+NH_API_RESULT nh_monitor_log(
     char *node_p, char *options_p, char *message_p
 );
 
-void nh_core_getUniqueLogId(
+void nh_monitor_getUniqueLogId(
     char *logId_p
 );
 
-void nh_core_dump( 
+void nh_monitor_dump( 
     char *node_p
 ); 
 
-NH_API_RESULT nh_core_handleLogMessage(
-    nh_core_Logger *Logger_p, char *node_p, char *options_p, char *message_p
+NH_API_RESULT nh_monitor_handleLogMessage(
+    nh_monitor_Logger *Logger_p, char *node_p, char *options_p, char *message_p
 );
 
-NH_API_RESULT nh_core_startLoggerWorkload(
+NH_API_RESULT nh_monitor_startLoggerWorkload(
 );
 
-#endif // NH_CORE_LOGGER_LOGGER_H
+#endif // NH_MONITOR_LOGGER_H
