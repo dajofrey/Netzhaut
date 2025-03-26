@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static ttyr_tty_TTY *TTY_p = NULL;
+static ttyr_core_TTY *TTY_p = NULL;
 
 static void handleMonitorInput(
     nh_api_Window *Window_p, nh_api_WSIEvent Event)

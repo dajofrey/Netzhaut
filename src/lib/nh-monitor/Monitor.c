@@ -18,7 +18,7 @@
 #include "../nh-core/Util/Time.h"
 #include "../nh-encoding/Encodings/UTF32.h"
 
-#include "../../../external/TTyr/src/lib/ttyr-api/ttyr-tty.h"
+#include "../../../external/TTyr/src/lib/ttyr-api/ttyr-core.h"
 
 #include <stddef.h>
 #include <unistd.h>
@@ -237,7 +237,7 @@ static NH_API_RESULT nh_monitor_updatePeerMonitor(
 }
  
 static NH_API_RESULT nh_monitor_updateMonitor(
-    ttyr_tty_Program *Program_p)
+    ttyr_core_Program *Program_p)
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
 
@@ -332,7 +332,7 @@ static nh_monitor_MonitorNode *nh_monitor_getCurrentMonitorNode(
 }
 
 static void nh_monitor_moveCursorVertically(
-    ttyr_tty_Program *Program_p, nh_monitor_MonitorNode *Current_p, int key) 
+    ttyr_core_Program *Program_p, nh_monitor_MonitorNode *Current_p, int key) 
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
 
@@ -428,7 +428,7 @@ static void nh_monitor_changeFocus(
 }
 
 static NH_API_RESULT nh_monitor_handleMonitorInput(
-    ttyr_tty_Program *Program_p, nh_api_WSIEvent Event)
+    ttyr_core_Program *Program_p, nh_api_WSIEvent Event)
 {
     if (Event.type != NH_API_WSI_EVENT_KEYBOARD) {
         return NH_API_SUCCESS;
@@ -544,10 +544,10 @@ static NH_API_RESULT nh_monitor_handleMonitorInput(
 // DRAW ============================================================================================
 
 static void nh_monitor_setNextGlyph(
-    ttyr_tty_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
+    ttyr_core_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
 {
-    ttyr_tty_Glyph Glyph;
-    memset(&Glyph, 0, sizeof(ttyr_tty_Glyph));
+    ttyr_core_Glyph Glyph;
+    memset(&Glyph, 0, sizeof(ttyr_core_Glyph));
     Glyph.codepoint = codepoint;
  
     (*Glyphs_pp)[0] = Glyph;
@@ -557,10 +557,10 @@ static void nh_monitor_setNextGlyph(
 }
 
 static void nh_monitor_setNextReverseGlyph(
-    ttyr_tty_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
+    ttyr_core_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
 {
-    ttyr_tty_Glyph Glyph;
-    memset(&Glyph, 0, sizeof(ttyr_tty_Glyph));
+    ttyr_core_Glyph Glyph;
+    memset(&Glyph, 0, sizeof(ttyr_core_Glyph));
     Glyph.Attributes.reverse = true;
     Glyph.codepoint = codepoint;
  
@@ -571,7 +571,7 @@ static void nh_monitor_setNextReverseGlyph(
 }
 
 static NH_API_RESULT nh_monitor_drawSelected(
-    nh_monitor_Monitor *Monitor_p, ttyr_tty_Glyph **Glyphs_pp, int row, int cols, int rows)
+    nh_monitor_Monitor *Monitor_p, ttyr_core_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
     nh_core_List SelectedNodes = nh_monitor_getSelectedMonitorNodes(Monitor_p);
     if (SelectedNodes.size <= 0) {return NH_API_SUCCESS;}
@@ -617,7 +617,7 @@ static NH_API_RESULT nh_monitor_drawSelected(
 }
 
 static NH_API_RESULT nh_monitor_drawMonitorRow(
-    ttyr_tty_Program *Program_p, ttyr_tty_Glyph *Glyphs_p, int width, int height, int row)
+    ttyr_core_Program *Program_p, ttyr_core_Glyph *Glyphs_p, int width, int height, int row)
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
     Monitor_p->height = height;
@@ -627,7 +627,7 @@ static NH_API_RESULT nh_monitor_drawMonitorRow(
     nh_monitor_getPreviewNodes(
         Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes);
 
-    ttyr_tty_Glyph *Tmp_p = Glyphs_p;
+    ttyr_core_Glyph *Tmp_p = Glyphs_p;
     for (int i = 0; i < width; ++i) {
         nh_monitor_setNextGlyph(&Glyphs_p, ' ');
     }
@@ -818,10 +818,10 @@ static void nh_monitor_destroyMonitor(
 
 void *nh_monitor_createMonitorInterface()
 {
-    ttyr_tty_Interface *Monitor_p = nh_core_allocate(sizeof(ttyr_tty_Interface));
+    ttyr_core_Interface *Monitor_p = nh_core_allocate(sizeof(ttyr_core_Interface));
     NH_CORE_CHECK_MEM_2(NULL, Monitor_p)
 
-    memset(Monitor_p, 0, sizeof(ttyr_tty_Interface));
+    memset(Monitor_p, 0, sizeof(ttyr_core_Interface));
 
     Monitor_p->Callbacks.init_f = nh_monitor_initMonitor;
     Monitor_p->Callbacks.draw_f = nh_monitor_drawMonitorRow;
