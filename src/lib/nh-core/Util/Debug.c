@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 // FUNCTIONS =======================================================================================
 
@@ -26,9 +27,9 @@ void nh_core_log(
 
     if (nh_core_getConfig().monitor_on == true) {
         typedef void (*nh_monitor_log_f)(char *node_p, char *options_p, char *message_p);
-        nh_monitor_log_f log_f = nh_core_loadExistingSymbol(NH_MODULE_MONITOR, 0, "nh_monitor_log");
+        static nh_monitor_log_f log_f = NULL;
         if (log_f == NULL) {
-            return;
+            log_f = nh_core_loadSymbol(NH_MODULE_MONITOR, 0, "nh_monitor_log");
         }
         log_f(node_p, option_p, message_p);
     }

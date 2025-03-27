@@ -442,13 +442,21 @@ static NH_API_RESULT nh_monitor_handleMonitorInput(
     nh_monitor_MonitorNode *Current_p = 
         nh_monitor_getCurrentMonitorNode(
             Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root));
-    if (Current_p == NULL) {return NH_API_SUCCESS;}
 
     nh_core_List SelectedNodes = nh_monitor_getSelectedMonitorNodes(Monitor_p);
     bool selected = SelectedNodes.size > 0;
     nh_core_freeList(&SelectedNodes, false);
 
     nh_monitor_MonitorNode *Node_p = nh_monitor_getFocusedMonitorNode(Monitor_p);
+
+    switch (c)
+    {
+        case 'q' :
+            Program_p->close = true;
+            break;
+    }
+
+    if (Current_p == NULL) {return NH_API_SUCCESS;}
 
     switch (c)
     {
@@ -529,10 +537,6 @@ static NH_API_RESULT nh_monitor_handleMonitorInput(
                 ((nh_monitor_MonitorNode*)Current_p->Children.pp[0])->isCurrent = true;
             }
 
-            break;
-
-        case 'q' :
-            Program_p->close = true;
             break;
     }
  

@@ -107,6 +107,10 @@ void *nh_core_loadExistingSymbol(
     NH_MODULE_E _module, int major, const char *functionName_p
 );
 
+void *nh_core_loadSymbol(
+    NH_MODULE_E type, int major, const char *name_p
+);
+
 void *nh_core_loadSymbolUsingModuleName(
     char *moduleName_p, char *symbolName_p
 );

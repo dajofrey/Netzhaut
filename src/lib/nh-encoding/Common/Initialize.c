@@ -20,8 +20,8 @@
 
 NH_API_RESULT nh_encoding_initialize()
 {
-    NH_CORE_CHECK(nh_encoding_logUnicodeCodepointDescriptions())
+// TODO Commented out because nh-monitor circular dependency.
+//    NH_CORE_CHECK(nh_encoding_logUnicodeCodepointDescriptions())
     NH_CORE_CHECK(nh_encoding_createIndexMap())
     return NH_API_SUCCESS;
 }
-

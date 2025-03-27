@@ -31,7 +31,7 @@ int nh_monitor_connectToMonitor(
     struct sockaddr_in server_address;
 
     if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        puts("Socket creation failed");
+        nh_core_debug("Socket creation failed");
         return -1;
     }
 
@@ -42,7 +42,6 @@ int nh_monitor_connectToMonitor(
 
     if (connect(client_fd, (struct sockaddr *)&server_address, sizeof(server_address)) < 0) {
         if (errno != EINPROGRESS) { // EINPROGRESS means connection is in progress
-            puts("Connection failed immediately");
             close(client_fd);
             return -1;
         }
@@ -70,25 +69,25 @@ NH_API_RESULT nh_monitor_checkIfMonitorConnectionEstablished(
 
     int result = select(client_fd + 1, NULL, &write_fds, NULL, &timeout);
     if (result < 0) {
-        puts("select failed");
+        nh_core_debug("select failed");
         return NH_API_ERROR_BAD_STATE;
     } else if (result == 0) {
-        puts("Connection timed out");
+        nh_core_debug("Connection timed out");
         return NH_API_ERROR_BAD_STATE;
     } else if (FD_ISSET(client_fd, &write_fds)) {
         int error = 0;
         socklen_t len = sizeof(error);
         if (getsockopt(client_fd, SOL_SOCKET, SO_ERROR, &error, &len) < 0) {
-            puts("getsockopt failed");
+            nh_core_debug("getsockopt failed");
             return NH_API_ERROR_BAD_STATE;
         }
         if (error != 0) {
             char error_p[255];
             sprintf(error_p, "Connection failed: %s", strerror(error));
-            puts(error_p);
+            nh_core_debug(error_p);
             return NH_API_ERROR_BAD_STATE;
         }
-        puts("Connection established successfully!");
+        nh_core_debug("Connection established successfully!");
         return NH_API_SUCCESS;
     }
 
@@ -138,7 +137,7 @@ int nh_monitor_waitForMonitorAck(
                     return -1; // Unexpected message received
                 }
             } else if (bytes_received == 0) {
-                fprintf(stderr, "Connection closed by monitor\n");
+                nh_core_debug("Connection closed by monitor");
                 return -1;
             } else if (errno != EWOULDBLOCK && errno != EAGAIN) {
                 perror("Error receiving ACK");

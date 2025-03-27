@@ -393,7 +393,7 @@ void *nh_core_loadExistingSymbol(
     return nh_core_loadSymbolFromLibrary(Module_p->lib_p, name_p);
 }
 
-static void *nh_core_loadSymbol(
+void *nh_core_loadSymbol(
     NH_MODULE_E type, int major, const char *name_p)
 {
     nh_Module *Module_p = nh_core_getModule(type);

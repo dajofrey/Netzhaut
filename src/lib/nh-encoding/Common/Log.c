@@ -25,4 +25,3 @@ NH_API_RESULT nh_encoding_logUnicodeCodepointDescriptions()
     }
     return NH_API_SUCCESS;
 }
-

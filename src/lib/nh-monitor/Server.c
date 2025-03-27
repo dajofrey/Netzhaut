@@ -117,7 +117,7 @@ int nh_monitor_receiveMessageFromLogger(
         if (bytes_received < 0) {
             return -1; // Error occurred
         } else if (bytes_received == 0) {
-            printf("Connection closed\n");
+            nh_core_debug("Connection closed\n");
             return 0; // Connection closed
         }
         totalReceived += bytes_received;

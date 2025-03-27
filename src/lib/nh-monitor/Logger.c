@@ -233,7 +233,7 @@ NH_API_RESULT nh_monitor_handleLogMessage(
 
     // send to peer-monitor
     if (Logger_p->state == 2) {
-        if (Logger_p->Buffer.length == 256000) {
+        if (Logger_p->Buffer.length >= 256000) {
             nh_core_waitForCompletion(nh_core_getWorkload(Logger_p), NH_SIGNAL_OK);
         }
         char send_p[256] = {0};
