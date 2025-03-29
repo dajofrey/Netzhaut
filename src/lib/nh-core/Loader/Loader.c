@@ -18,7 +18,10 @@
 #include "../Common/Log.h"
 #include "../Common/Config.h"
 
-#include <link.h>
+#ifdef __unix__
+    #include <link.h>
+#endif
+
 #include <dlfcn.h>
 #include <stddef.h>
 #include <stdio.h>

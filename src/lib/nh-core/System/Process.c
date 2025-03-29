@@ -12,14 +12,12 @@
 
 #include "../../nh-ecmascript/Engine/Agent.h"
 
+#include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-
-#ifdef __unix__
-    #include <sys/wait.h>
-#endif
+#include <sys/wait.h>
 
 // DATA ============================================================================================
 

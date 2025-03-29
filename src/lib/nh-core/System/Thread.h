@@ -19,10 +19,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
     
-#ifdef __unix__
-#include <pthread.h>
+#if defined(__unix__) || defined(__APPLE__)
+    #include <pthread.h>
 #elif defined(_WIN32) || defined(WIN32)
-#include <windows.h>
+    #include <windows.h>
 #endif
 
 #endif
@@ -83,12 +83,12 @@
         int depth;
         nh_core_Workload *CurrentWorkload_p;
         struct {
-    #ifdef __unix__
+    #if defined(__unix__) || defined(__APPLE__)
             int writeTTY_p[2];
             int readTTY_p[2];
     #endif
         } IPC;
-    #ifdef __unix__
+    #if defined(__unix__) || defined(__APPLE__)
         pthread_t id;              
     #elif defined(_WIN32) || defined (WIN32)
         DWORD id;              

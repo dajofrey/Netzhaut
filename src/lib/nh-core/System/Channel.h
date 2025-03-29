@@ -21,9 +21,7 @@
 
     // TODO semaphore etc.
     typedef struct nh_Channel {
-#ifdef __unix__
         int rw_p[2];
-#endif
     } nh_Channel;
 
 /** @} */

@@ -13,7 +13,10 @@
 #include "Reload.h"
 #include "Loader.h"
 
-#include <link.h>
+#if defined(__unix__)
+    #include <link.h>
+#endif
+
 #include <dlfcn.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -22,32 +25,54 @@
 #include <time.h>
 #include <sys/stat.h>
 
-// MODIFIED ========================================================================================
+// FUNCTIONS =======================================================================================
 
 char *nh_core_lastModified(
-    void *lib_p)
+    void *lib_p) 
 {
-#ifdef __unix__
+    char *time_p = malloc(sizeof(char) * 127);  // Allocate memory for the time string
+    if (time_p == NULL) {
+        return NULL;
+    }
+    memset(time_p, '\0', 127);  // Clear the memory
 
+#if defined(__unix__) || defined(__APPLE__)
+    // Get the filename of the shared library (so or dylib)
+    const char *lib_name = NULL;
+
+    // On Linux, use dlinfo to retrieve the library name
+#ifdef __linux__
     struct link_map *info_p;
     dlinfo(lib_p, RTLD_DI_LINKMAP, &info_p);
-
-    struct stat attrib;
-    stat(info_p->l_name, &attrib);
-    
-    struct tm *tm;
-    char *time_p = malloc(sizeof(char) * 127);
-    if (time_p == NULL) {return NULL;}
-    memset(time_p, '\0', 127);
-
-    /* convert time_t to broken-down time representation */
-    tm = localtime(&attrib.st_mtime);
-    /* format time days.month.year hour:minute:seconds */
-    strftime(time_p, sizeof(char) * 127, "%d.%m.%Y %H:%M:%S", tm);
-
+    lib_name = info_p->l_name;
+#elif defined(__APPLE__)
+    // On macOS, we need to extract the file name manually using dladdr
+    Dl_info info;
+    if (dladdr(lib_p, &info) != 0) {
+        lib_name = info.dli_fname;
+    }
 #endif
 
-return time_p;
+    if (lib_name == NULL) {
+        free(time_p);
+        return NULL;
+    }
+
+    // Use stat to get the file's last modified time
+    struct stat attrib;
+    if (stat(lib_name, &attrib) == -1) {
+        free(time_p);
+        return NULL;
+    }
+
+    // Convert time_t to broken-down time representation
+    struct tm *tm = localtime(&attrib.st_mtime);
+
+    // Format time as "day.month.year hour:minute:seconds"
+    strftime(time_p, 127, "%d.%m.%Y %H:%M:%S", tm);
+#endif
+
+    return time_p;
 }
 
 //// INIT UPDATER ====================================================================================

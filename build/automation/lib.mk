@@ -6,7 +6,7 @@ CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-
 LD = gcc
 
 LDFLAGS_NHAPI = -ldl
-LDFLAGS_NHCORE = -lm -ldl -Lexternal/c_hashmap -l:libc_hashmap.a
+LDFLAGS_NHCORE = -v -lm -ldl
 LDFLAGS_NHWSI = -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
 LDFLAGS_NHHTML =
 LDFLAGS_NHDOM =
@@ -20,7 +20,6 @@ LDFLAGS_NHCSS =
 LDFLAGS_NHURL =
 LDFLAGS_NHMONITOR =
 
-LDFLAGS_C_HASHMAP =
 LDFLAGS_VOLK =
 LDFLAGS_FREETYPE_GL = -I/usr/include/freetype2 -lfreetype -lharfbuzz
 
@@ -40,7 +39,6 @@ SRC_DIR_NHCSS = src/lib/nh-css
 SRC_DIR_NHURL = src/lib/nh-url
 SRC_DIR_NHMONITOR = src/lib/nh-monitor
 
-SRC_DIR_C_HASHMAP = external/c_hashmap
 SRC_DIR_VOLK= external/volk
 SRC_DIR_FREETYPE_GL= external/freetype-gl
 
@@ -92,6 +90,7 @@ SRC_FILES_NHCORE = \
     Common/Log.c \
     Common/About.c \
     Common/Config.c \
+    External/c_hashmap/hashmap.c \
 
 SRC_FILES_NHWSI = \
     Window/Window.c \
@@ -331,7 +330,6 @@ SRC_FILES_NHMONITOR = \
     Common/Terminate.c \
     Common/Config.c \
 
-SRC_FILES_C_HASHMAP = hashmap.c
 SRC_FILES_VOLK = volk.c
 
 SRC_FILES_FREETYPE_GL = \
@@ -359,7 +357,6 @@ OBJ_FILES_NHCSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHCSS)/, $(SRC_FILE
 OBJ_FILES_NHURL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHURL)/, $(SRC_FILES_NHURL)))
 OBJ_FILES_NHMONITOR = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHMONITOR)/, $(SRC_FILES_NHMONITOR)))
 
-OBJ_FILES_C_HASHMAP = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_C_HASHMAP)/, $(SRC_FILES_C_HASHMAP)))
 OBJ_FILES_VOLK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_VOLK)/, $(SRC_FILES_VOLK)))
 OBJ_FILES_FREETYPE_GL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_FREETYPE_GL)/, $(SRC_FILES_FREETYPE_GL)))
 
@@ -379,16 +376,15 @@ LIB_NHCSS = lib/libnh-css.so
 LIB_NHURL = lib/libnh-url.so
 LIB_NHMONITOR = lib/libnh-monitor.so
 
-LIB_C_HASHMAP = external/c_hashmap/libc_hashmap.a
 LIB_VOLK = external/volk/libvolk.a
 LIB_FREETYPE_GL = external/freetype-gl/libfreetype-gl.so
 
 # Keep this as default (first) target. 
-all: $(LIB_NHAPI) $(LIB_C_HASHMAP) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS) $(LIB_NHMONITOR)
+all: $(LIB_NHAPI) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS) $(LIB_NHMONITOR)
 
 # Build targets for each library
 nh-api.so: $(LIB_NHAPI)
-nh-core.so: $(LIB_C_HASHMAP) $(LIB_NHCORE)
+nh-core.so: $(LIB_NHCORE)
 nh-wsi.so: $(LIB_NHWSI)
 nh-html.so: $(LIB_NHHTML)
 nh-dom.so: $(LIB_NHDOM)
@@ -408,7 +404,7 @@ download_ttyr:
 	git submodule update --init --checkout --force external/TTyr/
 
 # Custom compiler flags
-$(OBJ_FILES_NHCORE): CFLAGS +=
+$(OBJ_FILES_NHCORE): CFLAGS += -lexternal
 $(OBJ_FILES_NHHTML): CFLAGS += -Iexternal
 $(OBJ_FILES_NHCSS): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_NHAPI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
@@ -450,8 +446,6 @@ $(OBJ_FILES_NHMONITOR): CFLAGS += -Isrc/lib
 %.o: $(SRC_DIR_NHMONITOR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: $(SRC_DIR_C_HASHMAP)/%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
 %.o: $(SRC_DIR_VOLK)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 %.o: $(SRC_DIR_FREETYPE_GL)/%.c
@@ -487,8 +481,6 @@ $(LIB_NHURL): create_lib_dir $(OBJ_FILES_NHURL)
 $(LIB_NHMONITOR): create_lib_dir download_ttyr $(OBJ_FILES_NHMONITOR)
 	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHMONITOR) $(LDFLAGS_NHMONITOR)
 
-$(LIB_C_HASHMAP): $(OBJ_FILES_C_HASHMAP)
-	ar rcs $@ $^ 
 $(LIB_VOLK): $(OBJ_FILES_VOLK)
 	ar rcs $@ $^ 
 $(LIB_FREETYPE_GL): $(OBJ_FILES_FREETYPE_GL)
@@ -510,7 +502,6 @@ clean:
 	rm -f $(OBJ_FILES_NHCSS) $(LIB_NHCSS)
 	rm -f $(OBJ_FILES_NHURL) $(LIB_NHURL)
 	rm -f $(OBJ_FILES_NHMONITOR) $(LIB_NHMONITOR)
-	rm -f $(OBJ_FILES_C_HASHMAP) $(LIB_C_HASHMAP)
 	rm -f $(OBJ_FILES_VOLK) $(LIB_VOLK)
 	rm -f $(OBJ_FILES_FREETYPE_GL) $(LIB_FREETYPE_GL)
 	rm -rf lib

@@ -16,8 +16,12 @@
 
 #include "../System/Thread.h"
 
-#include <link.h>
-#include <dlfcn.h>
+#if defined(__linux__)
+    #include <link.h>
+#elif defined(__APPLE__)
+    #include <dlfcn.h>
+#endif
+
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -156,7 +160,7 @@ void *nh_core_loadExternalLibrary(
 void *nh_core_loadSymbolFromLibrary(
     void *lib_p, const char *name_p)
 {
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 
     char *error_p = NULL;
     dlerror(); // clear any existing error
@@ -172,7 +176,7 @@ void *nh_core_loadSymbolFromLibrary(
 NH_API_RESULT nh_unloadLibrary(
     void *lib_p)
 {
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 
     if (dlclose(lib_p)) {
         return NH_API_ERROR_BAD_STATE;

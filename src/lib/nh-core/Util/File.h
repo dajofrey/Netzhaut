@@ -1,8 +1,6 @@
 #ifndef NH_CORE_UTIL_FILE_H
 #define NH_CORE_UTIL_FILE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -10,12 +8,9 @@
  */
 
 #include "List.h"
-
 #include "../Common/Includes.h"
 
 #include <stddef.h>
-
-#endif
 
 /** @addtogroup lib_nh-core_typedefs
  *  @{

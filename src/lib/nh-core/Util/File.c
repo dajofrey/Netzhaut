@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include <dirent.h>
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
     #include <sys/types.h>
     #include <sys/stat.h>
 #endif
@@ -134,7 +134,7 @@ static NH_API_RESULT nh_core_getCustomAbsolutePath(
     char basePath_p[PATH_MAX] = {'\0'};
     strcpy(basePath_p, base_p);
 
-#ifdef __unix__ 	
+#if defined(__unix__) || defined(__APPLE__)
     for (int i = strlen(basePath_p); i > 0; --i) {if (basePath_p[i] == '/') {basePath_p[i + 1] = '\0'; break;}}
 #elif defined(_WIN32) || defined(WIN32)
 
@@ -143,7 +143,7 @@ static NH_API_RESULT nh_core_getCustomAbsolutePath(
     char relPath2_p[PATH_MAX] = {'\0'};
     strcpy(relPath2_p, relPath_p);
 
-#ifdef __unix__ 	
+#if defined(__unix__) || defined(__APPLE__)
     int off = 0;
     while (strlen(relPath2_p) > off + 3 && relPath2_p[off] == '.' && relPath2_p[off + 1] == '.' && relPath2_p[off + 2] == '/') 
     {
@@ -168,7 +168,7 @@ static NH_API_RESULT nh_core_getCustomAbsolutePath(
 bool nh_core_isRegularFile(
     const char *path_p)
 {
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
     struct stat path_stat;
     stat(path_p, &path_stat);
     return S_ISREG(path_stat.st_mode) != 0 ? true : false;

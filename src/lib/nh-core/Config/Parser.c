@@ -38,11 +38,13 @@ static NH_API_RESULT nh_core_parseRawConfigValues(
         switch (Parser_p->Token_p->type) {
             case NH_CONFIG_TOKEN_STRING :
             case NH_CONFIG_TOKEN_IDENTIFIER :
+            {
                 char *value_p = malloc(sizeof(char)*(strlen(Parser_p->Token_p->string_p)+1));
                 NH_CORE_CHECK_MEM(value_p)
                 strcpy(value_p, Parser_p->Token_p->string_p);
                 nh_core_appendToList(Values_p, value_p);
                 break;
+            }
         }
         ++(Parser_p->Token_p);
     }

@@ -21,55 +21,42 @@
 NH_API_RESULT nh_core_initChannel(
     nh_Channel *Channel_p)
 {
-#ifdef __unix__
     Channel_p->rw_p[0] = 0;
     Channel_p->rw_p[1] = 0;
-#endif
     return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_openChannel(
     nh_Channel *Channel_p)
 {
-#ifdef __unix__
     pipe(Channel_p->rw_p);
-#endif
     return NH_API_SUCCESS;
 }
 
 void nh_closeChannelReadAccess(
     nh_Channel *Channel_p)
 {
-#ifdef __unix__
     close(Channel_p->rw_p[0]);
-#endif
-
     return;
 }
 
 void nh_closeChannelWriteAccess(
     nh_Channel *Channel_p)
 {
-#ifdef __unix__
     close(Channel_p->rw_p[1]);
-#endif
     return;
 }
 
 int nh_core_writeToChannel(
     nh_Channel *Channel_p, char *bytes_p, int byteCount)
 {
-#ifdef __unix__
     int result = write(Channel_p->rw_p[1], bytes_p, byteCount);
-#endif
     return result;
 }
 
 char *nh_readFromChannel(
     nh_Channel *Channel_p, size_t *size_p)
 {
-#ifdef __unix__
-
     struct timeval timeout;
     timeout.tv_sec = 0;
     timeout.tv_usec = 1;
@@ -96,8 +83,6 @@ char *nh_readFromChannel(
         }
         return buff_p;;
     }
-
-#endif
 
     return NULL;
 }

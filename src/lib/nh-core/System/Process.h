@@ -1,8 +1,6 @@
 #ifndef NH_CORE_PROCESS_H
 #define NH_CORE_PROCESS_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -20,11 +18,9 @@
 #include <stdint.h>
 #include <stdlib.h>
     
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
     #include <sys/types.h>
 #elif defined(_WIN32) || defined(WIN32)
-#endif
-
 #endif
 
 /** @addtogroup lib_nh-core_macros
@@ -39,7 +35,7 @@
  *  @{
  */
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
     typedef pid_t NH_PROCESS;
 #endif
 

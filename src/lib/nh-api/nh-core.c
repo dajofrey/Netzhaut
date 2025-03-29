@@ -208,5 +208,5 @@ void *nh_api_dump(
 {
     nh_core_dump_f dump_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_dump");
     if (dump_f) {dump_f(node_p);}
-    return;
+    return NULL;
 }

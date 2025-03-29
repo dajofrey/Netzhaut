@@ -17,9 +17,9 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
-#ifdef __unix__
-    #include <sys/sysinfo.h>
+#if defined(__unix__) || defined(__APPLE__)
     #include <sys/types.h>
     #include <sys/wait.h>
     #include <sys/time.h>
