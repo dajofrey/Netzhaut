@@ -48,12 +48,6 @@ typedef struct nh_gfx_Surface {
     } Internal;
 } nh_gfx_Surface;           
 
-// TYPEDEFS ========================================================================================
-
-typedef nh_gfx_Surface *(*nh_gfx_createSurface_f)(
-    nh_wsi_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api
-);
-
 // FUNCTIONS =======================================================================================
 
 nh_gfx_Surface *nh_gfx_createSurface(

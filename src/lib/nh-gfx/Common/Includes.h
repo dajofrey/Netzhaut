@@ -1,8 +1,6 @@
 #ifndef NH_GFX_COMMON_INCLUDES_H
 #define NH_GFX_COMMON_INCLUDES_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -18,20 +16,23 @@
 #endif
 
 #ifdef INCLUDE_VOLK
-    #include "volk/volk.h"
+    #include "../../../../external/volk/volk.h"
 #endif
 
 #ifdef NETZHAUT_OPENGL_IMPLEMENTATION
     #define SOGL_IMPLEMENTATION_X11
 #endif
 
-//#ifdef NETZHAUT_OPENGL
+#ifdef __unix__
     #define SOGL_MAJOR_VERSION 4
     #define SOGL_MINOR_VERSION 6
     #include "simple-opengl-loader-master/simple-opengl-loader.h"
     #include "glx/glx.h"
-//#endif
+#endif
 
-#endif // DOXYGEN_SHOULD_SKIP_THIS
+#ifdef __APPLE__
+    #include <OpenGL/OpenGL.h>
+    #include <OpenGL/CGLCurrent.h>  // For managing OpenGL contexts
+#endif
 
 #endif // NH_GFX_COMMON_INCLUDES_H

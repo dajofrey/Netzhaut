@@ -1,8 +1,6 @@
 #ifndef NH_ECMASCRIPT_TYPE_H
 #define NH_ECMASCRIPT_TYPE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -15,8 +13,6 @@
 #include <stddef.h>
 
 typedef struct nh_ecmascript_Object nh_ecmascript_Object;
-
-#endif
 
 /** @addtogroup lib_nh-ecmascript_enums
  *  @{
@@ -61,10 +57,6 @@ typedef struct nh_ecmascript_Object nh_ecmascript_Object;
     } nh_ecmascript_Any;
 
 /** @} */
-
-/** @addtogroup lib_nh-ecmascript_functions
- *  @{
- */
 
 // corresponds to https://tc39.es/ecma262/#sec-type-conversion
 
@@ -189,13 +181,11 @@ typedef struct nh_ecmascript_Object nh_ecmascript_Object;
     );
 
     nh_ecmascript_Any nh_ecmascript_wrapNumber(
-        NH_ECMASCRIPT_NUMBER *number_p;
+        NH_ECMASCRIPT_NUMBER *number_p
     );
 
     NH_ECMASCRIPT_NUMBER *nh_ecmascript_allocateNumber(
         NH_ECMASCRIPT_NUMBER number
     );
-
-/** @} */
 
 #endif
