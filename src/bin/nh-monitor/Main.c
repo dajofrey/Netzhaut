@@ -85,14 +85,14 @@ static int openMonitor()
 int main(
     int argc, char **argv_pp) 
 {
-    if (nh_api_initialize(NULL, NULL, 0) != NH_API_SUCCESS) {
-        puts("API initialization failed. Exiting.");
+    if (nh_api_initialize(NULL, argc > 2 ? argv_pp[2] : NULL, argc > 2 ? strlen(argv_pp[2]) : 0) != NH_API_SUCCESS) {
+        puts("API initialization failed. Exiting.\n");
         return 1;
     }
 
-    if (argc == 2) {
+    if (argc > 1) {
         char config_p[128] = {0};
-        sprintf(config_p, "nh-monitor.server_port:%d;", atoi(argv_pp[1]));  
+        sprintf(config_p, "nh-monitor.server_port:%d;", atoi(argv_pp[1]));
         if (nh_api_loadConfig(config_p, strlen(config_p)) != NH_API_SUCCESS) {
             puts("Setting server_port failed. Exiting.");
             return 1;

@@ -211,7 +211,7 @@ static NH_API_RESULT nh_monitor_updatePeerMonitor(
                     nh_monitor_initLogger(&Monitor_p->Peer.Logger);
                     nh_monitor_freeMonitorNodes(&Monitor_p->Root);
                     Monitor_p->Peer.Root = nh_monitor_initMonitorNode(NULL, true, NULL);
-                    Monitor_p->Peer.state = 0;
+                    Monitor_p->Peer.state = 1;
                     break;
                 }
                 if (received < 0) {break;}
@@ -223,14 +223,12 @@ static NH_API_RESULT nh_monitor_updatePeerMonitor(
                     if (nh_monitor_splitByTwoPluses(buffer_p+i, &buffer1_p, &buffer2_p, &buffer3_p)) {
                         nh_monitor_handleLogMessage(&(Monitor_p->Peer.Logger), buffer1_p, buffer2_p, buffer3_p);
                     } else {
-                        puts("sgewegew");
-                        exit(0);
+                        break;
                     }
                 }
                 Monitor_p->Peer.Root.LoggerNode_p = &(Monitor_p->Peer.Logger.Root);
                 Monitor_p->Peer.state = 3;
             } while (counter++ < 100);
-
             break;
         }
     }
@@ -637,7 +635,7 @@ static NH_API_RESULT nh_monitor_drawMonitorRow(
     }
     Glyphs_p = Tmp_p;
 
-    if (Monitor_p->Peer.state > 0 && Monitor_p->Peer.state < 3) {
+    if (Monitor_p->Peer.state < 3) {
         if (row == 0) {
             char title_p[] = " Log Selector ";
             for (int i = 0; i < width - strlen(title_p); ++i) {
@@ -668,8 +666,7 @@ static NH_API_RESULT nh_monitor_drawMonitorRow(
                 sprintf(title_p, " Log Viewer ");
             } else {
                 sprintf(title_p, " Log Viewer ");
-        }
- 
+            }
             for (int i = 0; i < width - strlen(title_p); ++i) {
                 nh_monitor_setNextGlyph(&Glyphs_p, '-');
             }
@@ -687,7 +684,7 @@ static NH_API_RESULT nh_monitor_drawMonitorRow(
             }
         } else if (row == height - 1) {
             char footer_p[244] = {0};
-            sprintf(footer_p, "[w][a][s][d] Navigate"); 
+            sprintf(footer_p, "[w][a][s][d] Navigate [q] Quit"); 
             for (int i = 0; i < strlen(footer_p); ++i) {
                 nh_monitor_setNextGlyph(&Glyphs_p, footer_p[i]);
             }
@@ -712,7 +709,7 @@ static NH_API_RESULT nh_monitor_drawMonitorRow(
                 Node2_p = Node2_p->Parent_p->Children.pp[Node2_p->Parent_p->selectYOffset];
             }
             if (LastNode_p) {
-                Monitor_p->selectXOffset +=strlen(LastNode_p->LoggerNode_p->name_p);
+                Monitor_p->selectXOffset += strlen(LastNode_p->LoggerNode_p->name_p);
             }
             nh_monitor_setNextGlyph(&Glyphs_p, ' ');
             if (Nodes2.size == i+1) {
@@ -780,7 +777,7 @@ static NH_API_RESULT nh_monitor_drawMonitorRow(
         }
     } else if (row == height - 1) {
         char footer_p[244] = {0};
-        sprintf(footer_p, "[w][a][s][d] Navigate"); 
+        sprintf(footer_p, "[w][a][s][d] Navigate [q] Quit"); 
         for (int i = 0; i < strlen(footer_p); ++i) {
             nh_monitor_setNextGlyph(&Glyphs_p, footer_p[i]);
         }
