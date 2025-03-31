@@ -1,6 +1,4 @@
 /lib/
 /bin/
 /include/
-test*.html
-test*.css
-test*.js
+test*
