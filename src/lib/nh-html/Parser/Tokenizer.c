@@ -2224,7 +2224,10 @@ static NH_API_RESULT nh_html_consumeNamedCharacterReference(
         nh_encoding_UTF8String UTF8 = nh_encoding_encodeUTF8(Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
         NH_ENCODING_UTF32 match = nh_html_matchCharacterReferencesEntity(UTF8.p, &length); 
         nh_encoding_freeUTF8(&UTF8);
-        if (length == 0 || length <= bestLength) {break;}
+        if (length == 0 || length <= bestLength) {
+            Tokenizer_p->index--;
+            break;
+        }
         bestMatch = match;
         bestLength = length;
     }

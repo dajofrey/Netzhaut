@@ -37,6 +37,10 @@ static NH_API_RESULT nh_monitor_getSetting(
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->block = atoi(Setting_p->pp[0]);
             break;
+        case 3 :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->reset = atoi(Setting_p->pp[0]);
+            break;
     }
 
     return NH_API_SUCCESS;
@@ -51,6 +55,7 @@ nh_monitor_Config nh_monitor_getConfig()
         "client_port",
         "server_port",
         "block",
+        "reset",
     };
     static size_t options = sizeof(optionNames_pp) / sizeof(optionNames_pp[0]);
 

@@ -229,13 +229,10 @@ typedef struct nh_api_KeyboardEvent {
     NH_API_MODIFIER_FLAG state;
 } nh_api_KeyboardEvent;
 
-/**
- * Wrapper type for possible WSI events.
- */
 typedef struct nh_api_WSIEvent {
-    NH_API_WSI_EVENT_E type;       /**<Indicates the type of event.*/
-    nh_api_WindowEvent Window;     /**<Holds event data in case of window event.*/
-    nh_api_MouseEvent Mouse;       /**<Holds event data in case of mouse event.*/
+    NH_API_WSI_EVENT_E type;
+    nh_api_WindowEvent Window;
+    nh_api_MouseEvent Mouse;
     nh_api_KeyboardEvent Keyboard;
 } nh_api_WSIEvent;
 
@@ -248,18 +245,16 @@ typedef void (*nh_api_windowCallback_f)(
 
 // FUNCTIONS =======================================================================================
 
-/**
- * Todo.
- */
 nh_api_Window *nh_api_createWindow(
     char *namespace_p, nh_api_SurfaceRequirements *Requirements_p
 );
 
-/**
- * Todo.
- */
 NH_API_RESULT nh_api_setWindowEventListener(
     nh_api_Window *Window_p, nh_api_windowCallback_f callback_f
+);
+
+NH_API_RESULT nh_api_moveWindow(
+    nh_api_Window *Window_p
 );
 
 #endif // NH_API_NH_WSI_H

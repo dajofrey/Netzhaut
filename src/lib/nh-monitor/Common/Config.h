@@ -17,6 +17,7 @@ typedef struct nh_monitor_Config {
     int client_port;
     int server_port;
     bool block;
+    bool reset;
 } nh_monitor_Config;
 
 nh_monitor_Config nh_monitor_getConfig(

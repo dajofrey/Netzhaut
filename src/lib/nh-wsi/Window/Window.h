@@ -105,6 +105,7 @@ typedef enum NH_WSI_TYPE_E {
     NH_WSI_TYPE_X11, 
     NH_WSI_TYPE_WAYLAND, 
     NH_WSI_TYPE_WIN32, 
+    NH_WSI_TYPE_MACOS,
 } NH_WSI_TYPE_E; 
 
 // STRUCTS =====================================================================================

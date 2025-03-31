@@ -62,5 +62,5 @@ Launches a CLI interface for monitoring.
 ```
 2. Run nh-html with client-port specified and in block mode.
 ```bash
-./bin/nh-html test.html "nh-monitor.client_port:50123;nh-monitor.block:1;nh-core.debug.monitor_on:1"
+./bin/nh-html test.html "nh-monitor.client_port:50123;nh-monitor.block:1;nh-core.debug.monitor_on:1;"
 ```

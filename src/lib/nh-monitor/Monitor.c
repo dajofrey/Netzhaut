@@ -204,7 +204,7 @@ static NH_API_RESULT nh_monitor_updatePeerMonitor(
             do {
                 memset(buffer_p, 0, sizeof(buffer_p));
                 received = nh_monitor_receiveMessageFromLogger(Monitor_p->Peer.client_socket, buffer_p, sizeof(buffer_p)-1, 256);
-                if (received == 0) {
+                if (received == 0 && nh_monitor_getConfig().reset) {
                     // Connection closed bro.
                     nh_monitor_closeMonitorSockets(Monitor_p->Peer.client_socket, Monitor_p->Peer.server_fd);
                     nh_monitor_freeLogger(&Monitor_p->Peer.Logger);

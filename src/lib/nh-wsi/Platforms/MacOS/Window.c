@@ -197,7 +197,7 @@ static NH_API_RESULT nh_x11_resizeWindowDrag(
  *
  * @param Window_p Valid nh_x11_Window handle.
  */
-NH_API_RESULT nh_x11_moveWindow(
+NH_API_RESULT nh_wsi_moveX11Window(
     nh_x11_Window *Window_p)
 {
     int winXpos, winYpos;
@@ -875,7 +875,7 @@ NH_API_RESULT nh_wsi_createMacOSWindow(
     }
 }
 
-NH_API_RESULT nh_x11_destroyWindow(
+NH_API_RESULT nh_wsi_destroyX11Window(
     nh_x11_Window *Window_p)
 {
     XUnmapWindow(NH_WSI_X11.Display_p, Window_p->Handle);

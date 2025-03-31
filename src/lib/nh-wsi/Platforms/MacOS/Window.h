@@ -54,11 +54,11 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
         nh_wsi_Window *Window_p, bool *idle_p
     ); 
 
-    NH_API_RESULT nh_x11_createWindow(
+    NH_API_RESULT nh_wsi_createX11Window(
         nh_x11_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p
     );
 
-    NH_API_RESULT nh_x11_destroyWindow(
+    NH_API_RESULT nh_wsi_destroyX11Window(
         nh_x11_Window *Window_p
     );
 
@@ -78,7 +78,7 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
         nh_x11_Window *Window_p, int* width_p, int* height_p
     );
 
-    NH_API_RESULT nh_x11_moveWindow(
+    NH_API_RESULT nh_wsi_moveX11Window(
         nh_x11_Window *Window_p
     );
 

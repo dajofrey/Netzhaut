@@ -197,7 +197,7 @@ static NH_API_RESULT nh_x11_resizeWindowDrag(
  *
  * @param Window_p Valid nh_x11_Window handle.
  */
-NH_API_RESULT nh_x11_moveWindow(
+NH_API_RESULT nh_wsi_moveX11Window(
     nh_x11_Window *Window_p)
 {
     int winXpos, winYpos;
@@ -839,7 +839,7 @@ static void nh_x11_updateNormalHints(
     return;
 }
 
-NH_API_RESULT nh_x11_createWindow(
+NH_API_RESULT nh_wsi_createX11Window(
     nh_x11_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
 {
     XVisualInfo Template = {0};
@@ -986,7 +986,7 @@ NH_API_RESULT nh_x11_createWindow(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_x11_destroyWindow(
+NH_API_RESULT nh_wsi_destroyX11Window(
     nh_x11_Window *Window_p)
 {
     XUnmapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
