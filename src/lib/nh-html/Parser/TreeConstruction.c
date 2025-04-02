@@ -1499,6 +1499,8 @@ static NH_API_RESULT nh_html_processText(
         {
             if (Parser_p->Token_p->StartOrEndTag.tag == NH_HTML_TAG_SCRIPT)
             {
+                puts("TODO SCRIPT ENDTAG");
+                exit(0);
                 // TODO
             }
             else {
@@ -1673,4 +1675,3 @@ NH_API_RESULT nh_html_dispatchTreeConstruction(
 
     return NH_API_SUCCESS;
 }
-

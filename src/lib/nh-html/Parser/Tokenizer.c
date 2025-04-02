@@ -33,6 +33,14 @@ static NH_API_RESULT nh_html_reconsume(
     nh_html_Tokenizer *Tokenizer_p, NH_HTML_TOKENIZATION_STATE newState
 );
 
+static void nh_html_incrementTokenizer(
+    nh_html_Tokenizer *Tokenizer_p
+);
+
+static void nh_html_decrementTokenizer(
+    nh_html_Tokenizer *Tokenizer_p
+);
+
 // INIT ============================================================================================
 
 nh_html_Tokenizer nh_html_initTokenizer(
@@ -193,7 +201,6 @@ static NH_API_RESULT nh_html_emitCharacterToken(
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_CHARACTER);
     NH_CORE_CHECK_MEM(Token_p)
     nh_webidl_appendUnicodeToDOMString(&Token_p->CommentOrCharacter.Data, &codepoint, 1);
-
     return nh_html_emit(Tokenizer_p);
 }
 
@@ -2219,13 +2226,13 @@ static NH_API_RESULT nh_html_consumeNamedCharacterReference(
 
     while (Tokenizer_p->index < Tokenizer_p->InputStream.length) {
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, Tokenizer_p->InputStream.p+Tokenizer_p->index, 1); 
-        Tokenizer_p->index++;
+        nh_html_incrementTokenizer(Tokenizer_p);
         int length = 0;
         nh_encoding_UTF8String UTF8 = nh_encoding_encodeUTF8(Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
         NH_ENCODING_UTF32 match = nh_html_matchCharacterReferencesEntity(UTF8.p, &length); 
         nh_encoding_freeUTF8(&UTF8);
         if (length == 0 || length <= bestLength) {
-            Tokenizer_p->index--;
+            nh_html_decrementTokenizer(Tokenizer_p);
             break;
         }
         bestMatch = match;
@@ -2652,14 +2659,27 @@ static NH_API_RESULT nh_html_consume(
     return NH_API_ERROR_BAD_STATE;
 }
 
-NH_API_RESULT nh_html_consumeNext(
+static void nh_html_incrementTokenizer(
     nh_html_Tokenizer *Tokenizer_p)
 {
     Tokenizer_p->index++;
-
     if (Tokenizer_p->index < Tokenizer_p->InputStream.length) {
         Tokenizer_p->codepoint = Tokenizer_p->InputStream.p[Tokenizer_p->index];
     }
+}
 
+static void nh_html_decrementTokenizer(
+    nh_html_Tokenizer *Tokenizer_p)
+{
+    Tokenizer_p->index--;
+    if (Tokenizer_p->index > 0) {
+        Tokenizer_p->codepoint = Tokenizer_p->InputStream.p[Tokenizer_p->index];
+    }
+}
+
+NH_API_RESULT nh_html_consumeNext(
+    nh_html_Tokenizer *Tokenizer_p)
+{
+    nh_html_incrementTokenizer(Tokenizer_p);
     return nh_html_consume(Tokenizer_p);
 }

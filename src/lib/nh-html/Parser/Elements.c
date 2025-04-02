@@ -341,4 +341,3 @@ nh_webidl_Interface *nh_html_getElementInterface(
 
     return nh_webidl_getInterface("HTML", "HTMLUnknownElement");
 }
-

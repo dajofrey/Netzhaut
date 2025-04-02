@@ -583,7 +583,7 @@ static NH_API_RESULT nh_css_logFragment(
     }
 
     if (Fragment_p->type == NH_CSS_FRAGMENT_TEXT) {
-        nh_encoding_UTF8String UTF8 = nh_encoding_encodeUTF8(Fragment_p->Text.text_p, Fragment_p->Text.length);
+        nh_encoding_UTF8String UTF8 = nh_encoding_encodeUTF8(Fragment_p->Text.p, Fragment_p->Text.length);
 
         sprintf(message_p, "%sText     : %s", indent_p, UTF8.p);
         nh_core_log(logId_p, NULL, message_p);

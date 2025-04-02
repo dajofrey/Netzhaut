@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// HELPER ==========================================================================================
+// FUNCTIONS =======================================================================================
 
 // https://html.spec.whatwg.org/multipage/parsing.html#create-an-element-for-the-token
 nh_webidl_Object *nh_html_createElementForToken(
@@ -155,24 +155,27 @@ NH_API_RESULT nh_html_insertCharacter(
     NH_WEBIDL_UNSIGNED_LONG adjustedInsertionLocation = nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Target_p);
 
     if (!strcmp(Target_p->Interface_p->name_p, "Document")) {
+        // No text nodes directly attached to document.  
         return NH_API_SUCCESS;
     } 
 
     if (adjustedInsertionLocation > 0) {
         nh_webidl_Object *Sibling_p = nh_dom_getFromNodeList(nh_webidl_getAttribute(Target_p, "childNodes"), adjustedInsertionLocation - 1);
         if (!strcmp(Sibling_p->Interface_p->name_p, "Text")) {
-            NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToText((nh_webidl_Object*)Sibling_p, *Data_p))
+            // Append to text node.
+            NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToText(Sibling_p, *Data_p))
             return NH_API_SUCCESS;
         }
     }
 
+    // Create new text node.
     nh_webidl_Object *TargetNode_p = NH_WEBIDL_GET_DOM_NODE(Target_p);
     NH_CORE_CHECK_NULL(TargetNode_p)
 
     nh_webidl_Object *Text_p = nh_dom_createText(*Data_p, nh_dom_getNodeDocument(TargetNode_p)); 
     NH_CORE_CHECK_MEM(Text_p)
 
-    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(TargetNode_p, (nh_webidl_Object*)Text_p, adjustedInsertionLocation))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(TargetNode_p, Text_p, adjustedInsertionLocation))
 
     return NH_API_SUCCESS;
 }
@@ -640,4 +643,3 @@ bool nh_html_hasElementInSelectScope(
 
     return nh_html_hasElementInSpecificScope(Parser_p, target_p, selectScope_pp, sizeof(selectScope_pp)/sizeof(selectScope_pp[0]));
 }
-

@@ -308,7 +308,7 @@ NH_API_RESULT nh_css_computeTextValues(
     );
 
     NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_gfx_createText(
-        &Fragment_p->Text.Values.Text, Fragment_p->Text.text_p, Fragment_p->Text.length, Fragment_p->Text.Values.fontSize, 
+        &Fragment_p->Text.Values.Text, Fragment_p->Text.p, Fragment_p->Text.length, Fragment_p->Text.Values.fontSize, 
         &Fragment_p->Text.Values.FontFamilies, Fragment_p->Text.Values.FontStyle
     ))
 

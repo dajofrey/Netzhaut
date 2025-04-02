@@ -40,7 +40,7 @@ NH_API_RESULT nh_dom_appendToCharacterData(
     nh_webidl_Object *CharacterData_p, nh_webidl_DOMString DOMString)
 {
     NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_webidl_appendToDOMString(
-        ((nh_webidl_Object*)CharacterData_p)->Attributes.pp[DATA], DOMString.p, DOMString.length
+        CharacterData_p->Attributes.pp[DATA], DOMString.p, DOMString.length
     ))
 
     return NH_API_SUCCESS;
@@ -49,5 +49,5 @@ NH_API_RESULT nh_dom_appendToCharacterData(
 nh_webidl_DOMString *nh_dom_getCharacterDataString(
     nh_webidl_Object *CharacterData_p)
 {
-    return ((nh_webidl_Object*)CharacterData_p)->Attributes.pp[DATA];
+    return CharacterData_p->Attributes.pp[DATA];
 }

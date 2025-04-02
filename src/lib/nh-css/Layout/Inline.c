@@ -137,7 +137,7 @@ static nh_css_Fragment *nh_css_splitTextFragment(
     NH_CORE_CHECK_MEM_2(NULL, NewFragment_p)
 
     *NewFragment_p = nh_css_initFragment(Fragment_p->Node_p, NULL, Fragment_p->type, NULL);
-    NewFragment_p->Text.text_p = Fragment_p->Text.text_p + newLength;
+    NewFragment_p->Text.p = Fragment_p->Text.p + newLength;
     NewFragment_p->Text.length = fullLength - newLength;
 
     return NewFragment_p;

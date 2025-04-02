@@ -68,7 +68,7 @@ static nh_css_Fragment *nh_css_createFragment(
     else {
         Fragment_p = nh_css_insertFragment(Node_p, Parent_p, NH_CSS_FRAGMENT_TEXT, Type_p);
         NH_CORE_CHECK_MEM_2(NULL, Fragment_p)
-        Fragment_p->Text.text_p = Node_p->Source_p->TextNode.String.p;
+        Fragment_p->Text.p = Node_p->Source_p->TextNode.String.p;
         Fragment_p->Text.length = Node_p->Source_p->TextNode.String.length;
     }
 

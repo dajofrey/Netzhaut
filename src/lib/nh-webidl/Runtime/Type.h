@@ -1,8 +1,6 @@
 #ifndef NH_WEBIDL_TYPE_H
 #define NH_WEBIDL_TYPE_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -15,8 +13,6 @@
 #include "../Common/Includes.h"
 
 #include "../../nh-core/Util/BigInt.h"
-
-#endif
 
 typedef enum NH_WEBIDL_TYPE { 
     NH_WEBIDL_TYPE_WILDCARD, 
