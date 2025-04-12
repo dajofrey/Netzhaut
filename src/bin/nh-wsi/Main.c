@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <execinfo.h>
+#include <signal.h>
 
 static void handleInput( 
     nh_api_Window *Window_p, nh_api_WSIEvent Event) 
@@ -23,6 +25,21 @@ static void handleInput(
     } 
 } 
 
+static void segvHandler(
+    int sig) 
+{
+    void *array[10];
+    size_t size;
+
+    // Get void*'s for all entries on the stack
+    size = backtrace(array, 10);
+
+    // Print out all the frames to stderr
+    fprintf(stderr, "Error: signal %d:\n", sig);
+    backtrace_symbols_fd(array, size, STDERR_FILENO);
+    exit(1);
+}
+
 /** 
  * Routine for opening a window.
  */
@@ -33,6 +50,8 @@ int main(
         puts("Invalid argument count. Exiting.");
         return 1;
     }
+
+    signal(SIGSEGV, segvHandler);
 
     if (nh_api_initialize(NULL, argc > 1 ? argv_pp[1] : NULL, argc > 1 ? strlen(argv_pp[1]) : 0) != NH_API_SUCCESS) {
         puts("API initialization failed. Exiting.\n");

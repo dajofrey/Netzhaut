@@ -9,7 +9,7 @@ endif
 
 # Define the compiler and compile flags
 CC = gcc
-CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration
+CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration -fsanitize=address,undefined,alignment
 
 ifeq ($(OS),macOS)
     CFLAGS += -Wl,-undefined,dynamic_lookup
@@ -21,7 +21,7 @@ endif
 LD = gcc
 
 LDFLAGS_NHAPI = -ldl
-LDFLAGS_NHCORE = -v -lm -ldl
+LDFLAGS_NHCORE = -v -lm -ldl -fsanitize=address,undefined,alignment
 LDFLAGS_NHNETWORK = -lssl
 LDFLAGS_NHGFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
 LDFLAGS_FREETYPE_GL = -I/usr/include/freetype2 -lfreetype -lharfbuzz
@@ -522,22 +522,23 @@ $(LIB_FREETYPE_GL): $(OBJ_FILES_FREETYPE_GL)
 
 # Clean rule
 clean:
-	rm -f $(OBJ_FILES_NHAPI) $(LIB_NHAPI) 
-	rm -f $(OBJ_FILES_NHCORE) $(LIB_NHCORE) 
-	rm -f $(OBJ_FILES_NHWSI) $(LIB_NHWSI) 
-	rm -f $(OBJ_FILES_NHHTML) $(LIB_NHHTML)
-	rm -f $(OBJ_FILES_NHDOM) $(LIB_NHDOM)
-	rm -f $(OBJ_FILES_NHNETWORK) $(LIB_NHNETWORK)
-	rm -f $(OBJ_FILES_NHWEBIDL) $(LIB_NHWEBIDL)
-	rm -f $(OBJ_FILES_NHECMASCRIPT) $(LIB_NHECMASCRIPT)
-	rm -f $(OBJ_FILES_NHENCODING) $(LIB_NHENCODING)
-	rm -f $(OBJ_FILES_NHGFX) $(LIB_NHGFX)
-	rm -f $(OBJ_FILES_NHRENDERER) $(LIB_NHRENDERER)
-	rm -f $(OBJ_FILES_NHCSS) $(LIB_NHCSS)
-	rm -f $(OBJ_FILES_NHURL) $(LIB_NHURL)
-	rm -f $(OBJ_FILES_NHMONITOR) $(LIB_NHMONITOR)
-	rm -f $(OBJ_FILES_VOLK) $(LIB_VOLK)
-	rm -f $(OBJ_FILES_FREETYPE_GL) $(LIB_FREETYPE_GL)
+	find . -name "*.o" -type f -delete
+	rm -f $(LIB_NHAPI) 
+	rm -f $(LIB_NHCORE) 
+	rm -f $(LIB_NHWSI) 
+	rm -f $(LIB_NHHTML)
+	rm -f $(LIB_NHDOM)
+	rm -f $(LIB_NHNETWORK)
+	rm -f $(LIB_NHWEBIDL)
+	rm -f $(LIB_NHECMASCRIPT)
+	rm -f $(LIB_NHENCODING)
+	rm -f $(LIB_NHGFX)
+	rm -f $(LIB_NHRENDERER)
+	rm -f $(LIB_NHCSS)
+	rm -f $(LIB_NHURL)
+	rm -f $(LIB_NHMONITOR)
+	rm -f $(LIB_VOLK)
+	rm -f $(LIB_FREETYPE_GL)
 	rm -rf lib
 
 .PHONY: all clean create_lib_dir download_ttyr

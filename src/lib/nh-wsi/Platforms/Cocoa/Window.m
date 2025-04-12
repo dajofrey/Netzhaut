@@ -29,6 +29,8 @@
 
 - (void)windowDidResize:(NSNotification *)notification
 {
+    if (!Window_p) return;
+    
     NSWindow *window = [notification object];
     NSRect contentRect = [window contentRectForFrameRect:[window frame]];
     nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, 
@@ -38,6 +40,8 @@
 
 - (void)windowDidMove:(NSNotification *)notification
 {
+    if (!Window_p) return;
+    
     NSWindow *window = [notification object];
     NSRect contentRect = [window contentRectForFrameRect:[window frame]];
     nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, 
@@ -47,16 +51,19 @@
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
+    if (!Window_p) return;
     nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0);
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification
 {
+    if (!Window_p) return;
     nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0);
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender
 {
+    if (!Window_p) return NO;
     // TODO: Send close event instead of exiting
     exit(0);
     return NO;
@@ -200,7 +207,7 @@
 // C interface implementations
 
 NH_API_RESULT nh_wsi_createCocoaWindow(
-    nh_wsi_CocoaWindow *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
+    nh_wsi_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
 {
     @autoreleasepool {
         // Create window delegate
@@ -243,9 +250,9 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
         [window.contentView setLayer:layer];
         
         // Store references
-        Window_p->Handle = (__bridge_retained void*)window;
-        Window_p->Delegate = (__bridge_retained void*)delegate;
-        Window_p->Layer = (__bridge_retained void*)layer;
+        Window_p->Cocoa.Handle = (__bridge_retained void*)window;
+        Window_p->Cocoa.Delegate = (__bridge_retained void*)delegate;
+        Window_p->Cocoa.Layer = (__bridge_retained void*)layer;
         
         // Show window
         [window makeKeyAndOrderFront:nil];

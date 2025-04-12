@@ -26,9 +26,8 @@ NH_API_RESULT nh_core_initRingBuffer(
 
     Buffer_p->itemCount = itemCount;
     Buffer_p->itemByteSize = itemByteSize;
-
     Buffer_p->overflow = 0;
-    Buffer_p->index   = -1;
+    Buffer_p->index = -1;
  
     Buffer_p->data_p = nh_core_allocate(itemCount * itemByteSize);
     NH_CORE_CHECK_MEM(Buffer_p->data_p)
@@ -37,17 +36,19 @@ NH_API_RESULT nh_core_initRingBuffer(
         init_f(Buffer_p, itemCount);
     }
 
-    Buffer_p->overflow = 0;
-    Buffer_p->index = -1;
-
     return NH_API_SUCCESS;
 }
 
-void *nh_core_advanceRingBuffer(
+char *nh_core_advanceRingBuffer(
     nh_core_RingBuffer *Buffer_p)
 {
+    if (!Buffer_p || !Buffer_p->data_p) return NULL;
+    
     Buffer_p->index++;
-    if (Buffer_p->index == Buffer_p->itemCount) {Buffer_p->index = 0; Buffer_p->overflow += 1;}
+    if (Buffer_p->index == Buffer_p->itemCount) {
+        Buffer_p->index = 0; 
+        Buffer_p->overflow += 1;
+    }
     
     return Buffer_p->data_p + (Buffer_p->index * Buffer_p->itemByteSize);
 }
@@ -55,29 +56,38 @@ void *nh_core_advanceRingBuffer(
 void nh_core_freeRingBuffer(
     nh_core_RingBuffer *Buffer_p)
 {
-    nh_core_free(Buffer_p->data_p);
-
+    if (!Buffer_p) return;
+    if (Buffer_p->data_p) nh_core_free(Buffer_p->data_p);
+    Buffer_p->data_p = NULL;
+    Buffer_p->itemCount = 0;
+    Buffer_p->itemByteSize = 0;
+    Buffer_p->index = -1;
+    Buffer_p->overflow = 0;
     return;
 }
 
 void nh_core_initRingBufferMarker(
     nh_core_RingBufferMarker *Marker_p)
 {
+    if (!Marker_p) return;
     Marker_p->overflow = 0;
     Marker_p->index = -1;
-
     return;
 }
 
-void *nh_core_incrementRingBufferMarker(
+char *nh_core_incrementRingBufferMarker(
     nh_core_RingBuffer *Buffer_p, nh_core_RingBufferMarker *Marker_p)
 {
-    if (Buffer_p->index == Marker_p->index && Buffer_p->overflow == Marker_p->overflow) {return NULL;}
+    if (!Buffer_p || !Marker_p || !Buffer_p->data_p) return NULL;
+    
+    if (Buffer_p->index == Marker_p->index && Buffer_p->overflow == Marker_p->overflow) {
+        return NULL;
+    }
 
     Marker_p->index++;
-
     if (Buffer_p->overflow != Marker_p->overflow && Marker_p->index == Buffer_p->itemCount) {
-        Marker_p->index = 0; Marker_p->overflow = Buffer_p->overflow;
+        Marker_p->index = 0; 
+        Marker_p->overflow = Buffer_p->overflow;
     }
 
     return Buffer_p->data_p + (Marker_p->index * Buffer_p->itemByteSize);

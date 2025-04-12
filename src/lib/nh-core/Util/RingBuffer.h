@@ -15,17 +15,17 @@
 
 // STRUCTS =========================================================================================
 
-typedef struct nh_core_RingBufferMarker { 
+typedef struct NH_ALIGN_16 nh_core_RingBufferMarker { 
     int index; 
     int overflow; 
 } nh_core_RingBufferMarker; 
 
-typedef struct nh_core_RingBuffer { 
+typedef struct NH_ALIGN_16 nh_core_RingBuffer { 
     nh_core_RingBufferMarker Marker; /**<For convenience.*/ 
     int itemCount, itemByteSize; 
     int index; 
     int overflow; 
-    void *data_p; 
+    char *data_p; 
 } nh_core_RingBuffer; 
 
 // FUNCTIONS =======================================================================================
@@ -34,7 +34,7 @@ NH_API_RESULT nh_core_initRingBuffer(
     nh_core_RingBuffer *Buffer_p, int itemCount, int itemByteSize, void init_f(nh_core_RingBuffer *Buffer_p, int itemCount)
 );
 
-void *nh_core_advanceRingBuffer(
+char *nh_core_advanceRingBuffer(
     nh_core_RingBuffer *Buffer_p
 ); 
 
@@ -50,7 +50,7 @@ void nh_core_initRingBufferMarker(
     nh_core_RingBufferMarker *Marker_p
 );
 
-void *nh_core_incrementRingBufferMarker(
+char *nh_core_incrementRingBufferMarker(
     nh_core_RingBuffer *Buffer_p, nh_core_RingBufferMarker *Marker_p
 );
 

@@ -16,11 +16,11 @@
 
 // FUNCTIONS =======================================================================================
 
-void *nh_core_allocate(
+char *nh_core_allocate(
     size_t size
 );
 
-void *nh_core_reallocate(
+char *nh_core_reallocate(
     void *ptr, size_t size
 );
 

@@ -17,11 +17,11 @@
 
 // TYPES ===========================================================================================
 
-typedef struct nh_wsi_CocoaWindow {
+typedef struct NH_ALIGN_16 nh_wsi_CocoaWindow {
     void *Handle;      // NSWindow* (opaque pointer)
     void *Delegate;    // NHWindowDelegate* (opaque pointer)
     void *Layer;       // CAMetalLayer* (opaque pointer)
-    struct {
+    struct NH_ALIGN_16 {
         double x, y, width, height;
     } oldFrame;        // Store frame for unmaximize
 } nh_wsi_CocoaWindow;
@@ -32,7 +32,7 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_wsi_createCocoaWindow(
-    nh_wsi_CocoaWindow *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p);
+    nh_wsi_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p);
 
 NH_API_RESULT nh_wsi_destroyCocoaWindow(
     nh_wsi_CocoaWindow *Window_p

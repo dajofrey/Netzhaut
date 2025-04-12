@@ -51,6 +51,7 @@ nh_wsi_Window *nh_wsi_createWindow(
     NH_CORE_CHECK_MEM_2(NULL, Window_p)
     memset(Window_p, 0, sizeof(nh_wsi_Window));
 
+    Window_p->callback_f = NULL;
     Window_p->type = nh_wsi_getType();
 
     if (namespace_p && strlen(namespace_p) > 0) {
@@ -75,7 +76,7 @@ nh_wsi_Window *nh_wsi_createWindow(
             break;
 #elif defined(__APPLE__)
         case NH_WSI_TYPE_COCOA : 
-            NH_CORE_CHECK_2(NULL, nh_wsi_createCocoaWindow(&Window_p->Cocoa, nh_wsi_getWindowConfig(Window_p), Requirements_p))
+            NH_CORE_CHECK_2(NULL, nh_wsi_createCocoaWindow(Window_p, nh_wsi_getWindowConfig(Window_p), Requirements_p))
             break;
 #endif
         default : return NULL;

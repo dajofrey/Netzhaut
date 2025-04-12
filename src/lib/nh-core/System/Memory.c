@@ -15,13 +15,19 @@
 
 // IMPLEMENT ======================================================================================
 
-void* nh_core_allocate(
+char* nh_core_allocate(
     size_t size)
 {
-    return malloc(size);
+    #define ALIGNMENT 16
+    void *ptr = NULL;
+    int ret = posix_memalign(&ptr, ALIGNMENT, size);
+    if (ret != 0) {
+        return NULL;  // Allocation failed
+    }
+    return ptr; 
 }
 
-void* nh_core_reallocate(
+char* nh_core_reallocate(
     void *ptr, size_t size)
 {
     return realloc(ptr, size);

@@ -130,7 +130,7 @@ NH_API_RESULT nh_api_terminate()
 {
     if (CORE_P == NULL || LOADER_P == NULL) {return NH_API_ERROR_BAD_STATE;}
 
-    nh_core_terminate_f terminate_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_terminate");
+    nh_core_terminate_f terminate_f = nh_api_loadCoreFunction("nh_core_terminate");
     if (terminate_f) {terminate_f(LOADER_P);}
 
     nh_api_closeCoreLibrary();
@@ -143,22 +143,20 @@ NH_API_RESULT nh_api_terminate()
 
 int nh_api_run()
 {
-puts("run");
-exit(0);
-    nh_core_run_f run_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_run");
+    nh_core_run_f run_f = nh_api_loadCoreFunction("nh_core_run");
     return run_f ? run_f() : -1;
 }
 
 bool nh_api_keepRunning()
 {
-    nh_core_keepRunning_f keepRunning_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_keepRunning");
+    nh_core_keepRunning_f keepRunning_f = nh_api_loadCoreFunction("nh_core_keepRunning");
     return keepRunning_f ? keepRunning_f() : false;
 }
 
 void nh_api_setLogCallback(
     nh_api_logCallback_f logCallback_f)
 {
-    nh_api_setLogCallback_f setLogCallback_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_setLogCallback");
+    nh_api_setLogCallback_f setLogCallback_f = nh_api_loadCoreFunction("nh_core_setLogCallback");
     if (setLogCallback_f != NULL) {setLogCallback_f(NULL, logCallback_f);}
     return;
 }
@@ -166,35 +164,35 @@ void nh_api_setLogCallback(
 nh_api_Workload *nh_api_getWorkload(
     void *args_p)
 {
-    nh_core_getWorkload_f getWorkload_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getWorkload");
+    nh_core_getWorkload_f getWorkload_f = nh_api_loadCoreFunction("nh_core_getWorkload");
     return getWorkload_f ? getWorkload_f(args_p) : NULL;
 }
 
 char *nh_api_getFileData(
     const char* path_p, long *size_p)
 {
-    nh_core_getFileData_f getFileData_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_getFileData");
+    nh_core_getFileData_f getFileData_f = nh_api_loadCoreFunction("nh_core_getFileData");
     return getFileData_f ? getFileData_f(path_p, size_p) : NULL;
 }
 
 NH_API_RESULT nh_api_writeBytesToFile(
     char *filePath_p, char *bytes_p)
 {
-    nh_core_writeBytesToFile_f writeBytesToFile_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_writeBytesToFile");
+    nh_core_writeBytesToFile_f writeBytesToFile_f = nh_api_loadCoreFunction("nh_core_writeBytesToFile");
     return writeBytesToFile_f ? writeBytesToFile_f(filePath_p, bytes_p) : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_api_registerConfig(
     char *absolutePath_p, int length)
 {
-    nh_core_registerConfig_f registerConfig_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_registerConfig");
+    nh_core_registerConfig_f registerConfig_f = nh_api_loadCoreFunction("nh_core_registerConfig");
     return registerConfig_f ? registerConfig_f(absolutePath_p, length) : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_api_loadConfig(
     char *data_p, int length)
 {
-    nh_core_loadConfig_f loadConfig_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_loadConfig");
+    nh_core_loadConfig_f loadConfig_f = nh_api_loadCoreFunction("nh_core_loadConfig");
     return loadConfig_f ? loadConfig_f(data_p, length) : NH_API_ERROR_BAD_STATE;
 }
 
@@ -206,7 +204,7 @@ void *nh_api_getLoader()
 void *nh_api_dump(
     char *node_p)
 {
-    nh_core_dump_f dump_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_dump");
+    nh_core_dump_f dump_f = nh_api_loadCoreFunction("nh_core_dump");
     if (dump_f) {dump_f(node_p);}
     return NULL;
 }

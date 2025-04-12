@@ -32,6 +32,8 @@ static nh_api_WSIEvent nh_wsi_initEvent(
 void nh_wsi_sendWindowEvent(
     nh_wsi_Window *Window_p, NH_API_WINDOW_E type, int x, int y, int width, int height)
 {
+    if (!Window_p) return;
+
     nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_WINDOW);
 
     Event.Window.type        = type;
@@ -40,12 +42,14 @@ void nh_wsi_sendWindowEvent(
     Event.Window.Size.width  = width;
     Event.Window.Size.height = height;
 
-    if (Window_p && Window_p->callback_f) {
+    if (Window_p->callback_f != NULL) {
         Window_p->callback_f(Window_p, Event);
     }
 
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
-    if (Event_p) {*Event_p = Event;}
+    if (Event_p) {
+        *Event_p = Event;
+    }
 
     return;
 }
@@ -53,6 +57,8 @@ void nh_wsi_sendWindowEvent(
 void nh_wsi_sendMouseEvent(
     nh_wsi_Window *Window_p, int x, int y, NH_API_TRIGGER_E trigger, NH_API_MOUSE_E type)
 {
+    if (!Window_p) return;
+
     nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_MOUSE);
 
     Event.Mouse.Position.x = x;
@@ -60,12 +66,14 @@ void nh_wsi_sendMouseEvent(
     Event.Mouse.trigger = trigger;
     Event.Mouse.type = type;
 
-    if (Window_p && Window_p->callback_f) {
+    if (Window_p->callback_f) {
         Window_p->callback_f(Window_p, Event);
     }
 
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
-    if (Event_p) {*Event_p = Event;}
+    if (Event_p) {
+        *Event_p = Event;
+    }
 
     return;
 }
@@ -74,6 +82,8 @@ void nh_wsi_sendKeyboardEvent(
     nh_wsi_Window *Window_p, NH_ENCODING_UTF32 codepoint, NH_API_KEY_E special, NH_API_TRIGGER_E trigger,
     NH_API_MODIFIER_FLAG state)
 {
+    if (!Window_p) return;
+
     nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_KEYBOARD);
 
     Event.Keyboard.codepoint = codepoint;
@@ -81,12 +91,14 @@ void nh_wsi_sendKeyboardEvent(
     Event.Keyboard.special = special;
     Event.Keyboard.state = state;
 
-    if (Window_p && Window_p->callback_f) {
+    if (Window_p->callback_f) {
         Window_p->callback_f(Window_p, Event);
     }
 
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
-    if (Event_p) {*Event_p = Event;}
+    if (Event_p) {
+        *Event_p = Event;
+    }
 
     return;
 }

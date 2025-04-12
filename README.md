@@ -1,6 +1,6 @@
 # Netzhaut
  
-Netzhaut is a **multi-purpose open-source Web-Browser-Engine** written from scratch in **C99**. 
+Netzhaut is a **multi-purpose open-source Web-Browser-Engine** written from scratch in modern **C**. 
 Web-Browser-Engines are software systems which run web content on client machines. 
 Popular examples are Chromium (Chrome), Gecko (Firefox) and WebKit (Safari).
 

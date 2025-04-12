@@ -71,7 +71,6 @@ static void *nh_wsi_initListener(
 static NH_SIGNAL nh_wsi_runListener(
     void *args_p) 
 {
-puts("hello");
     // As soon as there are no windows anymore, we close the window listener.
     // The listener will be started automatically when a new window is created and no listener exists.
     if (NH_WSI_LISTENER.Windows.count == 0) {

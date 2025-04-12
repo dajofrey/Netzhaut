@@ -125,6 +125,12 @@ typedef void (*nh_api_logCallback_f)(
     char *node_p, char *options_p, char *message_p
 );
 
+#ifdef _MSC_VER
+    #define NH_ALIGN_16 __declspec(align(16))
+#else
+    #define NH_ALIGN_16 __attribute__((aligned(16)))
+#endif
+
 // FUNCTIONS =======================================================================================
 
 /**

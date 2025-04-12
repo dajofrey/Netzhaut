@@ -11,6 +11,7 @@
 
 // INCLUDES ========================================================================================
 
+#include <stdalign.h>
 #include "../Common/Includes.h"
 
 #if defined(__unix__)
@@ -112,7 +113,7 @@ typedef enum NH_WSI_TYPE_E {
 
 // STRUCTS =====================================================================================
 
-typedef struct nh_wsi_Window {
+typedef struct NH_ALIGN_16 nh_wsi_Window {
     char namespace_p[255];
     NH_WSI_TYPE_E type;
     void *surface_p;

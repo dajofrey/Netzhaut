@@ -44,11 +44,11 @@
         nh_core_Array *Array_p, int index, void *elements_p, int length
     );
 
-    void *nh_core_getFromArray(
+    char *nh_core_getFromArray(
         nh_core_Array *Array_p, unsigned long index
     );
    
-    void *nh_core_incrementArray(
+    char *nh_core_incrementArray(
         nh_core_Array *Array_p
     );
 

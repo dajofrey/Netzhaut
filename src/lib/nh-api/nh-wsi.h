@@ -11,6 +11,8 @@
 
 // INCLUDES ========================================================================================
 
+#include <stdalign.h>
+
 #include "nh-core.h"
 #include "nh-encoding.h"
 
@@ -200,36 +202,36 @@ typedef enum NH_API_MODIFIER_FLAG {
 
 // STRUCTS =========================================================================================
 
-typedef struct nh_api_PixelPosition { 
+typedef struct NH_ALIGN_16 nh_api_PixelPosition { 
     int x; 
     int y; 
 } nh_api_PixelPosition; 
 
-typedef struct nh_api_PixelSize { 
+typedef struct NH_ALIGN_16 nh_api_PixelSize { 
     int width; 
     int height; 
 } nh_api_PixelSize; 
 
-typedef struct nh_api_WindowEvent {
+typedef struct NH_ALIGN_16 nh_api_WindowEvent {
     NH_API_WINDOW_E type;
     nh_api_PixelPosition Position;
     nh_api_PixelSize Size;
 } nh_api_WindowEvent;
 
-typedef struct nh_api_MouseEvent {
+typedef struct NH_ALIGN_16 nh_api_MouseEvent {
     NH_API_MOUSE_E type;
     NH_API_TRIGGER_E trigger;
     nh_api_PixelPosition Position;
 } nh_api_MouseEvent;
 
-typedef struct nh_api_KeyboardEvent {
+typedef struct NH_ALIGN_16 nh_api_KeyboardEvent {
     NH_API_KEY_E special;
     NH_API_UTF32 codepoint;
     NH_API_TRIGGER_E trigger;
     NH_API_MODIFIER_FLAG state;
 } nh_api_KeyboardEvent;
 
-typedef struct nh_api_WSIEvent {
+typedef struct NH_ALIGN_16 nh_api_WSIEvent {
     NH_API_WSI_EVENT_E type;
     nh_api_WindowEvent Window;
     nh_api_MouseEvent Mouse;
@@ -239,9 +241,7 @@ typedef struct nh_api_WSIEvent {
 typedef struct nh_api_SurfaceRequirements nh_api_SurfaceRequirements;
 typedef struct nh_api_Window nh_api_Window;
 
-typedef void (*nh_api_windowCallback_f)(
-    nh_api_Window *Window_p, nh_api_WSIEvent Event
-);
+typedef void (*nh_api_windowCallback_f)(nh_api_Window *Window_p, nh_api_WSIEvent Event) __attribute__((aligned(16)));
 
 // FUNCTIONS =======================================================================================
 
