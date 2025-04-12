@@ -33,12 +33,12 @@ static NH_WSI_TYPE_E nh_wsi_getType()
 {
     NH_WSI_TYPE_E type = -1;
 
-    #ifdef __unix__
+    #if defined(__unix__)
         type = NH_WSI_TYPE_X11;
     #elif defined(_WIN32) || defined (WIN32)
         type = NH_WSI_TYPE_WIN32;
     #elif defined(__APPLE__)
-        type == NH_WSI_TYPE_MACOS;
+        type = NH_WSI_TYPE_COCOA;
     #endif
 
     return type;
@@ -68,10 +68,16 @@ nh_wsi_Window *nh_wsi_createWindow(
 
     switch (Window_p->type)
     {
+#if defined(__unix__)
         case NH_WSI_TYPE_X11 : 
             Window_p->X11.Common_p = &NH_WSI_X11;
             NH_CORE_CHECK_2(NULL, nh_wsi_createX11Window(&Window_p->X11, nh_wsi_getWindowConfig(Window_p), Requirements_p))
             break;
+#elif defined(__APPLE__)
+        case NH_WSI_TYPE_COCOA : 
+            NH_CORE_CHECK_2(NULL, nh_wsi_createCocoaWindow(&Window_p->Cocoa, nh_wsi_getWindowConfig(Window_p), Requirements_p))
+            break;
+#endif
         default : return NULL;
     }
 
@@ -92,8 +98,12 @@ NH_API_RESULT nh_wsi_destroyWindow(
 
     switch (Window_p->type)
     {
-        case NH_WSI_TYPE_X11 : NH_CORE_CHECK(nh_wsi_destroyX11Window(&Window_p->X11)) break;
-        default              : return NH_API_ERROR_BAD_STATE;
+#if defined(__unix__)
+        case NH_WSI_TYPE_X11   : NH_CORE_CHECK(nh_wsi_destroyX11Window(&Window_p->X11)) break;
+#elif defined(__APPLE__)
+        case NH_WSI_TYPE_COCOA : NH_CORE_CHECK(nh_wsi_destroyCocoaWindow(&Window_p->Cocoa)) break;
+#endif
+        default                : return NH_API_ERROR_BAD_STATE;
     }
 
     nh_core_freeRingBuffer(&Window_p->Events);
@@ -106,7 +116,6 @@ NH_API_RESULT nh_wsi_setEventListener(
     nh_wsi_Window *Window_p, nh_api_windowCallback_f callback_f)
 {
     Window_p->callback_f = callback_f;
-
     return NH_API_SUCCESS;
 }
 
@@ -115,8 +124,11 @@ NH_API_RESULT nh_wsi_moveWindow(
 {
     switch (Window_p->type)
     {
-        case NH_WSI_TYPE_X11 : return nh_wsi_moveX11Window(&Window_p->X11);
+#if defined(__unix__)
+        case NH_WSI_TYPE_X11   : return nh_wsi_moveX11Window(&Window_p->X11);
+#elif defined(__APPLE__)
+        case NH_WSI_TYPE_COCOA : return nh_wsi_moveCocoaWindow(&Window_p->Cocoa);
+#endif
+        default                : return NH_API_ERROR_BAD_STATE;
     }
-
-    return NH_API_ERROR_BAD_STATE;
 }

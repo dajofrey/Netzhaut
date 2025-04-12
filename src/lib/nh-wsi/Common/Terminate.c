@@ -12,7 +12,11 @@
 #include "Config.h"
 
 #include "../Window/Listener.h"
-#include "../Platforms/X11/Init.h"
+#if defined(__unix__)
+    #include "../Platforms/X11/Init.h"
+#elif defined(__APPLE__)
+    // do nothing for now
+#endif
 
 #include "../../nh-core/Util/LinkedList.h"
 
@@ -24,7 +28,11 @@
 
 NH_API_RESULT nh_wsi_terminate()
 {
-    NH_CORE_CHECK(nh_x11_close())
+    #if defined(__unix__)
+        NH_CORE_CHECK(nh_x11_close())
+    #elif defined(__APPLE__)
+        // do nothing for now
+    #endif
     nh_wsi_freeClipboard();
 
     return NH_API_SUCCESS;

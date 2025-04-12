@@ -46,8 +46,7 @@ typedef void (*nh_api_setLogCallback_f)(
 static void *nh_api_openCoreLibrary(
     char *path_p)
 {
-#ifdef __unix__
-
+#if defined(__unix__) || defined(__APPLE__)
     char *error_p;
     dlerror();
 
@@ -59,27 +58,28 @@ static void *nh_api_openCoreLibrary(
     }
 
     return dl_p;
-
 #endif
 }
 
 static void *nh_api_closeCoreLibrary()
 {
-#ifdef __unix__
-
+#if defined(__unix__) || defined(__APPLE__)
     dlclose(CORE_P);
-
 #endif
 }
 
 static NH_API_RESULT nh_api_getExeDir(
     char *buffer_p, size_t size)
 {
-#ifdef __unix__
-
+#if defined(__unix__)
     if (readlink("/proc/self/exe", buffer_p, 1024) == -1 
     &&  readlink("/proc/curproc/file", buffer_p, 1024) == -1
     &&  readlink("/proc/self/path/a.out", buffer_p, 1024) == -1) {return NH_API_ERROR_BAD_STATE;}
+#elif defined(__APPLE__)
+    if (_NSGetExecutablePath(buffer_p, &size) != 0) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+#endif
 
     int i;
     for (i = strlen(buffer_p); i > -1 && buffer_p[i] != '/'; --i) {}
@@ -87,15 +87,12 @@ static NH_API_RESULT nh_api_getExeDir(
 
     buffer_p[i] = '\0'; // remove exe name
     return NH_API_SUCCESS;
-
-#endif
 }
 
 static void *nh_api_loadCoreFunction(
     const char *functionName_p)
 {
-#ifdef __unix__
-
+#if defined(__unix__) || defined(__APPLE__)
     char *error_p;
     dlerror(); // clear any existing error
 
@@ -106,7 +103,6 @@ static void *nh_api_loadCoreFunction(
     }
 
     return function_p;
-
 #endif
 }
 
@@ -115,7 +111,9 @@ NH_API_RESULT nh_api_initialize(
 {
     if (CORE_P != NULL || LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
 
+#if defined(__APPLE__) || defined(__unix__)
     CORE_P = nh_api_openCoreLibrary("libnh-core.so");
+#endif
 
     bool fallback = !CORE_P && path_p != NULL;
     if (fallback) {CORE_P = nh_api_openCoreLibrary(path_p);}
@@ -145,6 +143,8 @@ NH_API_RESULT nh_api_terminate()
 
 int nh_api_run()
 {
+puts("run");
+exit(0);
     nh_core_run_f run_f = !LOADER_P ? NULL : LOADER_P->loadSymbol_f(NH_MODULE_CORE, 0, "nh_core_run");
     return run_f ? run_f() : -1;
 }

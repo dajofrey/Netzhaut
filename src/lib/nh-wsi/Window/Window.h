@@ -13,8 +13,10 @@
 
 #include "../Common/Includes.h"
 
-#ifdef __unix__
+#if defined(__unix__)
     #include "../Platforms/X11/Window.h"
+#elif defined(__APPLE__)
+    #include "../Platforms/Cocoa/Window.h"
 #endif
 
 #include "../../nh-gfx/Base/SurfaceRequirements.h"
@@ -105,7 +107,7 @@ typedef enum NH_WSI_TYPE_E {
     NH_WSI_TYPE_X11, 
     NH_WSI_TYPE_WAYLAND, 
     NH_WSI_TYPE_WIN32, 
-    NH_WSI_TYPE_MACOS,
+    NH_WSI_TYPE_COCOA,
 } NH_WSI_TYPE_E; 
 
 // STRUCTS =====================================================================================
@@ -115,8 +117,10 @@ typedef struct nh_wsi_Window {
     NH_WSI_TYPE_E type;
     void *surface_p;
     nh_api_windowCallback_f callback_f;
-#ifdef __unix__
-    nh_x11_Window X11;
+#if defined(__unix__)
+    nh_wsi_X11Window X11;
+#elif defined(__APPLE__)
+    nh_wsi_CocoaWindow Cocoa;
 #endif
     nh_core_RingBuffer Events;
     NH_WSI_CURSOR_E cursor;

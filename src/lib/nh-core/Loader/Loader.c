@@ -167,7 +167,7 @@ static NH_API_RESULT nh_core_load(
     NH_CORE_CHECK_NULL(Module_p->lib_p)
 
     Module_p->lastModified_p = nh_core_lastModified(Module_p->lib_p);
-    NH_CORE_CHECK_NULL(Module_p->lastModified_p)
+//    NH_CORE_CHECK_NULL(Module_p->lastModified_p)
 
     // This needs to be set before calling initalizer, 
     // because e.g. nh-css uses the loader in the initializer.

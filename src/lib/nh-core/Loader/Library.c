@@ -131,7 +131,7 @@ void *nh_core_loadExternalLibrary(
 {
     void *lib_p = NULL;
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 
     if (!path_p) {
         char libPath_p[255];

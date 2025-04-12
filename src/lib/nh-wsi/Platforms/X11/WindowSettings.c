@@ -30,8 +30,8 @@
 // WINDOW SETTINGS =================================================================================
 // Functions for setting X11 window properties.
 
-NH_API_RESULT nh_x11_setWindowBackgroundColor(
-    nh_x11_Window *Window_p, nh_css_Color Color)
+NH_API_RESULT nh_wsi_setX11WindowBackgroundColor(
+    nh_wsi_X11Window *Window_p, nh_css_Color Color)
 {
 #ifdef __unix__
 
@@ -56,8 +56,8 @@ NH_API_RESULT nh_x11_setWindowBackgroundColor(
     return NH_API_ERROR_BAD_STATE;
 }
 
-NH_API_RESULT nh_x11_setWindowTitle(
-    nh_x11_Window *Window_p, char *title_p)
+NH_API_RESULT nh_wsi_setX11WindowTitle(
+    nh_wsi_X11Window *Window_p, char *title_p)
 {
 #ifdef __unix__
 
@@ -73,8 +73,8 @@ NH_API_RESULT nh_x11_setWindowTitle(
 /**
  * Credit goes to https://github.com/glfw/glfw 
  */
-NH_API_RESULT nh_x11_setWindowDecorated(
-    nh_x11_Window *Window_p, bool decorated)
+NH_API_RESULT nh_wsi_setX11WindowDecorated(
+    nh_wsi_X11Window *Window_p, bool decorated)
 {
 #ifdef __unix__
 
@@ -112,8 +112,8 @@ NH_API_RESULT nh_x11_setWindowDecorated(
  * Related resources:
  * - https://specifications.freedesktop.org/wm-spec/wm-spec-1.3.html
  */
-NH_API_RESULT nh_x11_setWindowState(
-    nh_x11_Window *Window_p, bool *state_p)
+NH_API_RESULT nh_wsi_setX11WindowState(
+    nh_wsi_X11Window *Window_p, bool *state_p)
 {
 #ifdef __unix__
 
@@ -178,8 +178,8 @@ NH_API_RESULT nh_x11_setWindowState(
  * Related resources:
  * - https://specifications.freedesktop.org/wm-spec/wm-spec-1.3.html
  */
-NH_API_RESULT nh_x11_setWindowType(
-    nh_x11_Window *Window_p, NH_WSI_WINDOW_TYPE_E type)
+NH_API_RESULT nh_wsi_setX11WindowType(
+    nh_wsi_X11Window *Window_p, NH_WSI_WINDOW_TYPE_E type)
 {
 #ifdef __unix__
 
@@ -208,8 +208,8 @@ NH_API_RESULT nh_x11_setWindowType(
  * Related resources: 
  * - https://github.com/freedesktop/xorg-lib-libX11/blob/master/include/X11/cursorfont.h
  */ 
-NH_API_RESULT nh_x11_setMouseCursor(
-    nh_x11_Window *Window_p, NH_WSI_CURSOR_E type)
+NH_API_RESULT nh_wsi_setX11MouseCursor(
+    nh_wsi_X11Window *Window_p, NH_WSI_CURSOR_E type)
 {
 #ifdef __unix__
 
@@ -303,4 +303,3 @@ NH_API_RESULT nh_x11_setMouseCursor(
 
     return NH_API_ERROR_BAD_STATE;
 }
-

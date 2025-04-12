@@ -41,7 +41,7 @@ typedef struct nh_x11_Property {
     Atom type;
 } nh_x11_Property;
 
-static nh_x11_Property nh_x11_readProperty(
+static nh_x11_Property nh_wsi_readX11Property(
     Display* Display_p, Window Window, Atom property)
 {
     Atom actual_type;
@@ -70,7 +70,7 @@ static nh_x11_Property nh_x11_readProperty(
 /**
  * https://stackoverflow.com/questions/3909713/xlib-xgetwindowattributes-always-returns-1x1
  */
-static Window nh_x11_getTopLevelParent(
+static Window nh_wsi_getX11TopLevelParent(
     Display * display, Window window)
 {
      Window parent;
@@ -96,8 +96,8 @@ static Window nh_x11_getTopLevelParent(
      }
 }
 
-static void nh_x11_getCursorPosition(
-    nh_x11_Window *Window_p, double* xpos, double* ypos)
+static void nh_wsi_getX11CursorPosition(
+    nh_wsi_X11Window *Window_p, double* xpos, double* ypos)
 { 
     Window root, child;  
     int rootX, rootY, childX, childY;
@@ -114,8 +114,8 @@ static void nh_x11_getCursorPosition(
     return;
 }
 
-static void nh_x11_getWindowPosition(
-    nh_x11_Window *Window_p, int* xpos, int* ypos)
+static void nh_wsi_getX11WindowPosition(
+    nh_wsi_X11Window *Window_p, int* xpos, int* ypos)
 {   
     Window dummy;
     int x, y;
@@ -131,8 +131,8 @@ static void nh_x11_getWindowPosition(
     return;
 }
 
-void nh_x11_getWindowSize(
-    nh_x11_Window *Window_p, int* width_p, int* height_p)
+void nh_wsi_getX11WindowSize(
+    nh_wsi_X11Window *Window_p, int* width_p, int* height_p)
 {   
     XWindowAttributes Attributes;
     XGetWindowAttributes(NH_WSI_X11.Display_p, Window_p->Handle, &Attributes);
@@ -162,8 +162,8 @@ typedef enum NH_X11_MOVERESIZE_E {
  * @param Window_p Valid nh_x11_Window handle.
  * @param border Value from NH_X11_MOVERESIZE_E.
  */
-static NH_API_RESULT nh_x11_resizeWindowDrag(
-    nh_x11_Window *Window_p, int border)
+static NH_API_RESULT nh_wsi_resizeX11WindowDrag(
+    nh_wsi_X11Window *Window_p, int border)
 {
     int winXpos, winYpos;
     double curXpos, curYpos;
@@ -233,7 +233,7 @@ NH_API_RESULT nh_wsi_moveX11Window(
 // This is needed because we don't want to block execution of other stuff in single threaded mode.
 #define NH_X11_INPUT_LIMIT 30
 
-NH_API_RESULT nh_x11_getInput(
+NH_API_RESULT nh_wsi_getX11Input(
     nh_wsi_Window *Window_p, bool *idle_p) 
 {
     nh_wsi_WindowConfig Config = nh_wsi_getWindowConfig(Window_p);
@@ -650,8 +650,8 @@ NH_API_RESULT nh_x11_getInput(
 
 // Updates the full screen status of the window
 //
-static void nh_x11_updateWindowMode(
-    nh_x11_Window *Window_p)
+static void nh_wsi_updateX11WindowMode(
+    nh_wsi_X11Window *Window_p)
 {
 //    if (window->monitor)
 //    {
@@ -747,8 +747,8 @@ static void nh_x11_updateWindowMode(
 
 // Make the specified window and its video mode active on its monitor
 //
-static void nh_x11_acquireMonitor(
-    nh_x11_Window *Window_p)
+static void nh_wsi_acquireX11Monitor(
+    nh_wsi_X11Window *Window_p)
 {
 //    if (_glfw.x11.saver.count == 0)
 //    {
@@ -789,8 +789,8 @@ static void nh_x11_acquireMonitor(
 
 // Updates the normal hints according to the window settings
 //
-static void nh_x11_updateNormalHints(
-    nh_x11_Window *Window_p, nh_wsi_WindowConfig *Config_p)
+static void nh_wsi_updateX11NormalHints(
+    nh_wsi_X11Window *Window_p, nh_wsi_WindowConfig *Config_p)
 {
     XSizeHints* hints = XAllocSizeHints();
 
@@ -840,7 +840,7 @@ static void nh_x11_updateNormalHints(
 }
 
 NH_API_RESULT nh_wsi_createX11Window(
-    nh_x11_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
+    nh_wsi_X11Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
 {
     XVisualInfo Template = {0};
 
@@ -942,7 +942,7 @@ NH_API_RESULT nh_wsi_createX11Window(
     XSetWMHints(NH_WSI_X11.Display_p, Window_p->Handle, Hints_p);
     XFree(Hints_p);
 
-    nh_x11_updateNormalHints(Window_p, &Config);
+    nh_wsi_updateX11NormalHints(Window_p, &Config);
 
     // Set ICCCM WM_CLASS property, WM's seem to need this. 
     XClassHint* Hint_p = XAllocClassHint();
@@ -987,7 +987,7 @@ NH_API_RESULT nh_wsi_createX11Window(
 }
 
 NH_API_RESULT nh_wsi_destroyX11Window(
-    nh_x11_Window *Window_p)
+    nh_wsi_X11Window *Window_p)
 {
     XUnmapWindow(NH_WSI_X11.Display_p, Window_p->Handle);
     XDestroyWindow(NH_WSI_X11.Display_p, Window_p->Handle);
@@ -995,27 +995,26 @@ NH_API_RESULT nh_wsi_destroyX11Window(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_x11_setClipboardOwner(
-    nh_x11_Window *Window_p)
+NH_API_RESULT nh_wsi_setX11ClipboardOwner(
+    nh_wsi_X11Window *Window_p)
 {
     XSetSelectionOwner(NH_WSI_X11.Display_p, NH_WSI_X11.Atoms.CLIPBOARD, Window_p->Handle, CurrentTime);
 
     return NH_API_SUCCESS;
 }
 
-bool nh_x11_isClipboardOwner(
-    nh_x11_Window *Window_p)
+bool nh_wsi_isX11ClipboardOwner(
+    nh_wsi_X11Window *Window_p)
 {
     Window window = XGetSelectionOwner(NH_WSI_X11.Display_p, NH_WSI_X11.Atoms.CLIPBOARD);
     return Window_p->Handle == window;
 }
 
-NH_API_RESULT nh_x11_requestClipboardConversion(
-    nh_x11_Window *Window_p)
+NH_API_RESULT nh_wsi_requestX11ClipboardConversion(
+    nh_wsi_X11Window *Window_p)
 {
     XConvertSelection(NH_WSI_X11.Display_p, NH_WSI_X11.Atoms.CLIPBOARD, NH_WSI_X11.Atoms.UTF8_STRING, 
         NH_WSI_X11.Atoms.PENGUIN, Window_p->Handle, CurrentTime);
 
     return NH_API_SUCCESS;
 }
-

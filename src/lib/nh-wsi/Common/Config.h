@@ -1,8 +1,6 @@
 #ifndef NH_WSI_CONFIG_H
 #define NH_WSI_CONFIG_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -10,10 +8,7 @@
  */
 
 #include "Includes.h"
-
 #include <stddef.h>
-
-#endif
 
 /** @addtogroup lib_nh-wsi_enums
  *  @{

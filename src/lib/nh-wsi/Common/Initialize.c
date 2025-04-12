@@ -11,8 +11,10 @@
 #include "Initialize.h"
 
 #include "../Window/Listener.h"
-#include "../Platforms/X11/Init.h"
-
+#if defined(__unix__)
+    #include "../Platforms/X11/Init.h"
+#elif defined(__APPLE__)
+#endif
 #include "../../nh-core/Util/LinkedList.h"
 
 #include <stdlib.h>
@@ -24,5 +26,9 @@
 NH_API_RESULT nh_wsi_initialize()
 {
     NH_CORE_CHECK(nh_wsi_normalizeListener())
-    NH_CORE_CHECK(nh_x11_initialize())
+    #if defined(__unix__)
+        NH_CORE_CHECK(nh_x11_initialize())
+    #elif defined(__APPLE__)
+        // do nothing for now
+    #endif
 }

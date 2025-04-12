@@ -1,8 +1,6 @@
 #ifndef NH_WSI_PLATFORMS_X11_WINDOW_H
 #define NH_WSI_PLATFORMS_X11_WINDOW_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -29,59 +27,48 @@
 typedef struct nh_wsi_Window nh_wsi_Window;
 typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
 
-#endif
+// STRUCTS ==================================
 
-/** @addtogroup IOStructs Structs
- *  \ingroup IO
- *  @{
- */
 
-    typedef struct nh_x11_Window {
-        nh_wsi_X11 *Common_p;
+    typedef struct nh_wsi_X11Window {
+        nh_wsi_Window *Common_p;
         Window Handle;
         XVisualInfo Info;
         int oldX, oldY;
-    } nh_x11_Window;
+    } nh_wsi_X11Window;
 
-/** @} */
+// FUNCTIONS ================================
 
-/** @addtogroup IOFunctions Function
- *  \ingroup IO
- *  @{
- */
-
-    NH_API_RESULT nh_x11_getInput(
+    NH_API_RESULT nh_wsi_getX11Input(
         nh_wsi_Window *Window_p, bool *idle_p
     ); 
 
     NH_API_RESULT nh_wsi_createX11Window(
-        nh_x11_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p
+        nh_wsi_X11Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p
     );
 
     NH_API_RESULT nh_wsi_destroyX11Window(
-        nh_x11_Window *Window_p
+        nh_wsi_X11Window *Window_p
     );
 
-    NH_API_RESULT nh_x11_setClipboardOwner(
-        nh_x11_Window *Window_p
+    NH_API_RESULT nh_wsi_setX11ClipboardOwner(
+        nh_wsi_X11Window *Window_p
     );
 
-    bool nh_x11_isClipboardOwner(
-        nh_x11_Window *Window_p
+    bool nh_wsi_isX11ClipboardOwner(
+        nh_wsi_X11Window *Window_p
     );
 
-    NH_API_RESULT nh_x11_requestClipboardConversion(
-        nh_x11_Window *Window_p
+    NH_API_RESULT nh_wsi_requestX11ClipboardConversion(
+        nh_wsi_X11Window *Window_p
     );
 
-    void nh_x11_getWindowSize(
-        nh_x11_Window *Window_p, int* width_p, int* height_p
+    void nh_wsi_getX11WindowSize(
+        nh_wsi_X11Window *Window_p, int* width_p, int* height_p
     );
 
     NH_API_RESULT nh_wsi_moveX11Window(
-        nh_x11_Window *Window_p
+        nh_wsi_X11Window *Window_p
     );
-
-/** @} */
 
 #endif 

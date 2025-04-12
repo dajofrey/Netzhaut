@@ -11,7 +11,11 @@
 #include "Listener.h"
 #include "Window.h"
 
-#include "../Platforms/X11/Window.h"
+#if defined(__unix__)
+    #include "../Platforms/X11/Window.h"
+#elif defined(__APPLE__)
+    #include "../Platforms/Cocoa/Window.h"
+#endif
 
 #include "../../nh-core/System/Thread.h"
 #include "../../nh-core/System/Memory.h"
@@ -43,17 +47,20 @@ static NH_API_RESULT nh_wsi_getInput(
     nh_wsi_Window *Window_p, bool *idle_p)
 {
     switch (Window_p->type) {
-        case NH_WSI_TYPE_X11 : return nh_x11_getInput(Window_p, idle_p);
+#if defined(__unix__)
+        case NH_WSI_TYPE_X11   : return nh_wsi_getX11Input(Window_p, idle_p);
+#elif defined(__APPLE__)
+        case NH_WSI_TYPE_COCOA : return nh_wsi_getCocoaInput(Window_p, idle_p);
+#endif
+        default                : return NH_API_ERROR_BAD_STATE;
     }
-
-    return NH_API_ERROR_BAD_STATE;
 }
 
 static void *nh_wsi_initListener(
     nh_core_Workload *Workload_p)
 {
     static char *name_p = "WSI Listener";
-    static char *path_p = "nh-wsi/Main/Listener.c";
+    static char *path_p = "nh-wsi/Window/Listener.c";
     Workload_p->name_p = name_p;
     Workload_p->path_p = path_p;
     Workload_p->module = NH_MODULE_WSI;
@@ -64,6 +71,7 @@ static void *nh_wsi_initListener(
 static NH_SIGNAL nh_wsi_runListener(
     void *args_p) 
 {
+puts("hello");
     // As soon as there are no windows anymore, we close the window listener.
     // The listener will be started automatically when a new window is created and no listener exists.
     if (NH_WSI_LISTENER.Windows.count == 0) {
@@ -102,7 +110,7 @@ NH_API_RESULT nh_wsi_enableWindowListener(
         nh_core_activateWorkload(nh_wsi_initListener, nh_wsi_runListener, nh_wsi_terminateListener, NULL, NULL, true);
         NH_WSI_LISTENER.running = true;
     }
- 
+
     nh_core_appendToLinkedList(&NH_WSI_LISTENER.Windows, Window_p);
 
     return NH_API_SUCCESS;
@@ -141,7 +149,11 @@ NH_API_RESULT nh_wsi_setClipboard(
     if (NH_WSI_LISTENER.Windows.count > 0 && selfOwned) {
         nh_wsi_Window *Window_p = nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, 0);
         switch (Window_p->type) {
-            case NH_WSI_TYPE_X11 : NH_CORE_CHECK(nh_x11_setClipboardOwner(&Window_p->X11)) break;
+            #if defined(__unix__)
+                case NH_WSI_TYPE_X11 : NH_CORE_CHECK(nh_x11_setClipboardOwner(&Window_p->X11)) break;
+            #elif defined(__APPLE__)
+                case NH_WSI_TYPE_COCOA : NH_CORE_CHECK(nh_wsi_setCocoaClipboardOwner(&Window_p->Cocoa)) break;
+            #endif
         }
     }
 
@@ -160,7 +172,11 @@ char *nh_wsi_getClipboard()
     for (int i = 0; i < NH_WSI_LISTENER.Windows.count; ++i) {
         nh_wsi_Window *Window_p = nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, 0);
         switch (Window_p->type) {
-            case NH_WSI_TYPE_X11 : selfOwned = nh_x11_isClipboardOwner(&Window_p->X11); break; 
+            #if defined(__unix__)
+                case NH_WSI_TYPE_X11 : selfOwned = nh_x11_isClipboardOwner(&Window_p->X11); break; 
+            #elif defined(__APPLE__)
+                case NH_WSI_TYPE_COCOA : selfOwned = nh_wsi_isCocoaClipboardOwner(&Window_p->Cocoa); break;
+            #endif
         }
     } 
  
@@ -171,7 +187,11 @@ char *nh_wsi_getClipboard()
     nh_wsi_Window *Window_p = nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, 0);
     NH_WSI_LISTENER.Clipboard.updated = false;
     switch (Window_p->type) {
-        case NH_WSI_TYPE_X11 : NH_CORE_CHECK_2(NULL, nh_x11_requestClipboardConversion(&Window_p->X11)) break;
+        #if defined(__unix__)
+            case NH_WSI_TYPE_X11 : NH_CORE_CHECK_2(NULL, nh_x11_requestClipboardConversion(&Window_p->X11)) break;
+        #elif defined(__APPLE__)
+            case NH_WSI_TYPE_COCOA : NH_CORE_CHECK_2(NULL, nh_wsi_requestCocoaClipboardConversion(&Window_p->Cocoa)) break;
+        #endif
     }
 
     // This may be forever blocking if the program that holds the clipboard does not respond. So we use time limitation.

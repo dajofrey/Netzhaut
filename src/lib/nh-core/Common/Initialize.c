@@ -37,14 +37,12 @@ nh_core_Loader *nh_core_initialize(
     if (config_p != NULL && length > 0) {
         nh_core_appendConfig(config_p, length, true);
     }
-
     nh_core_initMemory();
     nh_core_initProcessPool();
     nh_core_createIndexMap();
     nh_core_initSystem();
     nh_core_startSystemWorkload();
     nh_core_startConfigWorkload();
-
     nh_core_Loader *Loader_p = nh_core_initLoader(false, false);
     if (Loader_p == NULL) {return NULL;}
 

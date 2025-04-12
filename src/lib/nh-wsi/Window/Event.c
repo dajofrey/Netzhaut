@@ -45,7 +45,7 @@ void nh_wsi_sendWindowEvent(
     }
 
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
-    *Event_p = Event;
+    if (Event_p) {*Event_p = Event;}
 
     return;
 }
@@ -65,7 +65,7 @@ void nh_wsi_sendMouseEvent(
     }
 
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
-    *Event_p = Event;
+    if (Event_p) {*Event_p = Event;}
 
     return;
 }
@@ -86,8 +86,7 @@ void nh_wsi_sendKeyboardEvent(
     }
 
     nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
-    *Event_p = Event;
+    if (Event_p) {*Event_p = Event;}
 
     return;
 }
-

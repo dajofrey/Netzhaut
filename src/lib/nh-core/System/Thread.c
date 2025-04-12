@@ -263,7 +263,7 @@ nh_core_Thread *nh_core_getThread()
 
     for (int i = 0; i < NH_MAX_THREADS; ++i) 
     {
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
         if (ThreadPool_p->Threads_p[i].id == pthread_self())
 #elif defined(_WIN32) || defined (WIN32)
         if (ThreadPool_p->Threads_p[i].id == GetCurrentThreadId())
@@ -518,4 +518,3 @@ NH_API_RESULT nh_sleepMs(
 #endif
     return NH_API_SUCCESS;
 }
-

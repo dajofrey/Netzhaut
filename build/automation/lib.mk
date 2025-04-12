@@ -1,11 +1,20 @@
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+    OS := macOS
+endif
+ifeq ($(UNAME_S),Linux)
+    OS := Linux
+endif
+
 # Define the compiler and compile flags
 CC = gcc
 CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration
 
-# Detect macOS and add macOS-specific flags
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Darwin)
+ifeq ($(OS),macOS)
     CFLAGS += -Wl,-undefined,dynamic_lookup
+    OBJC_FLAGS = -fobjc-arc -fmodules -framework Cocoa -framework QuartzCore
+    OBJC = clang
 endif
 
 # Define the linker and linker flags
@@ -13,21 +22,18 @@ LD = gcc
 
 LDFLAGS_NHAPI = -ldl
 LDFLAGS_NHCORE = -v -lm -ldl
-LDFLAGS_NHWSI = -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
-LDFLAGS_NHHTML =
-LDFLAGS_NHDOM =
 LDFLAGS_NHNETWORK = -lssl
-LDFLAGS_NHWEBIDL =
-LDFLAGS_NHECMASCRIPT =
-LDFLAGS_NHENCODING =
-LDFLAGS_NHGFX = -lX11 -lXrender -lXext -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
-LDFLAGS_NHRENDERER =
-LDFLAGS_NHCSS =
-LDFLAGS_NHURL =
-LDFLAGS_NHMONITOR =
-
-LDFLAGS_VOLK =
+LDFLAGS_NHGFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
 LDFLAGS_FREETYPE_GL = -I/usr/include/freetype2 -lfreetype -lharfbuzz
+
+ifeq ($(OS),Linux)
+    LDFLAGS_NHWSI += -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
+    LDFLAGS_NHGFX += -lX11 -lXrender -lXext
+endif
+
+ifeq ($(OS),macOS)
+    LDFLAGS_NHWSI += -framework Cocoa -framework QuartzCore
+endif
 
 # Define the source file directory for each library
 SRC_DIR_NHAPI = src/lib/nh-api
@@ -103,15 +109,25 @@ SRC_FILES_NHWSI = \
     Window/WindowSettings.c \
     Window/Event.c \
     Window/Listener.c \
-    Platforms/X11/Init.c \
-    Platforms/X11/Window.c \
-    Platforms/X11/WindowSettings.c \
     Common/Log.c \
     Common/Result.c \
     Common/Initialize.c \
     Common/Terminate.c \
     Common/Config.c \
     Common/About.c \
+
+ifeq ($(OS),Linux)
+    SRC_FILES_NHWSI += \
+        Platforms/X11/Init.c \
+        Platforms/X11/Window.c \
+        Platforms/X11/WindowSettings.c
+endif
+
+ifeq ($(OS),macOS)
+    SRC_FILES_NHWSI += \
+        Platforms/Cocoa/Window.m \
+        Platforms/Cocoa/WindowSettings.m
+endif
 
 SRC_FILES_NHHTML = \
     Parser/Parser.c \
@@ -389,20 +405,20 @@ LIB_FREETYPE_GL = external/freetype-gl/libfreetype-gl.so
 all: $(LIB_NHAPI) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS) $(LIB_NHMONITOR)
 
 # Build targets for each library
-nh-api.so: $(LIB_NHAPI)
-nh-core.so: $(LIB_NHCORE)
-nh-wsi.so: $(LIB_NHWSI)
-nh-html.so: $(LIB_NHHTML)
-nh-dom.so: $(LIB_NHDOM)
-nh-network.so: $(LIB_NHNETWORK)
-nh-webidl.so: $(LIB_NHWEBIDL)
-nh-ecmascript.so: $(LIB_NHECMASCRIPT)
-nh-encoding.so: $(LIB_NHENCODING)
-nh-gfx.so: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX)
-nh-renderer.so: $(LIB_NHRENDERER)
-nh-css.so: $(LIB_NHCSS)
-nh-url.so: $(LIB_NHURL)
-nh-monitor.so: $(LIB_NHMONITOR)
+lib-nh-api: $(LIB_NHAPI)
+lib-nh-core: $(LIB_NHCORE)
+lib-nh-wsi: $(LIB_NHWSI)
+lib-nh-html: $(LIB_NHHTML)
+lib-nh-dom: $(LIB_NHDOM)
+lib-nh-network: $(LIB_NHNETWORK)
+lib-nh-webidl: $(LIB_NHWEBIDL)
+lib-nh-ecmascript: $(LIB_NHECMASCRIPT)
+lib-nh-encoding: $(LIB_NHENCODING)
+lib-nh-gfx: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX)
+lib-nh-renderer: $(LIB_NHRENDERER)
+lib-nh-css: $(LIB_NHCSS)
+lib-nh-url: $(LIB_NHURL)
+lib-nh-monitor: $(LIB_NHMONITOR)
 
 create_lib_dir:
 	mkdir -p lib
@@ -415,16 +431,19 @@ $(OBJ_FILES_NHHTML): CFLAGS += -Iexternal
 $(OBJ_FILES_NHCSS): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_NHAPI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
 $(OBJ_FILES_NHRENDERER): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-$(OBJ_FILES_NHWSI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NHWSI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
 $(OBJ_FILES_NHGFX): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -I/usr/include/freetype2 -I/usr/include/harfbuzz -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_NHRENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_VOLK): CFLAGS += -ldl -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface -DVOLK_VULKAN_H_PATH=\"../Vulkan-Headers/include/vulkan/vulkan.h\"
 $(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/usr/include/freetype2 -I/usr/include/harfbuzz -lfreetype -lharfbuzz
 $(OBJ_FILES_NHMONITOR): CFLAGS += -Isrc/lib
 
-ifeq ($(UNAME_S),Linux)
-    # Linux-specific flags
+ifeq ($(OS),Linux)
     LDFLAGS_NHAPI += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+endif
+
+ifeq ($(OS),Linux)
+    $(OBJ_FILES_NHWSI): CFLAGS += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 endif
 
 # Rule to compile source files into object files
@@ -461,6 +480,10 @@ endif
 	$(CC) $(CFLAGS) -c -o $@ $<
 %.o: $(SRC_DIR_FREETYPE_GL)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Add rule for Objective-C files
+%.o: $(SRC_DIR_NHWSI)/%.m
+	$(OBJC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
 # Rule to link object files into the shared libraries
 $(LIB_NHAPI): create_lib_dir $(OBJ_FILES_NHAPI)
