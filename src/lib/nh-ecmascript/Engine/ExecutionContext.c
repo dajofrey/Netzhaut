@@ -71,4 +71,3 @@ nh_ecmascript_Reference nh_ecmascript_resolveBinding(
 
     return nh_ecmascript_getIdentifierReference(Environment_p, Name_p, strict);
 }
-

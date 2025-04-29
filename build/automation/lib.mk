@@ -9,11 +9,11 @@ endif
 
 # Define the compiler and compile flags
 CC = gcc
-CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration -fsanitize=address,undefined,alignment
+CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration
 
 ifeq ($(OS),macOS)
     CFLAGS += -Wl,-undefined,dynamic_lookup
-    OBJC_FLAGS = -fobjc-arc -fmodules -framework Cocoa -framework QuartzCore
+    OBJC_FLAGS = -fobjc-arc -fmodules -framework Cocoa -framework QuartzCore -fsanitize=address,undefined,alignment
     OBJC = clang
 endif
 
@@ -21,7 +21,7 @@ endif
 LD = gcc
 
 LDFLAGS_NHAPI = -ldl
-LDFLAGS_NHCORE = -v -lm -ldl -fsanitize=address,undefined,alignment
+LDFLAGS_NHCORE = -v -lm -ldl
 LDFLAGS_NHNETWORK = -lssl
 LDFLAGS_NHGFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
 LDFLAGS_FREETYPE_GL = -I/usr/include/freetype2 -lfreetype -lharfbuzz

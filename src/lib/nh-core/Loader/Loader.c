@@ -130,6 +130,10 @@ static NH_API_RESULT nh_core_loadDependencies(
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_GFX, 0))
             break;
 
+        case NH_MODULE_GFX :
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_WSI, 0))
+            break;
+
         case NH_MODULE_DOM :
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_WEBIDL, 0))
@@ -347,6 +351,12 @@ static bool nh_core_isUnloadAllowed(
 
         case NH_MODULE_URL :
             if (NH_LOADER.Modules_p[NH_MODULE_HTML].loaded == true) {
+                return false;    
+            }
+            return true;
+
+        case NH_MODULE_WSI :
+            if (NH_LOADER.Modules_p[NH_MODULE_GFX].loaded == true) {
                 return false;    
             }
             return true;

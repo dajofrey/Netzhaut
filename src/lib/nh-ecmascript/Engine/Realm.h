@@ -212,7 +212,7 @@
  *  @{
  */
 
-    NH_API_RESULT nh_ecmascript_initializeHostDefinedRealm(
+    NH_API_RESULT nh_ecmascript_initializeBrowserRealm(
         nh_ecmascript_Agent *Agent_p, nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p
     );
 

@@ -31,4 +31,3 @@ NH_API_RESULT nh_html_initialize()
 
     return NH_API_SUCCESS;
 }
-

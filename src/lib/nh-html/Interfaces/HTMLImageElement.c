@@ -46,7 +46,7 @@ typedef struct nh_html_Image {
     nh_html_ImageRequest *PendingRequest_p;
 } nh_html_Image;
 
-// INITIALIZE ======================================================================================
+// FUNCTIONS =======================================================================================
 
 static nh_html_ImageRequest nh_html_initImageRequest()
 {
@@ -72,8 +72,6 @@ NH_API_RESULT nh_html_initializeHTMLImageElement(
 
     return NH_API_SUCCESS;
 }
-
-// UPDATE ==========================================================================================
 
 // https://html.spec.whatwg.org/#update-the-image-data
 void nh_html_updateImageData(
