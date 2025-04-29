@@ -43,10 +43,10 @@ void nh_wsi_sendWindowEvent(
     Event.Window.Size.height = height;
 
     if (Window_p->callback_f != NULL) {
-        Window_p->callback_f(Window_p, Event);
+        Window_p->callback_f((nh_api_Window*)Window_p, Event);
     }
 
-    nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
+    nh_api_WSIEvent *Event_p = (nh_api_WSIEvent*)nh_core_advanceRingBuffer(&Window_p->Events);
     if (Event_p) {
         *Event_p = Event;
     }
@@ -67,10 +67,10 @@ void nh_wsi_sendMouseEvent(
     Event.Mouse.type = type;
 
     if (Window_p->callback_f) {
-        Window_p->callback_f(Window_p, Event);
+        Window_p->callback_f((nh_api_Window*)Window_p, Event);
     }
 
-    nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
+    nh_api_WSIEvent *Event_p = (nh_api_WSIEvent*)nh_core_advanceRingBuffer(&Window_p->Events);
     if (Event_p) {
         *Event_p = Event;
     }
@@ -92,10 +92,10 @@ void nh_wsi_sendKeyboardEvent(
     Event.Keyboard.state = state;
 
     if (Window_p->callback_f) {
-        Window_p->callback_f(Window_p, Event);
+        Window_p->callback_f((nh_api_Window*)Window_p, Event);
     }
 
-    nh_api_WSIEvent *Event_p = nh_core_advanceRingBuffer(&Window_p->Events);
+    nh_api_WSIEvent *Event_p = (nh_api_WSIEvent*)nh_core_advanceRingBuffer(&Window_p->Events);
     if (Event_p) {
         *Event_p = Event;
     }

@@ -25,7 +25,7 @@
 NH_API_RESULT nh_gfx_renderOpenGL(
     nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p)
 {
-    glXMakeCurrent(Surface_p->Window_p->X11.Common_p->Display_p, Surface_p->Window_p->X11.Handle, 
+    glXMakeCurrent(NH_WSI_X11.Display_p, Surface_p->Window_p->X11.Handle, 
         Surface_p->OpenGL.Context_p);
 
     for (int i = 0; i < SortedViewports_p->size; ++i) {
@@ -34,7 +34,7 @@ NH_API_RESULT nh_gfx_renderOpenGL(
         NH_CORE_CHECK(nh_gfx_freeOpenGLCommandBuffer(Viewport_p->OpenGL.CommandBuffer_p))
     }
 
-    glXSwapBuffers(Surface_p->Window_p->X11.Common_p->Display_p, Surface_p->Window_p->X11.Handle);
+    glXSwapBuffers(NH_WSI_X11.Display_p, Surface_p->Window_p->X11.Handle);
 
     return NH_API_SUCCESS;
 }

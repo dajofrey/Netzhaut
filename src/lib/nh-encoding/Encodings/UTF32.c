@@ -72,7 +72,7 @@ NH_API_RESULT nh_encoding_appendUTF8ToUTF32(
 NH_ENCODING_UTF32 *nh_encoding_incrementUTF32(
     nh_encoding_UTF32String *String_p)
 {
-    NH_ENCODING_UTF32 *codepoint_p = nh_core_incrementArray(&String_p->Array);
+    NH_ENCODING_UTF32 *codepoint_p = (NH_ENCODING_UTF32*)nh_core_incrementArray(&String_p->Array);
     String_p->p = (NH_ENCODING_UTF32*)String_p->Array.p; 
     String_p->length = String_p->Array.length;
     return codepoint_p;
@@ -137,7 +137,7 @@ nh_core_List nh_encoding_splitUTF32(
             NH_CORE_CHECK_2(Tokens, nh_encoding_appendUTF32Codepoint(&Token, String_p->p[i++]))
         }
     
-        nh_encoding_UTF32String *Token_p = nh_core_allocate(sizeof(nh_encoding_UTF32String));
+        nh_encoding_UTF32String *Token_p = (nh_encoding_UTF32String*)nh_core_allocate(sizeof(nh_encoding_UTF32String));
         NH_CORE_CHECK_MEM_2(Tokens, Token_p)
     
         *Token_p = Token;

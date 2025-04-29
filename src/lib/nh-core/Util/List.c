@@ -41,7 +41,7 @@ NH_API_RESULT nh_core_appendToList(
     if (List_p->size >= List_p->chunkSize * List_p->chunkCount) 
     {
         if (List_p->pp == NULL) {
-            List_p->pp = nh_core_allocate(sizeof(void*) * List_p->chunkSize);
+            List_p->pp = (void**)nh_core_allocate(sizeof(void*) * List_p->chunkSize);
             if (List_p->pp == NULL) {return NH_API_ERROR_BAD_STATE;}
         }
         else {

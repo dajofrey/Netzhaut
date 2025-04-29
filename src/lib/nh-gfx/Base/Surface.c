@@ -65,7 +65,7 @@ static void *nh_gfx_initSurface(
     NH_CORE_CHECK_NULL_2(NULL, Args_p)
     NH_CORE_CHECK_NULL_2(NULL, Args_p->Window_p)
 
-    nh_gfx_Surface *Surface_p = nh_core_allocate(sizeof(nh_gfx_Surface));
+    nh_gfx_Surface *Surface_p = (nh_gfx_Surface*)nh_core_allocate(sizeof(nh_gfx_Surface));
     NH_CORE_CHECK_NULL_2(NULL, Surface_p)
 
     Surface_p->args_p = NULL;
@@ -100,7 +100,7 @@ static void *nh_gfx_initSurface(
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
             if (NH_VULKAN.GPUs.size <= 0) {return NULL;}
             NH_CORE_CHECK_2(NULL, 
-                nh_gfx_createVulkanSurface(&Surface_p->Vulkan, Surface_p->Window_p, NH_VULKAN.GPUs.pp[0]))
+                nh_gfx_createVulkanSurface(&Surface_p->Vulkan, (nh_api_Window*)Surface_p->Window_p, NH_VULKAN.GPUs.pp[0]))
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLSurface(&Surface_p->OpenGL, Surface_p->Window_p)) 
@@ -150,7 +150,7 @@ static NH_API_RESULT nh_gfx_getSortedViewports(
         }
     }
 
-    int *sortedIndices_p = nh_core_allocate(sizeof(int) * Viewports.size);
+    int *sortedIndices_p = (int*)nh_core_allocate(sizeof(int) * Viewports.size);
     NH_CORE_CHECK_MEM(sortedIndices_p)
 
     // sort viewports based on priority (from low to high priority)
@@ -356,4 +356,3 @@ nh_gfx_Surface *nh_gfx_createSurface(
 //
 //NH_DIAGNOSTIC_END(NH_SUCCESS)
 //}
-

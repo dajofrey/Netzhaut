@@ -28,14 +28,14 @@ static NH_API_RESULT nh_gfx_prepareDetectedVulkanGPUs(
     Host_p->Functions.vkEnumeratePhysicalDevices(Host_p->Instance, &detectedCount, VK_NULL_HANDLE);
     if (detectedCount <= 0) {return NH_API_SUCCESS;}
 
-    VkPhysicalDevice *Physical_p = nh_core_allocate(sizeof(VkPhysicalDevice) * detectedCount);
+    VkPhysicalDevice *Physical_p = (VkPhysicalDevice*)nh_core_allocate(sizeof(VkPhysicalDevice) * detectedCount);
     NH_CORE_CHECK_MEM(Physical_p)
 
     Host_p->Functions.vkEnumeratePhysicalDevices(Host_p->Instance, &detectedCount, Physical_p);
 
     for (int i = 0; i < detectedCount; i++) 
     {
-        nh_gfx_VulkanGPU *GPU_p = nh_core_allocate(sizeof(nh_gfx_VulkanGPU));
+        nh_gfx_VulkanGPU *GPU_p = (nh_gfx_VulkanGPU*)nh_core_allocate(sizeof(nh_gfx_VulkanGPU));
         NH_CORE_CHECK_MEM(GPU_p)
 
         GPU_p->Textures = nh_core_initList(128);

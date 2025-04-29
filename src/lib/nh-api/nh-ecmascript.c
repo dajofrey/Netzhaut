@@ -25,8 +25,8 @@
 nh_api_Script *nh_api_parseScript(
     char *sourceText_p, nh_api_Realm *Realm_p, int encoding)
 {
+    typedef nh_api_Script *(*nh_ecmascript_parseScript_f)(char *sourceText_p, nh_api_Realm *Realm_p, int encoding); 
     nh_core_Loader *Loader_p = nh_api_getLoader();
     nh_ecmascript_parseScript_f parseScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_parseScript");
     return parseScript_f ? parseScript_f(sourceText_p, Realm_p, encoding) : NULL;
 }
-

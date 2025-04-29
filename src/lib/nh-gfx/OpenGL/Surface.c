@@ -62,13 +62,13 @@ static NH_API_RESULT nh_gfx_createOpenGLContext(
 {
     int count = 0;
     GLXFBConfig *FrameBufferConfigurations_p = 
-        glXChooseFBConfig(Window_p->X11.Common_p->Display_p, Window_p->X11.Common_p->screen, VISUAL_DATA_P, &count);
+        glXChooseFBConfig(NH_WSI_X11.Display_p, NH_WSI_X11.screen, VISUAL_DATA_P, &count);
 
     GLXFBConfig FrameBufferConfiguration_p = NULL; 
 
     for (int i = 0; i < count; i++) {
         XVisualInfo *Info_p = (XVisualInfo*) 
-            glXGetVisualFromFBConfig(Window_p->X11.Common_p->Display_p, FrameBufferConfigurations_p[i]);
+            glXGetVisualFromFBConfig(NH_WSI_X11.Display_p, FrameBufferConfigurations_p[i]);
         // We need to use the FBC that relates to the Visual that was used for window creation.
         if (Info_p->visualid == Window_p->X11.Info.visualid) {
             XFree(Info_p);
@@ -99,7 +99,7 @@ static NH_API_RESULT nh_gfx_createOpenGLContext(
 
     /* Create modern OpenGL context */
     Surface_p->Context_p = glXCreateContextAttribsARB_f(
-        Window_p->X11.Common_p->Display_p, FrameBufferConfiguration_p, NULL, true, contextAttributes_p);
+        NH_WSI_X11.Display_p, FrameBufferConfiguration_p, NULL, true, contextAttributes_p);
 
     if (!Surface_p->Context_p) {
         return NH_API_ERROR_BAD_STATE;
@@ -117,7 +117,7 @@ NH_API_RESULT nh_gfx_createOpenGLSurface(
 
     int bufferCount = 3;
 
-    Surface_p->CommandBuffers_p = nh_core_allocate(sizeof(nh_gfx_OpenGLCommandBuffer)*bufferCount);
+    Surface_p->CommandBuffers_p = (nh_gfx_OpenGLCommandBuffer*)nh_core_allocate(sizeof(nh_gfx_OpenGLCommandBuffer)*bufferCount);
     NH_CORE_CHECK_MEM(Surface_p->CommandBuffers_p)
 
     Surface_p->bufferCount = bufferCount;
@@ -135,7 +135,7 @@ NH_API_RESULT nh_gfx_createOpenGLSurface(
 NH_API_RESULT nh_gfx_destroyOpenGLSurface(
     nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p)
 {
-    glXDestroyContext(Window_p->X11.Common_p->Display_p, Surface_p->Context_p);
+    glXDestroyContext(NH_WSI_X11.Display_p, Surface_p->Context_p);
     nh_core_free(Surface_p->CommandBuffers_p);
     
     return NH_API_SUCCESS;

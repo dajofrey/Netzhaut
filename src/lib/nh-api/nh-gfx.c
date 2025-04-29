@@ -33,7 +33,7 @@ nh_api_SurfaceRequirements *nh_api_getSurfaceRequirements()
 nh_api_Surface *nh_api_createSurface(
     nh_api_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api)
 {
-    typedef nh_gfx_Surface *(*nh_gfx_createSurface_f)(nh_wsi_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api);
+    typedef nh_api_Surface *(*nh_gfx_createSurface_f)(nh_api_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api);
     nh_core_Loader *Loader_p = nh_api_getLoader();
     nh_gfx_createSurface_f createSurface_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_GFX, 0, "nh_gfx_createSurface");
     return createSurface_f ? createSurface_f(Window_p, api) : NULL;

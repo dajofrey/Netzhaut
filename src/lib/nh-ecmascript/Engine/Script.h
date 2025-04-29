@@ -39,11 +39,6 @@
  *  @{
  */
 
-    // Used by API.
-    typedef nh_ecmascript_Script *(*nh_ecmascript_parseScript_f)( 
-        char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding 
-    ); 
-
     // https://tc39.es/ecma262/#sec-parse-script
     nh_ecmascript_Script *nh_ecmascript_parseScript(
         char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding

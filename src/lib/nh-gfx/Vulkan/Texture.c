@@ -588,7 +588,7 @@ nh_vk_Texture *nh_vk_loadFontTexture(
         }
     }
 
-    nh_vk_Texture *Texture_p = nh_core_allocate(sizeof(nh_vk_Texture));
+    nh_vk_Texture *Texture_p = (nh_vk_Texture*)nh_core_allocate(sizeof(nh_vk_Texture));
     NH_CORE_CHECK_MEM_2(NULL, Texture_p)
 
     Texture_p->source_p = Font_p;

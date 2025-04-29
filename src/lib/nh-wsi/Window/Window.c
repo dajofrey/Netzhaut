@@ -47,7 +47,7 @@ static NH_WSI_TYPE_E nh_wsi_getType()
 nh_wsi_Window *nh_wsi_createWindow(
     char *namespace_p, nh_gfx_SurfaceRequirements *Requirements_p)
 {
-    nh_wsi_Window *Window_p = nh_core_allocate(sizeof(nh_wsi_Window));
+    nh_wsi_Window *Window_p = (nh_wsi_Window*)nh_core_allocate(sizeof(nh_wsi_Window));
     NH_CORE_CHECK_MEM_2(NULL, Window_p)
     memset(Window_p, 0, sizeof(nh_wsi_Window));
 
@@ -71,7 +71,6 @@ nh_wsi_Window *nh_wsi_createWindow(
     {
 #if defined(__unix__)
         case NH_WSI_TYPE_X11 : 
-            Window_p->X11.Common_p = &NH_WSI_X11;
             NH_CORE_CHECK_2(NULL, nh_wsi_createX11Window(&Window_p->X11, nh_wsi_getWindowConfig(Window_p), Requirements_p))
             break;
 #elif defined(__APPLE__)

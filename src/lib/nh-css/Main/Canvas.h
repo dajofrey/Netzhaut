@@ -31,20 +31,6 @@
 
 /** @} */
 
-/** @addtogroup lib_nh-css_typedefs
- *  @{
- */
-
-    typedef nh_api_CanvasType (*nh_css_createCanvasType_f)(
-        nh_api_PixelSize Size 
-    );
-
-    typedef NH_API_RESULT (*nh_css_addCanvasType_f)(
-        nh_css_LayoutEngine *LayoutEngine_p, nh_api_CanvasType CanvasType
-    );
-
-/** @} */
-
 /** @addtogroup lib_nh-css_functions
  *  @{
  */

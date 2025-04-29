@@ -55,7 +55,7 @@ static NH_API_RESULT nh_gfx_addFont(
         return NH_API_SUCCESS;
     }
 
-    nh_gfx_Font *Font_p = nh_core_allocate(sizeof(nh_gfx_Font));
+    nh_gfx_Font *Font_p = (nh_gfx_Font*)nh_core_allocate(sizeof(nh_gfx_Font));
     NH_CORE_CHECK_MEM(Font_p)
 
     Font_p->file_p           = internal ? data_p : NULL;
@@ -155,7 +155,7 @@ static nh_gfx_FontInstance *nh_gfx_loadFontInstance(
     }
 
     if (!Instance_p) {
-        Instance_p = nh_core_incrementArray(&Font_p->Instances);
+        Instance_p = (nh_gfx_FontInstance*)nh_core_incrementArray(&Font_p->Instances);
         NH_CORE_CHECK_MEM_2(NULL, Instance_p)
     }
 

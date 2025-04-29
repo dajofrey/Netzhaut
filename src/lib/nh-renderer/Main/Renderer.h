@@ -28,16 +28,6 @@ typedef struct nh_renderer_Renderer {
     nh_core_Array RenderTargets;
 } nh_renderer_Renderer;
 
-// TYPEDEFS ========================================================================================
-
-typedef nh_renderer_Renderer *(*nh_renderer_createRenderer_f)(
-    nh_css_LayoutEngine *LayoutEngine_p 
-);
-
-typedef NH_API_RESULT (*nh_renderer_addViewport_f)(
-    nh_renderer_Renderer *Renderer_p, nh_gfx_Viewport *Viewport_p
-);
-
 // FUNCTIONS =======================================================================================
 
 nh_renderer_Renderer *nh_renderer_createRenderer(

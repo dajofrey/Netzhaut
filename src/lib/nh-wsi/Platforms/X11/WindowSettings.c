@@ -150,7 +150,7 @@ NH_API_RESULT nh_wsi_setX11WindowState(
             long *workarea = (long *)prop_value;
             int max_width = workarea[2];
             int max_height = workarea[3];
-            nh_x11_getWindowSize(Window_p, &Window_p->oldX, &Window_p->oldY);
+            nh_wsi_getX11WindowSize(Window_p, &Window_p->oldX, &Window_p->oldY);
             XResizeWindow(NH_WSI_X11.Display_p, Window_p->Handle, max_width, max_height);
         } else {
             return NH_API_ERROR_BAD_STATE;

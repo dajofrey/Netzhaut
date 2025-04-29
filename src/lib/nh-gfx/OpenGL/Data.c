@@ -34,7 +34,7 @@ static nh_gfx_OpenGLData *nh_gfx_createOpenGLData(
     nh_gfx_OpenGLData *Data_p, NH_GFX_OPENGL_DATA_E type, int size, char *data_p, char **data_pp)
 {
     if (!Data_p) {
-        Data_p = nh_core_allocate(sizeof(nh_gfx_OpenGLData));
+        Data_p = (nh_gfx_OpenGLData*)nh_core_allocate(sizeof(nh_gfx_OpenGLData));
         NH_CORE_CHECK_MEM_2(NULL, Data_p)
         *Data_p = nh_gfx_initOpenGLData();
         Data_p->autoFree = true;

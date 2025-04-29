@@ -97,7 +97,7 @@ NH_API_RESULT nh_gfx_createText(
         if (!Instance_p) {return NH_API_ERROR_BAD_STATE;}
 
         if (Instance_p != PrevInstance_p) {
-            nh_gfx_TextSegment *Segment_p = nh_core_incrementArray(&Text_p->Segments);
+            nh_gfx_TextSegment *Segment_p = (nh_gfx_TextSegment*)nh_core_incrementArray(&Text_p->Segments);
             Segment_p->FontInstance_p = Instance_p;
             Segment_p->length = 1;
             Segment_p->codepoints_p = codepoints_p + i;
@@ -122,7 +122,7 @@ NH_API_RESULT nh_gfx_createTextFromFont(
 
     Text_p->Segments = nh_core_initArray(sizeof(nh_gfx_TextSegment), 1);
 
-    nh_gfx_TextSegment *Segment_p = nh_core_incrementArray(&Text_p->Segments);
+    nh_gfx_TextSegment *Segment_p = (nh_gfx_TextSegment*)nh_core_incrementArray(&Text_p->Segments);
     NH_CORE_CHECK_MEM(Segment_p)
 
     Segment_p->FontInstance_p = Instance_p;

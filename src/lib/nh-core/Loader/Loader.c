@@ -269,14 +269,14 @@ static void *nh_core_loadExternalSymbol(
 NH_API_RESULT nh_core_addExternalModule(
     const char *name_p, const char *path_p, const char **dependencies_pp, size_t dependencies)
 {
-    nh_core_ExternalModule *Module_p = nh_core_incrementArray(&NH_LOADER.ExternalModules);
+    nh_core_ExternalModule *Module_p = (nh_core_ExternalModule*)nh_core_incrementArray(&NH_LOADER.ExternalModules);
     NH_CORE_CHECK_NULL(Module_p)
 
     memset(Module_p, 0, sizeof(nh_core_ExternalModule));
 
     Module_p->Data = nh_core_initModule(-1);
     Module_p->name_p = name_p;
-    Module_p->dependencies_pp = dependencies_pp;
+    Module_p->dependencies_pp = (char**)dependencies_pp;
     Module_p->dependencies = dependencies;
     
     if (path_p != NULL) {

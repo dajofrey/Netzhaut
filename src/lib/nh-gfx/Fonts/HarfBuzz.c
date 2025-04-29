@@ -42,7 +42,7 @@ nh_gfx_HarfBuzzGlyphInfo *nh_gfx_getHarfBuzzGlyphInfos(
     hb_glyph_info_t *infos_p = hb_buffer_get_glyph_infos(Buffer.external_p, glyphs_p);
     NH_CORE_CHECK_NULL_2(NULL, infos_p)
 
-    nh_gfx_HarfBuzzGlyphInfo *Infos_p = nh_core_allocate(sizeof(nh_gfx_HarfBuzzGlyphInfo) * (*glyphs_p));
+    nh_gfx_HarfBuzzGlyphInfo *Infos_p = (nh_gfx_HarfBuzzGlyphInfo*)nh_core_allocate(sizeof(nh_gfx_HarfBuzzGlyphInfo) * (*glyphs_p));
     NH_CORE_CHECK_NULL_2(NULL, Infos_p)
 
     for (int i = 0 ; i < *glyphs_p; ++i) {

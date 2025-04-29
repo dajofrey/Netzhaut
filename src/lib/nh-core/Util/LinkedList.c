@@ -51,7 +51,7 @@ NH_API_RESULT _nh_core_appendToLinkedList( // TODO multithreading
     nh_LinkedListItem **Item_pp = &List_p->Head_p;
     while (*Item_pp != NULL) {Item_pp = &((*Item_pp)->Next_p);}
 
-    *Item_pp = nh_core_allocate(sizeof(nh_LinkedListItem));
+    *Item_pp = (nh_LinkedListItem*)nh_core_allocate(sizeof(nh_LinkedListItem));
     if (*Item_pp == NULL) {return NH_API_ERROR_BAD_STATE;}
     
     (*Item_pp)->data_p = data_p;
@@ -71,7 +71,7 @@ NH_API_RESULT nh_core_appendToLinkedList( // TODO multithreading
     nh_LinkedListItem **Item_pp = &List_p->Head_p;
     while (*Item_pp != NULL) {Item_pp = &((*Item_pp)->Next_p);}
 
-    *Item_pp = nh_core_allocate(sizeof(nh_LinkedListItem));
+    *Item_pp = (nh_LinkedListItem*)nh_core_allocate(sizeof(nh_LinkedListItem));
     NH_CORE_CHECK_MEM(*Item_pp)
     
     (*Item_pp)->data_p = data_p;
@@ -105,7 +105,7 @@ NH_API_RESULT nh_core_insertIntoLinkedList( // TODO multithreading
         tmp++;
     }
     
-    nh_LinkedListItem *New_p = nh_core_allocate(sizeof(nh_LinkedListItem));
+    nh_LinkedListItem *New_p = (nh_LinkedListItem*)nh_core_allocate(sizeof(nh_LinkedListItem));
     NH_CORE_CHECK_MEM(New_p)
     
     New_p->data_p = data_p;
@@ -128,7 +128,7 @@ NH_API_RESULT nh_core_prependToLinkedList( // TODO multithreading
     else {
 
         nh_LinkedListItem *Next_p = List_p->Head_p;
-        List_p->Head_p = nh_core_allocate(sizeof(nh_LinkedListItem));
+        List_p->Head_p = (nh_LinkedListItem*)nh_core_allocate(sizeof(nh_LinkedListItem));
         NH_CORE_CHECK_MEM(List_p->Head_p)
 
         List_p->Head_p->data_p = data_p;

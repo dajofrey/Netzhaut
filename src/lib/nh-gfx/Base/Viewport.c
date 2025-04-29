@@ -28,7 +28,7 @@ nh_gfx_Viewport *nh_gfx_createViewport(
 {
     NH_CORE_CHECK_NULL_2(NULL, Surface_p)
 
-    nh_gfx_Viewport *Viewport_p = nh_core_allocate(sizeof(nh_gfx_Viewport));
+    nh_gfx_Viewport *Viewport_p = (nh_gfx_Viewport*)nh_core_allocate(sizeof(nh_gfx_Viewport));
     NH_CORE_CHECK_MEM_2(NULL, Viewport_p)
 
     Viewport_p->Owner.type = NH_GFX_VIEWPORT_OWNER_NONE;

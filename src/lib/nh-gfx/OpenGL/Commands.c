@@ -851,7 +851,7 @@ static NH_API_RESULT nh_gfx_glVertexAttribPointer(
 {
     void *p = NULL;
     if ((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[5])->p) {
-        p = *((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[5])->p);
+        p = (void*)*((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[5])->p);
     }
 
     glVertexAttribPointer(

@@ -215,7 +215,7 @@ static bool nh_gfx_vulkanValidationLayerSupported(
 
     Host_p->Functions.vkEnumerateInstanceLayerProperties(&availableLayerCount, VK_NULL_HANDLE);
     
-    VkLayerProperties *availableLayers_p = nh_core_allocate(sizeof(VkLayerProperties) * availableLayerCount);
+    VkLayerProperties *availableLayers_p = (VkLayerProperties*)nh_core_allocate(sizeof(VkLayerProperties) * availableLayerCount);
     if (availableLayers_p == NULL) {return false;}
 
     Host_p->Functions.vkEnumerateInstanceLayerProperties(&availableLayerCount, availableLayers_p);
@@ -241,7 +241,7 @@ static bool nh_gfx_vulkanValidationExtensionSupported(
 
     Host_p->Functions.vkEnumerateInstanceExtensionProperties(VALIDATION_LAYER, &propCount, VK_NULL_HANDLE);
 
-    VkExtensionProperties *extensionProps_p = nh_core_allocate(sizeof(VkExtensionProperties) * propCount);
+    VkExtensionProperties *extensionProps_p = (VkExtensionProperties*)nh_core_allocate(sizeof(VkExtensionProperties) * propCount);
     if (extensionProps_p == NULL) {return false;}
 
     Host_p->Functions.vkEnumerateInstanceExtensionProperties(VALIDATION_LAYER, &propCount, extensionProps_p);

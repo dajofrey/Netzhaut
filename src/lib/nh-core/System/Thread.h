@@ -104,19 +104,6 @@
 
 /** @} */
 
-/** @addtogroup lib_nh-core_typedefs
- *  @{
- */
-
-    typedef bool (*nh_core_keepRunning_f)(
-    );
-
-    typedef nh_core_Workload *(*nh_core_getWorkload_f)(
-        void *args_p
-    );
- 
-/** @} */
-
 /** @addtogroup lib_nh-core_functions
  *  @{
  */

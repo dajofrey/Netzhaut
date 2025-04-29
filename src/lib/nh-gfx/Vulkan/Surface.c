@@ -43,7 +43,7 @@ nh_gfx_VulkanSurface nh_gfx_initVulkanSurface()
 static VkSurfaceKHR *nh_gfx_createVulkanSurfaceKHR(
     nh_gfx_VulkanHost *Host_p, nh_wsi_Window *Window_p)
 {
-    VkSurfaceKHR *SurfaceKHR_p = nh_core_allocate(sizeof(VkSurfaceKHR));
+    VkSurfaceKHR *SurfaceKHR_p = (VkSurfaceKHR*)nh_core_allocate(sizeof(VkSurfaceKHR));
     NH_CORE_CHECK_MEM_2(NULL, SurfaceKHR_p)
 
 #ifdef __unix__
@@ -54,7 +54,7 @@ static VkSurfaceKHR *nh_gfx_createVulkanSurfaceKHR(
         { 
             .sType  = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
             .pNext  = VK_NULL_HANDLE,
-            .dpy    = Window_p->X11.Common_p->Display_p,
+            .dpy    = NH_WSI_X11.Display_p,
             .window = Window_p->X11.Handle, 
         };
         Host_p->Functions.vkCreateXlibSurfaceKHR(
@@ -139,7 +139,7 @@ static NH_API_RESULT nh_gfx_createVulkanSwapchain(
         *Device_p, *SurfaceKHR_p, &formatCount, VK_NULL_HANDLE
     ); 
 
-    VkSurfaceFormatKHR *SurfaceFormats_p = nh_core_allocate(sizeof(VkSurfaceFormatKHR) * formatCount);
+    VkSurfaceFormatKHR *SurfaceFormats_p = (VkSurfaceFormatKHR*)nh_core_allocate(sizeof(VkSurfaceFormatKHR) * formatCount);
     NH_CORE_CHECK_MEM(SurfaceFormats_p)
 
     NH_VULKAN.Host.Functions.vkGetPhysicalDeviceSurfaceFormatsKHR(
@@ -154,7 +154,7 @@ static NH_API_RESULT nh_gfx_createVulkanSwapchain(
         *Device_p, *SurfaceKHR_p, &presentModeCount, VK_NULL_HANDLE
     ); 
 
-    VkPresentModeKHR *presentModes_p = nh_core_allocate(sizeof(VkPresentModeKHR) * presentModeCount);
+    VkPresentModeKHR *presentModes_p = (VkPresentModeKHR*)nh_core_allocate(sizeof(VkPresentModeKHR) * presentModeCount);
     NH_CORE_CHECK_MEM(presentModes_p)
 
     NH_VULKAN.Host.Functions.vkGetPhysicalDeviceSurfacePresentModesKHR(
@@ -202,7 +202,7 @@ static NH_API_RESULT nh_gfx_createVulkanSwapchain(
    
     if (imageCount != Surface_p->imageCount) {return NH_API_ERROR_BAD_STATE;;}
 
-    VkImage *Images_p = nh_core_allocate(sizeof(VkImage) * imageCount);
+    VkImage *Images_p = (VkImage*)nh_core_allocate(sizeof(VkImage) * imageCount);
     NH_CORE_CHECK_MEM(Images_p)
 
     Driver_p->Functions.vkGetSwapchainImagesKHR(Driver_p->Device, *VkSwapchainKHR_p, &imageCount, Images_p); 
@@ -390,7 +390,7 @@ NH_API_RESULT nh_gfx_createVulkanSurface(
     Surface_p->GPU_p = GPU_p;
 
     if (!Surface_p->SurfaceKHR_p) {
-        Surface_p->SurfaceKHR_p = nh_gfx_createVulkanSurfaceKHR(&NH_VULKAN.Host, Window_p);
+        Surface_p->SurfaceKHR_p = nh_gfx_createVulkanSurfaceKHR(&NH_VULKAN.Host, (nh_wsi_Window*)Window_p);
         NH_CORE_CHECK_NULL(Surface_p->SurfaceKHR_p)
     }
 
@@ -408,16 +408,16 @@ NH_API_RESULT nh_gfx_createVulkanSurface(
     
     Surface_p->imageCount = SurfaceCapabilities.minImageCount;
 
-    Surface_p->Framebuffer_p = nh_core_allocate(sizeof(VkFramebuffer) * Surface_p->imageCount);
+    Surface_p->Framebuffer_p = (VkFramebuffer*)nh_core_allocate(sizeof(VkFramebuffer) * Surface_p->imageCount);
     NH_CORE_CHECK_MEM(Surface_p->Framebuffer_p)
 
-    Surface_p->CommandBuffers_p = nh_core_allocate(sizeof(VkCommandBuffer) * Surface_p->imageCount);
+    Surface_p->CommandBuffers_p = (VkCommandBuffer*)nh_core_allocate(sizeof(VkCommandBuffer) * Surface_p->imageCount);
     NH_CORE_CHECK_MEM(Surface_p->CommandBuffers_p)
 
-    Surface_p->Swapchain.Image_p = nh_core_allocate(sizeof(VkImage) * Surface_p->imageCount);
+    Surface_p->Swapchain.Image_p = (VkImage*)nh_core_allocate(sizeof(VkImage) * Surface_p->imageCount);
     NH_CORE_CHECK_MEM(Surface_p->Swapchain.Image_p) 
 
-    Surface_p->Swapchain.ImageView_p = nh_core_allocate(sizeof(VkImageView) * Surface_p->imageCount);
+    Surface_p->Swapchain.ImageView_p = (VkImageView*)nh_core_allocate(sizeof(VkImageView) * Surface_p->imageCount);
     NH_CORE_CHECK_MEM(Surface_p->Swapchain.ImageView_p)
 
     NH_CORE_CHECK(nh_gfx_createVulkanSwapchain(&GPU_p->Driver, Surface_p->SurfaceKHR_p, Surface_p, 0))

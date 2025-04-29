@@ -39,7 +39,7 @@ static void *nh_core_incrementArrayListRecursion(
     nh_core_Array *Array_p = nh_core_getFromList(&ArrayList_p->Arrays, array);
 
     if (!Array_p) {
-        Array_p = nh_core_allocate(sizeof(nh_core_Array));
+        Array_p = (nh_core_Array*)nh_core_allocate(sizeof(nh_core_Array));
         if (!Array_p) {return NULL;}
         *Array_p = nh_core_initArray(ArrayList_p->elementSize, ArrayList_p->allocatedLengthPerChunk);
         if (nh_core_appendToList(&ArrayList_p->Arrays, Array_p) != NH_API_SUCCESS) {return NULL;}

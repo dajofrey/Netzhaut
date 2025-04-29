@@ -149,6 +149,7 @@ int nh_api_run()
 
 bool nh_api_keepRunning()
 {
+    typedef bool (*nh_core_keepRunning_f)();
     nh_core_keepRunning_f keepRunning_f = nh_api_loadCoreFunction("nh_core_keepRunning");
     return keepRunning_f ? keepRunning_f() : false;
 }
@@ -164,6 +165,7 @@ void nh_api_setLogCallback(
 nh_api_Workload *nh_api_getWorkload(
     void *args_p)
 {
+    typedef nh_api_Workload *(*nh_core_getWorkload_f)(void *args_p);
     nh_core_getWorkload_f getWorkload_f = nh_api_loadCoreFunction("nh_core_getWorkload");
     return getWorkload_f ? getWorkload_f(args_p) : NULL;
 }

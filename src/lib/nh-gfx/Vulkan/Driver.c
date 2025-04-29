@@ -155,17 +155,17 @@ NH_API_RESULT nh_gfx_createVulkanDriver(
     nh_gfx_VulkanHost *Host_p, nh_gfx_VulkanDriver *Driver_p, char *name_p)
 {
     // allocate
-    Driver_p->DescriptorPool_p = nh_core_allocate(sizeof(VkDescriptorPool));
+    Driver_p->DescriptorPool_p = (VkDescriptorPool*)nh_core_allocate(sizeof(VkDescriptorPool));
     NH_CORE_CHECK_MEM(Driver_p->DescriptorPool_p);
     Driver_p->descriptorPoolCount = 1;
 
-    Driver_p->RenderPass_p = nh_core_allocate(sizeof(VkRenderPass));
+    Driver_p->RenderPass_p = (VkRenderPass*)nh_core_allocate(sizeof(VkRenderPass));
     NH_CORE_CHECK_MEM(Driver_p->RenderPass_p);
     Driver_p->renderPassCount = 1;
 
-    Driver_p->ComputeCommandPools_p = nh_core_allocate(sizeof(VkCommandPool) * NH_MAX_THREADS);
+    Driver_p->ComputeCommandPools_p = (VkCommandPool*)nh_core_allocate(sizeof(VkCommandPool) * NH_MAX_THREADS);
     NH_CORE_CHECK_MEM(Driver_p->ComputeCommandPools_p);
-    Driver_p->GraphicsCommandPools_p = nh_core_allocate(sizeof(VkCommandPool) * NH_MAX_THREADS);
+    Driver_p->GraphicsCommandPools_p = (VkCommandPool*)nh_core_allocate(sizeof(VkCommandPool) * NH_MAX_THREADS);
     NH_CORE_CHECK_MEM(Driver_p->GraphicsCommandPools_p);
 
     // create
@@ -215,7 +215,7 @@ static NH_API_RESULT nh_gfx_createVulkanPhysicalDevice(
     uint32_t deviceCount;
     Host_p->Functions.vkEnumeratePhysicalDevices(*Window_p, &deviceCount, VK_NULL_HANDLE); 
 
-    VkPhysicalDevice *Physical_p = nh_core_allocate(sizeof(VkPhysicalDevice) * deviceCount);
+    VkPhysicalDevice *Physical_p = (VkPhysicalDevice*)nh_core_allocate(sizeof(VkPhysicalDevice) * deviceCount);
     NH_CORE_CHECK_MEM(Physical_p)
     
     Host_p->Functions.vkEnumeratePhysicalDevices(*Window_p, &deviceCount, Physical_p);
@@ -265,7 +265,7 @@ static NH_API_RESULT nh_gfx_createVulkanDevice(
     int queueCount = *graphicsQueue_p == *computeQueue_p ? 1 : 2;
     float queuePriority = 1.0f;
 
-    VkDeviceQueueCreateInfo *QueueInfos_p = nh_core_allocate(sizeof(VkDeviceQueueCreateInfo) * queueCount);
+    VkDeviceQueueCreateInfo *QueueInfos_p = (VkDeviceQueueCreateInfo*)nh_core_allocate(sizeof(VkDeviceQueueCreateInfo) * queueCount);
     NH_CORE_CHECK_MEM(QueueInfos_p)
 
     for (int i = 0; i < queueCount; ++i)
@@ -427,7 +427,7 @@ static NH_API_RESULT nh_gfx_getVulkanSurfaceFormat(
         *Physical_p, Surface, &formatCount, VK_NULL_HANDLE
     );
 
-    VkSurfaceFormatKHR *SurfaceFormats_p = nh_core_allocate(sizeof(VkSurfaceFormatKHR) * formatCount);
+    VkSurfaceFormatKHR *SurfaceFormats_p = (VkSurfaceFormatKHR*)nh_core_allocate(sizeof(VkSurfaceFormatKHR) * formatCount);
     NH_CORE_CHECK_MEM(SurfaceFormats_p)
 
     Host_p->Functions.vkGetPhysicalDeviceSurfaceFormatsKHR(
@@ -456,7 +456,7 @@ static bool nh_gfx_vulkanDeviceIsSuitable(
     Host_p->Functions.vkGetPhysicalDeviceQueueFamilyProperties(Device, &queueFamilyCount, VK_NULL_HANDLE);
 
     VkQueueFamilyProperties *queueFamilies_p = 
-        nh_core_allocate(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
+        (VkQueueFamilyProperties*)nh_core_allocate(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
     NH_CORE_CHECK_NULL_2(false, queueFamilies_p)
 
     Host_p->Functions.vkGetPhysicalDeviceQueueFamilyProperties(Device, &queueFamilyCount, queueFamilies_p);
@@ -498,7 +498,7 @@ static bool nh_gfx_vulkanDeviceSupportsExtensions(
     ); 
 
     VkExtensionProperties *AvailableExtensions_p = 
-        nh_core_allocate(sizeof(VkExtensionProperties) * availableExtensionsCount);
+        (VkExtensionProperties*)nh_core_allocate(sizeof(VkExtensionProperties) * availableExtensionsCount);
     NH_CORE_CHECK_NULL_2(false, AvailableExtensions_p)
 
     Host_p->Functions.vkEnumerateDeviceExtensionProperties(
@@ -537,7 +537,7 @@ static uint32_t nh_gfx_getVulkanQueueFamily(
     if (queueFamilyCount == 0) {return -1;}
 
     VkQueueFamilyProperties *QueueFamilyProperties_p = 
-        nh_core_allocate(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
+        (VkQueueFamilyProperties*)nh_core_allocate(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
     NH_CORE_CHECK_NULL_2(-1, QueueFamilyProperties_p)
 
     Host_p->Functions.vkGetPhysicalDeviceQueueFamilyProperties(

@@ -99,7 +99,7 @@ NH_API_RESULT nh_gfx_renderVulkan( // TODO multi GPU rendering
 {
     VkSemaphore *Semaphores_pp[2] = {&Surface_p->Vulkan.Sync.Semaphore_p[0], &Surface_p->Vulkan.Sync.Semaphore_p[1]};
 
-    VkCommandBuffer *Commands_p = nh_core_allocate(sizeof(void*)*(SortedViewports_p->size+1));
+    VkCommandBuffer *Commands_p = (VkCommandBuffer*)nh_core_allocate(sizeof(void*)*(SortedViewports_p->size+1));
     NH_CORE_CHECK_MEM(Commands_p)
 
     // insert clear commandbuffer

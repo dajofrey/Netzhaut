@@ -173,8 +173,8 @@ static NH_API_RESULT nh_wsi_resizeX11WindowDrag(
     XUngrabPointer(NH_WSI_X11.Display_p, 0);
     XFlush(NH_WSI_X11.Display_p);
 
-    nh_x11_getCursorPosition(Window_p, &curXpos, &curYpos);
-    nh_x11_getWindowPosition(Window_p, &winXpos, &winYpos);
+    nh_wsi_getX11CursorPosition(Window_p, &curXpos, &curYpos);
+    nh_wsi_getX11WindowPosition(Window_p, &winXpos, &winYpos);
 
     xclient.type = ClientMessage;
     xclient.window = Window_p->Handle;
@@ -198,13 +198,13 @@ static NH_API_RESULT nh_wsi_resizeX11WindowDrag(
  * @param Window_p Valid nh_x11_Window handle.
  */
 NH_API_RESULT nh_wsi_moveX11Window(
-    nh_x11_Window *Window_p)
+    nh_wsi_X11Window *Window_p)
 {
     int winXpos, winYpos;
     double curXpos, curYpos;
  
-    nh_x11_getCursorPosition(Window_p, &curXpos, &curYpos);
-    nh_x11_getWindowPosition(Window_p, &winXpos, &winYpos);
+    nh_wsi_getX11CursorPosition(Window_p, &curXpos, &curYpos);
+    nh_wsi_getX11WindowPosition(Window_p, &winXpos, &winYpos);
 
     XUngrabPointer(NH_WSI_X11.Display_p, 0);
     XFlush(NH_WSI_X11.Display_p);
@@ -311,7 +311,7 @@ NH_API_RESULT nh_wsi_getX11Input(
 
             XWindowAttributes XWA; 
             XGetWindowAttributes(NH_WSI_X11.Display_p, 
-                nh_x11_getTopLevelParent(NH_WSI_X11.Display_p, Window_p->X11.Handle), &XWA);
+                nh_wsi_getX11TopLevelParent(NH_WSI_X11.Display_p, Window_p->X11.Handle), &XWA);
 
             nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, XWA.x, XWA.y, Configure.width, Configure.height);
         }
@@ -322,7 +322,7 @@ NH_API_RESULT nh_wsi_getX11Input(
 
             if (Config.resizable && !Config.decorated) {
                 int width, height;
-                nh_x11_getWindowSize(&Window_p->X11, &width, &height);
+                nh_wsi_getX11WindowSize(&Window_p->X11, &width, &height);
 
                 if (Event.xbutton.x < 5 && Event.xbutton.y <= height-5 && Event.xbutton.y >= 5) {
                     nh_wsi_setMouseCursor(Window_p, NH_WSI_CURSOR_LEFT_SIDE);
@@ -361,24 +361,24 @@ NH_API_RESULT nh_wsi_getX11Input(
 
             if (Config.resizable && !Config.decorated) {
                 int width, height;
-                nh_x11_getWindowSize(&Window_p->X11, &width, &height);
+                nh_wsi_getX11WindowSize(&Window_p->X11, &width, &height);
 
                 if (Event.xbutton.x < 5 && Event.xbutton.y <= height-5 && Event.xbutton.y >= 5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_LEFT);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_LEFT);
                 } else if (Event.xbutton.x < 5 && Event.xbutton.y < 5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_TOPLEFT);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_TOPLEFT);
                 } else if (Event.xbutton.x > width-5 && Event.xbutton.y <= height-5 && Event.xbutton.y >= 5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_RIGHT);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_RIGHT);
                 } else if (Event.xbutton.x > width-5 && Event.xbutton.y < 5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_TOPRIGHT);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_TOPRIGHT);
                 } else if (Event.xbutton.x < 5 && Event.xbutton.y > height-5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_BOTTOMLEFT);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_BOTTOMLEFT);
                 } else if (Event.xbutton.x > width-5 && Event.xbutton.y > height-5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_BOTTOMRIGHT);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_BOTTOMRIGHT);
                 } else if (Event.xbutton.y < 5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_TOP);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_TOP);
                 } else if (Event.xbutton.y > height-5) {
-                    nh_x11_resizeWindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_BOTTOM);
+                    nh_wsi_resizeX11WindowDrag(&Window_p->X11, NH_X11_MOVERESIZE_SIZE_BOTTOM);
                 } else {
                     nh_wsi_sendMouseEvent(Window_p, Event.xbutton.x, Event.xbutton.y, trigger, button);
                 }

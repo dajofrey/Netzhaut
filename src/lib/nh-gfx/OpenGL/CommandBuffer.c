@@ -52,7 +52,7 @@ void nh_gfx_freeOpenGLCommand(
 nh_gfx_OpenGLCommand *nh_gfx_addOpenGLCommand(
     nh_gfx_OpenGLCommandBuffer *CommandBuffer_p, char *name_p, ...)
 {
-    nh_gfx_OpenGLCommand *Command_p = nh_core_allocate(sizeof(nh_gfx_OpenGLCommand));
+    nh_gfx_OpenGLCommand *Command_p = (nh_gfx_OpenGLCommand*)nh_core_allocate(sizeof(nh_gfx_OpenGLCommand));
     NH_CORE_CHECK_MEM_2(NULL, Command_p)
 
     NH_GFX_OPENGL_COMMAND_E type = nh_gfx_getOpenGLCommandType(name_p);

@@ -32,16 +32,6 @@
 
 /** @} */
 
-/** @addtogroup lib_nh-css_typedefs
- *  @{
- */
-
-    typedef nh_css_LayoutEngine *(*nh_css_createLayoutEngine_f)(
-        nh_html_DocumentContext *Context_p
-    );
-
-/** @} */
-
 /** @addtogroup lib_nh-css_functions
  *  @{
  */

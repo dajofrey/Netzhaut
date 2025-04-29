@@ -31,7 +31,6 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
 
 
     typedef struct nh_wsi_X11Window {
-        nh_wsi_Window *Common_p;
         Window Handle;
         XVisualInfo Info;
         int oldX, oldY;

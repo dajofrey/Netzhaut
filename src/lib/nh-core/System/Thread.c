@@ -110,7 +110,7 @@ static NH_API_RESULT nh_core_runWorkloadLoop(
 
     // Run command if any.
     nh_core_WorkloadCommand *Command_p = NULL;
-    while (Command_p = nh_core_incrementRingBufferMarker(&Workload_p->Commands, &Workload_p->Marker)) {
+    while (Command_p = (nh_core_WorkloadCommand*)nh_core_incrementRingBufferMarker(&Workload_p->Commands, &Workload_p->Marker)) {
         if (Command_p->dummy) {break;}
         if (Workload_p->runCommand_f) {
             Workload_p->runCommand_f(Workload_p->args_p, Command_p);
@@ -406,7 +406,7 @@ NH_API_RESULT nh_core_executeWorkloadCommand(
     nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
     NH_CORE_CHECK_NULL(Workload_p)
 
-    nh_core_WorkloadCommand *Command_p = nh_core_advanceRingBuffer(&Workload_p->Commands);
+    nh_core_WorkloadCommand *Command_p = (nh_core_WorkloadCommand*)nh_core_advanceRingBuffer(&Workload_p->Commands);
     NH_CORE_CHECK_NULL(Command_p)
 
     Command_p->done = false;
@@ -448,7 +448,7 @@ NH_API_RESULT nh_core_executeWorkload(
     nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
     NH_CORE_CHECK_NULL(Workload_p)
 
-    nh_core_WorkloadCommand *Command_p = nh_core_advanceRingBuffer(&Workload_p->Commands);
+    nh_core_WorkloadCommand *Command_p = (nh_core_WorkloadCommand*)nh_core_advanceRingBuffer(&Workload_p->Commands);
     NH_CORE_CHECK_NULL(Command_p)
 
     Command_p->done = false;

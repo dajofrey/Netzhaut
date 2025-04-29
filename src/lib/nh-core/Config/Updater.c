@@ -122,7 +122,7 @@ static NH_SIGNAL nh_core_runConfigWorkloadCommand(
             if (strlen(Command_p->p) > NH_MAX_CONFIG_PATH) {
                 return NH_SIGNAL_OK;
             }
-            nh_ConfigUpdaterFile *File_p = nh_core_allocate(sizeof(nh_ConfigUpdaterFile));
+            nh_ConfigUpdaterFile *File_p = (nh_ConfigUpdaterFile*)nh_core_allocate(sizeof(nh_ConfigUpdaterFile));
             if (!File_p) {
                 return NH_SIGNAL_OK;
             }
