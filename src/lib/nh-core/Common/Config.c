@@ -21,7 +21,7 @@
 // FUNCTIONS =======================================================================================
 
 static NH_API_RESULT nh_core_getSetting(
-    nh_core_Config *Config_p, int option, char *option_p)
+    nh_core_Config *Config_p, int option, const char *option_p)
 {
     nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, NH_MODULE_CORE, option_p);
 
