@@ -32,5 +32,6 @@ NH_API_RESULT nh_gfx_initialize()
 
     nh_gfx_initVulkan();
     nh_gfx_initOpenGL();
+    nh_gfx_initMetal();
 }
 

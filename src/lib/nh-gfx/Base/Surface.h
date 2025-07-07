@@ -15,6 +15,7 @@
 
 #include "../Vulkan/Surface.h"
 #include "../OpenGL/Surface.h"
+#include "../Metal/Surface.h"
 
 #include "../../nh-wsi/Window/Window.h"
 #include "../../nh-css/Properties/Color.h"
@@ -29,6 +30,7 @@ typedef struct nh_gfx_Surface {
     nh_wsi_Window *Window_p;
     nh_gfx_VulkanSurface Vulkan;
     nh_gfx_OpenGLSurface OpenGL;
+    nh_gfx_MetalSurface Metal;
     nh_core_List Viewports;
     struct {
         nh_css_Color BackgroundColor;

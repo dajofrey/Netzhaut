@@ -105,6 +105,9 @@ static void *nh_gfx_initSurface(
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLSurface(&Surface_p->OpenGL, Surface_p->Window_p)) 
             break;
+        case NH_API_GRAPHICS_BACKEND_METAL :
+            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, Surface_p->Window_p))
+            break;
         default : return NULL;
     }
 
@@ -219,6 +222,11 @@ static NH_API_RESULT nh_gfx_render(
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
 
             NH_CORE_CHECK(nh_gfx_renderOpenGL(Surface_p, &SortedViewports))
+            break;
+
+        case NH_API_GRAPHICS_BACKEND_METAL :
+
+            NH_CORE_CHECK(nh_gfx_renderMetal(Surface_p, &SortedViewports))
             break;
 
         default : return NH_API_ERROR_BAD_STATE;

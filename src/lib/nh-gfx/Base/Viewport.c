@@ -12,7 +12,7 @@
 
 #include "../Vulkan/Viewport.h"
 #include "../OpenGL/Viewport.h"
-
+#include "../Metal/Viewport.h"
 #include "../Common/Config.h"
 
 #include "../../nh-core/System/Memory.h"
@@ -82,7 +82,9 @@ nh_gfx_Viewport *nh_gfx_createViewport(
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLViewport(Viewport_p)) 
             break;
-
+        case NH_API_GRAPHICS_BACKEND_METAL :
+            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalViewport(Viewport_p))
+            break;
         default : return NULL;
     }
 
@@ -101,6 +103,9 @@ void nh_gfx_destroyViewport(
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
             nh_gfx_destroyOpenGLViewport(Viewport_p);
+            break;
+        case NH_API_GRAPHICS_BACKEND_METAL :
+            nh_gfx_destroyMetalViewport(Viewport_p);
             break;
     }
 
