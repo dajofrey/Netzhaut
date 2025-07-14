@@ -44,7 +44,7 @@ static void nh_ecmascript_freeIntrinsics(
 // corresponds to https://www.262.ecma-international.org/11.0/index.html#sec-createrealm
 static nh_ecmascript_Realm *nh_ecmascript_createRealm()
 {
-    nh_ecmascript_Realm *Realm_p = nh_core_allocate(sizeof(nh_ecmascript_Realm));
+    nh_ecmascript_Realm *Realm_p = (nh_ecmascript_Realm*)nh_core_allocate(sizeof(nh_ecmascript_Realm));
     NH_CORE_CHECK_MEM_2(NULL, Realm_p)
 
     NH_CORE_CHECK_2(NULL, nh_ecmascript_createIntrinsics(Realm_p))

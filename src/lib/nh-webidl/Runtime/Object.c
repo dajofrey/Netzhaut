@@ -64,7 +64,7 @@ static nh_webidl_Object *nh_webidl_createObjectWithChild(
 static nh_webidl_Object *nh_webidl_createObjectFromInterfaceWithChild(
     nh_webidl_Interface *Interface_p, nh_webidl_Object *Child_p)
 {
-    nh_webidl_Object *Object_p = nh_core_allocate(sizeof(nh_webidl_Object));
+    nh_webidl_Object *Object_p = (nh_webidl_Object*)nh_core_allocate(sizeof(nh_webidl_Object));
     NH_CORE_CHECK_MEM_2(NULL, Object_p)
  
     Object_p->Interface_p = Interface_p;

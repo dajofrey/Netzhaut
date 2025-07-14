@@ -8,12 +8,15 @@ extern "C" {
 #endif
 
 typedef struct nh_gfx_MetalViewport {
-    float x, y, width, height, znear, zfar;
-    // Add Metal-specific state as needed
+    id<MTLCommandBuffer> commandBuffer;
 } nh_gfx_MetalViewport;
 
-NH_API_RESULT nh_gfx_createMetalViewport(struct nh_gfx_Viewport *Viewport_p);
-void nh_gfx_destroyMetalViewport(struct nh_gfx_Viewport *Viewport_p);
+NH_API_RESULT nh_gfx_createMetalViewport(
+    nh_gfx_Viewport *Viewport_p
+);
+void nh_gfx_destroyMetalViewport(
+    nh_gfx_Viewport *Viewport_p
+);
 
 #ifdef __cplusplus
 }

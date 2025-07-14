@@ -183,7 +183,7 @@ NH_URL_BEGIN()
     while (*Parser.p)
     {
         if (Parser.expect == 0) {
-            Parser.Entry_p = nh_core_incrementArray(&NH_URL_IDNA_MAPPING_TABLE.Entries);
+            Parser.Entry_p = (nh_url_IDNAMappingTableEntry*)nh_core_incrementArray(&NH_URL_IDNA_MAPPING_TABLE.Entries);
             NH_CORE_CHECK_MEM(Parser.Entry_p)
             Parser.Entry_p->begin = 0;
             Parser.Entry_p->end = 0;

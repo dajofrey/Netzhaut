@@ -1,3 +1,6 @@
+#ifndef NH_GFX_OPENGL_CONTEXT_COCOA_H
+#define NH_GFX_OPENGL_CONTEXT_COCOA_H
+
 // LICENSE NOTICE ==================================================================================
 
 /**
@@ -8,22 +11,20 @@
 
 // INCLUDES ========================================================================================
 
-#include "Initialize.h"
-#include "IndexMap.h"
+#include "Surface.h"
 
-#include "../Parser/NamedCharacterReferences.h"
-#include "../../nh-core/Util/List.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "../Common/Includes.h"
+#include "../../nh-core/Util/Array.h"
+#include "../../nh-wsi/Window/Window.h"
 
 // FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_html_initialize()
-{
-    NH_CORE_CHECK(nh_html_createIndexMap())
-    NH_CORE_CHECK(nh_html_initCharacterReferencesTrie())
+NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p
+);
 
-    return NH_API_SUCCESS;
-}
+NH_API_RESULT nh_gfx_destroyOpenGLCocoaContext(
+    nh_gfx_OpenGLSurface *Surface_p
+);
+
+#endif

@@ -103,7 +103,7 @@ static nh_monitor_LoggerNode *nh_monitor_getLoggerNode(
 
         if (Next_p == NULL) 
         {
-            Next_p = nh_core_allocate(sizeof(nh_monitor_LoggerNode));
+            Next_p = (nh_monitor_LoggerNode*)nh_core_allocate(sizeof(nh_monitor_LoggerNode));
             if (Next_p == NULL) {return NULL;}
 
             Next_p->name_p = nh_core_allocateBytes(current_p);
@@ -136,7 +136,7 @@ static void nh_monitor_parseLoggerOptions(
     }
     if (!*options_p || *options_p != '=') {
         if (Name.length > 0) {
-            nh_monitor_LoggerOption *Option_p = nh_core_incrementArray(Options_p);
+            nh_monitor_LoggerOption *Option_p = (nh_monitor_LoggerOption*)nh_core_incrementArray(Options_p);
             Option_p->Name = Name;
             Option_p->Value = Value;
         }
@@ -148,7 +148,7 @@ static void nh_monitor_parseLoggerOptions(
         options_p++;
     }
     if (Value.length > 0) {
-        nh_monitor_LoggerOption *Option_p = nh_core_incrementArray(Options_p);
+        nh_monitor_LoggerOption *Option_p = (nh_monitor_LoggerOption*)nh_core_incrementArray(Options_p);
         Option_p->Name = Name;
         Option_p->Value = Value;
     }

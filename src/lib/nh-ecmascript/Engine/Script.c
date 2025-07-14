@@ -47,7 +47,7 @@ static NH_API_RESULT nh_ecmascript_prepareText(
 nh_ecmascript_Script *nh_ecmascript_parseScript(
     char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding)
 {
-    nh_ecmascript_Script *Script_p = nh_core_allocate(sizeof(nh_ecmascript_Script));
+    nh_ecmascript_Script *Script_p = (nh_ecmascript_Script*)nh_core_allocate(sizeof(nh_ecmascript_Script));
     NH_CORE_CHECK_MEM_2(NULL, Script_p)
 
     Script_p->Realm_p = Realm_p;

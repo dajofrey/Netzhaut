@@ -1,14 +1,16 @@
-#import "Device.h"
+#include "Device.h"
 #include <stdlib.h>
 
-nh_gfx_MetalGPU *nh_gfx_enumerateMetalGPUs(int *count) {
-    // Metal only exposes the default device in most cases
-    nh_gfx_MetalGPU *gpus = (nh_gfx_MetalGPU *)malloc(sizeof(nh_gfx_MetalGPU));
-    gpus[0].device = MTLCreateSystemDefaultDevice();
-    if (count) *count = 1;
-    return gpus;
+nh_gfx_MetalDevice *nh_gfx_createMetalDevice()
+{
+    nh_gfx_MetalDevice *Device_p = (nh_gfx_MetalDevice *)nh_core_allocate(sizeof(nh_gfx_MetalDevice));
+    Device_p->device = MTLCreateSystemDefaultDevice();
+    Device_p->commandQueue = [dev->device newCommandQueue];
+    return Device_p;
 }
 
-void nh_gfx_freeMetalGPUs(nh_gfx_MetalGPU *gpus) {
-    free(gpus);
+void nh_gfx_freeMetalDevice(
+    nh_gfx_MetalDevice *Device_p)
+{
+    free(Device_p);
 } 

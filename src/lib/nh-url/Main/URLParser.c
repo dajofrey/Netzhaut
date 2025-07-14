@@ -363,7 +363,7 @@ NH_URL_BEGIN()
         else if (Parser_p->stateOverride && Parser_p->Buffer.length == 0) {
             // TODO
         }
-        Parser_p->URL_p->Host_p = nh_core_allocate(sizeof(nh_url_Host));
+        Parser_p->URL_p->Host_p = (nh_url_Host*)nh_core_allocate(sizeof(nh_url_Host));
         NH_CORE_CHECK_MEM(Parser_p->URL_p->Host_p)
         NH_CORE_CHECK(nh_url_parseHost(Parser_p->Buffer, true, Parser_p->URL_p->Host_p))
         nh_encoding_freeUTF32(&Parser_p->Buffer);
@@ -482,14 +482,14 @@ NH_URL_BEGIN()
     }
     else if (!Parser_p->stateOverride && *Parser_p->pointer == 0x3F) {
         if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-        Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_core_String));
+        Parser_p->URL_p->Query_p = (nh_core_String*)nh_core_allocate(sizeof(nh_core_String));
         NH_CORE_CHECK_MEM(Parser_p->URL_p->Query_p)
         *Parser_p->URL_p->Query_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_QUERY;
     }
     else if (!Parser_p->stateOverride && *Parser_p->pointer == 0x23) {
         if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-        Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_core_String));
+        Parser_p->URL_p->Fragment_p = (nh_core_String*)nh_core_allocate(sizeof(nh_core_String));
         NH_CORE_CHECK_MEM(Parser_p->URL_p->Fragment_p)
         *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_FRAGMENT;
@@ -529,7 +529,7 @@ NH_URL_BEGIN()
             if (nh_url_isFileScheme(Parser_p->URL_p->Scheme.p) && Parser_p->URL_p->Path.length == 0 && nh_url_isWindowsDriveLetter(&Parser_p->Buffer)) {
                 Parser_p->Buffer.p[1] = 0x3A;
             }
-            nh_core_String *Part_p = nh_core_incrementArray(&Parser_p->URL_p->Path);
+            nh_core_String *Part_p = (nh_core_String*)nh_core_incrementArray(&Parser_p->URL_p->Path);
             NH_CORE_CHECK_MEM(Part_p)
             *Part_p = nh_core_initString(Parser_p->Buffer.length+1);
             for (int i = 0; i < Parser_p->Buffer.length; ++i) {
@@ -542,14 +542,14 @@ NH_URL_BEGIN()
 
         if (*Parser_p->pointer == 0x3F) {
             if (Parser_p->URL_p->Query_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-            Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_core_String));
+            Parser_p->URL_p->Query_p = (nh_core_String*)nh_core_allocate(sizeof(nh_core_String));
             NH_CORE_CHECK_MEM(Parser_p->URL_p->Query_p)
             *Parser_p->URL_p->Query_p = nh_core_initString(16);
             Parser_p->state = NH_URL_PARSER_STATE_QUERY;
         }
         if (*Parser_p->pointer == 0x23) {
             if (Parser_p->URL_p->Fragment_p) {NH_URL_END(NH_API_ERROR_BAD_STATE)}
-            Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_core_String));
+            Parser_p->URL_p->Fragment_p = (nh_core_String*)nh_core_allocate(sizeof(nh_core_String));
             NH_CORE_CHECK_MEM(Parser_p->URL_p->Fragment_p)
             *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
             Parser_p->state = NH_URL_PARSER_STATE_FRAGMENT;
@@ -584,7 +584,7 @@ NH_URL_BEGIN()
         if (Parser_p->URL_p->Query_p) {
             NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
-        Parser_p->URL_p->Query_p = nh_core_allocate(sizeof(nh_core_String));
+        Parser_p->URL_p->Query_p = (nh_core_String*)nh_core_allocate(sizeof(nh_core_String));
         NH_CORE_CHECK_MEM(Parser_p->URL_p->Query_p)
         *Parser_p->URL_p->Query_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_QUERY;
@@ -593,7 +593,7 @@ NH_URL_BEGIN()
         if (Parser_p->URL_p->Fragment_p) {
             NH_URL_END(NH_API_ERROR_BAD_STATE)
         }
-        Parser_p->URL_p->Fragment_p = nh_core_allocate(sizeof(nh_core_String));
+        Parser_p->URL_p->Fragment_p = (nh_core_String*)nh_core_allocate(sizeof(nh_core_String));
         NH_CORE_CHECK_MEM(Parser_p->URL_p->Fragment_p)
         *Parser_p->URL_p->Fragment_p = nh_core_initString(16);
         Parser_p->state = NH_URL_PARSER_STATE_FRAGMENT;
@@ -709,7 +709,7 @@ NH_URL_BEGIN()
 
     if (!Parser.URL_p) 
     {
-        nh_url_URL *URL_p = nh_core_allocate(sizeof(nh_url_URL));
+        nh_url_URL *URL_p = (nh_url_URL*)nh_core_allocate(sizeof(nh_url_URL));
         NH_CORE_CHECK_NULL_2(NULL, URL_p)
 
         Parser.URL_p = nh_url_initURL(URL_p);

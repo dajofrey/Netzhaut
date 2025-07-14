@@ -8,12 +8,13 @@
 extern "C" {
 #endif
 
-typedef struct nh_gfx_MetalGPU {
+typedef struct nh_gfx_MetalDevice {
     id<MTLDevice> device;
-} nh_gfx_MetalGPU;
+    id<MTLCommandQueue> commandQueue;
+} nh_gfx_MetalDevice;
 
-nh_gfx_MetalGPU *nh_gfx_enumerateMetalGPUs(int *count);
-void nh_gfx_freeMetalGPUs(nh_gfx_MetalGPU *gpus);
+nh_gfx_MetalDevice *nh_gfx_createMetalDevice();
+void nh_gfx_freeMetalDevice(nh_gfx_MetalDevice *Device_p);
 
 #ifdef __cplusplus
 }

@@ -228,7 +228,7 @@ static nh_ecmascript_ParseNode *nh_ecmascript_allocateNonTerminalParseNode(
     unsigned int *index_p = nh_core_getFromHashMap(&NH_ECMASCRIPT_INDEXMAP.ParseNodeNames, (char*)name_p);
     if (index_p == NULL) {return NULL;}
 
-    nh_ecmascript_ParseNode *Node_p = nh_core_allocate(sizeof(nh_ecmascript_ParseNode));
+    nh_ecmascript_ParseNode *Node_p = (nh_ecmascript_ParseNode*)nh_core_allocate(sizeof(nh_ecmascript_ParseNode));
     Node_p->Children = nh_core_initList(chunkSize);
     Node_p->Value_p  = NULL;
     Node_p->type     = *index_p;
@@ -239,7 +239,7 @@ static nh_ecmascript_ParseNode *nh_ecmascript_allocateNonTerminalParseNode(
 static nh_ecmascript_ParseNode *nh_ecmascript_allocateTerminalParseNode(
     nh_ecmascript_InputElement *InputElement_p)
 {
-    nh_ecmascript_ParseNode *Node_p = nh_core_allocate(sizeof(nh_ecmascript_ParseNode));
+    nh_ecmascript_ParseNode *Node_p = (nh_ecmascript_ParseNode*)nh_core_allocate(sizeof(nh_ecmascript_ParseNode));
     Node_p->Children = nh_core_initList(1);
     Node_p->Value_p  = InputElement_p;
     Node_p->type     = -1;

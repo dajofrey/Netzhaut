@@ -15,13 +15,15 @@
 #include "../Common/Includes.h"
 
 #include "../../nh-core/Util/Array.h"
-#include "../../nh-wsi/Window/Window.h"
 
 // STRUCTS =========================================================================================
 
 typedef struct nh_gfx_OpenGLSurface {
 #ifdef __unix__
     GLXContext Context_p;
+#elif __APPLE__
+    NSOpenGLContext* Context;
+    NSOpenGLPixelFormat* PixelFormat;
 #endif
     nh_gfx_OpenGLCommandBuffer *CommandBuffers_p;
     unsigned int bufferCount;         
@@ -34,11 +36,11 @@ nh_gfx_OpenGLSurface nh_gfx_initOpenGLSurface(
 );
 
 NH_API_RESULT nh_gfx_createOpenGLSurface(
-    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p
+    nh_gfx_OpenGLSurface *Surface_p, nh_api_Window *Window_p
 );
 
 NH_API_RESULT nh_gfx_destroyOpenGLSurface(
-    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p
+    nh_gfx_OpenGLSurface *Surface_p, nh_api_Window *Window_p
 );
 
 #endif

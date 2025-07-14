@@ -60,7 +60,7 @@ nh_webidl_Specification *nh_webidl_getSpecification(
     }
 
     if (!Specification_p) {
-        Specification_p = nh_core_incrementArray(&NH_WEBIDL_RUNTIME.Specifications);
+        Specification_p = (nh_webidl_Specification*)nh_core_incrementArray(&NH_WEBIDL_RUNTIME.Specifications);
         NH_CORE_CHECK_MEM_2(NULL, Specification_p)
         Specification_p->Fragments = nh_core_initArray(sizeof(nh_webidl_Fragment), 64);
         strcpy(Specification_p->name_p, specification_p);
@@ -98,7 +98,7 @@ NH_API_RESULT nh_webidl_load(
     nh_webidl_Specification *Specification_p = nh_webidl_getSpecification(specification_p);
     if (!Specification_p) {return NH_API_ERROR_BAD_STATE;}
 
-    nh_webidl_Fragment *Fragment_p = nh_core_incrementArray(&Specification_p->Fragments);
+    nh_webidl_Fragment *Fragment_p = (nh_webidl_Fragment*)nh_core_incrementArray(&Specification_p->Fragments);
     NH_CORE_CHECK_MEM(Fragment_p)
 
     Fragment_p->Specification_p = Specification_p;

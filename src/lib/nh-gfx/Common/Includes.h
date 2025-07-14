@@ -19,10 +19,6 @@
     #include "../../../../external/volk/volk.h"
 #endif
 
-#ifdef NETZHAUT_OPENGL_IMPLEMENTATION
-    #define SOGL_IMPLEMENTATION_X11
-#endif
-
 #ifdef __unix__
     #define SOGL_MAJOR_VERSION 4
     #define SOGL_MINOR_VERSION 6

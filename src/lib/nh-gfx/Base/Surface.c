@@ -98,16 +98,25 @@ static void *nh_gfx_initSurface(
     switch (Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             if (NH_VULKAN.GPUs.size <= 0) {return NULL;}
             NH_CORE_CHECK_2(NULL, 
                 nh_gfx_createVulkanSurface(&Surface_p->Vulkan, (nh_api_Window*)Surface_p->Window_p, NH_VULKAN.GPUs.pp[0]))
             break;
+#else
+            return NULL;
+#endif
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLSurface(&Surface_p->OpenGL, Surface_p->Window_p)) 
+            NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLSurface(&Surface_p->OpenGL, (nh_api_Window*)Surface_p->Window_p)) 
             break;
+
         case NH_API_GRAPHICS_BACKEND_METAL :
-            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, Surface_p->Window_p))
+#if defined(__APPLE__)
+            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, (nh_api_Window*)Surface_p->Window_p))
             break;
+#else
+            return NULL;
+#endif
         default : return NULL;
     }
 
@@ -132,7 +141,7 @@ void nh_gfx_freeSurface(
             nh_gfx_destroyVulkanSurface(&Surface_p->Vulkan, true);
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-            nh_gfx_destroyOpenGLSurface(&Surface_p->OpenGL, Surface_p->Window_p);
+            nh_gfx_destroyOpenGLSurface(&Surface_p->OpenGL, (nh_api_Window*)Surface_p->Window_p);
             break;
     }
 
@@ -215,20 +224,23 @@ static NH_API_RESULT nh_gfx_render(
     switch (Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
-
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             NH_CORE_CHECK(nh_gfx_renderVulkan(Surface_p, &SortedViewports))
             break;
-
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
-
             NH_CORE_CHECK(nh_gfx_renderOpenGL(Surface_p, &SortedViewports))
             break;
 
         case NH_API_GRAPHICS_BACKEND_METAL :
-
+#if defined(__APPLE__)
             NH_CORE_CHECK(nh_gfx_renderMetal(Surface_p, &SortedViewports))
             break;
-
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
         default : return NH_API_ERROR_BAD_STATE;
     }
 

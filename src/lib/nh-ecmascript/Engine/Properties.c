@@ -40,7 +40,7 @@ nh_ecmascript_Property *nh_ecmascript_newProperty(
 {
     if (Descriptor.type == -1) {return NULL;}
 
-    nh_ecmascript_Property *Property_p = nh_core_allocate(sizeof(nh_ecmascript_Property));
+    nh_ecmascript_Property *Property_p = (nh_ecmascript_Property*)nh_core_allocate(sizeof(nh_ecmascript_Property));
     NH_CORE_CHECK_MEM_2(NULL, Property_p)
 
     Property_p->type = Descriptor.type;

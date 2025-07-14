@@ -56,7 +56,7 @@ static NH_API_RESULT nh_monitor_updateMonitorNode(
 
         if (NextMonitorNode_p == NULL) 
         {
-            NextMonitorNode_p = nh_core_allocate(sizeof(nh_monitor_MonitorNode));
+            NextMonitorNode_p = (nh_monitor_MonitorNode*)nh_core_allocate(sizeof(nh_monitor_MonitorNode));
             NH_CORE_CHECK_MEM(NextMonitorNode_p)
             *NextMonitorNode_p = nh_monitor_initMonitorNode(NextLoggerNode_p, false, MonitorNode_p);
             nh_core_appendToList(&MonitorNode_p->Children, NextMonitorNode_p);
@@ -234,7 +234,7 @@ static NH_API_RESULT nh_monitor_updatePeerMonitor(
     }
 }
  
-static NH_API_RESULT nh_monitor_updateMonitor(
+static TTYR_CORE_RESULT nh_monitor_updateMonitor(
     ttyr_core_Program *Program_p)
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
@@ -425,7 +425,7 @@ static void nh_monitor_changeFocus(
     return;
 }
 
-static NH_API_RESULT nh_monitor_handleMonitorInput(
+static TTYR_CORE_RESULT nh_monitor_handleMonitorInput(
     ttyr_core_Program *Program_p, nh_api_WSIEvent Event)
 {
     if (Event.type != NH_API_WSI_EVENT_KEYBOARD) {
@@ -618,7 +618,7 @@ static NH_API_RESULT nh_monitor_drawSelected(
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_monitor_drawMonitorRow(
+static TTYR_CORE_RESULT nh_monitor_drawMonitorRow(
     ttyr_core_Program *Program_p, ttyr_core_Glyph *Glyphs_p, int width, int height, int row)
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
@@ -793,7 +793,7 @@ static NH_API_RESULT nh_monitor_drawMonitorRow(
 static void *nh_monitor_initMonitor(
     void *arg_p)
 {
-    nh_monitor_Monitor *Monitor_p = nh_core_allocate(sizeof(nh_monitor_Monitor));
+    nh_monitor_Monitor *Monitor_p = (nh_monitor_Monitor*)nh_core_allocate(sizeof(nh_monitor_Monitor));
     NH_CORE_CHECK_MEM_2(NULL, Monitor_p)
 
     memset(Monitor_p, 0, sizeof(nh_monitor_Monitor));
@@ -819,7 +819,7 @@ static void nh_monitor_destroyMonitor(
 
 void *nh_monitor_createMonitorInterface()
 {
-    ttyr_core_Interface *Monitor_p = nh_core_allocate(sizeof(ttyr_core_Interface));
+    ttyr_core_Interface *Monitor_p = (ttyr_core_Interface*)nh_core_allocate(sizeof(ttyr_core_Interface));
     NH_CORE_CHECK_MEM_2(NULL, Monitor_p)
 
     memset(Monitor_p, 0, sizeof(ttyr_core_Interface));

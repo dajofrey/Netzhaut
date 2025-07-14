@@ -21,7 +21,7 @@
 nh_ecmascript_Object *nh_ecmascript_abstractMakeBasicObject(
     const int *lookup_p, int lookupLength)
 {
-    nh_ecmascript_Object *Obj_p = nh_core_allocate(sizeof(nh_ecmascript_Object));
+    nh_ecmascript_Object *Obj_p = (nh_ecmascript_Object*)nh_core_allocate(sizeof(nh_ecmascript_Object));
     NH_CORE_CHECK_MEM_2(NULL, Obj_p)
 
     Obj_p->Properties = nh_ecmascript_initProperties(8);

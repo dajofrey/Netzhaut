@@ -12,7 +12,9 @@
 
 #include "../Vulkan/Viewport.h"
 #include "../OpenGL/Viewport.h"
-#include "../Metal/Viewport.h"
+#if defined(__APPLE__)
+    #include "../Metal/Viewport.h"
+#endif
 #include "../Common/Config.h"
 
 #include "../../nh-core/System/Memory.h"
@@ -77,14 +79,23 @@ nh_gfx_Viewport *nh_gfx_createViewport(
     switch (Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             NH_CORE_CHECK_2(NULL, nh_gfx_createVulkanViewport(Viewport_p)) 
             break;
+#else
+            return NULL;
+#endif
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
             NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLViewport(Viewport_p)) 
             break;
+
         case NH_API_GRAPHICS_BACKEND_METAL :
+#if defined(__APPLE__)
             NH_CORE_CHECK_2(NULL, nh_gfx_createMetalViewport(Viewport_p))
             break;
+#else
+            return NULL;
+#endif
         default : return NULL;
     }
 
@@ -99,14 +110,19 @@ void nh_gfx_destroyViewport(
     switch (Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             nh_gfx_destroyVulkanViewport(Viewport_p); 
             break;
+#endif
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
             nh_gfx_destroyOpenGLViewport(Viewport_p);
             break;
+
         case NH_API_GRAPHICS_BACKEND_METAL :
+#if defined(__APPLE__)
             nh_gfx_destroyMetalViewport(Viewport_p);
             break;
+#endif
     }
 
     nh_core_free(Viewport_p);

@@ -264,7 +264,7 @@ NH_URL_BEGIN()
             result = NH_API_ERROR_BAD_STATE;
             goto NH_URL_PARSE_IPV4_CLEAN_UP;
         }
-        long *number_p = nh_core_incrementArray(&Numbers);
+        long *number_p = (long*)nh_core_incrementArray(&Numbers);
         *number_p = number;
     }
 

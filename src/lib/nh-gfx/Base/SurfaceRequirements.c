@@ -14,6 +14,7 @@
 #include "../Vulkan/Vulkan.h"
 #include "../Vulkan/Render.h"
 #include "../OpenGL/Render.h"
+#include "../OpenGL/ContextX11.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
@@ -28,9 +29,6 @@
 
 static nh_gfx_SurfaceRequirements Requirements;
 
-/**
- * API function.
- */
 nh_gfx_SurfaceRequirements *nh_gfx_getSurfaceRequirements()
 {
     return &Requirements;
@@ -38,13 +36,16 @@ nh_gfx_SurfaceRequirements *nh_gfx_getSurfaceRequirements()
 
 NH_API_RESULT nh_gfx_createSurfaceRequirements()
 {
-    NH_CORE_CHECK(nh_gfx_createOpenGLSurfaceRequirements(&Requirements.OpenGL))
+#if defined(__unix__)
+    NH_CORE_CHECK(nh_gfx_createOpenGLX11ContextRequirements(&Requirements.OpenGL))
+#endif
     return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_gfx_freeSurfaceRequirements()
 {
-    NH_CORE_CHECK(nh_gfx_freeOpenGLSurfaceRequirements(&Requirements.OpenGL))
+#if defined(__unix__)
+    NH_CORE_CHECK(nh_gfx_freeOpenGLX11ContextRequirements(&Requirements.OpenGL))
+#endif
     return NH_API_SUCCESS;
 }
-

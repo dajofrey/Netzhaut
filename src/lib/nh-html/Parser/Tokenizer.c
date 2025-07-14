@@ -98,7 +98,7 @@ static NH_API_RESULT nh_html_newTokenizerError(
 static nh_html_Attribute *nh_html_newAttribute(
     nh_html_Tokenizer *Tokenizer_p)
 {
-    nh_html_Attribute *Attribute_p = nh_core_incrementArray(&Tokenizer_p->Token_p->StartOrEndTag.Attributes);
+    nh_html_Attribute *Attribute_p = (nh_html_Attribute*)nh_core_incrementArray(&Tokenizer_p->Token_p->StartOrEndTag.Attributes);
     NH_CORE_CHECK_MEM_2(NULL, Attribute_p)
 
     Attribute_p->Name = nh_webidl_initDOMString(16);
@@ -125,7 +125,7 @@ static NH_API_RESULT nh_html_emit(
 static nh_html_Token *nh_html_newToken(
     nh_html_Tokenizer *Tokenizer_p, NH_HTML_TOKEN type)
 {
-    nh_html_Token *Token_p = nh_core_incrementArrayList(&Tokenizer_p->Tokens);
+    nh_html_Token *Token_p = (nh_html_Token*)nh_core_incrementArrayList(&Tokenizer_p->Tokens);
     NH_CORE_CHECK_MEM_2(NULL, Token_p)
 
     Token_p->type = type;
@@ -215,7 +215,7 @@ static NH_API_RESULT nh_html_emitEOFToken(
 static NH_API_RESULT nh_html_allocateDOCTYPEName(
     nh_html_Tokenizer *Tokenizer_p)
 {
-    Tokenizer_p->Token_p->DOCTYPE.Name_p = nh_core_allocate(sizeof(nh_webidl_DOMString));
+    Tokenizer_p->Token_p->DOCTYPE.Name_p = (nh_webidl_DOMString*)nh_core_allocate(sizeof(nh_webidl_DOMString));
     NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.Name_p)
     *Tokenizer_p->Token_p->DOCTYPE.Name_p = nh_webidl_initDOMString(16);
 
@@ -225,7 +225,7 @@ static NH_API_RESULT nh_html_allocateDOCTYPEName(
 static NH_API_RESULT nh_html_allocateDOCTYPEPublicIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
-    Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = nh_core_allocate(sizeof(nh_webidl_DOMString));
+    Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = (nh_webidl_DOMString*)nh_core_allocate(sizeof(nh_webidl_DOMString));
     NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p)
     *Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = nh_webidl_initDOMString(16);
 
@@ -237,7 +237,7 @@ static NH_API_RESULT nh_html_allocateDOCTYPESystemIdentifier(
 {
     if (!Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p) 
     {
-        Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = nh_core_allocate(sizeof(nh_webidl_DOMString));
+        Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = (nh_webidl_DOMString*)nh_core_allocate(sizeof(nh_webidl_DOMString));
         NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p)
         *Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = nh_webidl_initDOMString(16);
     }

@@ -16,7 +16,6 @@
 #include "../Vulkan/Viewport.h"
 #include "../OpenGL/Viewport.h"
 #include "../Common/Includes.h"
-#include "../Metal/Viewport.h"
 
 // ENUM ============================================================================================
 
@@ -39,7 +38,10 @@ typedef struct nh_gfx_Viewport {
     nh_gfx_Surface *Surface_p;
     nh_gfx_VulkanViewport Vulkan;
     nh_gfx_OpenGLViewport OpenGL;
+#if defined(__APPLE__)
+    #include "../Metal/Viewport.h"
     nh_gfx_MetalViewport Metal;
+#endif
     struct {
         nh_api_PixelSize Size;
         nh_api_PixelPosition Position;    

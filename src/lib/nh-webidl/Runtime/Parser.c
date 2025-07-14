@@ -177,7 +177,7 @@ static nh_webidl_ParseNode *nh_webidl_allocateNonTerminalParseNode(
     unsigned int *index_p = nh_core_getFromHashMap(&NH_WEBIDL_INDEXMAP.ParseNodeNames, (char*)name_p);
     if (index_p == NULL) {return NULL;}
 
-    nh_webidl_ParseNode *Node_p = nh_core_allocate(sizeof(nh_webidl_ParseNode));
+    nh_webidl_ParseNode *Node_p = (nh_webidl_ParseNode*)nh_core_allocate(sizeof(nh_webidl_ParseNode));
     Node_p->Children = nh_core_initList(chunkSize);
     Node_p->Token_p  = NULL;
     Node_p->type     = *index_p;
@@ -188,7 +188,7 @@ static nh_webidl_ParseNode *nh_webidl_allocateNonTerminalParseNode(
 static nh_webidl_ParseNode *nh_webidl_allocateTerminalParseNode(
     nh_webidl_Token *Token_p)
 {
-    nh_webidl_ParseNode *Node_p = nh_core_allocate(sizeof(nh_webidl_ParseNode));
+    nh_webidl_ParseNode *Node_p = (nh_webidl_ParseNode*)nh_core_allocate(sizeof(nh_webidl_ParseNode));
     Node_p->Children = nh_core_initList(1);
     Node_p->Token_p  = Token_p;
     Node_p->type     = -1;

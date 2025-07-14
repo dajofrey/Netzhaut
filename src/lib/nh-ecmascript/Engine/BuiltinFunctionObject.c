@@ -63,7 +63,7 @@ nh_ecmascript_Object *nh_ecmascript_createBuiltinFunctionObject(
     }
 
     if (FunctionObject_p == NULL) {
-        FunctionObject_p = nh_core_allocate(sizeof(nh_ecmascript_Object));
+        FunctionObject_p = (nh_ecmascript_Object*)nh_core_allocate(sizeof(nh_ecmascript_Object));
         NH_CORE_CHECK_MEM_2(NULL, FunctionObject_p)
     }
 

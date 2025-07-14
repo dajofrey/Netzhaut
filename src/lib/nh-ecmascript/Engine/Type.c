@@ -58,7 +58,7 @@ nh_ecmascript_Any nh_ecmascript_wrapObject(
 nh_ecmascript_String *nh_ecmascript_allocateString(
     size_t chunkSize)
 {
-    nh_ecmascript_String *String_p = nh_core_allocate(sizeof(nh_ecmascript_String));
+    nh_ecmascript_String *String_p = (nh_ecmascript_String*)nh_core_allocate(sizeof(nh_ecmascript_String));
     NH_CORE_CHECK_MEM_2(NULL, String_p)
 
     *String_p = nh_core_initString(chunkSize);
@@ -82,7 +82,7 @@ nh_ecmascript_Any nh_ecmascript_wrapNumber(
 NH_ECMASCRIPT_NUMBER *nh_ecmascript_allocateNumber(
     NH_ECMASCRIPT_NUMBER number)
 {
-    NH_ECMASCRIPT_NUMBER *number_p = nh_core_allocate(sizeof(NH_ECMASCRIPT_NUMBER));
+    NH_ECMASCRIPT_NUMBER *number_p = (NH_ECMASCRIPT_NUMBER*)nh_core_allocate(sizeof(NH_ECMASCRIPT_NUMBER));
     NH_CORE_CHECK_MEM_2(NULL, number_p)
 
     *number_p = number;

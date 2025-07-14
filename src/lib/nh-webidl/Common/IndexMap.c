@@ -95,7 +95,7 @@ NH_API_RESULT nh_webidl_createIndexMap()
         }
         if (count == 0) {continue;}
 
-        indices_pp[type] = nh_core_allocate(sizeof(unsigned int) * count);
+        indices_pp[type] = (unsigned int*)nh_core_allocate(sizeof(unsigned int) * count);
         NH_CORE_CHECK_MEM(indices_pp[type])
         
         for (int i = 0; i < count; ++i) {indices_pp[type][i] = i;}

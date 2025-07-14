@@ -33,6 +33,7 @@ endif
 
 ifeq ($(OS),macOS)
     LDFLAGS_NHWSI += -framework Cocoa -framework QuartzCore
+    LDFLAGS_NHGFX += -framework Cocoa -framework QuartzCore
 endif
 
 # Define the source file directory for each library
@@ -130,24 +131,23 @@ ifeq ($(OS),macOS)
 endif
 
 SRC_FILES_NHHTML = \
-    Parser/Parser.c \
-    Parser/NamedCharacterReferences.c \
-    Parser/Elements.c \
-    Parser/Tokenizer.c \
-    Parser/TreeConstruction.c \
-    Parser/TreeConstructionHelper.c \
-    Parser/Algorithms.c \
-    Parser/AdoptionAgencyAlgorithm.c \
-    Interfaces/Document.c \
-    Interfaces/HTMLElement.c \
-    Interfaces/HTMLImageElement.c \
-    Main/DocumentContext.c \
-    Common/Log.c \
-    Common/Result.c \
-    Common/IndexMap.c \
-    Common/Terminate.c \
-    Common/Initialize.c \
-    Common/About.c \
+#    Parser/Parser.c \
+#    Parser/NamedCharacterReferences.c \
+#    Parser/Elements.c \
+#    Parser/Tokenizer.c \
+#    Parser/TreeConstruction.c \
+#    Parser/TreeConstructionHelper.c \
+#    Parser/Algorithms.c \
+#    Parser/AdoptionAgencyAlgorithm.c \
+#    Interfaces/Document.c \
+#    Interfaces/HTMLElement.c \
+#    Interfaces/HTMLImageElement.c \
+#    Common/Log.c \
+#    Common/Result.c \
+#    Common/IndexMap.c \
+#    Common/Terminate.c \
+#    Common/Initialize.c \
+#    Common/About.c \
 
 SRC_FILES_NHDOM = \
     Interfaces/NodeList.c \
@@ -249,7 +249,6 @@ SRC_FILES_NHGFX = \
     Vulkan/Vulkan.c \
     Vulkan/Viewport.c \
     OpenGL/Surface.c \
-    OpenGL/SurfaceRequirements.c \
     OpenGL/CommandBuffer.c \
     OpenGL/Data.c \
     OpenGL/API.c \
@@ -274,56 +273,66 @@ SRC_FILES_NHGFX = \
     Common/About.c \
     Common/IndexMap.c \
 
+ifeq ($(OS),Linux)
+    SRC_FILES_NHGFX += \
+        OpenGL/ContextX11.c
+endif
+
+ifeq ($(OS),macOS)
+    SRC_FILES_NHGFX += \
+        OpenGL/ContextCocoa.m
+endif
+
 SRC_FILES_NHRENDERER = \
-    Main/Renderer.c \
-    Main/BoxTriangulation.c \
-    Main/Vertices.c \
-    Vulkan/Pipeline.c \
-    Vulkan/Buffer.c \
-    Vulkan/Uniform.c \
-    Vulkan/Descriptor.c \
-    Vulkan/Record.c \
-    Vulkan/Data.c \
-    Vulkan/Text.c \
-    Common/Result.c \
-    Common/Log.c \
-    Common/Initialize.c \
-    Common/Terminate.c \
-    Common/About.c \
+#    Main/Renderer.c \
+#    Main/BoxTriangulation.c \
+#    Main/Vertices.c \
+#    Vulkan/Pipeline.c \
+#    Vulkan/Buffer.c \
+#    Vulkan/Uniform.c \
+#    Vulkan/Descriptor.c \
+#    Vulkan/Record.c \
+#    Vulkan/Data.c \
+#    Vulkan/Text.c \
+#    Common/Result.c \
+#    Common/Log.c \
+#    Common/Initialize.c \
+#    Common/Terminate.c \
+#    Common/About.c \
 
 SRC_FILES_NHCSS = \
-    Parser/Tokenizer.c \
-    Parser/Parser.c \
-    Parser/SelectorParser.c \
-    Parser/TokenParser.c \
-    Parser/ComponentParser.c \
-    Properties/Match.c \
-    Properties/Values.c \
-    Properties/Properties.c \
-    Properties/Compute.c \
-    Properties/Color.c \
-    Properties/Filter.c \
-    Properties/Cascade.c \
-    Main/LayoutEngine.c \
-    Main/SourceTree.c \
-    Main/BoxTree.c \
-    Main/FragmentTree.c \
-    Main/FormattingContext.c \
-    Main/Canvas.c \
-    Layout/BoxModel.c \
-    Layout/LayoutValues.c \
-    Layout/Block.c \
-    Layout/Inline.c \
-    Layout/Depth.c \
-    Layout/Float.c \
-    Interfaces/Document.c \
-    Interfaces/StyleSheet.c \
-    Interfaces/StyleSheetList.c \
-    Interfaces/RuleList.c \
-    Interfaces/StyleRule.c \
-    Interfaces/StyleDeclaration.c \
-    Interfaces/CounterStyleRule.c \
-    Interfaces/Rule.c \
+#    Parser/Tokenizer.c \
+#    Parser/Parser.c \
+#    Parser/SelectorParser.c \
+#    Parser/TokenParser.c \
+#    Parser/ComponentParser.c \
+#    Properties/Match.c \
+#    Properties/Values.c \
+#    Properties/Properties.c \
+#    Properties/Compute.c \
+#    Properties/Color.c \
+#    Properties/Filter.c \
+#    Properties/Cascade.c \
+#    Main/LayoutEngine.c \
+#    Main/SourceTree.c \
+#    Main/BoxTree.c \
+#    Main/FragmentTree.c \
+#    Main/FormattingContext.c \
+#    Main/Canvas.c \
+#    Layout/BoxModel.c \
+#    Layout/LayoutValues.c \
+#    Layout/Block.c \
+#    Layout/Inline.c \
+#    Layout/Depth.c \
+#    Layout/Float.c \
+#    Interfaces/Document.c \
+#    Interfaces/StyleSheet.c \
+#    Interfaces/StyleSheetList.c \
+#    Interfaces/RuleList.c \
+#    Interfaces/StyleRule.c \
+#    Interfaces/StyleDeclaration.c \
+#    Interfaces/CounterStyleRule.c \
+#    Interfaces/Rule.c \
     Common/Result.c \
     Common/Log.c \
     Common/Initialize.c \

@@ -1,7 +1,6 @@
 #ifndef NH_GFX_METAL_SURFACE_H
 #define NH_GFX_METAL_SURFACE_H
 
-#import <QuartzCore/CAMetalLayer.h>
 #include "Metal.h"
 
 #ifdef __cplusplus
@@ -9,7 +8,12 @@ extern "C" {
 #endif
 
 typedef struct nh_gfx_MetalSurface {
+#if defined(APPLE)
+    #include <QuartzCore/CAMetalLayer.h>
     CAMetalLayer *layer;
+#else
+    int bla;
+#endif
 } nh_gfx_MetalSurface;
 
 nh_gfx_MetalSurface *nh_gfx_createMetalSurface(void *view);

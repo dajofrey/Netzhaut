@@ -42,7 +42,7 @@ static nh_core_List nh_ecmascript_getSyntheticName()
 {
     nh_core_List List = nh_core_initList(1);
 
-    nh_ecmascript_InputElement *InputElement_p = nh_core_allocate(sizeof(nh_ecmascript_InputElement));
+    nh_ecmascript_InputElement *InputElement_p = (nh_ecmascript_InputElement*)nh_core_allocate(sizeof(nh_ecmascript_InputElement));
     NH_CORE_CHECK_MEM_2(List, InputElement_p)
 
     InputElement_p->type = -1;

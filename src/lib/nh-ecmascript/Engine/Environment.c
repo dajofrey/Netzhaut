@@ -24,10 +24,10 @@
 nh_ecmascript_Environment *nh_ecmascript_newDeclarativeEnvironment(
     nh_ecmascript_Environment *Outer_p)
 {
-    nh_ecmascript_Environment *Environment_p = nh_core_allocate(sizeof(nh_ecmascript_Environment));
+    nh_ecmascript_Environment *Environment_p = (nh_ecmascript_Environment*)nh_core_allocate(sizeof(nh_ecmascript_Environment));
     NH_CORE_CHECK_MEM_2(NULL, Environment_p)
 
-    nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p = nh_core_allocate(sizeof(nh_ecmascript_DeclarativeEnvironment));
+    nh_ecmascript_DeclarativeEnvironment *DeclarativeEnvironment_p = (nh_ecmascript_DeclarativeEnvironment*)nh_core_allocate(sizeof(nh_ecmascript_DeclarativeEnvironment));
     NH_CORE_CHECK_MEM_2(NULL, DeclarativeEnvironment_p)
 
     DeclarativeEnvironment_p->Bindings = nh_core_initList(16);
@@ -57,7 +57,7 @@ static nh_ecmascript_Completion nh_ecmascript_declarativeEnvironmentCreateMutabl
         return nh_ecmascript_throwTypeError();
     }
 
-    nh_ecmascript_Binding *NewBinding_p = nh_core_allocate(sizeof(nh_ecmascript_Binding));
+    nh_ecmascript_Binding *NewBinding_p = (nh_ecmascript_Binding*)nh_core_allocate(sizeof(nh_ecmascript_Binding));
     NewBinding_p->_mutable    = true;
     NewBinding_p->deletable   = deletable;
     NewBinding_p->initialized = false;
@@ -76,7 +76,7 @@ static nh_ecmascript_Completion nh_ecmascript_declarativeEnvironmentCreateImmuta
         return nh_ecmascript_throwTypeError();
     }
 
-    nh_ecmascript_Binding *NewBinding_p = nh_core_allocate(sizeof(nh_ecmascript_Binding));
+    nh_ecmascript_Binding *NewBinding_p = (nh_ecmascript_Binding*)nh_core_allocate(sizeof(nh_ecmascript_Binding));
     NewBinding_p->_mutable    = false;
     NewBinding_p->strict      = strict;
     NewBinding_p->initialized = false;
@@ -112,10 +112,10 @@ static nh_ecmascript_Completion nh_ecmascript_declarativeEnvironmentInitializeBi
 nh_ecmascript_Environment *nh_ecmascript_newObjectEnvironment(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Environment *Outer_p)
 {
-    nh_ecmascript_Environment *Environment_p = nh_core_allocate(sizeof(nh_ecmascript_Environment));
+    nh_ecmascript_Environment *Environment_p = (nh_ecmascript_Environment*)nh_core_allocate(sizeof(nh_ecmascript_Environment));
     NH_CORE_CHECK_MEM_2(NULL, Environment_p)
 
-    nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p = nh_core_allocate(sizeof(nh_ecmascript_ObjectEnvironment));
+    nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p = (nh_ecmascript_ObjectEnvironment*)nh_core_allocate(sizeof(nh_ecmascript_ObjectEnvironment));
     NH_CORE_CHECK_MEM_2(NULL, ObjectEnvironment_p)
 
     ObjectEnvironment_p->BindingObject_p = Object_p;
@@ -181,7 +181,7 @@ static bool nh_ecmascript_objectEnvironmentHasBinding(
 nh_ecmascript_Environment *nh_ecmascript_newGlobalEnvironment(
     nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p)
 {
-    nh_ecmascript_Environment *Abstract_p = nh_core_allocate(sizeof(nh_ecmascript_Environment));
+    nh_ecmascript_Environment *Abstract_p = (nh_ecmascript_Environment*)nh_core_allocate(sizeof(nh_ecmascript_Environment));
     NH_CORE_CHECK_MEM_2(NULL, Abstract_p)
 
     nh_ecmascript_Environment *ObjectEnv_p = nh_ecmascript_newObjectEnvironment(GlobalObject_p, NULL);
@@ -190,7 +190,7 @@ nh_ecmascript_Environment *nh_ecmascript_newGlobalEnvironment(
     nh_ecmascript_Environment *DeclarativeEnv_p = nh_ecmascript_newDeclarativeEnvironment(NULL);
     NH_CORE_CHECK_MEM_2(NULL, DeclarativeEnv_p)
 
-    nh_ecmascript_GlobalEnvironment *GlobalEnv_p = nh_core_allocate(sizeof(nh_ecmascript_GlobalEnvironment));
+    nh_ecmascript_GlobalEnvironment *GlobalEnv_p = (nh_ecmascript_GlobalEnvironment*)nh_core_allocate(sizeof(nh_ecmascript_GlobalEnvironment));
     NH_CORE_CHECK_MEM_2(NULL, GlobalEnv_p)
 
     GlobalEnv_p->ObjectEnvironment_p = ObjectEnv_p;

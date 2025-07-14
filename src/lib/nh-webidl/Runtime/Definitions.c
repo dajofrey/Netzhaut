@@ -72,7 +72,7 @@ static NH_API_RESULT nh_webidl_getInterfaceMembers(
     if (!partial) {
         nh_webidl_getParseNodes(InterfaceRest_p, NH_WEBIDL_PARSE_NODE_CLASS_MEMBER, &InterfaceMembers);
         for (int i = 0; i < InterfaceMembers.size; ++i) {
-            nh_webidl_InterfaceMember *InterfaceMember_p = nh_core_incrementArray(&Interface_p->Members);
+            nh_webidl_InterfaceMember *InterfaceMember_p = (nh_webidl_InterfaceMember*)nh_core_incrementArray(&Interface_p->Members);
             if (((nh_webidl_ParseNode*)((nh_webidl_ParseNode*)InterfaceMembers.pp[i])->Children.pp[0])->type == NH_WEBIDL_PARSE_NODE_PARTIAL_CLASS_MEMBER) {
                 InterfaceMember_p->Node_p = ((nh_webidl_ParseNode*)((nh_webidl_ParseNode*)InterfaceMembers.pp[i])->Children.pp[0])->Children.pp[0];
             }
@@ -83,7 +83,7 @@ static NH_API_RESULT nh_webidl_getInterfaceMembers(
     else {
         nh_webidl_getParseNodes(InterfaceRest_p, NH_WEBIDL_PARSE_NODE_PARTIAL_CLASS_MEMBER, &InterfaceMembers);
         for (int i = 0; i < InterfaceMembers.size; ++i) {
-            nh_webidl_InterfaceMember *InterfaceMember_p = nh_core_incrementArray(&Interface_p->Members);
+            nh_webidl_InterfaceMember *InterfaceMember_p = (nh_webidl_InterfaceMember*)nh_core_incrementArray(&Interface_p->Members);
             InterfaceMember_p->Node_p = ((nh_webidl_ParseNode*)InterfaceMembers.pp[i])->Children.pp[0];
             InterfaceMember_p->name_p = nh_webidl_getInterfaceMemberName(InterfaceMember_p->Node_p);
         }
@@ -102,7 +102,7 @@ static NH_API_RESULT nh_webidl_getInterfaceInheritance(
 
     if (Inheritance.size == 1 && ((nh_webidl_ParseNode*)Inheritance.pp[0])->Children.size > 0) 
     {
-        Interface_p->Inheritance_p = nh_core_allocate(sizeof(nh_webidl_InterfaceInheritance));
+        Interface_p->Inheritance_p = (nh_webidl_InterfaceInheritance*)nh_core_allocate(sizeof(nh_webidl_InterfaceInheritance));
         NH_CORE_CHECK_MEM(Interface_p->Inheritance_p)
         Interface_p->Inheritance_p->interface_p = ((nh_webidl_ParseNode*)((nh_webidl_ParseNode*)Inheritance.pp[0])->Children.pp[1])->Token_p->String.p;
         Interface_p->Inheritance_p->specification_p = NULL;
@@ -145,13 +145,13 @@ NH_API_RESULT nh_webidl_createInterfaces(
     nh_webidl_getParseNodes(Fragment_p->ParseResult.Root_p, NH_WEBIDL_PARSE_NODE_PARTIAL_CLASS_REST, &PartialInterfaceRests);
 
     for (int i = 0; i < InterfaceRests.size; ++i) {
-        nh_webidl_Interface *Interface_p = nh_core_incrementArray(&Fragment_p->Interfaces);
+        nh_webidl_Interface *Interface_p = (nh_webidl_Interface*)nh_core_incrementArray(&Fragment_p->Interfaces);
         NH_CORE_CHECK_MEM(Interface_p)
         *Interface_p = nh_webidl_createInterface(Fragment_p->Specification_p, InterfaceRests.pp[i], false);
     }
 
     for (int i = 0; i < PartialInterfaceRests.size; ++i) {
-        nh_webidl_Interface *Interface_p = nh_core_incrementArray(&Fragment_p->Interfaces);
+        nh_webidl_Interface *Interface_p = (nh_webidl_Interface*)nh_core_incrementArray(&Fragment_p->Interfaces);
         NH_CORE_CHECK_MEM(Interface_p)
         *Interface_p = nh_webidl_createInterface(Fragment_p->Specification_p, PartialInterfaceRests.pp[i], true);
     }

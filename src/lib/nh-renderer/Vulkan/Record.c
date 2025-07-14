@@ -327,4 +327,3 @@ void nh_renderer_recordVulkanFragmentTree(
         );
     }
 }
-

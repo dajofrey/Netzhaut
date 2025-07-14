@@ -21,6 +21,8 @@
 typedef enum NH_API_GRAPHICS_BACKEND_E {
     NH_API_GRAPHICS_BACKEND_VULKAN,
     NH_API_GRAPHICS_BACKEND_OPENGL,
+    NH_API_GRAPHICS_BACKEND_METAL,
+    NH_API_GRAPHICS_BACKEND_DIRECTX,
 } NH_API_GRAPHICS_BACKEND_E;
 
 // STRUCTS =========================================================================================

@@ -30,4 +30,3 @@ NH_API_RESULT nh_gfx_terminateOpenGL()
 
     return NH_API_SUCCESS;
 }
-

@@ -32,6 +32,8 @@ NH_API_RESULT nh_gfx_initialize()
 
     nh_gfx_initVulkan();
     nh_gfx_initOpenGL();
+#ifdef __APPLE__
+    #include "../Metal/Metal.h"
     nh_gfx_initMetal();
+#endif
 }
-

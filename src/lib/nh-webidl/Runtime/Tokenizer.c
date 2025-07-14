@@ -497,7 +497,7 @@ static unsigned int nh_webidl_getToken(
 
 DEFINE_TOKEN: ;
 
-    nh_webidl_Token *Token_p = nh_core_incrementArray(Tokens_p);
+    nh_webidl_Token *Token_p = (nh_webidl_Token*)nh_core_incrementArray(Tokens_p);
     Token_p->type = type;
     Token_p->String = nh_encoding_encodeUTF8(codepoints_p, count);
 
@@ -531,7 +531,7 @@ static nh_core_Array nh_webidl_discardRedundantTokens(
             continue;
         }
 
-        nh_webidl_Token *TokenCopy_p = nh_core_incrementArray(&CleanTokens);
+        nh_webidl_Token *TokenCopy_p = (nh_webidl_Token*)nh_core_incrementArray(&CleanTokens);
         TokenCopy_p->type   = Token_p->type;
         TokenCopy_p->String = nh_core_initString(32);
 

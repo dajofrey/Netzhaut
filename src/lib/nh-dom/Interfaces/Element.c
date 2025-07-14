@@ -43,7 +43,7 @@ NH_API_RESULT nh_dom_initializeElement(
 static nh_webidl_DOMString *nh_dom_allocateQualifiedName(
     nh_webidl_Object *Element_p)
 {
-    nh_webidl_DOMString *QualifiedName_p = nh_core_allocate(sizeof(nh_webidl_DOMString));
+    nh_webidl_DOMString *QualifiedName_p = (nh_webidl_DOMString*)nh_core_allocate(sizeof(nh_webidl_DOMString));
     NH_CORE_CHECK_MEM_2(NULL, QualifiedName_p)
 
     *QualifiedName_p = nh_webidl_initDOMString(16);

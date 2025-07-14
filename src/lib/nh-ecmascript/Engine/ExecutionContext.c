@@ -19,7 +19,7 @@
 
 nh_ecmascript_ExecutionContext *nh_ecmascript_allocateExecutionContext()
 {
-    nh_ecmascript_ExecutionContext *Context_p = nh_core_allocate(sizeof(nh_ecmascript_ExecutionContext)); 
+    nh_ecmascript_ExecutionContext *Context_p = (nh_ecmascript_ExecutionContext*)nh_core_allocate(sizeof(nh_ecmascript_ExecutionContext)); 
     NH_CORE_CHECK_MEM_2(NULL, Context_p)
 
     Context_p->Function_p = NULL;

@@ -30,7 +30,7 @@ void *nh_ecmascript_initAgent(
 {
 //    nh_ecmascript_AgentArgs *Args_p = args_p;
 //
-    nh_ecmascript_Agent *Agent_p = nh_core_allocate(sizeof(nh_ecmascript_Agent));
+    nh_ecmascript_Agent *Agent_p = (nh_ecmascript_Agent*)nh_core_allocate(sizeof(nh_ecmascript_Agent));
     NH_CORE_CHECK_MEM_2(NULL, Agent_p)
 //
 //    Agent_p->ExecutionContextStack = nh_core_initStack(8);

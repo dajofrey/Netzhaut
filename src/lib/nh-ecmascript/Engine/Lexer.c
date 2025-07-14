@@ -526,7 +526,7 @@ static unsigned int nh_ecmascript_getInputElement(
 
 DEFINE_INPUT_ELEMENT: ;
 
-    nh_ecmascript_InputElement *InputElement_p = nh_core_incrementArray(InputElements_p);
+    nh_ecmascript_InputElement *InputElement_p = (nh_ecmascript_InputElement*)nh_core_incrementArray(InputElements_p);
     InputElement_p->type = type;
     InputElement_p->String = nh_encoding_encodeUTF8(codepoints_p, count);
 
@@ -566,7 +566,7 @@ nh_core_Array nh_ecmascript_discardRedundantInputElements(
             continue;
         }
 
-        nh_ecmascript_InputElement *InputElementCopy_p = nh_core_incrementArray(&CleanInputElements);
+        nh_ecmascript_InputElement *InputElementCopy_p = (nh_ecmascript_InputElement*)nh_core_incrementArray(&CleanInputElements);
         InputElementCopy_p->type = InputElement_p->type;
         InputElementCopy_p->String = nh_core_initString(32);
 

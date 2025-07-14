@@ -41,13 +41,13 @@ nh_ecmascript_InternalSlots nh_ecmascript_initInternalSlots(
         {
             InternalSlots.maxLookup = length;
             InternalSlots.lookup_p  = lookup_p;
-            InternalSlots.values_pp = nh_core_allocate(sizeof(void*) * valueCount);
+            InternalSlots.values_pp = (void**)nh_core_allocate(sizeof(void*) * valueCount);
         }
     }
     else {
         InternalSlots.maxLookup = sizeof(ordinaryLookup_p) / sizeof(ordinaryLookup_p[0]);
         InternalSlots.lookup_p  = ordinaryLookup_p;
-        InternalSlots.values_pp = nh_core_allocate(sizeof(void*) * (sizeof(ordinaryLookup_p) / sizeof(ordinaryLookup_p[0])));
+        InternalSlots.values_pp = (void**)nh_core_allocate(sizeof(void*) * (sizeof(ordinaryLookup_p) / sizeof(ordinaryLookup_p[0])));
     }
 
     return InternalSlots;

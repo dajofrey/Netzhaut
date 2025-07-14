@@ -12,9 +12,13 @@
 // INCLUDES ========================================================================================
 
 #include "../Common/Includes.h"
-#include "../OpenGL/SurfaceRequirements.h"
+#include "../../nh-core/Util/Array.h"
 
 // STRUCTS =========================================================================================
+
+typedef struct nh_gfx_OpenGLSurfaceRequirements {
+    nh_core_Array Ids; // Contains visualid's that are glx framebuffer compatible. This is used for WSI window creation.
+} nh_gfx_OpenGLSurfaceRequirements;
 
 typedef struct nh_gfx_SurfaceRequirements {
     nh_gfx_OpenGLSurfaceRequirements OpenGL;

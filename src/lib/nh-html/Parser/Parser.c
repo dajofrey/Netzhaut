@@ -26,7 +26,7 @@
 NH_API_RESULT nh_html_newParseError(
     nh_html_Parser *Parser_p, unsigned long index, NH_HTML_PARSE_ERROR type)
 {
-    nh_html_ParseError *Error_p = nh_core_incrementArray(&Parser_p->Errors);
+    nh_html_ParseError *Error_p = (nh_html_ParseError*)nh_core_incrementArray(&Parser_p->Errors);
     NH_CORE_CHECK_MEM(Error_p)
 
     Error_p->type  = type;
