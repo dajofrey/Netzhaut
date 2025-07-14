@@ -22,8 +22,8 @@ typedef struct nh_gfx_OpenGLSurface {
 #ifdef __unix__
     GLXContext Context_p;
 #elif __APPLE__
-    NSOpenGLContext* Context;
-    NSOpenGLPixelFormat* PixelFormat;
+    void* Context_p;
+    void* PixelFormat_p;
 #endif
     nh_gfx_OpenGLCommandBuffer *CommandBuffers_p;
     unsigned int bufferCount;         

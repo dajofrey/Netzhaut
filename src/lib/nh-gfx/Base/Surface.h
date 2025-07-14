@@ -13,7 +13,10 @@
 
 #include "../Common/Includes.h"
 
-#include "../Vulkan/Surface.h"
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+    #include "../Vulkan/Surface.h"
+#endif
+
 #include "../OpenGL/Surface.h"
 
 #include "../../nh-wsi/Window/Window.h"
@@ -27,11 +30,13 @@ typedef struct nh_gfx_Surface {
     int renderRequests;
     NH_API_GRAPHICS_BACKEND_E api;
     nh_wsi_Window *Window_p;
+#if defined(__unix__)
     nh_gfx_VulkanSurface Vulkan;
+#endif
     nh_gfx_OpenGLSurface OpenGL;
 #if defined(__APPLE__)
-    #include "../Metal/Surface.h"
-    nh_gfx_MetalSurface Metal;
+//    #include "../Metal/Surface.h"
+//    nh_gfx_MetalSurface Metal;
 #endif
     nh_core_List Viewports;
     struct {

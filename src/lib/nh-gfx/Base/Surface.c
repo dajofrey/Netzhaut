@@ -11,8 +11,11 @@
 #include "Surface.h"
 #include "Viewport.h"
 
-#include "../Vulkan/Vulkan.h"
-#include "../Vulkan/Render.h"
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+    #include "../Vulkan/Vulkan.h"
+    #include "../Vulkan/Render.h"
+#endif
+
 #include "../OpenGL/Render.h"
 #include "../Common/Macros.h"
 
@@ -92,7 +95,9 @@ static void *nh_gfx_initSurface(
     Surface_p->Settings.BackgroundColor.b = 0.0f;
     Surface_p->Settings.BackgroundColor.a = 1.0f;
 
+#if defined(__unix__)
     Surface_p->Vulkan = nh_gfx_initVulkanSurface();
+#endif
     Surface_p->OpenGL = nh_gfx_initOpenGLSurface();
 
     switch (Surface_p->api)
@@ -112,7 +117,7 @@ static void *nh_gfx_initSurface(
 
         case NH_API_GRAPHICS_BACKEND_METAL :
 #if defined(__APPLE__)
-            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, (nh_api_Window*)Surface_p->Window_p))
+//            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, (nh_api_Window*)Surface_p->Window_p))
             break;
 #else
             return NULL;
@@ -138,7 +143,9 @@ void nh_gfx_freeSurface(
     switch (Surface_p->api)
     {
         case NH_API_GRAPHICS_BACKEND_VULKAN : 
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             nh_gfx_destroyVulkanSurface(&Surface_p->Vulkan, true);
+#endif
             break;
         case NH_API_GRAPHICS_BACKEND_OPENGL : 
             nh_gfx_destroyOpenGLSurface(&Surface_p->OpenGL, (nh_api_Window*)Surface_p->Window_p);
@@ -204,8 +211,16 @@ static NH_API_RESULT nh_gfx_prepareRendering(
 
     switch (Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN : result = nh_gfx_prepareVulkanRendering(&Surface_p->Vulkan); break;
-        case NH_API_GRAPHICS_BACKEND_OPENGL : result = NH_API_SUCCESS; break;
+        case NH_API_GRAPHICS_BACKEND_VULKAN : 
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+            result = nh_gfx_prepareVulkanRendering(&Surface_p->Vulkan); 
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
+        case NH_API_GRAPHICS_BACKEND_OPENGL :
+            result = NH_API_SUCCESS;
+            break;
     }
 
     if (result == NH_API_VULKAN_ERROR_OUT_OF_DATE_KHR) {
@@ -236,7 +251,7 @@ static NH_API_RESULT nh_gfx_render(
 
         case NH_API_GRAPHICS_BACKEND_METAL :
 #if defined(__APPLE__)
-            NH_CORE_CHECK(nh_gfx_renderMetal(Surface_p, &SortedViewports))
+//            NH_CORE_CHECK(nh_gfx_renderMetal(Surface_p, &SortedViewports))
             break;
 #else
             return NH_API_ERROR_BAD_STATE;

@@ -24,7 +24,14 @@ git clone https://github.com/dajofrey/Netzhaut
 cd Netzhaut && git submodule update --init --recursive
 ```
 
-### 2. Compile source-code into libraries and binaries 
+### 2 Prepare build
+
+MacOS dependencies:
+```bash 
+brew install freetype harfbuzz openssl
+```
+
+### 3. Compile source-code into libraries and binaries 
 
 #### using [Make](https://en.wikipedia.org/wiki/Make_\(software\))
 ```bash 

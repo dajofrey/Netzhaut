@@ -14,7 +14,9 @@
 #include "../Fonts/FontManager.h"
 #include "../Base/Surface.h"
 #include "../OpenGL/OpenGL.h"
-#include "../Vulkan/Vulkan.h"
+#if defined(__unix__)
+    #include "../Vulkan/Vulkan.h"
+#endif
 
 #include <stdlib.h>
 #include <string.h>

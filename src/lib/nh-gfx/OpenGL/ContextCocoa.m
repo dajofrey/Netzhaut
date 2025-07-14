@@ -49,8 +49,8 @@ NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
     [context setView:[window contentView]];
     [context makeCurrentContext];
 
-    Surface_p->Context = context;
-    Surface_p->PixelFormat = pixelFormat;
+    Surface_p->Context_p = context;
+    Surface_p->PixelFormat_p = pixelFormat;
 
     return NH_API_SUCCESS;
 }
@@ -58,11 +58,11 @@ NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
 NH_API_RESULT nh_gfx_destroyOpenGLCocoaContext(
     nh_gfx_OpenGLSurface *Surface_p)
 {
-    if (Surface_p->Context) {
-        [Surface_p->Context clearDrawable];
-        Surface_p->Context = nil;
+    if (Surface_p->Context_p) {
+        [Surface_p->Context_p clearDrawable];
+        Surface_p->Context_p = nil;
     }
-    Surface_p->PixelFormat = nil;
+    Surface_p->PixelFormat_p = nil;
 
     return NH_API_SUCCESS;
 }

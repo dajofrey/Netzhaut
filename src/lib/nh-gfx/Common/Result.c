@@ -9,7 +9,9 @@
 // INCLUDES =========================================================================================
 
 #include "Result.h"
-#include "../Vulkan/Vulkan.h"
+#if defined(__unix__)
+    #include "../Vulkan/Vulkan.h"
+#endif
 
 // RESULTS =========================================================================================
 
@@ -79,6 +81,7 @@ unsigned int NH_API_RESULTS_PP_COUNT = sizeof(NH_API_RESULTS_PP) / sizeof(NH_API
 NH_API_RESULT nh_vk_getResult(
     int result)
 {
+#if defined(__unix__)
     switch (result)
     {
          case VK_SUCCESS                                            : return NH_API_SUCCESS;
@@ -123,7 +126,7 @@ NH_API_RESULT nh_vk_getResult(
          case VK_RESULT_MAX_ENUM                                    : return NH_API_VULKAN_RESULT_MAX_ENUM;
          default                                                    : return NH_API_VULKAN_ERROR_NO_CORRESPONDING_RESULT;
     }
-
+#endif
     return -1;
 }
 

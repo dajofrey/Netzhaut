@@ -16,6 +16,11 @@
 #include "../../nh-core/Util/List.h"
 #include "../../nh-core/System/Memory.h"
 
+#if defined(__APPLE__)
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
+#endif
+
 #include <limits.h>
 #include <string.h>
 #include <stdio.h>

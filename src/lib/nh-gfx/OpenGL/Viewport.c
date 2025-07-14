@@ -14,6 +14,11 @@
 #include "../Base/Viewport.h"
 #include "../../nh-core/System/Thread.h"
 
+#if defined(__APPLE__)
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
+#endif
+
 #include <string.h>
 
 // FUNCTIONS =======================================================================================
@@ -51,10 +56,10 @@ NH_API_RESULT nh_gfx_beginOpenGLRecording(
     nh_gfx_addOpenGLCommand(
         Viewport_p->OpenGL.CommandBuffer_p, 
         "glColorMask",
-        nh_gfx_glboolean(NULL, GL_TRUE),
-        nh_gfx_glboolean(NULL, GL_TRUE),
-        nh_gfx_glboolean(NULL, GL_TRUE),
-        nh_gfx_glboolean(NULL, GL_TRUE));
+        nh_gfx_glboolean(NULL, 1),
+        nh_gfx_glboolean(NULL, 1),
+        nh_gfx_glboolean(NULL, 1),
+        nh_gfx_glboolean(NULL, 1));
  
     // Clear entire viewport.
     nh_gfx_addOpenGLCommand(
@@ -116,10 +121,10 @@ NH_API_RESULT nh_gfx_endOpenGLRecording(
     nh_gfx_addOpenGLCommand(
         Viewport_p->OpenGL.CommandBuffer_p, 
         "glColorMask", 
-        nh_gfx_glboolean(NULL, GL_FALSE),
-        nh_gfx_glboolean(NULL, GL_FALSE),
-        nh_gfx_glboolean(NULL, GL_FALSE),
-        nh_gfx_glboolean(NULL, GL_TRUE));
+        nh_gfx_glboolean(NULL, 0),
+        nh_gfx_glboolean(NULL, 0),
+        nh_gfx_glboolean(NULL, 0),
+        nh_gfx_glboolean(NULL, 1));
 
     nh_gfx_addOpenGLCommand(
         Viewport_p->OpenGL.CommandBuffer_p, 

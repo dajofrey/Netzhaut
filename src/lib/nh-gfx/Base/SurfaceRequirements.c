@@ -11,8 +11,11 @@
 #include "SurfaceRequirements.h"
 #include "Viewport.h"
 
-#include "../Vulkan/Vulkan.h"
-#include "../Vulkan/Render.h"
+#if defined(__unix__)
+    #include "../Vulkan/Vulkan.h"
+    #include "../Vulkan/Render.h"
+#endif
+
 #include "../OpenGL/Render.h"
 #include "../OpenGL/ContextX11.h"
 

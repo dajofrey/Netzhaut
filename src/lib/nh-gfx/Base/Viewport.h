@@ -13,7 +13,10 @@
 
 #include "Surface.h"
 
-#include "../Vulkan/Viewport.h"
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+    #include "../Vulkan/Viewport.h"
+#endif
+
 #include "../OpenGL/Viewport.h"
 #include "../Common/Includes.h"
 
@@ -36,11 +39,13 @@ typedef struct nh_gfx_ViewportOwner {
 typedef struct nh_gfx_Viewport {
     nh_gfx_ViewportOwner Owner;
     nh_gfx_Surface *Surface_p;
+#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
     nh_gfx_VulkanViewport Vulkan;
+#endif
     nh_gfx_OpenGLViewport OpenGL;
 #if defined(__APPLE__)
-    #include "../Metal/Viewport.h"
-    nh_gfx_MetalViewport Metal;
+//    #include "../Metal/Viewport.h"
+//    nh_gfx_MetalViewport Metal;
 #endif
     struct {
         nh_api_PixelSize Size;

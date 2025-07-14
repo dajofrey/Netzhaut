@@ -14,7 +14,10 @@
 #include "../Base/Surface.h"
 
 #include "../../nh-wsi/Window/Window.h"
-#include "../../nh-wsi/Platforms/X11/Init.h"
+
+#if defined(__unix__)
+    #include "../../nh-wsi/Platforms/X11/Init.h"
+#endif
 
 // RENDER ==========================================================================================
 
@@ -37,7 +40,7 @@ NH_API_RESULT nh_gfx_renderOpenGL(
 #if defined(__unix__)
     glXSwapBuffers(NH_WSI_X11.Display_p, Surface_p->Window_p->X11.Handle);
 #elif defined(__APPLE__)
-    CGLFlushDrawable(Surface_p->OpenGL.Context_p);e
+    CGLFlushDrawable(Surface_p->OpenGL.Context_p);
 #endif
 
     return NH_API_SUCCESS;

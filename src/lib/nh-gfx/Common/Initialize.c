@@ -12,7 +12,10 @@
 #include "IndexMap.h"
 #include "Macros.h"
 
-#include "../Vulkan/Vulkan.h"
+#if defined(__unix__)
+    #include "../Vulkan/Vulkan.h"
+#endif
+
 #include "../OpenGL/OpenGL.h"
 
 #include "../Fonts/FontManager.h"
@@ -30,10 +33,12 @@ NH_API_RESULT nh_gfx_initialize()
     NH_CORE_CHECK(nh_gfx_initializeFontManager())
     NH_CORE_CHECK(nh_gfx_createSurfaceRequirements())
 
+#if defined(__unix__)
     nh_gfx_initVulkan();
+#endif
     nh_gfx_initOpenGL();
 #ifdef __APPLE__
-    #include "../Metal/Metal.h"
-    nh_gfx_initMetal();
+//    #include "../Metal/Metal.h"
+//    nh_gfx_initMetal();
 #endif
 }

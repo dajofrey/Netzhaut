@@ -1,10 +1,6 @@
 #ifndef NH_GFX_METAL_H
 #define NH_GFX_METAL_H
 
-#if defined(__APPLE__)
-    #include <Metal/Metal.h>
-#endif
-
 #include "../Common/Includes.h"
 
 #ifdef __cplusplus
