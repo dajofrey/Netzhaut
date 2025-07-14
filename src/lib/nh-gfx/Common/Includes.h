@@ -19,14 +19,18 @@
     #include "../../../../external/volk/volk.h"
 #endif
 
-#ifdef __unix__
+#ifdef NETZHAUT_OPENGL_IMPLEMENTATION
+    #define SOGL_IMPLEMENTATION_X11
+#endif
+
+#if defined(__unix__)
     #define SOGL_MAJOR_VERSION 4
     #define SOGL_MINOR_VERSION 6
     #include "simple-opengl-loader-master/simple-opengl-loader.h"
     #include "glx/glx.h"
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
     #include <OpenGL/OpenGL.h>
     #include <OpenGL/CGLCurrent.h>  // For managing OpenGL contexts
 #endif

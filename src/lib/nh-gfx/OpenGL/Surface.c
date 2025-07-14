@@ -38,11 +38,19 @@ NH_API_RESULT nh_gfx_createOpenGLSurface(
 {
     switch (((nh_wsi_Window*)Window_p)->type) {
         case NH_WSI_TYPE_X11 :
+#if defined(__unix__)
             NH_CORE_CHECK(nh_gfx_createOpenGLX11Context(Surface_p, Window_p))
             break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
         case NH_WSI_TYPE_COCOA :
+#if defined(__APPLE__)
             NH_CORE_CHECK(nh_gfx_createOpenGLCocoaContext(Surface_p, (nh_wsi_Window*)Window_p))
             break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
     }
 
     int bufferCount = 3;
@@ -65,11 +73,19 @@ NH_API_RESULT nh_gfx_destroyOpenGLSurface(
 {
     switch (((nh_wsi_Window*)Window_p)->type) {
         case NH_WSI_TYPE_X11 :
+#if defined(__unix__)
             nh_gfx_destroyOpenGLX11Context(Surface_p);
             break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
         case NH_WSI_TYPE_COCOA :
+#if defined(__APPLE__)
             nh_gfx_destroyOpenGLCocoaContext(Surface_p);
             break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
     }
 
     nh_core_free(Surface_p->CommandBuffers_p);
