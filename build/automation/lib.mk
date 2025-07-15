@@ -7,10 +7,15 @@ ifeq ($(UNAME_S),Linux)
     OS := Linux
 endif
 
+ifeq ($(OS),macOS)
+    INSTALL_NAME_FLAG = -Wl,-install_name,@rpath/$@
+else
+    INSTALL_NAME_FLAG =
+endif
+
 # Define the compiler and compile flags
 CC = gcc
 CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration
-
 ifeq ($(OS),macOS)
     CFLAGS += -Wl,-undefined,dynamic_lookup
     OBJC_FLAGS = -fobjc-arc -fmodules -framework Cocoa -framework QuartzCore -fsanitize=address,undefined,alignment
@@ -18,52 +23,47 @@ ifeq ($(OS),macOS)
 endif
 
 # Define the linker and linker flags
-LD = gcc
-
-LDFLAGS_NHAPI = -ldl
-LDFLAGS_NHCORE = -v -lm -ldl
-
+LINKER = gcc
+LINKER_FLAGS_NH_API = -ldl
+LINKER_FLAGS_NH_CORE = -v -lm -ldl
 ifeq ($(OS),macOS)
-    LDFLAGS_NHGFX = -L/opt/homebrew/lib -lfreetype -lharfbuzz -Lexternal/freetype-gl -lfreetype-gl -framework OpenGL
-    LDFLAGS_FREETYPE_GL = -L/opt/homebrew/lib -lfreetype -lharfbuzz
-    LDFLAGS_NHNETWORK = -L/opt/homebrew/lib -lssl
+    LINKER_FLAGS_NH_GFX = -L/opt/homebrew/lib -lfreetype -lharfbuzz -Lexternal/freetype-gl -lfreetype-gl -framework OpenGL
+    LINKER_FLAGS_FREETYPE_GL = -L/opt/homebrew/lib -lfreetype -lharfbuzz
+    LINKER_FLAGS_NH_NETWORK = -L/opt/homebrew/lib -lssl
 else
-    LDFLAGS_NHGFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
-    LDFLAGS_FREETYPE_GL = -L/usr/include/freetype2 -lfreetype -lharfbuzz
-    LDFLAGS_NHNETWORK = -lssl
+    LINKER_FLAGS_NH_GFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
+    LINKER_FLAGS_FREETYPE_GL = -L/usr/include/freetype2 -lfreetype -lharfbuzz
+    LINKER_FLAGS_NH_NETWORK = -lssl
 endif
-
 ifeq ($(OS),Linux)
-    LDFLAGS_NHWSI += -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
-    LDFLAGS_NHGFX += -lX11 -lXrender -lXext
+    LINKER_FLAGS_NH_WSI += -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
+    LINKER_FLAGS_NH_GFX += -lX11 -lXrender -lXext
 endif
-
 ifeq ($(OS),macOS)
-    LDFLAGS_NHWSI += -framework Cocoa -framework QuartzCore
-    LDFLAGS_NHGFX += -framework Cocoa -framework QuartzCore
+    LINKER_FLAGS_NH_WSI += -framework Cocoa -framework QuartzCore
+    LINKER_FLAGS_NH_GFX += -framework Cocoa -framework QuartzCore
 endif
 
 # Define the source file directory for each library
-SRC_DIR_NHAPI = src/lib/nh-api
-SRC_DIR_NHCORE = src/lib/nh-core
-SRC_DIR_NHWSI = src/lib/nh-wsi
-SRC_DIR_NHHTML = src/lib/nh-html
-SRC_DIR_NHDOM = src/lib/nh-dom
-SRC_DIR_NHNETWORK = src/lib/nh-network
-SRC_DIR_NHWEBIDL = src/lib/nh-webidl
-SRC_DIR_NHECMASCRIPT = src/lib/nh-ecmascript
-SRC_DIR_NHENCODING = src/lib/nh-encoding
-SRC_DIR_NHGFX = src/lib/nh-gfx
-SRC_DIR_NHRENDERER = src/lib/nh-renderer
-SRC_DIR_NHCSS = src/lib/nh-css
-SRC_DIR_NHURL = src/lib/nh-url
-SRC_DIR_NHMONITOR = src/lib/nh-monitor
-
+SRC_DIR_NH_API = src/lib/nh-api
+SRC_DIR_NH_CORE = src/lib/nh-core
+SRC_DIR_NH_WSI = src/lib/nh-wsi
+SRC_DIR_NH_HTML = src/lib/nh-html
+SRC_DIR_NH_DOM = src/lib/nh-dom
+SRC_DIR_NH_NETWORK = src/lib/nh-network
+SRC_DIR_NH_WEBIDL = src/lib/nh-webidl
+SRC_DIR_NH_ECMASCRIPT = src/lib/nh-ecmascript
+SRC_DIR_NH_ENCODING = src/lib/nh-encoding
+SRC_DIR_NH_GFX = src/lib/nh-gfx
+SRC_DIR_NH_RENDERER = src/lib/nh-renderer
+SRC_DIR_NH_CSS = src/lib/nh-css
+SRC_DIR_NH_URL = src/lib/nh-url
+SRC_DIR_NH_MONITOR = src/lib/nh-monitor
 SRC_DIR_VOLK= external/volk
 SRC_DIR_FREETYPE_GL= external/freetype-gl
 
 # List of source files for each library
-SRC_FILES_NHAPI = \
+SRC_FILES_NH_API = \
     nh-api.c \
     nh-core.c \
     nh-wsi.c \
@@ -75,7 +75,7 @@ SRC_FILES_NHAPI = \
     nh-encoding.c \
     nh-monitor.c \
 
-SRC_FILES_NHCORE = \
+SRC_FILES_NH_CORE = \
     Loader/Library.c \
     Loader/Reload.c \
     Loader/Repository.c \
@@ -112,7 +112,7 @@ SRC_FILES_NHCORE = \
     Common/Config.c \
     External/c_hashmap/hashmap.c \
 
-SRC_FILES_NHWSI = \
+SRC_FILES_NH_WSI = \
     Window/Window.c \
     Window/WindowSettings.c \
     Window/Event.c \
@@ -125,19 +125,19 @@ SRC_FILES_NHWSI = \
     Common/About.c \
 
 ifeq ($(OS),Linux)
-    SRC_FILES_NHWSI += \
+    SRC_FILES_NH_WSI += \
         Platforms/X11/Init.c \
         Platforms/X11/Window.c \
         Platforms/X11/WindowSettings.c
 endif
 
 ifeq ($(OS),macOS)
-    SRC_FILES_NHWSI += \
+    SRC_FILES_NH_WSI += \
         Platforms/Cocoa/Window.m \
         Platforms/Cocoa/WindowSettings.m
 endif
 
-SRC_FILES_NHHTML = \
+SRC_FILES_NH_HTML = \
 #    Parser/Parser.c \
 #    Parser/NamedCharacterReferences.c \
 #    Parser/Elements.c \
@@ -156,7 +156,7 @@ SRC_FILES_NHHTML = \
 #    Common/Initialize.c \
 #    Common/About.c \
 
-SRC_FILES_NHDOM = \
+SRC_FILES_NH_DOM = \
     Interfaces/NodeList.c \
     Interfaces/EventTarget.c \
     Interfaces/Node.c \
@@ -173,12 +173,12 @@ SRC_FILES_NHDOM = \
     Common/Terminate.c \
     Common/About.c \
 
-SRC_FILES_NHNETWORK = \
+SRC_FILES_NH_NETWORK = \
     Common/Log.c \
     Common/Result.c \
     Common/About.c \
  
-SRC_FILES_NHWEBIDL = \
+SRC_FILES_NH_WEBIDL = \
     Runtime/Tokenizer.c \
     Runtime/Parser.c \
     Runtime/Builtin.c \
@@ -194,7 +194,7 @@ SRC_FILES_NHWEBIDL = \
     Common/Result.c \
     Common/About.c \
 
-SRC_FILES_NHECMASCRIPT = \
+SRC_FILES_NH_ECMASCRIPT = \
     Engine/Lexer.c \
     Engine/Agent.c \
     Engine/Script.c \
@@ -231,7 +231,7 @@ SRC_FILES_NHECMASCRIPT = \
     Common/Result.c \
     Common/About.c \
 
-SRC_FILES_NHENCODING = \
+SRC_FILES_NH_ENCODING = \
     Base/Encodings.c \
     Base/UnicodeDataHelper.c \
     Base/UnicodeData.gen.c \
@@ -245,7 +245,7 @@ SRC_FILES_NHENCODING = \
     Common/Log.c \
     Common/About.c \
 
-SRC_FILES_NHGFX = \
+SRC_FILES_NH_GFX = \
     OpenGL/Surface.c \
     OpenGL/CommandBuffer.c \
     OpenGL/Data.c \
@@ -272,7 +272,7 @@ SRC_FILES_NHGFX = \
     Common/IndexMap.c \
 
 ifeq ($(OS),Linux)
-    SRC_FILES_NHGFX += \
+    SRC_FILES_NH_GFX += \
         OpenGL/ContextX11.c \
         Vulkan/Host.c \
         Vulkan/GPU.c \
@@ -286,11 +286,11 @@ ifeq ($(OS),Linux)
 endif
 
 ifeq ($(OS),macOS)
-    SRC_FILES_NHGFX += \
+    SRC_FILES_NH_GFX += \
         OpenGL/ContextCocoa.m
 endif
 
-SRC_FILES_NHRENDERER = \
+SRC_FILES_NH_RENDERER = \
 #    Main/Renderer.c \
 #    Main/BoxTriangulation.c \
 #    Main/Vertices.c \
@@ -307,7 +307,7 @@ SRC_FILES_NHRENDERER = \
 #    Common/Terminate.c \
 #    Common/About.c \
 
-SRC_FILES_NHCSS = \
+SRC_FILES_NH_CSS = \
 #    Parser/Tokenizer.c \
 #    Parser/Parser.c \
 #    Parser/SelectorParser.c \
@@ -346,7 +346,7 @@ SRC_FILES_NHCSS = \
     Common/IndexMap.c \
     Common/About.c \
  
-SRC_FILES_NHURL = \
+SRC_FILES_NH_URL = \
     Main/URLParser.c \
     Main/HostParser.c \
     Main/Helper.c \
@@ -359,7 +359,7 @@ SRC_FILES_NHURL = \
     Common/About.c \
     Common/Test.c \
 
-SRC_FILES_NHMONITOR = \
+SRC_FILES_NH_MONITOR = \
     Logger.c \
     Monitor.c \
     Client.c \
@@ -380,132 +380,132 @@ SRC_FILES_FREETYPE_GL = \
     platform.c \
 
 # Object files derived from source files for each library
-OBJ_FILES_NHAPI = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHAPI)/, $(SRC_FILES_NHAPI)))
-OBJ_FILES_NHCORE = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHCORE)/, $(SRC_FILES_NHCORE)))
-OBJ_FILES_NHWSI = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHWSI)/, $(SRC_FILES_NHWSI)))
-OBJ_FILES_NHHTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHHTML)/, $(SRC_FILES_NHHTML)))
-OBJ_FILES_NHDOM = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHDOM)/, $(SRC_FILES_NHDOM)))
-OBJ_FILES_NHNETWORK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHNETWORK)/, $(SRC_FILES_NHNETWORK)))
-OBJ_FILES_NHWEBIDL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHWEBIDL)/, $(SRC_FILES_NHWEBIDL)))
-OBJ_FILES_NHECMASCRIPT = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHECMASCRIPT)/, $(SRC_FILES_NHECMASCRIPT)))
-OBJ_FILES_NHENCODING = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHENCODING)/, $(SRC_FILES_NHENCODING)))
-OBJ_FILES_NHGFX = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHGFX)/, $(SRC_FILES_NHGFX)))
-OBJ_FILES_NHRENDERER = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHRENDERER)/, $(SRC_FILES_NHRENDERER)))
-OBJ_FILES_NHCSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHCSS)/, $(SRC_FILES_NHCSS)))
-OBJ_FILES_NHURL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHURL)/, $(SRC_FILES_NHURL)))
-OBJ_FILES_NHMONITOR = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NHMONITOR)/, $(SRC_FILES_NHMONITOR)))
-
+OBJ_FILES_NH_API = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_API)/, $(SRC_FILES_NH_API)))
+OBJ_FILES_NH_CORE = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_CORE)/, $(SRC_FILES_NH_CORE)))
+OBJ_FILES_NH_WSI = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_WSI)/, $(SRC_FILES_NH_WSI)))
+OBJ_FILES_NH_WSI += $(patsubst %.m, %.o, $(addprefix $(SRC_DIR_NH_WSI)/, $(wildcard *.m)))
+OBJ_FILES_NH_HTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_HTML)/, $(SRC_FILES_NH_HTML)))
+OBJ_FILES_NH_DOM = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_DOM)/, $(SRC_FILES_NH_DOM)))
+OBJ_FILES_NH_NETWORK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_NETWORK)/, $(SRC_FILES_NH_NETWORK)))
+OBJ_FILES_NH_WEBIDL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_WEBIDL)/, $(SRC_FILES_NH_WEBIDL)))
+OBJ_FILES_NH_ECMASCRIPT = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_ECMASCRIPT)/, $(SRC_FILES_NH_ECMASCRIPT)))
+OBJ_FILES_NH_ENCODING = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_ENCODING)/, $(SRC_FILES_NH_ENCODING)))
+OBJ_FILES_NH_GFX = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_GFX)/, $(SRC_FILES_NH_GFX)))
+OBJ_FILES_NH_GFX += $(patsubst %.m, %.o, $(addprefix $(SRC_DIR_NH_GFX)/, $(wildcard *.m)))
+OBJ_FILES_NH_RENDERER = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_RENDERER)/, $(SRC_FILES_NH_RENDERER)))
+OBJ_FILES_NH_CSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_CSS)/, $(SRC_FILES_NH_CSS)))
+OBJ_FILES_NH_URL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_URL)/, $(SRC_FILES_NH_URL)))
+OBJ_FILES_NH_MONITOR = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_MONITOR)/, $(SRC_FILES_NH_MONITOR)))
 OBJ_FILES_VOLK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_VOLK)/, $(SRC_FILES_VOLK)))
 OBJ_FILES_FREETYPE_GL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_FREETYPE_GL)/, $(SRC_FILES_FREETYPE_GL)))
 
 # Names of the shared libraries
-LIB_NHAPI = lib/libnh-api.so
-LIB_NHCORE = lib/libnh-core.so
-LIB_NHWSI = lib/libnh-wsi.so
-LIB_NHHTML = lib/libnh-html.so
-LIB_NHDOM = lib/libnh-dom.so
-LIB_NHNETWORK = lib/libnh-network.so
-LIB_NHWEBIDL = lib/libnh-webidl.so
-LIB_NHECMASCRIPT = lib/libnh-ecmascript.so
-LIB_NHENCODING = lib/libnh-encoding.so
-LIB_NHGFX = lib/libnh-gfx.so
-LIB_NHRENDERER = lib/libnh-renderer.so
-LIB_NHCSS = lib/libnh-css.so
-LIB_NHURL = lib/libnh-url.so
-LIB_NHMONITOR = lib/libnh-monitor.so
-
+LIB_NH_API = lib/libnh-api.so
+LIB_NH_CORE = lib/libnh-core.so
+LIB_NH_WSI = lib/libnh-wsi.so
+LIB_NH_HTML = lib/libnh-html.so
+LIB_NH_DOM = lib/libnh-dom.so
+LIB_NH_NETWORK = lib/libnh-network.so
+LIB_NH_WEBIDL = lib/libnh-webidl.so
+LIB_NH_ECMASCRIPT = lib/libnh-ecmascript.so
+LIB_NH_ENCODING = lib/libnh-encoding.so
+LIB_NH_GFX = lib/libnh-gfx.so
+LIB_NH_RENDERER = lib/libnh-renderer.so
+LIB_NH_CSS = lib/libnh-css.so
+LIB_NH_URL = lib/libnh-url.so
+LIB_NH_MONITOR = lib/libnh-monitor.so
 LIB_VOLK = external/volk/libvolk.a
 LIB_FREETYPE_GL = external/freetype-gl/libfreetype-gl.so
 
 # Keep this as default (first) target. 
 ifeq ($(OS),macOS)
-    all: $(LIB_NHAPI) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS) $(LIB_NHMONITOR)
+    all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_HTML) $(LIB_NH_DOM) $(LIB_NH_NETWORK) $(LIB_NH_WEBIDL) $(LIB_NH_ECMASCRIPT) $(LIB_NH_ENCODING) $(LIB_FREETYPE_GL) $(LIB_NH_GFX) $(LIB_NH_RENDERER) $(LIB_NH_URL) $(LIB_NH_CSS) $(LIB_NH_MONITOR)
 else
-    all: $(LIB_NHAPI) $(LIB_NHCORE) $(LIB_NHWSI) $(LIB_NHHTML) $(LIB_NHDOM) $(LIB_NHNETWORK) $(LIB_NHWEBIDL) $(LIB_NHECMASCRIPT) $(LIB_NHENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX) $(LIB_NHRENDERER) $(LIB_NHURL) $(LIB_NHCSS) $(LIB_NHMONITOR)
+    all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_HTML) $(LIB_NH_DOM) $(LIB_NH_NETWORK) $(LIB_NH_WEBIDL) $(LIB_NH_ECMASCRIPT) $(LIB_NH_ENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NH_GFX) $(LIB_NH_RENDERER) $(LIB_NH_URL) $(LIB_NH_CSS) $(LIB_NH_MONITOR)
 endif
 
 # Build targets for each library
-lib-nh-api: $(LIB_NHAPI)
-lib-nh-core: $(LIB_NHCORE)
-lib-nh-wsi: $(LIB_NHWSI)
-lib-nh-html: $(LIB_NHHTML)
-lib-nh-dom: $(LIB_NHDOM)
-lib-nh-network: $(LIB_NHNETWORK)
-lib-nh-webidl: $(LIB_NHWEBIDL)
-lib-nh-ecmascript: $(LIB_NHECMASCRIPT)
-lib-nh-encoding: $(LIB_NHENCODING)
+lib-nh-api: $(LIB_NH_API)
+lib-nh-core: $(LIB_NH_CORE)
+lib-nh-wsi: $(LIB_NH_WSI)
+lib-nh-html: $(LIB_NH_HTML)
+lib-nh-dom: $(LIB_NH_DOM)
+lib-nh-network: $(LIB_NH_NETWORK)
+lib-nh-webidl: $(LIB_NH_WEBIDL)
+lib-nh-ecmascript: $(LIB_NH_ECMASCRIPT)
+lib-nh-encoding: $(LIB_NH_ENCODING)
 ifeq ($(OS),macOS)
-    lib-nh-gfx: $(LIB_FREETYPE_GL) $(LIB_NHGFX)
+    lib-nh-gfx: $(LIB_FREETYPE_GL) $(LIB_NH_GFX)
 else
-    lib-nh-gfx: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NHGFX)
+    lib-nh-gfx: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NH_GFX)
 endif
-lib-nh-renderer: $(LIB_NHRENDERER)
-lib-nh-css: $(LIB_NHCSS)
-lib-nh-url: $(LIB_NHURL)
-lib-nh-monitor: $(LIB_NHMONITOR)
+lib-nh-renderer: $(LIB_NH_RENDERER)
+lib-nh-css: $(LIB_NH_CSS)
+lib-nh-url: $(LIB_NH_URL)
+lib-nh-monitor: $(LIB_NH_MONITOR)
 
 create_lib_dir:
 	mkdir -p lib
-download_ttyr: 
+download_termoskanne: 
 	git submodule update --init --checkout --force external/TTyr/
 
 # Custom compiler flags
-$(OBJ_FILES_NHCORE): CFLAGS += -lexternal
-$(OBJ_FILES_NHHTML): CFLAGS += -Iexternal
-$(OBJ_FILES_NHCSS): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-$(OBJ_FILES_NHAPI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
-$(OBJ_FILES_NHRENDERER): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-$(OBJ_FILES_NHWSI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
+$(OBJ_FILES_NH_CORE): CFLAGS += -lexternal
+$(OBJ_FILES_NH_HTML): CFLAGS += -Iexternal
+$(OBJ_FILES_NH_CSS): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NH_API): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
+$(OBJ_FILES_NH_RENDERER): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NH_WSI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
 ifeq ($(OS),macOS)
-    $(OBJ_FILES_NHGFX): CFLAGS += -Iexternal -I/opt/homebrew/include/freetype2 -I/opt/homebrew/include/harfbuzz
+    $(OBJ_FILES_NH_GFX): CFLAGS += -Iexternal -I/opt/homebrew/include/freetype2 -I/opt/homebrew/include/harfbuzz
 else
-    $(OBJ_FILES_NHGFX): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -I/usr/include/freetype2 -I/usr/include/harfbuzz -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+    $(OBJ_FILES_NH_GFX): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -I/usr/include/freetype2 -I/usr/include/harfbuzz -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 endif
-$(OBJ_FILES_NHRENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NH_RENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_VOLK): CFLAGS += -ldl -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface -DVOLK_VULKAN_H_PATH=\"../Vulkan-Headers/include/vulkan/vulkan.h\"
 ifeq ($(OS),macOS)
     $(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/opt/homebrew/include/freetype2 -I/opt/homebrew/include/harfbuzz
 else
     $(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/usr/include/freetype2 -I/usr/include/harfbuzz
 endif
-$(OBJ_FILES_NHMONITOR): CFLAGS += -Isrc/lib
+$(OBJ_FILES_NH_MONITOR): CFLAGS += -Isrc/lib
 
 ifeq ($(OS),Linux)
-    LDFLAGS_NHAPI += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+    LINKER_FLAGS_NH_API += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 endif
 
 ifeq ($(OS),Linux)
-    $(OBJ_FILES_NHWSI): CFLAGS += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+    $(OBJ_FILES_NH_WSI): CFLAGS += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 endif
 
 # Rule to compile source files into object files
-%.o: $(SRC_DIR_NHAPI)/%.c
+%.o: $(SRC_DIR_NH_API)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHCORE)/%.c
+%.o: $(SRC_DIR_NH_CORE)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHWSI)/%.c
+%.o: $(SRC_DIR_NH_WSI)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHHTML)/%.c
+%.o: $(SRC_DIR_NH_HTML)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHDOM)/%.c
+%.o: $(SRC_DIR_NH_DOM)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHNETWORK)/%.c
+%.o: $(SRC_DIR_NH_NETWORK)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHWEBIDL)/%.c
+%.o: $(SRC_DIR_NH_WEBIDL)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHECMASCRIPT)/%.c
+%.o: $(SRC_DIR_NH_ECMASCRIPT)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHENCODING)/%.c
+%.o: $(SRC_DIR_NH_ENCODING)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHGFX)/%.c
+%.o: $(SRC_DIR_NH_GFX)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHRENDERER)/%.c
+%.o: $(SRC_DIR_NH_RENDERER)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHCSS)/%.c
+%.o: $(SRC_DIR_NH_CSS)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHURL)/%.c
+%.o: $(SRC_DIR_NH_URL)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(SRC_DIR_NHMONITOR)/%.c
+%.o: $(SRC_DIR_NH_MONITOR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: $(SRC_DIR_VOLK)/%.c
@@ -514,63 +514,68 @@ endif
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Add rule for Objective-C files
-%.o: $(SRC_DIR_NHWSI)/%.m
+%.o: $(SRC_DIR_NH_WSI)/%.m
 	$(OBJC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
-# Rule to link object files into the shared libraries
-$(LIB_NHAPI): create_lib_dir $(OBJ_FILES_NHAPI)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHAPI) $(LDFLAGS_NHAPI)
-$(LIB_NHCORE): create_lib_dir $(OBJ_FILES_NHCORE)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHCORE) $(LDFLAGS_NHCORE)
-$(LIB_NHWSI): create_lib_dir $(OBJ_FILES_NHWSI)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHWSI) $(LDFLAGS_NHWSI)
-$(LIB_NHHTML): create_lib_dir $(OBJ_FILES_NHHTML)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHHTML) $(LDFLAGS_NHHTML)
-$(LIB_NHDOM): create_lib_dir $(OBJ_FILES_NHDOM)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHDOM) $(LDFLAGS_NHDOM)
-$(LIB_NHNETWORK): create_lib_dir $(OBJ_FILES_NHNETWORK)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHNETWORK) $(LDFLAGS_NHNETWORK)
-$(LIB_NHWEBIDL): create_lib_dir $(OBJ_FILES_NHWEBIDL)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHWEBIDL) $(LDFLAGS_NHWEBIDL)
-$(LIB_NHECMASCRIPT): create_lib_dir $(OBJ_FILES_NHECMASCRIPT)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHECMASCRIPT) $(LDFLAGS_NHECMASCRIPT)
-$(LIB_NHENCODING): create_lib_dir $(OBJ_FILES_NHENCODING)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHENCODING) $(LDFLAGS_NHENCODING)
-$(LIB_NHGFX): create_lib_dir $(OBJ_FILES_NHGFX)
-	$(LD) $(CFLAGS) -Wl,-rpath,':$(CURDIR)/external/freetype-gl' -shared -o $@ $(OBJ_FILES_NHGFX) $(LDFLAGS_NHGFX)
-$(LIB_NHRENDERER): create_lib_dir $(OBJ_FILES_NHRENDERER)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHRENDERER) $(LDFLAGS_NHRENDERER)
-$(LIB_NHCSS): create_lib_dir $(OBJ_FILES_NHCSS)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHCSS) $(LDFLAGS_NHCSS)
-$(LIB_NHURL): create_lib_dir $(OBJ_FILES_NHURL)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHURL) $(LDFLAGS_NHURL)
-$(LIB_NHMONITOR): create_lib_dir download_ttyr $(OBJ_FILES_NHMONITOR)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_NHMONITOR) $(LDFLAGS_NHMONITOR)
+ifeq ($(OS),macOS)
+    INSTALL_NAME = -Wl,-install_name,@rpath/$(1)
+else
+    INSTALL_NAME =
+endif
 
+# Rule to link object files into the shared libraries
+$(LIB_NH_API): create_lib_dir $(OBJ_FILES_NH_API)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-api.so) $(OBJ_FILES_NH_API) $(LINKER_FLAGS_NH_API)
+$(LIB_NH_CORE): create_lib_dir $(OBJ_FILES_NH_CORE)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-core.so) $(OBJ_FILES_NH_CORE) $(LINKER_FLAGS_NH_CORE)
+$(LIB_NH_WSI): create_lib_dir $(OBJ_FILES_NH_WSI)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-wsi.so) $(OBJ_FILES_NH_WSI) $(LINKER_FLAGS_NH_WSI)
+$(LIB_NH_HTML): create_lib_dir $(OBJ_FILES_NH_HTML)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-html.so) $(OBJ_FILES_NH_HTML) $(LINKER_FLAGS_NH_HTML)
+$(LIB_NH_DOM): create_lib_dir $(OBJ_FILES_NH_DOM)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-dom.so) $(OBJ_FILES_NH_DOM) $(LINKER_FLAGS_NH_DOM)
+$(LIB_NH_NETWORK): create_lib_dir $(OBJ_FILES_NH_NETWORK)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-network.so) $(OBJ_FILES_NH_NETWORK) $(LINKER_FLAGS_NH_NETWORK)
+$(LIB_NH_WEBIDL): create_lib_dir $(OBJ_FILES_NH_WEBIDL)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-webidl.so) $(OBJ_FILES_NH_WEBIDL) $(LINKER_FLAGS_NH_WEBIDL)
+$(LIB_NH_ECMASCRIPT): create_lib_dir $(OBJ_FILES_NH_ECMASCRIPT)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-ecmascript.so) $(OBJ_FILES_NH_ECMASCRIPT) $(LINKER_FLAGS_NH_ECMASCRIPT)
+$(LIB_NH_ENCODING): create_lib_dir $(OBJ_FILES_NH_ENCODING)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-encoding.so) $(OBJ_FILES_NH_ENCODING) $(LINKER_FLAGS_NH_ENCODING)
+$(LIB_NH_GFX): create_lib_dir $(OBJ_FILES_NH_GFX)
+	$(LINKER) $(CFLAGS) -Wl,-rpath,'$(CURDIR)/external/freetype-gl' -shared -o $@ $(call INSTALL_NAME,libnh-gfx.so) $(OBJ_FILES_NH_GFX) $(LINKER_FLAGS_NH_GFX)
+$(LIB_NH_RENDERER): create_lib_dir $(OBJ_FILES_NH_RENDERER)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-renderer.so) $(OBJ_FILES_NH_RENDERER) $(LINKER_FLAGS_NH_RENDERER)
+$(LIB_NH_CSS): create_lib_dir $(OBJ_FILES_NH_CSS)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-css.so) $(OBJ_FILES_NH_CSS) $(LINKER_FLAGS_NH_CSS)
+$(LIB_NH_URL): create_lib_dir $(OBJ_FILES_NH_URL)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-url.so) $(OBJ_FILES_NH_URL) $(LINKER_FLAGS_NH_URL)
+$(LIB_NH_MONITOR): create_lib_dir download_termoskanne $(OBJ_FILES_NH_MONITOR)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-monitor.so) $(OBJ_FILES_NH_MONITOR) $(LINKER_FLAGS_NH_MONITOR)
 $(LIB_VOLK): $(OBJ_FILES_VOLK)
 	ar rcs $@ $^ 
 $(LIB_FREETYPE_GL): $(OBJ_FILES_FREETYPE_GL)
-	$(LD) $(CFLAGS) -shared -o $@ $(OBJ_FILES_FREETYPE_GL) $(LDFLAGS_FREETYPE_GL)
+	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libfreetype-gl.so) $(OBJ_FILES_FREETYPE_GL) $(LINKER_FLAGS_FREETYPE_GL)
 
 # Clean rule
 clean:
 	find . -name "*.o" -type f -delete
-	rm -f $(LIB_NHAPI) 
-	rm -f $(LIB_NHCORE) 
-	rm -f $(LIB_NHWSI) 
-	rm -f $(LIB_NHHTML)
-	rm -f $(LIB_NHDOM)
-	rm -f $(LIB_NHNETWORK)
-	rm -f $(LIB_NHWEBIDL)
-	rm -f $(LIB_NHECMASCRIPT)
-	rm -f $(LIB_NHENCODING)
-	rm -f $(LIB_NHGFX)
-	rm -f $(LIB_NHRENDERER)
-	rm -f $(LIB_NHCSS)
-	rm -f $(LIB_NHURL)
-	rm -f $(LIB_NHMONITOR)
+	rm -f $(LIB_NH_API) 
+	rm -f $(LIB_NH_CORE) 
+	rm -f $(LIB_NH_WSI) 
+	rm -f $(LIB_NH_HTML)
+	rm -f $(LIB_NH_DOM)
+	rm -f $(LIB_NH_NETWORK)
+	rm -f $(LIB_NH_WEBIDL)
+	rm -f $(LIB_NH_ECMASCRIPT)
+	rm -f $(LIB_NH_ENCODING)
+	rm -f $(LIB_NH_GFX)
+	rm -f $(LIB_NH_RENDERER)
+	rm -f $(LIB_NH_CSS)
+	rm -f $(LIB_NH_URL)
+	rm -f $(LIB_NH_MONITOR)
 	rm -f $(LIB_VOLK)
 	rm -f $(LIB_FREETYPE_GL)
 	rm -rf lib
 
-.PHONY: all clean create_lib_dir download_ttyr
+.PHONY: all clean create_lib_dir download_termoskanne
