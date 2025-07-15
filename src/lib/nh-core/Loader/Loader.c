@@ -247,7 +247,7 @@ static NH_API_RESULT nh_core_loadExternal(
     NH_CORE_CHECK_NULL(Module_p->Data.lib_p)
 
     Module_p->Data.lastModified_p = nh_core_lastModified(Module_p->Data.lib_p);
-    NH_CORE_CHECK_NULL(Module_p->Data.lastModified_p)
+//    NH_CORE_CHECK_NULL(Module_p->Data.lastModified_p)
 
     nh_core_callExternalInitializer(Module_p);
 

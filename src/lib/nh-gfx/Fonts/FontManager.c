@@ -325,8 +325,18 @@ nh_gfx_Font *nh_gfx_getDefaultFont(
 static NH_API_RESULT nh_gfx_addInitialFonts()
 {
     // First system fonts.
-
-#ifdef __unix__
+#if defined(__APPLE__)
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("/System/Library/Fonts/"))
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("/Library/Fonts/"))
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("/System/Library/Fonts/Supplemental/"))
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("/Users/Shared/Fonts/"))
+    const char* home = getenv("HOME");
+    if (home) {
+        char path[PATH_MAX];
+        snprintf(path, sizeof(path), "%s/Library/Fonts/", home);
+        NH_CORE_CHECK(nh_gfx_addFontDirectory(path))
+    }
+#elif defined(__unix__)
     NH_CORE_CHECK(nh_gfx_addFontDirectory("/usr/share/fonts/"))
     NH_CORE_CHECK(nh_gfx_addFontDirectory("/usr/local/share/fonts/"))
     NH_CORE_CHECK(nh_gfx_addFontDirectory("~/.fonts/"))
@@ -335,7 +345,6 @@ static NH_API_RESULT nh_gfx_addInitialFonts()
 #endif
 
     // Then internal fonts.
-
     NH_CORE_CHECK(nh_gfx_addFont(source_code_pro_ttf_inc, source_code_pro_ttf_inc_len, "SourceCodePro", true))
 
     return NH_API_SUCCESS;
