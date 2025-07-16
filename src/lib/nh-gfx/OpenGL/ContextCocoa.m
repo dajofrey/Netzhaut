@@ -26,7 +26,7 @@
 // FUNCTIONS ======================================================================================
 
 NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
-    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p) 
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p)
 {
     NSWindow *window = (__bridge NSWindow *)Window_p->Cocoa.Handle;
 
@@ -34,23 +34,41 @@ NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
         NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion4_1Core,
         NSOpenGLPFAColorSize,     24,
         NSOpenGLPFAAlphaSize,     8,
-        NSOpenGLPFADepthSize,     16,
+        NSOpenGLPFADepthSize,     24,
         NSOpenGLPFADoubleBuffer,
         NSOpenGLPFAAccelerated,
         0
     };
 
     NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
-    if (!pixelFormat) return NH_API_ERROR_BAD_STATE;
+    if (!pixelFormat) {
+        return NH_API_ERROR_BAD_STATE;
+    }
 
     NSOpenGLContext *context = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
-    if (!context) return NH_API_ERROR_BAD_STATE;
+    if (!context) {
+        return NH_API_ERROR_BAD_STATE;
+    }
 
-    [context setView:[window contentView]];
+    // Attach to the content view
+    NSView *view = [window contentView];
+    if (!view) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+
+    [context setView:view];
     [context makeCurrentContext];
 
-    Surface_p->Context_p = context;
-    Surface_p->PixelFormat_p = pixelFormat;
+    // Enable vsync (optional)
+    GLint swapInterval = 1;
+    [context setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+
+    // Force buffer allocation to avoid lazy drawable crashes
+    [context update];
+
+    CGLContextObj cglContext = [context CGLContextObj];
+    Surface_p->Context_p = cglContext;
+    Surface_p->PixelFormat_p = (__bridge_retained void *)pixelFormat;
 
     return NH_API_SUCCESS;
 }

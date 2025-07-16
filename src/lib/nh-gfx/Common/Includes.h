@@ -31,8 +31,10 @@
 #endif
 
 #if defined(__APPLE__)
-    #include <OpenGL/OpenGL.h>
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
     #include <OpenGL/CGLCurrent.h>  // For managing OpenGL contexts
+    #include <OpenGL/OpenGL.h>
 #endif
 
 #endif // NH_GFX_COMMON_INCLUDES_H

@@ -28,7 +28,14 @@ NH_API_RESULT nh_gfx_renderOpenGL(
     glXMakeCurrent(NH_WSI_X11.Display_p, Surface_p->Window_p->X11.Handle, 
         Surface_p->OpenGL.Context_p);
 #elif defined(__APPLE__)
-    CGLSetCurrentContext(Surface_p->OpenGL.Context_p);
+    CGLError err = CGLSetCurrentContext(Surface_p->OpenGL.Context_p);
+    if (err != kCGLNoError) {
+        fprintf(stderr, "[gfx] Failed to make OpenGL context current: %s\n", CGLErrorString(err));
+        return NH_API_ERROR_BAD_STATE;
+    }
+    if (CGLGetCurrentContext() == NULL) {
+        return NH_API_ERROR_BAD_STATE;
+    }
 #endif
 
     for (int i = 0; i < SortedViewports_p->size; ++i) {

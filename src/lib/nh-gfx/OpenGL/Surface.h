@@ -22,7 +22,7 @@ typedef struct nh_gfx_OpenGLSurface {
 #ifdef __unix__
     GLXContext Context_p;
 #elif __APPLE__
-    void* Context_p;
+    void* Context_p; // CGLContext
     void* PixelFormat_p;
 #endif
     nh_gfx_OpenGLCommandBuffer *CommandBuffers_p;
