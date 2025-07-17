@@ -5,7 +5,6 @@
  */
 
 #include "nh-api/nh-api.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -21,9 +20,20 @@ int main(
         return 1;
     }
 
-    if (nh_api_initialize(NULL, NULL, 0) != NH_API_SUCCESS) {
-        puts("API initialization failed. Exiting.\n");
-        return 1;
+    switch (argc)
+    {
+        case 3:
+            if (nh_api_initialize(NULL, argc > 1 ? argv_pp[2] : NULL, argc > 1 ? strlen(argv_pp[2]) : 0) != NH_API_SUCCESS) {
+                puts("API initialization failed. Exiting.\n");
+                return 1;
+            }
+            break;
+        case 2:
+            if (argc == 2 nh_api_initialize(NULL, NULL, 0) != NH_API_SUCCESS) {
+                puts("API initialization failed. Exiting.\n");
+                return 1;
+            }
+            break;
     }
 
     long size;

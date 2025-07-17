@@ -19,6 +19,7 @@
 // DATA ============================================================================================
 
 static const char *NAMES_PP[] = {
+    "api",
     "viewport.width",
     "viewport.height",
     "viewport.x",
@@ -38,17 +39,36 @@ static NH_API_RESULT nh_gfx_getSetting(
     switch (index) {
         case 0 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->ViewportSize.width = atoi(Setting_p->pp[0]);
-            break;
+            if (strcmp("vulkan", Setting_p->pp[0])) {
+                Config_p->api = NH_GFX_API_VULKAN;
+                break;
+            }
+            if (strcmp("opengl", Setting_p->pp[0])) {
+                Config_p->api = NH_GFX_API_OPENGL;
+                break;
+            }
+            if (strcmp("metal", Setting_p->pp[0])) {
+                Config_p->api = NH_GFX_API_METAL;
+                break;
+            }
+            if (strcmp("directx", Setting_p->pp[0])) {
+                Config_p->api = NH_GFX_API_DIRECTX;
+                break;
+            }
+            return NH_API_ERROR_BAD_STATE;
         case 1 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->ViewportSize.height = atoi(Setting_p->pp[0]);
+            Config_p->ViewportSize.width = atoi(Setting_p->pp[0]);
             break;
         case 2 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            Config_p->ViewportPosition.x = atoi(Setting_p->pp[0]);
+            Config_p->ViewportSize.height = atoi(Setting_p->pp[0]);
             break;
         case 3 :
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            Config_p->ViewportPosition.x = atoi(Setting_p->pp[0]);
+            break;
+        case 4 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->ViewportPosition.y = atoi(Setting_p->pp[0]);
             break;

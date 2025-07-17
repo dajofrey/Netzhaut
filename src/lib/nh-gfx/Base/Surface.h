@@ -22,13 +22,22 @@
 #include "../../nh-wsi/Window/Window.h"
 #include "../../nh-css/Properties/Color.h"
 
+// ENUMS ==========================================================================================
+
+typedef enum NH_GFX_API_E { 
+    NH_GFX_API_VULKAN, 
+    NH_GFX_API_OPENGL, 
+    NH_GFX_API_METAL, 
+    NH_GFX_API_DIRECTX, 
+} NH_GFX_API_E; 
+
 // STRUCTS =========================================================================================
 
 typedef struct nh_gfx_Surface {
     void *args_p;
     NH_SIGNAL signal;
     int renderRequests;
-    NH_API_GRAPHICS_BACKEND_E api;
+    NH_GFX_API_E api;
     nh_wsi_Window *Window_p;
 #if defined(__unix__)
     nh_gfx_VulkanSurface Vulkan;
@@ -60,7 +69,7 @@ typedef struct nh_gfx_Surface {
 // FUNCTIONS =======================================================================================
 
 nh_gfx_Surface *nh_gfx_createSurface(
-    nh_wsi_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api
+    nh_wsi_Window *Window_p
 );
 
 #endif 

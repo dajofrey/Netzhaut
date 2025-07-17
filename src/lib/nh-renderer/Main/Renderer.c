@@ -59,7 +59,7 @@ static NH_API_RESULT nh_renderer_createRenderData(
 {
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN :
+        case NH_GFX_API_VULKAN :
             nh_renderer_createFragmentTreeVulkanData(&Canvas_p->FragmentTree, Viewport_p);
             break;
         default :
@@ -76,7 +76,7 @@ static NH_API_RESULT nh_renderer_renderCanvas(
 
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN :
+        case NH_GFX_API_VULKAN :
             nh_renderer_recordVulkanFragmentTree(&Canvas_p->FragmentTree, Viewport_p);
             break;
         default :

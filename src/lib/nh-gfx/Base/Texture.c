@@ -109,7 +109,7 @@
 //
 //    switch (Surface_p->api)
 //    {
-//        case NH_API_GRAPHICS_BACKEND_VULKAN :
+//        case NH_GFX_API_VULKAN :
 //            for (int i = 0; i < Surface_p->Vulkan_p->GPU_p->Textures.size; ++i) {
 //
 //            }

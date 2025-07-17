@@ -5,7 +5,6 @@
  */
 
 #include "nh-api/nh-api.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>

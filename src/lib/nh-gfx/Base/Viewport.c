@@ -82,18 +82,18 @@ nh_gfx_Viewport *nh_gfx_createViewport(
 
     switch (Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN : 
+        case NH_GFX_API_VULKAN : 
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             NH_CORE_CHECK_2(NULL, nh_gfx_createVulkanViewport(Viewport_p)) 
             break;
 #else
             return NULL;
 #endif
-        case NH_API_GRAPHICS_BACKEND_OPENGL : 
+        case NH_GFX_API_OPENGL : 
             NH_CORE_CHECK_2(NULL, nh_gfx_createOpenGLViewport(Viewport_p)) 
             break;
 
-        case NH_API_GRAPHICS_BACKEND_METAL :
+        case NH_GFX_API_METAL :
 #if defined(__APPLE__)
 //            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalViewport(Viewport_p))
             break;
@@ -113,16 +113,16 @@ void nh_gfx_destroyViewport(
 {
     switch (Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN : 
+        case NH_GFX_API_VULKAN : 
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             nh_gfx_destroyVulkanViewport(Viewport_p); 
             break;
 #endif
-        case NH_API_GRAPHICS_BACKEND_OPENGL : 
+        case NH_GFX_API_OPENGL : 
             nh_gfx_destroyOpenGLViewport(Viewport_p);
             break;
 
-        case NH_API_GRAPHICS_BACKEND_METAL :
+        case NH_GFX_API_METAL :
 #if defined(__APPLE__)
 //            nh_gfx_destroyMetalViewport(Viewport_p);
             break;
@@ -153,14 +153,14 @@ NH_API_RESULT nh_gfx_beginRecording(
     int imageCount = 0;
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN : 
+        case NH_GFX_API_VULKAN : 
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             imageCount = Viewport_p->Vulkan.images = Viewport_p->Surface_p->Vulkan.imageCount; 
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
 #endif
-        case NH_API_GRAPHICS_BACKEND_OPENGL : 
+        case NH_GFX_API_OPENGL : 
             imageCount = 1; 
             break;
         default : return NH_API_ERROR_BAD_STATE;
@@ -179,14 +179,14 @@ NH_API_RESULT nh_gfx_beginRecording(
         
         switch (Viewport_p->Surface_p->api)
         {
-            case NH_API_GRAPHICS_BACKEND_VULKAN : 
+            case NH_GFX_API_VULKAN : 
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
                 Viewport_p->Vulkan.CommandBuffers_pp[i] = &Viewport_p->Vulkan.CommandBuffers_p[bufferIndex];
                 break;
 #else
                 return NH_API_ERROR_BAD_STATE;
 #endif
-            case NH_API_GRAPHICS_BACKEND_OPENGL : 
+            case NH_GFX_API_OPENGL : 
                 Viewport_p->OpenGL.CommandBuffer_p = &Viewport_p->OpenGL.CommandBuffers_p[bufferIndex];
                 break;
         }
@@ -196,14 +196,14 @@ NH_API_RESULT nh_gfx_beginRecording(
 
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN : 
+        case NH_GFX_API_VULKAN : 
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             NH_CORE_CHECK(nh_gfx_beginVulkanRecording(Viewport_p))
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
 #endif
-        case NH_API_GRAPHICS_BACKEND_OPENGL : 
+        case NH_GFX_API_OPENGL : 
             NH_CORE_CHECK(nh_gfx_beginOpenGLRecording(Viewport_p))
             break;
     }
@@ -216,14 +216,14 @@ NH_API_RESULT nh_gfx_endRecording(
 {
     switch (Viewport_p->Surface_p->api)
     {
-        case NH_API_GRAPHICS_BACKEND_VULKAN : 
+        case NH_GFX_API_VULKAN : 
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             NH_CORE_CHECK(nh_gfx_endVulkanRecording(Viewport_p))
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
 #endif
-        case NH_API_GRAPHICS_BACKEND_OPENGL : 
+        case NH_GFX_API_OPENGL : 
             NH_CORE_CHECK(nh_gfx_endOpenGLRecording(Viewport_p))
             break;
         default : return NH_API_ERROR_BAD_STATE;

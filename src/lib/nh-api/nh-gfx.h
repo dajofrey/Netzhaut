@@ -13,18 +13,6 @@
 
 #include "nh-wsi.h"
 
-// ENUMS ===========================================================================================
-
-/**
- * Graphics backend used by the window.
- */
-typedef enum NH_API_GRAPHICS_BACKEND_E {
-    NH_API_GRAPHICS_BACKEND_VULKAN,
-    NH_API_GRAPHICS_BACKEND_OPENGL,
-    NH_API_GRAPHICS_BACKEND_METAL,
-    NH_API_GRAPHICS_BACKEND_DIRECTX,
-} NH_API_GRAPHICS_BACKEND_E;
-
 // STRUCTS =========================================================================================
 
 /**
@@ -49,7 +37,7 @@ nh_api_SurfaceRequirements *nh_api_getSurfaceRequirements(
  * create a surface.
  */
 nh_api_Surface *nh_api_createSurface(
-    nh_api_Window *Window_p, NH_API_GRAPHICS_BACKEND_E api
+    nh_api_Window *Window_p
 );
 
 /**

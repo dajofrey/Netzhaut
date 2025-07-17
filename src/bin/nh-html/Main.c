@@ -5,7 +5,6 @@
  */
 
 #include "nh-api/nh-api.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -60,7 +59,7 @@ int main(
         return 1;
     }
 
-    nh_api_Surface *Surface_p = nh_api_createSurface(Window_p, NH_API_GRAPHICS_BACKEND_VULKAN);
+    nh_api_Surface *Surface_p = nh_api_createSurface(Window_p);
     if (!Surface_p) {
         puts("Creating surface failed. Exiting.");
         return 1;

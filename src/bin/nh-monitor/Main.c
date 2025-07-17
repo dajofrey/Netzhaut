@@ -60,7 +60,7 @@ static int openMonitor()
         return 1;
     }
  
-    nh_api_Surface *Surface_p = nh_api_createSurface(Window_p, NH_API_GRAPHICS_BACKEND_OPENGL); 
+    nh_api_Surface *Surface_p = nh_api_createSurface(Window_p); 
     if (!Surface_p) {
         puts("Opening surface failed.");
         return 1;

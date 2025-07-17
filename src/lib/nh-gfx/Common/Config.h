@@ -1,16 +1,11 @@
-#ifndef NH_GFX_CONFIG_H
-#define NH_GFX_CONFIG_H
-
-/**
- * Netzhaut - Web Browser Engine
- * Copyright (C) 2022  Dajo Frey
- * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
- */
+#ifndef NH_GFX_COMMON_CONFIG_H
+#define NH_GFX_COMMON_CONFIG_H
 
 #include "Includes.h"
-#include <stddef.h>
+#include "../Base/Surface.h"
 
 typedef struct nh_gfx_Config {
+    NH_GFX_API_E api;
     nh_api_PixelSize ViewportSize;
     nh_api_PixelPosition ViewportPosition;
 } nh_gfx_Config;
