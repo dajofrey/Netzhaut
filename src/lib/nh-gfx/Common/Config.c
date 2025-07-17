@@ -39,19 +39,19 @@ static NH_API_RESULT nh_gfx_getSetting(
     switch (index) {
         case 0 :
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
-            if (strcmp("vulkan", Setting_p->pp[0])) {
+            if (!strcmp("vulkan", Setting_p->pp[0])) {
                 Config_p->api = NH_GFX_API_VULKAN;
                 break;
             }
-            if (strcmp("opengl", Setting_p->pp[0])) {
+            if (!strcmp("opengl", Setting_p->pp[0])) {
                 Config_p->api = NH_GFX_API_OPENGL;
                 break;
             }
-            if (strcmp("metal", Setting_p->pp[0])) {
+            if (!strcmp("metal", Setting_p->pp[0])) {
                 Config_p->api = NH_GFX_API_METAL;
                 break;
             }
-            if (strcmp("directx", Setting_p->pp[0])) {
+            if (!strcmp("directx", Setting_p->pp[0])) {
                 Config_p->api = NH_GFX_API_DIRECTX;
                 break;
             }
