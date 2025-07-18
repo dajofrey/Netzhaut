@@ -18,6 +18,8 @@
 #include "../Common/Macros.h"
 
 #include "../Common/Data/SourceCodePro-Regular.ttf.inc"
+#include "../Common/Data/SourceCodePro-Bold.ttf.inc"
+#include "../Common/Data/SourceCodePro-ExtraBold.ttf.inc"
 
 #include "../../nh-core/Util/File.h"
 #include "../../nh-core/Util/String.h"
@@ -345,7 +347,9 @@ static NH_API_RESULT nh_gfx_addInitialFonts()
 #endif
 
     // Then internal fonts.
-    NH_CORE_CHECK(nh_gfx_addFont(source_code_pro_ttf_inc, source_code_pro_ttf_inc_len, "SourceCodePro", true))
+    NH_CORE_CHECK(nh_gfx_addFont(source_code_pro_regular_ttf_inc, source_code_pro_regular_ttf_inc_len, "SourceCodePro", true))
+    NH_CORE_CHECK(nh_gfx_addFont(source_code_pro_bold_ttf, source_code_pro_bold_ttf_len, "SourceCodePro", true))
+    NH_CORE_CHECK(nh_gfx_addFont(source_code_pro_extrabold_ttf, source_code_pro_extrabold_ttf_len, "SourceCodePro", true))
 
     return NH_API_SUCCESS;
 }
