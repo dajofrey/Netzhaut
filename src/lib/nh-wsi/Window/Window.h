@@ -133,4 +133,8 @@ NH_API_RESULT nh_wsi_destroyWindow(
     nh_wsi_Window *Window_p
 );
     
+NH_API_RESULT nh_wsi_getWindowSize(
+    nh_wsi_Window *Window_p, int *x_p, int *y_p
+);
+
 #endif // NH_WSI_WINDOW_WINDOW_H 

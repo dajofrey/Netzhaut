@@ -63,7 +63,7 @@ static Atom nh_x11_getAtomIfSupported(
 
 // Check whether the running window manager is EWMH-compliant
 //
-static void nh_x11_detectEWMH()
+static void nh_wsi_detectX11EWMH()
 {
     // First we read the _NET_SUPPORTING_WM_CHECK property on the root window
 
@@ -134,7 +134,7 @@ static void nh_x11_detectEWMH()
 
 // Look for and initialize supported X11 extensions
 //
-static NH_API_RESULT nh_x11_initAtoms()
+static NH_API_RESULT nh_wsi_initX11Atoms()
 {
     // String format atoms
     NH_WSI_X11.Atoms.NULL_       = XInternAtom(NH_WSI_X11.Display_p, "NULL", False);
@@ -196,12 +196,12 @@ static NH_API_RESULT nh_x11_initAtoms()
     }
 
     // Detect whether an EWMH-conformant window manager is running
-    nh_x11_detectEWMH();
+    nh_wsi_detectX11EWMH();
 
     return NH_API_SUCCESS;
 }
 
-static NH_API_RESULT nh_x11_initExtensions()
+static NH_API_RESULT nh_wsi_initX11Extensions()
 {
     // XKB (X keyboard extension)
 
@@ -227,7 +227,7 @@ static NH_API_RESULT nh_x11_initExtensions()
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_x11_initialize()
+NH_API_RESULT nh_wsi_initializeX11()
 {
     NH_WSI_X11.Display_p = XOpenDisplay(NULL);
     if (!NH_WSI_X11.Display_p) {return NH_API_ERROR_BAD_STATE;}
@@ -235,13 +235,13 @@ NH_API_RESULT nh_x11_initialize()
     NH_WSI_X11.screen = DefaultScreen(NH_WSI_X11.Display_p);
     NH_WSI_X11.root   = RootWindow(NH_WSI_X11.Display_p, NH_WSI_X11.screen);
 
-    NH_CORE_CHECK(nh_x11_initExtensions())
-    NH_CORE_CHECK(nh_x11_initAtoms())
+    NH_CORE_CHECK(nh_wsi_initX11Extensions())
+    NH_CORE_CHECK(nh_wsi_initX11Atoms())
 
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_x11_close()
+NH_API_RESULT nh_wsi_closeX11()
 {
     xkb_state_unref(NH_WSI_X11.XKB.State_p);
     xkb_keymap_unref(NH_WSI_X11.XKB.Keymap_p);

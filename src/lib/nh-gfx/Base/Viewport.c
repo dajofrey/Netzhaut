@@ -69,8 +69,10 @@ nh_gfx_Viewport *nh_gfx_createViewport(
     if (Size_p != NULL) {
         Viewport_p->Settings.Size = *Size_p;
     } else {
-        Viewport_p->Settings.Size.width = nh_gfx_getConfig().ViewportSize.width;
-        Viewport_p->Settings.Size.height = nh_gfx_getConfig().ViewportSize.height;
+        int width, height = 0;
+        NH_CORE_CHECK_2(NULL, nh_wsi_getWindowSize(Viewport_p->Surface_p->Window_p, &width, &height))
+        Viewport_p->Settings.Size.width = width;
+        Viewport_p->Settings.Size.height = height;
     }
 
     if (Position_p != NULL) {

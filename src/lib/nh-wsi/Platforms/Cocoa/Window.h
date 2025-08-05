@@ -62,4 +62,8 @@ NH_API_RESULT nh_wsi_setCocoaWindowType(
     nh_wsi_CocoaWindow *Window_p, NH_WSI_WINDOW_TYPE_E type
 );
 
+NH_API_RESULT nh_wsi_getCocoaWindowSize(
+    nh_wsi_CocoaWindow *Window_p, int *x_p, int *y_p
+);
+
 #endif // NH_WSI_COCOA_WINDOW_H

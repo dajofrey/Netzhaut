@@ -132,3 +132,17 @@ NH_API_RESULT nh_wsi_moveWindow(
         default                : return NH_API_ERROR_BAD_STATE;
     }
 }
+
+NH_API_RESULT nh_wsi_getWindowSize(
+    nh_wsi_Window *Window_p, int *x_p, int *y_p)
+{
+    switch (Window_p->type)
+    {
+#if defined(__unix__)
+        case NH_WSI_TYPE_X11   : return nh_wsi_getX11WindowSize(&Window_p->X11, x_p, y_p);
+#elif defined(__APPLE__)
+        case NH_WSI_TYPE_COCOA : return nh_wsi_getCocoaWindowSize(&Window_p->Cocoa, x_p, y_p);
+#endif
+        default                : return NH_API_ERROR_BAD_STATE;
+    }
+}

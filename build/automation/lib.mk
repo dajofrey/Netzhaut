@@ -133,6 +133,7 @@ endif
 
 ifeq ($(OS),macOS)
     SRC_FILES_NH_WSI += \
+        Platforms/Cocoa/Init.m \
         Platforms/Cocoa/Window.m \
         Platforms/Cocoa/WindowSettings.m
 endif

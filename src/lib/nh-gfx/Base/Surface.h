@@ -1,14 +1,6 @@
 #ifndef NH_GFX_SURFACE_H
 #define NH_GFX_SURFACE_H
 
-// LICENSE =========================================================================================
- 
-/**
- * Netzhaut - Web Browser Engine
- * Copyright (C) 2022  Dajo Frey
- * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
- */
-
 // INCLUDES ========================================================================================
 
 #include "../Common/Includes.h"
@@ -39,10 +31,10 @@ typedef struct nh_gfx_Surface {
     int renderRequests;
     NH_GFX_API_E api;
     nh_wsi_Window *Window_p;
+    nh_gfx_OpenGLSurface OpenGL;
 #if defined(__unix__)
     nh_gfx_VulkanSurface Vulkan;
 #endif
-    nh_gfx_OpenGLSurface OpenGL;
 #if defined(__APPLE__)
 //    #include "../Metal/Surface.h"
 //    nh_gfx_MetalSurface Metal;

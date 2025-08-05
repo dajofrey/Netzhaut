@@ -30,12 +30,24 @@
 - (void)windowDidResize:(NSNotification *)notification
 {
     if (!Window_p) return;
-    
+
     NSWindow *window = [notification object];
+
     NSRect contentRect = [window contentRectForFrameRect:[window frame]];
-    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, 
-        contentRect.origin.x, contentRect.origin.y, 
-        contentRect.size.width, contentRect.size.height);
+    NSView *view = [window contentView];
+    CGFloat scale = [window backingScaleFactor];
+
+    int pointWidth  = (int)contentRect.size.width;
+    int pointHeight = (int)contentRect.size.height;
+
+    int pixelWidth  = (int)(contentRect.size.width  * scale);
+    int pixelHeight = (int)(contentRect.size.height * scale);
+
+    nh_wsi_sendWindowEvent(Window_p,
+        NH_API_WINDOW_CONFIGURE,
+        contentRect.origin.x, contentRect.origin.y,
+        pointWidth, pointHeight,
+        pixelWidth, pixelHeight);
 }
 
 - (void)windowDidMove:(NSNotification *)notification
@@ -43,22 +55,33 @@
     if (!Window_p) return;
     
     NSWindow *window = [notification object];
+
     NSRect contentRect = [window contentRectForFrameRect:[window frame]];
+    NSView *view = [window contentView];
+    CGFloat scale = [window backingScaleFactor];
+
+    int pointWidth  = (int)contentRect.size.width;
+    int pointHeight = (int)contentRect.size.height;
+
+    int pixelWidth  = (int)(contentRect.size.width  * scale);
+    int pixelHeight = (int)(contentRect.size.height * scale);
+
     nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, 
         contentRect.origin.x, contentRect.origin.y, 
-        contentRect.size.width, contentRect.size.height);
+        pointWidth, pointHeight,
+        pixelWidth, pixelHeight);
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
     if (!Window_p) return;
-    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0);
+    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0, 0, 0);
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification
 {
     if (!Window_p) return;
-    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0);
+    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0, 0, 0);
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender
@@ -244,15 +267,15 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
         [window setTitle:[NSString stringWithUTF8String:Config.title_p]];
         [window setAcceptsMouseMovedEvents:YES];
         
-        // Create metal layer for rendering
-        CAMetalLayer *layer = [CAMetalLayer layer];
-        [window.contentView setWantsLayer:YES];
-        [window.contentView setLayer:layer];
+//        // Create metal layer for rendering
+//        CAMetalLayer *layer = [CAMetalLayer layer];
+//        [window.contentView setWantsLayer:YES];
+//        [window.contentView setLayer:layer];
         
         // Store references
         Window_p->Cocoa.Handle = (__bridge_retained void*)window;
         Window_p->Cocoa.Delegate = (__bridge_retained void*)delegate;
-        Window_p->Cocoa.Layer = (__bridge_retained void*)layer;
+//        Window_p->Cocoa.Layer = (__bridge_retained void*)layer;
         
         // Show window
         [window makeKeyAndOrderFront:nil];
@@ -357,3 +380,27 @@ NH_API_RESULT nh_wsi_moveCocoaWindow(
     }
     return NH_API_SUCCESS;
 } 
+
+NH_API_RESULT nh_wsi_getCocoaWindowSize(
+    nh_wsi_CocoaWindow *Window_p, int *x_p, int *y_p)
+{
+    if (!Window_p) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+
+    @autoreleasepool {
+        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        if (!window) {
+            return NH_API_ERROR_BAD_STATE;
+        }
+
+        NSRect frame = [window frame];
+
+        // Get backing scale factor (1.0 for non-Retina, 2.0 for Retina, etc.)
+        CGFloat scaleFactor = [window backingScaleFactor];
+        *x_p = frame.size.width * scaleFactor;
+        *y_p = frame.size.height * scaleFactor;
+    }
+
+    return NH_API_SUCCESS;
+}

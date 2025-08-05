@@ -30,7 +30,8 @@ static nh_api_WSIEvent nh_wsi_initEvent(
 // SEND ============================================================================================
 
 void nh_wsi_sendWindowEvent(
-    nh_wsi_Window *Window_p, NH_API_WINDOW_E type, int x, int y, int width, int height)
+    nh_wsi_Window *Window_p, NH_API_WINDOW_E type, int x, int y, int width, int height,
+    int pixelWidth, int pixelHeight)
 {
     if (!Window_p) return;
 
@@ -41,6 +42,8 @@ void nh_wsi_sendWindowEvent(
     Event.Window.Position.y  = y;
     Event.Window.Size.width  = width;
     Event.Window.Size.height = height;
+    Event.Window.PixelSize.width  = pixelWidth;
+    Event.Window.PixelSize.height = pixelHeight;
 
     if (Window_p->callback_f != NULL) {
         Window_p->callback_f((nh_api_Window*)Window_p, Event);

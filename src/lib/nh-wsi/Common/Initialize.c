@@ -14,6 +14,7 @@
 #if defined(__unix__)
     #include "../Platforms/X11/Init.h"
 #elif defined(__APPLE__)
+    #include "../Platforms/Cocoa/Init.h"
 #endif
 #include "../../nh-core/Util/LinkedList.h"
 
@@ -27,8 +28,8 @@ NH_API_RESULT nh_wsi_initialize()
 {
     NH_CORE_CHECK(nh_wsi_normalizeListener())
     #if defined(__unix__)
-        NH_CORE_CHECK(nh_x11_initialize())
+        NH_CORE_CHECK(nh_wsi_initializeX11())
     #elif defined(__APPLE__)
-        // do nothing for now
+        NH_CORE_CHECK(nh_wsi_initializeCocoa())
     #endif
 }

@@ -313,7 +313,7 @@ NH_API_RESULT nh_wsi_getX11Input(
             XGetWindowAttributes(NH_WSI_X11.Display_p, 
                 nh_wsi_getX11TopLevelParent(NH_WSI_X11.Display_p, Window_p->X11.Handle), &XWA);
 
-            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, XWA.x, XWA.y, Configure.width, Configure.height);
+            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, XWA.x, XWA.y, Configure.width, Configure.height, Configure.width, Configure.height);
         }
         else if (Event.type == MotionNotify)
         {
@@ -540,11 +540,11 @@ NH_API_RESULT nh_wsi_getX11Input(
         }
         else if (Event.type == FocusIn)
         {
-            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0);
+            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0, 0, 0);
         }
         else if (Event.type == FocusOut)
         {
-            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0);
+            nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0, 0, 0);
         }
         else if (Event.type == PropertyNotify)
         {

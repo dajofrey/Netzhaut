@@ -1,14 +1,6 @@
 #ifndef NH_GFX_VIEWPORT_H
 #define NH_GFX_VIEWPORT_H
 
-// LICENSE =========================================================================================
-
-/**
- * Netzhaut - Web Browser Engine
- * Copyright (C) 2022  Dajo Frey
- * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
- */
-
 // INCLUDES ========================================================================================
 
 #include "Surface.h"

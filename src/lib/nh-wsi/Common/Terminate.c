@@ -29,10 +29,11 @@
 NH_API_RESULT nh_wsi_terminate()
 {
     #if defined(__unix__)
-        NH_CORE_CHECK(nh_x11_close())
+        NH_CORE_CHECK(nh_wsi_closeX11())
     #elif defined(__APPLE__)
         // do nothing for now
     #endif
+
     nh_wsi_freeClipboard();
 
     return NH_API_SUCCESS;

@@ -216,6 +216,7 @@ typedef struct NH_ALIGN_16 nh_api_WindowEvent {
     NH_API_WINDOW_E type;
     nh_api_PixelPosition Position;
     nh_api_PixelSize Size;
+    nh_api_PixelSize PixelSize;
 } nh_api_WindowEvent;
 
 typedef struct NH_ALIGN_16 nh_api_MouseEvent {
