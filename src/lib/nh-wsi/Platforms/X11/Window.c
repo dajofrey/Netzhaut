@@ -131,7 +131,7 @@ static void nh_wsi_getX11WindowPosition(
     return;
 }
 
-void nh_wsi_getX11WindowSize(
+NH_API_RESULT nh_wsi_getX11WindowSize(
     nh_wsi_X11Window *Window_p, int* width_p, int* height_p)
 {   
     XWindowAttributes Attributes;
@@ -140,7 +140,7 @@ void nh_wsi_getX11WindowSize(
     *width_p = Attributes.width;
     *height_p = Attributes.height; 
 
-    return;
+    return NH_API_SUCCESS;
 }
 
 // https://specifications.freedesktop.org/wm-spec/1.4/ar01s04.html

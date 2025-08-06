@@ -62,7 +62,7 @@ typedef struct nh_wsi_WindowConfiguration nh_wsi_WindowConfiguration;
         nh_wsi_X11Window *Window_p
     );
 
-    void nh_wsi_getX11WindowSize(
+    NH_API_RESULT nh_wsi_getX11WindowSize(
         nh_wsi_X11Window *Window_p, int* width_p, int* height_p
     );
 
