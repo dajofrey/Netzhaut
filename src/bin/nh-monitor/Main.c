@@ -5,14 +5,14 @@
  */
 
 #include "nh-api/nh-api.h"
-#include "ttyr-api/ttyr-api.h"
+#include "tk-api/tk-api.h"
 
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 
-static ttyr_core_TTY *TTY_p = NULL;
+static tk_core_TTY *TTY_p = NULL;
 
 static void handleMonitorInput(
     nh_api_Window *Window_p, nh_api_WSIEvent Event)
@@ -20,7 +20,7 @@ static void handleMonitorInput(
     switch (Event.type)
     {
         case NH_API_WSI_EVENT_KEYBOARD :
-            ttyr_api_sendEvent(TTY_p, Event);
+            tk_api_sendEvent(TTY_p, Event);
             break;
     }
 }
@@ -35,19 +35,19 @@ static int openMonitor()
         return 1;
     }
 
-    ttyr_api_initialize();
+    tk_api_initialize();
 
-    TTY_p = ttyr_api_openTTY(NULL, Interface_p);
+    TTY_p = tk_api_openTTY(NULL, Interface_p);
     if (!TTY_p) {
         puts("Opening tty failed");
         return 1;
     }
 
-    if (ttyr_api_claimStandardIO(TTY_p) == 0) {return 0;}
+    if (tk_api_claimStandardIO(TTY_p) == 0) {return 0;}
 
     puts("Opening standard-IO monitor failed. Trying standalone monitor.");
 
-    ttyr_terminal_Terminal *Terminal_p = ttyr_api_openTerminal(NULL, TTY_p); 
+    tk_terminal_Terminal *Terminal_p = tk_api_openTerminal(NULL, TTY_p); 
     if (!Terminal_p) {
         puts("Opening terminal failed.");
         return 1;
@@ -72,7 +72,7 @@ static int openMonitor()
         return 1;
     } 
  
-    if (ttyr_api_setViewport(Terminal_p, Viewport_p)) {
+    if (tk_api_setViewport(Terminal_p, Viewport_p)) {
         puts("Setting viewport failed.");
         return 1;
     }

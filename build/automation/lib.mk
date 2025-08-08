@@ -448,7 +448,7 @@ lib-nh-monitor: $(LIB_NH_MONITOR)
 create_lib_dir:
 	mkdir -p lib
 download_termoskanne: 
-	git submodule update --init --checkout --force external/TTyr/
+	git submodule update --init --checkout --force external/Termoskanne/
 
 # Custom compiler flags
 $(OBJ_FILES_NH_CORE): CFLAGS += -lexternal
