@@ -135,7 +135,7 @@ static NH_SIGNAL nh_core_runConfigWorkloadCommand(
             nh_core_appendToList(&NH_CONFIG_UPDATER.Files, File_p);
             long length = 0;
             char *data_p = nh_core_getFileData(File_p->path_p, &length);
-//            nh_core_updateConfig(data_p, length, true, 1);
+            nh_core_updateConfig(data_p, length, 0);
             nh_core_free(data_p);
             break;
         }
