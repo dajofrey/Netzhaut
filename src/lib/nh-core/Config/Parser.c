@@ -136,14 +136,14 @@ static NH_API_RESULT nh_core_parseConfigToken(
 }
 
 NH_API_RESULT nh_core_parseRawConfig(
-    nh_core_RawConfig *Config_p, char *data_p, int length, nh_core_RawConfig *GlobalConfig_p)
+    nh_core_RawConfig *Result_p, char *data_p, int length, nh_core_RawConfig *GlobalConfig_p)
 {
     nh_ConfigTokenizer Tokenizer;
     nh_core_tokenizeConfig(&Tokenizer, data_p, length);
 
     nh_ConfigParser Parser;
     Parser.Token_p = Tokenizer.Tokens_p;
-    Parser.Config_p = Config_p;
+    Parser.Config_p = Result_p;
     Parser.GlobalConfig_p = GlobalConfig_p;
 
     while (Parser.Token_p->type != NH_CONFIG_TOKEN_EOF) {

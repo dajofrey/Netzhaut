@@ -102,78 +102,72 @@ static nh_core_List nh_core_copyConfigValues(
     return Values;
 }
 
-NH_API_RESULT nh_core_appendConfig(
-    char *data_p, int length, bool overwrite)
+NH_API_RESULT nh_core_updateConfig(
+    char *data_p, int length, unsigned int priority)
 {
-    nh_core_RawConfig Config = nh_core_initRawConfig();
-    nh_core_parseRawConfig(&Config, data_p, length, nh_core_getGlobalConfig());
+    nh_core_RawConfig NewConfig = nh_core_initRawConfig();
+    nh_core_parseRawConfig(&NewConfig, data_p, length, &NH_GLOBAL_CONFIG);
 
-    for (int i = 0; i < Config.Settings.size; ++i) {
-        nh_core_RawConfigSetting *NewSetting_p = Config.Settings.pp[i];
+    for (int i = 0; i < NewConfig.Settings.size; ++i) {
+        nh_core_RawConfigSetting *NewSetting_p = NewConfig.Settings.pp[i];
 
-        bool found = false;
-
-        // Overwrite default setting if no namespace.
-        for (int j = 0; j < NH_GLOBAL_CONFIG.Settings.size && strlen(NewSetting_p->namespace_p) == 0; ++j) {
-            nh_core_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
-            if (Setting_p == NewSetting_p->Default_p) {
-
-                found = true;
-                if (!overwrite) {break;}
-
-                // If the setting values match, nothing needs to be overwritten.
-                if (nh_core_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
-                    break;
-                } else {
-                    nh_core_freeList(&Setting_p->Values, true);
-                    Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
-                    Setting_p->mark = true;
-                    break;
-                }
+        if (NewSetting_p->Default_p) {
+            if (NewSetting_p->Default_p->priority > priority) {
+                // don't change setting if global priority is higher
+                continue;
+            }
+            // If the setting values match, nothing needs to be overwritten.
+            if (nh_core_matchConfigValues(&NewSetting_p->Default_p->Values, &NewSetting_p->Values)) {
+                continue;
+            } else {
+                nh_core_freeList(&NewSetting_p->Default_p->Values, true);
+                NewSetting_p->Default_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
+                NewSetting_p->Default_p->mark = true;
+                // update priority
+                NewSetting_p->Default_p->priority = priority;
+                continue;
             }
         }
 
-        // Overwrite custom setting if namespace.
-        for (int j = 0; j < NH_GLOBAL_CONFIG.Settings.size && strlen(NewSetting_p->namespace_p) > 0; ++j) {
-            nh_core_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
-            if (strlen(Setting_p->namespace_p) == 0) {continue;}
-            if (!strcmp(Setting_p->namespace_p, NewSetting_p->namespace_p) && Setting_p->Default_p == NewSetting_p->Default_p) {
+//        // Overwrite custom setting if namespace.
+//        for (int j = 0; j < NH_GLOBAL_CONFIG.Settings.size && strlen(NewSetting_p->namespace_p) > 0; ++j) {
+//            nh_core_RawConfigSetting *Setting_p = NH_GLOBAL_CONFIG.Settings.pp[j];
+//            if (strlen(Setting_p->namespace_p) == 0) {continue;}
+//            if (!strcmp(Setting_p->namespace_p, NewSetting_p->namespace_p) && Setting_p->Default_p == NewSetting_p->Default_p) {
+//
+//                found = true;
+//                if (!overwrite) {break;}
+//
+//                if (nh_core_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
+//                    break;
+//                } else {
+//                    nh_core_freeList(&Setting_p->Values, true);
+//                    Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
+//                    Setting_p->mark = true;
+//                    break;
+//                }
+//            }
+//        }
 
-                found = true;
-                if (!overwrite) {break;}
-
-                if (nh_core_matchConfigValues(&Setting_p->Values, &NewSetting_p->Values)) {
-                    break;
-                } else {
-                    nh_core_freeList(&Setting_p->Values, true);
-                    Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
-                    Setting_p->mark = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-
-            // If no matching global config setting was found, we have to add it if it's valid.
+        // If no matching global config setting was found, we have to add it if it's valid.
  
-            nh_core_RawConfigSetting *Allocated_p = malloc(sizeof(nh_core_RawConfigSetting));
-            NH_CORE_CHECK_MEM(Allocated_p)
+        nh_core_RawConfigSetting *Allocated_p = malloc(sizeof(nh_core_RawConfigSetting));
+        NH_CORE_CHECK_MEM(Allocated_p)
 
-            memset(Allocated_p, 0, sizeof(nh_core_RawConfigSetting));
+        memset(Allocated_p, 0, sizeof(nh_core_RawConfigSetting));
 
-            Allocated_p->name_p = malloc(sizeof(char)*(strlen(NewSetting_p->name_p)+1));
-            strcpy(Allocated_p->name_p, NewSetting_p->name_p);
-            Allocated_p->module = NewSetting_p->module;
-            Allocated_p->Default_p = NewSetting_p->Default_p;
-            Allocated_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
-            strcpy(Allocated_p->namespace_p, NewSetting_p->namespace_p);
+        Allocated_p->name_p = malloc(sizeof(char)*(strlen(NewSetting_p->name_p)+1));
+        strcpy(Allocated_p->name_p, NewSetting_p->name_p);
+        Allocated_p->module = NewSetting_p->module;
+        Allocated_p->Default_p = NULL;
+        Allocated_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
+        Allocated_p->priority = priority;
+        strcpy(Allocated_p->namespace_p, NewSetting_p->namespace_p);
 
-            NH_CORE_CHECK(nh_core_appendToList(&NH_GLOBAL_CONFIG.Settings, Allocated_p))
-        }
+        NH_CORE_CHECK(nh_core_appendToList(&NH_GLOBAL_CONFIG.Settings, Allocated_p))
     }
 
-    nh_core_freeRawConfig(&Config);
+    nh_core_freeRawConfig(&NewConfig);
 
     return NH_API_SUCCESS;
 }
@@ -189,7 +183,7 @@ NH_API_RESULT nh_core_overwriteGlobalConfigSetting(
         sprintf(config_p, "%s.%s:%s;", NH_MODULE_NAMES_PP[module], setting_p, value_p);
     }
 
-    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), true))
+    NH_CORE_CHECK(nh_core_updateConfig(config_p, strlen(config_p), 1))
 
     return NH_API_SUCCESS;
 }
@@ -213,7 +207,7 @@ NH_API_RESULT nh_core_overwriteGlobalConfigSettingInt(
         }
     }
 
-    NH_CORE_CHECK(nh_core_appendConfig(config_p, strlen(config_p), true))
+    NH_CORE_CHECK(nh_core_updateConfig(config_p, strlen(config_p), 1))
 
     return NH_API_SUCCESS;
 }

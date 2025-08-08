@@ -30,13 +30,15 @@
 // FUNCTIONS =======================================================================================
 
 nh_core_Loader *nh_core_initialize(
-    char *path_p, char *config_p, int length)
+    char *path_p, char *settings_p, unsigned int length)
 {
     nh_core_initGlobalConfig();
 
-    if (config_p != NULL && length > 0) {
-        nh_core_appendConfig(config_p, length, true);
+    if (settings_p != NULL && length > 0) {
+        // update config with 1 priority meaning it should always trump default settings
+        nh_core_updateConfig(settings_p, length, 1);
     }
+
     nh_core_initMemory();
     nh_core_initProcessPool();
     nh_core_createIndexMap();

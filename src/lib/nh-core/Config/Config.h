@@ -34,6 +34,7 @@
         struct nh_core_RawConfigSetting *Default_p;
         nh_core_List Values;
         bool mark;
+        unsigned int priority;
     } nh_core_RawConfigSetting;
 
     typedef struct nh_core_RawConfig {
@@ -62,8 +63,8 @@
         char *namespace_p, int _module, const char *name_p
     );
 
-    NH_API_RESULT nh_core_appendConfig(
-        char *data_p, int length, bool override
+    NH_API_RESULT nh_core_updateConfig(
+        char *data_p, int length, unsigned int priority
     );
     
     NH_API_RESULT nh_core_overwriteGlobalConfigSetting(
