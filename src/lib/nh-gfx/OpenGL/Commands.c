@@ -295,12 +295,10 @@ static NH_API_RESULT nh_gfx_glDrawArrays(
         *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p),
         *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[1])->p),
         *((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[2])->p));
-
     glDrawArrays(
         *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p),
         *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[1])->p),
         *((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[2])->p));
-
     return NH_API_SUCCESS;
 }
 

@@ -64,4 +64,8 @@ nh_gfx_Surface *nh_gfx_createSurface(
     nh_wsi_Window *Window_p
 );
 
+void nh_gfx_updateSurface(
+    void *surface_p
+);
+
 #endif 

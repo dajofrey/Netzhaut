@@ -27,4 +27,8 @@ NH_API_RESULT nh_gfx_destroyOpenGLCocoaContext(
     nh_gfx_OpenGLSurface *Surface_p
 );
 
+void nh_gfx_updateOpenGLCocoaContext(
+    nh_gfx_OpenGLSurface *Surface_p
+);
+
 #endif

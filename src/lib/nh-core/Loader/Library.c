@@ -111,11 +111,21 @@ void *nh_core_loadLibrary(
     char libPath_p[255] = {0};
 
     if (path_p) {
+#if defined(__APPLE__)
+        sprintf(libPath_p, "%s/lib%s.dylib", path_p, NH_MODULE_NAMES_PP[type]);
+        lib_p = nh_core_getLibraryHandle(libPath_p);
+#elif defined(__unix__)
         sprintf(libPath_p, "%s/lib%s.so", path_p, NH_MODULE_NAMES_PP[type]);
         lib_p = nh_core_getLibraryHandle(libPath_p);
+#endif
     } else {
+#if defined(__APPLE__)
+        sprintf(libPath_p, "lib%s.dylib", NH_MODULE_NAMES_PP[type]);
+        lib_p = nh_core_getLibraryHandle(libPath_p);
+#elif defined(__unix__)
         sprintf(libPath_p, "lib%s.so", NH_MODULE_NAMES_PP[type]);
         lib_p = nh_core_getLibraryHandle(libPath_p);
+#endif
     }
 
 //    if (lib_p == NULL && NH_LOADER.install) {
@@ -131,11 +141,17 @@ void *nh_core_loadExternalLibrary(
 {
     void *lib_p = NULL;
 
+#if defined(__unix__)
+    const char *ext_p = "so";
+#elif defined(__APPLE__)
+    const char *ext_p = "dylib";
+#endif
+
 #if defined(__unix__) || defined(__APPLE__)
 
     if (!path_p) {
         char libPath_p[255];
-        sprintf(libPath_p, "lib%s.so", name_p);
+        sprintf(libPath_p, "lib%s.%s", name_p, ext_p);
         lib_p = nh_core_getLibraryHandle(libPath_p);
         return lib_p;
     }
@@ -146,7 +162,7 @@ void *nh_core_loadExternalLibrary(
     char *p = strtok(path2_p, ":");
     while (p != NULL && !lib_p) {
         char libPath_p[255];
-        sprintf(libPath_p, "%s/lib%s.so", p, name_p);
+        sprintf(libPath_p, "%s/lib%s.%s", p, name_p, ext_p);
         lib_p = nh_core_getLibraryHandle(libPath_p);
  	p = strtok(NULL, ":");
     }

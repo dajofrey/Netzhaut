@@ -40,8 +40,6 @@ void nh_wsi_sendWindowEvent(
     Event.Window.type        = type;
     Event.Window.Position.x  = x;
     Event.Window.Position.y  = y;
-    Event.Window.Size.width  = width;
-    Event.Window.Size.height = height;
     Event.Window.PixelSize.width  = pixelWidth;
     Event.Window.PixelSize.height = pixelHeight;
 

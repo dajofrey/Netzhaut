@@ -68,9 +68,17 @@ NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
 
     CGLContextObj cglContext = [context CGLContextObj];
     Surface_p->Context_p = cglContext;
+    Surface_p->OpenGLContext_p = context;
     Surface_p->PixelFormat_p = (__bridge_retained void *)pixelFormat;
 
     return NH_API_SUCCESS;
+}
+
+void nh_gfx_updateOpenGLCocoaContext(
+    nh_gfx_OpenGLSurface *Surface_p)
+{
+    // this is needed after resize
+    [Surface_p->OpenGLContext_p update];
 }
 
 NH_API_RESULT nh_gfx_destroyOpenGLCocoaContext(

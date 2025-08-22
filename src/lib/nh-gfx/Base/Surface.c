@@ -158,6 +158,23 @@ void nh_gfx_freeSurface(
     return;
 }
 
+void nh_gfx_updateSurface(
+    void *surface_p)
+{
+    nh_gfx_Surface *Surface_p = surface_p;
+
+    switch (Surface_p->api)
+    {
+        case NH_GFX_API_VULKAN : 
+            break;
+        case NH_GFX_API_OPENGL : 
+            nh_gfx_updateOpenGLSurface(&Surface_p->OpenGL, (nh_api_Window*)Surface_p->Window_p);
+            break;
+    }
+
+    return;
+}
+
 static NH_API_RESULT nh_gfx_getSortedViewports(
     nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p)
 {
@@ -319,7 +336,8 @@ nh_gfx_Surface *nh_gfx_createSurface(
     Args.Window_p = Window_p;
     Args.api = nh_gfx_getConfig().api;
 
-    nh_gfx_Surface *Surface_p = nh_core_activateWorkload(nh_gfx_initSurface, nh_gfx_runSurface, nh_gfx_freeSurface, NULL, &Args, true);
+    nh_gfx_Surface *Surface_p = 
+        nh_core_activateWorkload(nh_gfx_initSurface, nh_gfx_runSurface, nh_gfx_freeSurface, NULL, &Args, true);
 
     Window_p->surface_p = Surface_p;
 

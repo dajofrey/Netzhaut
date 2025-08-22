@@ -111,8 +111,10 @@ NH_API_RESULT nh_api_initialize(
 {
     if (CORE_P != NULL || LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
 
-#if defined(__APPLE__) || defined(__unix__)
+#if defined(__unix__)
     CORE_P = nh_api_openCoreLibrary("libnh-core.so");
+#elif defined(__APPLE__)
+    CORE_P = nh_api_openCoreLibrary("libnh-core.dylib");
 #endif
 
     bool fallback = !CORE_P && path_p != NULL;

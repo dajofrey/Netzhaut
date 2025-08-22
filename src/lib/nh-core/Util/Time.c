@@ -14,6 +14,10 @@
 #include <time.h>
 #include <stdarg.h>
 
+#if defined(__APPLE__) 
+    #include <sys/time.h>
+#endif
+
 // FUNCTIONS =======================================================================================
 
 nh_GeneralTime nh_humanizeSeconds(
@@ -33,7 +37,7 @@ nh_LocalTime nh_core_getLocalTime()
 {
     nh_LocalTime Time;
 
-#ifdef __unix__ 	
+#if defined(__unix__) || defined(__APPLE__)
     time_t t = time(NULL);
     struct tm *p = localtime(&t);
     Time.seconds = p->tm_sec;  
@@ -56,7 +60,7 @@ nh_core_SystemTime nh_core_getSystemTime()
 {
     nh_core_SystemTime Time;
 
-#ifdef __unix__ 	
+#if defined(__unix__) || defined(__APPLE__)
     struct timeval LTime;
     gettimeofday(&LTime, NULL);
     Time.seconds      = LTime.tv_sec;  
@@ -74,7 +78,7 @@ double nh_core_getSystemTimeDiffInSeconds(
     nh_core_SystemTime Time1, nh_core_SystemTime Time2)
 {
     double diff;
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
     diff  = (double) (Time2.microseconds - Time1.microseconds) / 1000000 +
             (double) (Time2.seconds - Time1.seconds);
 #elif defined(_WIN32) || defined(WIN32)

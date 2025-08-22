@@ -92,3 +92,22 @@ NH_API_RESULT nh_gfx_destroyOpenGLSurface(
     
     return NH_API_SUCCESS;
 }
+
+NH_API_RESULT nh_gfx_updateOpenGLSurface(
+    nh_gfx_OpenGLSurface *Surface_p, nh_api_Window *Window_p)
+{
+    switch (((nh_wsi_Window*)Window_p)->type) {
+        case NH_WSI_TYPE_X11 :
+            break;
+        case NH_WSI_TYPE_COCOA :
+#if defined(__APPLE__)
+            nh_gfx_updateOpenGLCocoaContext(Surface_p);
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
+    }
+
+    return NH_API_SUCCESS;
+}
+

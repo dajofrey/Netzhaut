@@ -23,6 +23,7 @@ typedef struct nh_gfx_OpenGLSurface {
     GLXContext Context_p;
 #elif __APPLE__
     void* Context_p; // CGLContext
+    void* OpenGLContext_p;
     void* PixelFormat_p;
 #endif
     nh_gfx_OpenGLCommandBuffer *CommandBuffers_p;
@@ -40,6 +41,10 @@ NH_API_RESULT nh_gfx_createOpenGLSurface(
 );
 
 NH_API_RESULT nh_gfx_destroyOpenGLSurface(
+    nh_gfx_OpenGLSurface *Surface_p, nh_api_Window *Window_p
+);
+
+NH_API_RESULT nh_gfx_updateOpenGLSurface(
     nh_gfx_OpenGLSurface *Surface_p, nh_api_Window *Window_p
 );
 

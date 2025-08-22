@@ -169,6 +169,11 @@ typedef enum NH_API_KEY_E {
     NH_API_KEY_F33,
     NH_API_KEY_F34,
     NH_API_KEY_F35,
+    // Apple
+    NH_API_KEY_COMMAND_L,
+    NH_API_KEY_COMMAND_R,
+    NH_API_KEY_OPTION_L,
+    NH_API_KEY_OPTION_R,
 } NH_API_KEY_E;
 
 typedef enum NH_API_MOUSE_E {
@@ -215,7 +220,6 @@ typedef struct NH_ALIGN_16 nh_api_PixelSize {
 typedef struct NH_ALIGN_16 nh_api_WindowEvent {
     NH_API_WINDOW_E type;
     nh_api_PixelPosition Position;
-    nh_api_PixelSize Size;
     nh_api_PixelSize PixelSize;
 } nh_api_WindowEvent;
 

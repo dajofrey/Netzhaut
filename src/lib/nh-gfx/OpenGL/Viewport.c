@@ -52,7 +52,7 @@ NH_API_RESULT nh_gfx_beginOpenGLRecording(
         nh_gfx_glint(NULL, Viewport_p->Settings.Position.y+Viewport_p->Settings.borderWidth),
         nh_gfx_glsizei(NULL, Viewport_p->Settings.Size.width-(Viewport_p->Settings.borderWidth*2)),
         nh_gfx_glsizei(NULL, Viewport_p->Settings.Size.height-(Viewport_p->Settings.borderWidth*2)));
- 
+
     nh_gfx_addOpenGLCommand(
         Viewport_p->OpenGL.CommandBuffer_p, 
         "glColorMask",

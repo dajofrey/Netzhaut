@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CAMetalLayer.h>
+#import <Carbon/Carbon.h>
 
 #include "Window.h"
 #include "WindowPrivate.h"
@@ -32,20 +33,22 @@
     if (!Window_p) return;
 
     NSWindow *window = [notification object];
-
-    NSRect contentRect = [window contentRectForFrameRect:[window frame]];
     NSView *view = [window contentView];
+
+    NSRect bounds = view.bounds; // in points
     CGFloat scale = [window backingScaleFactor];
 
-    int pointWidth  = (int)contentRect.size.width;
-    int pointHeight = (int)contentRect.size.height;
+    int pointWidth  = (int)bounds.size.width;
+    int pointHeight = (int)bounds.size.height;
+    int pixelWidth  = (int)lround(bounds.size.width  * scale);
+    int pixelHeight = (int)lround(bounds.size.height * scale);
 
-    int pixelWidth  = (int)(contentRect.size.width  * scale);
-    int pixelHeight = (int)(contentRect.size.height * scale);
+    // Optional: window position in screen coordinates
+    NSRect screenFrame = [window frame];
 
     nh_wsi_sendWindowEvent(Window_p,
         NH_API_WINDOW_CONFIGURE,
-        contentRect.origin.x, contentRect.origin.y,
+        (int)screenFrame.origin.x, (int)screenFrame.origin.y,
         pointWidth, pointHeight,
         pixelWidth, pixelHeight);
 }
@@ -74,14 +77,14 @@
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
-    if (!Window_p) return;
-    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0, 0, 0);
+//    if (!Window_p) return;
+//    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_IN, 0, 0, 0, 0, 0, 0);
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification
 {
-    if (!Window_p) return;
-    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0, 0, 0);
+//    if (!Window_p) return;
+//    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0, 0, 0);
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender
@@ -116,20 +119,35 @@
 
 - (void)mouseDown:(NSEvent *)event
 {
-    NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
-    nh_wsi_sendMouseEvent(Window_p, point.x, point.y, NH_API_TRIGGER_PRESS, NH_API_MOUSE_LEFT);
+    NSPoint winPoint   = [event locationInWindow];
+    NSPoint localPoint = [self.contentView convertPoint:winPoint fromView:nil];
+    localPoint.y = self.contentView.bounds.size.height - localPoint.y;
+    CGFloat scale = self.backingScaleFactor;
+    int px = (int)lround(localPoint.x * scale);
+    int py = (int)lround(localPoint.y * scale);
+    nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_PRESS, NH_API_MOUSE_LEFT);
 }
 
 - (void)mouseUp:(NSEvent *)event
 {
-    NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
-    nh_wsi_sendMouseEvent(Window_p, point.x, point.y, NH_API_TRIGGER_RELEASE, NH_API_MOUSE_LEFT);
+    NSPoint winPoint   = [event locationInWindow];
+    NSPoint localPoint = [self.contentView convertPoint:winPoint fromView:nil];
+    localPoint.y = self.contentView.bounds.size.height - localPoint.y;
+    CGFloat scale = self.backingScaleFactor;
+    int px = (int)lround(localPoint.x * scale);
+    int py = (int)lround(localPoint.y * scale);
+    nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_RELEASE, NH_API_MOUSE_LEFT);
 }
 
 - (void)mouseMoved:(NSEvent *)event
 {
-    NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
-    nh_wsi_sendMouseEvent(Window_p, point.x, point.y, NH_API_TRIGGER_MOVE, NH_API_MOUSE_MOVE);
+    NSPoint winPoint   = [event locationInWindow];
+    NSPoint localPoint = [self.contentView convertPoint:winPoint fromView:nil];
+    localPoint.y = self.contentView.bounds.size.height - localPoint.y;
+    CGFloat scale = self.backingScaleFactor;
+    int px = (int)lround(localPoint.x * scale);
+    int py = (int)lround(localPoint.y * scale);
+    nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_MOVE, NH_API_MOUSE_MOVE);
 }
 
 - (void)mouseDragged:(NSEvent *)event
@@ -140,14 +158,24 @@
 
 - (void)rightMouseDown:(NSEvent *)event
 {
-    NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
-    nh_wsi_sendMouseEvent(Window_p, point.x, point.y, NH_API_TRIGGER_PRESS, NH_API_MOUSE_RIGHT);
+    NSPoint winPoint   = [event locationInWindow];
+    NSPoint localPoint = [self.contentView convertPoint:winPoint fromView:nil];
+    localPoint.y = self.contentView.bounds.size.height - localPoint.y;
+    CGFloat scale = self.backingScaleFactor;
+    int px = (int)lround(localPoint.x * scale);
+    int py = (int)lround(localPoint.y * scale);
+    nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_PRESS, NH_API_MOUSE_RIGHT);
 }
 
 - (void)rightMouseUp:(NSEvent *)event
 {
-    NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
-    nh_wsi_sendMouseEvent(Window_p, point.x, point.y, NH_API_TRIGGER_RELEASE, NH_API_MOUSE_RIGHT);
+    NSPoint winPoint   = [event locationInWindow];
+    NSPoint localPoint = [self.contentView convertPoint:winPoint fromView:nil];
+    localPoint.y = self.contentView.bounds.size.height - localPoint.y;
+    CGFloat scale = self.backingScaleFactor;
+    int px = (int)lround(localPoint.x * scale);
+    int py = (int)lround(localPoint.y * scale);
+    nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_RELEASE, NH_API_MOUSE_RIGHT);
 }
 
 - (void)rightMouseDragged:(NSEvent *)event
@@ -177,44 +205,71 @@
 - (void)scrollWheel:(NSEvent *)event
 {
     NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
-    nh_wsi_sendMouseEvent(Window_p, point.x, point.y, NH_API_TRIGGER_MOVE, NH_API_MOUSE_SCROLL);
+
+    // Use precise deltas if available (trackpad / Magic Mouse)
+    CGFloat dy = event.hasPreciseScrollingDeltas ? event.scrollingDeltaY : event.deltaY;
+    CGFloat dx = event.hasPreciseScrollingDeltas ? event.scrollingDeltaX : event.deltaX;
+
+    if (dy > 0) {
+        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+                              NH_API_TRIGGER_UP, NH_API_MOUSE_SCROLL);
+    } else if (dy < 0) {
+        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+                              NH_API_TRIGGER_DOWN, NH_API_MOUSE_SCROLL);
+    }
 }
 
 - (void)keyDown:(NSEvent *)event
 {
     NH_ENCODING_UTF32 codepoint = [event.characters characterAtIndex:0];
-    NH_API_KEY_E special = 0;
     NH_API_TRIGGER_E trigger = NH_API_TRIGGER_PRESS;
     NH_API_MODIFIER_FLAG state = 0;
-    
+    NH_API_KEY_E special = 0;
+   
     if (event.modifierFlags & NSEventModifierFlagShift) state |= NH_API_MODIFIER_SHIFT;
     if (event.modifierFlags & NSEventModifierFlagControl) state |= NH_API_MODIFIER_CONTROL;
     if (event.modifierFlags & NSEventModifierFlagOption) state |= NH_API_MODIFIER_MOD1;
     if (event.modifierFlags & NSEventModifierFlagCommand) state |= NH_API_MODIFIER_MOD4;
-    
+
+    switch ([event keyCode]) {
+        case kVK_LeftArrow:  special = NH_API_KEY_KP_LEFT;  break;
+        case kVK_UpArrow:    special = NH_API_KEY_KP_UP;    break;
+        case kVK_RightArrow: special = NH_API_KEY_KP_RIGHT; break;
+        case kVK_DownArrow:  special = NH_API_KEY_KP_DOWN;  break;
+    }
+
+    if (special) {codepoint = 0;}
+
     nh_wsi_sendKeyboardEvent(Window_p, codepoint, special, trigger, state);
 }
 
 - (void)keyUp:(NSEvent *)event
 {
     NH_ENCODING_UTF32 codepoint = [event.characters characterAtIndex:0];
-    NH_API_KEY_E special = 0;
     NH_API_TRIGGER_E trigger = NH_API_TRIGGER_RELEASE;
     NH_API_MODIFIER_FLAG state = 0;
-    
+    NH_API_KEY_E special = 0;
+   
     if (event.modifierFlags & NSEventModifierFlagShift) state |= NH_API_MODIFIER_SHIFT;
     if (event.modifierFlags & NSEventModifierFlagControl) state |= NH_API_MODIFIER_CONTROL;
     if (event.modifierFlags & NSEventModifierFlagOption) state |= NH_API_MODIFIER_MOD1;
     if (event.modifierFlags & NSEventModifierFlagCommand) state |= NH_API_MODIFIER_MOD4;
-    
+
+    switch ([event keyCode]) {
+        case kVK_LeftArrow:  special = NH_API_KEY_KP_LEFT;  break;
+        case kVK_UpArrow:    special = NH_API_KEY_KP_UP;    break;
+        case kVK_RightArrow: special = NH_API_KEY_KP_RIGHT; break;
+        case kVK_DownArrow:  special = NH_API_KEY_KP_DOWN;  break;
+    }
+
+    if (special) {codepoint = 0;}
+
     nh_wsi_sendKeyboardEvent(Window_p, codepoint, special, trigger, state);
 }
 
 - (void)flagsChanged:(NSEvent *)event
 {
     NH_ENCODING_UTF32 codepoint = 0;
-    NH_API_KEY_E special = 0;
-    NH_API_TRIGGER_E trigger = NH_API_TRIGGER_PRESS;
     NH_API_MODIFIER_FLAG state = 0;
     
     if (event.modifierFlags & NSEventModifierFlagShift) state |= NH_API_MODIFIER_SHIFT;
@@ -222,6 +277,71 @@
     if (event.modifierFlags & NSEventModifierFlagOption) state |= NH_API_MODIFIER_MOD1;
     if (event.modifierFlags & NSEventModifierFlagCommand) state |= NH_API_MODIFIER_MOD4;
     
+    NH_API_KEY_E special = 0;
+    NH_API_TRIGGER_E trigger = NH_API_TRIGGER_PRESS;
+ 
+    switch (event.keyCode) {
+        case kVK_Control:
+            if (event.modifierFlags & NSEventModifierFlagControl) {
+                special = NH_API_KEY_CONTROL_L;
+                trigger = NH_API_TRIGGER_PRESS;
+            } else {
+                special = NH_API_KEY_CONTROL_L;
+                trigger = NH_API_TRIGGER_RELEASE;
+            }
+            break;
+
+        case kVK_RightControl:
+            if (event.modifierFlags & NSEventModifierFlagControl) {
+                special = NH_API_KEY_CONTROL_R;
+                trigger = NH_API_TRIGGER_PRESS;
+            } else {
+                special = NH_API_KEY_CONTROL_R;
+                trigger = NH_API_TRIGGER_RELEASE;
+            }
+            break;
+
+        case kVK_Option:
+            if (event.modifierFlags & NSEventModifierFlagOption) {
+                special = NH_API_KEY_OPTION_L;
+                trigger = NH_API_TRIGGER_PRESS;
+            } else {
+                special = NH_API_KEY_OPTION_L;
+                trigger = NH_API_TRIGGER_RELEASE;
+            }
+            break;
+
+        case kVK_RightOption:
+            if (event.modifierFlags & NSEventModifierFlagOption) {
+                special = NH_API_KEY_OPTION_R;
+                trigger = NH_API_TRIGGER_PRESS;
+            } else {
+                special = NH_API_KEY_OPTION_R;
+                trigger = NH_API_TRIGGER_RELEASE;
+            }
+            break;
+
+        case kVK_Command:
+            if (event.modifierFlags & NSEventModifierFlagCommand) {
+                special = NH_API_KEY_COMMAND_L;
+                trigger = NH_API_TRIGGER_PRESS;
+            } else {
+                special = NH_API_KEY_COMMAND_L;
+                trigger = NH_API_TRIGGER_RELEASE;
+            }
+            break;
+
+        case kVK_RightCommand:
+            if (event.modifierFlags & NSEventModifierFlagCommand) {
+                special = NH_API_KEY_COMMAND_R;
+                trigger = NH_API_TRIGGER_PRESS;
+            } else {
+                special = NH_API_KEY_COMMAND_R;
+                trigger = NH_API_TRIGGER_RELEASE;
+            }
+            break;
+    }
+
     nh_wsi_sendKeyboardEvent(Window_p, codepoint, special, trigger, state);
 }
 
