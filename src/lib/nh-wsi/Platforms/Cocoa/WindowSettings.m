@@ -15,7 +15,7 @@ NH_API_RESULT nh_wsi_setCocoaWindowBackgroundColor(
     nh_wsi_CocoaWindow *Window_p, nh_css_Color Color)
 {
     @autoreleasepool {
-        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }
@@ -33,7 +33,7 @@ NH_API_RESULT nh_wsi_setCocoaWindowTitle(
     nh_wsi_CocoaWindow *Window_p, char *title_p)
 {
     @autoreleasepool {
-        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }
@@ -47,7 +47,7 @@ NH_API_RESULT nh_wsi_setCocoaWindowDecorated(
     nh_wsi_CocoaWindow *Window_p, bool decorated)
 {
     @autoreleasepool {
-        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }
@@ -71,7 +71,7 @@ NH_API_RESULT nh_wsi_setCocoaWindowState(
     nh_wsi_CocoaWindow *Window_p, bool *state_p)
 {
     @autoreleasepool {
-        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }
@@ -101,7 +101,7 @@ NH_API_RESULT nh_wsi_setCocoaWindowMouseCursor(
     nh_wsi_CocoaWindow *Window_p, NH_WSI_CURSOR_E cursor)
 {
     @autoreleasepool {
-        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }

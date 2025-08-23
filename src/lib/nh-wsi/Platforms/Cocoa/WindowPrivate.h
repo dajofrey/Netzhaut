@@ -6,14 +6,14 @@
 
 #include "Window.h"
 
-@interface NHWindowDelegate : NSObject <NSWindowDelegate>
+@interface CustomWindowDelegate : NSObject <NSWindowDelegate>
 {
     nh_wsi_Window *Window_p;
 }
 - (instancetype)initWithWindow:(nh_wsi_Window *)window;
 @end
 
-@interface NHWindow : NSWindow
+@interface CustomWindow : NSWindow
 {
     nh_wsi_Window *Window_p;
 }

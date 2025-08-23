@@ -17,7 +17,67 @@
 
 // Private Objective-C interfaces and implementations
 
-@implementation NHWindowDelegate
+@interface CustomView : NSView
+@property (nonatomic, assign) void *Window_p;
+@end
+
+@implementation CustomView
+
+// Tell AppKit: yes, I want key events
+- (BOOL)acceptsFirstResponder {
+    return YES;
+}
+
+- (BOOL)becomeFirstResponder {
+    return YES;
+}
+
+- (BOOL)resignFirstResponder {
+    return YES;
+}
+
+- (void)rightMouseDown:(NSEvent *)event
+{
+    // Convert from window coordinates into this view's local coordinates
+    NSPoint winPoint   = [event locationInWindow];
+    NSPoint localPoint = [self convertPoint:winPoint fromView:nil];
+
+    // Flip Y if your C API expects origin at bottom-left
+    localPoint.y = self.bounds.size.height - localPoint.y;
+
+    // Use the window's backingScaleFactor for Retina support
+    CGFloat scale = self.window.backingScaleFactor;
+    int px = (int)lround(localPoint.x * scale);
+    int py = (int)lround(localPoint.y * scale);
+
+    // Use the pointer you injected into the view
+    nh_wsi_sendMouseEvent(self.Window_p, px, py,
+                          NH_API_TRIGGER_PRESS, NH_API_MOUSE_RIGHT);
+}
+
+- (void)rightMouseUp:(NSEvent *)event
+{
+    // Convert from window coordinates into this view's local coordinates
+    NSPoint winPoint   = [event locationInWindow];
+    NSPoint localPoint = [self convertPoint:winPoint fromView:nil];
+
+    // Flip Y if your API expects origin at bottom-left
+    localPoint.y = self.bounds.size.height - localPoint.y;
+
+    // Use the window's backingScaleFactor for Retina displays
+    CGFloat scale = self.window.backingScaleFactor;
+    int px = (int)lround(localPoint.x * scale);
+    int py = (int)lround(localPoint.y * scale);
+
+    // Send mouse release event to your API
+    nh_wsi_sendMouseEvent(self.Window_p, px, py,
+                          NH_API_TRIGGER_RELEASE,
+                          NH_API_MOUSE_RIGHT);
+}
+
+@end
+
+@implementation CustomWindowDelegate
 
 - (instancetype)initWithWindow:(nh_wsi_Window *)window
 {
@@ -97,8 +157,7 @@
 
 @end
 
-
-@implementation NHWindow
+@implementation CustomWindow
 
 - (instancetype)initWithWindow:(nh_wsi_Window *)window 
                   contentRect:(NSRect)contentRect
@@ -156,28 +215,6 @@
     nh_wsi_sendMouseEvent(Window_p, point.x, point.y, NH_API_TRIGGER_MOVE, NH_API_MOUSE_LEFT);
 }
 
-- (void)rightMouseDown:(NSEvent *)event
-{
-    NSPoint winPoint   = [event locationInWindow];
-    NSPoint localPoint = [self.contentView convertPoint:winPoint fromView:nil];
-    localPoint.y = self.contentView.bounds.size.height - localPoint.y;
-    CGFloat scale = self.backingScaleFactor;
-    int px = (int)lround(localPoint.x * scale);
-    int py = (int)lround(localPoint.y * scale);
-    nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_PRESS, NH_API_MOUSE_RIGHT);
-}
-
-- (void)rightMouseUp:(NSEvent *)event
-{
-    NSPoint winPoint   = [event locationInWindow];
-    NSPoint localPoint = [self.contentView convertPoint:winPoint fromView:nil];
-    localPoint.y = self.contentView.bounds.size.height - localPoint.y;
-    CGFloat scale = self.backingScaleFactor;
-    int px = (int)lround(localPoint.x * scale);
-    int py = (int)lround(localPoint.y * scale);
-    nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_RELEASE, NH_API_MOUSE_RIGHT);
-}
-
 - (void)rightMouseDragged:(NSEvent *)event
 {
     NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
@@ -221,7 +258,12 @@
 
 - (void)keyDown:(NSEvent *)event
 {
-    NH_ENCODING_UTF32 codepoint = [event.characters characterAtIndex:0];
+    NH_ENCODING_UTF32 codepoint = 0;
+ 
+    if (event.characters.length > 0) {
+        codepoint = [event.characters characterAtIndex:0];
+    }
+
     NH_API_TRIGGER_E trigger = NH_API_TRIGGER_PRESS;
     NH_API_MODIFIER_FLAG state = 0;
     NH_API_KEY_E special = 0;
@@ -245,7 +287,12 @@
 
 - (void)keyUp:(NSEvent *)event
 {
-    NH_ENCODING_UTF32 codepoint = [event.characters characterAtIndex:0];
+    NH_ENCODING_UTF32 codepoint = 0;
+
+    if (event.characters.length > 0) {
+        codepoint = [event.characters characterAtIndex:0];
+    }
+
     NH_API_TRIGGER_E trigger = NH_API_TRIGGER_RELEASE;
     NH_API_MODIFIER_FLAG state = 0;
     NH_API_KEY_E special = 0;
@@ -354,7 +401,7 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
 {
     @autoreleasepool {
         // Create window delegate
-        NHWindowDelegate *delegate = [[NHWindowDelegate alloc] initWithWindow:(nh_wsi_Window*)Window_p];
+        CustomWindowDelegate *delegate = [[CustomWindowDelegate alloc] initWithWindow:(nh_wsi_Window*)Window_p];
         
         // Convert coordinates from bottom-left to top-left origin
         NSRect screenRect = [[NSScreen mainScreen] frame];
@@ -373,7 +420,7 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
         }
         
         // Create window
-        NHWindow *window = [[NHWindow alloc] initWithWindow:(nh_wsi_Window*)Window_p
+        CustomWindow *window = [[CustomWindow alloc] initWithWindow:(nh_wsi_Window*)Window_p
                                               contentRect:contentRect
                                               styleMask:styleMask
                                               backing:NSBackingStoreBuffered
@@ -387,6 +434,14 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
         [window setTitle:[NSString stringWithUTF8String:Config.title_p]];
         [window setAcceptsMouseMovedEvents:YES];
         
+        // Replace default contentView with custom one
+        CustomView *view = [[CustomView alloc] initWithFrame:contentRect];
+        view.Window_p = Window_p;
+        [window setContentView:view];
+        
+        // Make sure it gets keyboard focus
+        [window makeFirstResponder:view];
+
 //        // Create metal layer for rendering
 //        CAMetalLayer *layer = [CAMetalLayer layer];
 //        [window.contentView setWantsLayer:YES];
@@ -409,14 +464,14 @@ NH_API_RESULT nh_wsi_destroyCocoaWindow(
 {
     @autoreleasepool {
         if (Window_p->Handle) {
-            NHWindow *window = (__bridge_transfer NHWindow*)Window_p->Handle;
+            CustomWindow *window = (__bridge_transfer CustomWindow*)Window_p->Handle;
             [window setDelegate:nil];
             [window close];
             Window_p->Handle = NULL;
         }
         
         if (Window_p->Delegate) {
-            NHWindowDelegate *delegate = (__bridge_transfer NHWindowDelegate*)Window_p->Delegate;
+            CustomWindowDelegate *delegate = (__bridge_transfer CustomWindowDelegate*)Window_p->Delegate;
             Window_p->Delegate = NULL;
         }
         
@@ -482,7 +537,7 @@ NH_API_RESULT nh_wsi_moveCocoaWindow(
     nh_wsi_CocoaWindow *Window_p)
 {
     @autoreleasepool {
-        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }
@@ -509,7 +564,7 @@ NH_API_RESULT nh_wsi_getCocoaWindowSize(
     }
 
     @autoreleasepool {
-        NHWindow *window = (__bridge NHWindow*)Window_p->Handle;
+        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }

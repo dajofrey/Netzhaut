@@ -19,7 +19,7 @@
 
 typedef struct NH_ALIGN_16 nh_wsi_CocoaWindow {
     void *Handle;      // NSWindow* (opaque pointer)
-    void *Delegate;    // NHWindowDelegate* (opaque pointer)
+    void *Delegate;    // CustomWindowDelegate* (opaque pointer)
     void *Layer;       // CAMetalLayer* (opaque pointer)
     struct NH_ALIGN_16 {
         double x, y, width, height;
