@@ -75,7 +75,7 @@ static nh_ecmascript_Realm *nh_ecmascript_setRealmGlobalObject(
 }
 
 // corresponds to https://www.262.ecma-international.org/11.0/index.html#sec-initializehostdefinedrealm
-NH_API_RESULT nh_ecmascript_initializeBrowserRealm(
+NH_API_RESULT nh_ecmascript_initializeHostDefinedRealm(
     nh_ecmascript_Agent *Agent_p, nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p)
 {
     nh_ecmascript_Realm *Realm_p = nh_ecmascript_createRealm();

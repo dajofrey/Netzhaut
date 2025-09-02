@@ -203,7 +203,7 @@ static void *nh_core_initSystemWorkload(
     Workload_p->path_p = path_p;
     Workload_p->module = NH_MODULE_CORE;
 
-    return NH_SIGNAL_OK;
+    return NULL;
 }
 
 static NH_SIGNAL nh_core_runSystemWorkload(

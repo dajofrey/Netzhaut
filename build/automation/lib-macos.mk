@@ -72,6 +72,7 @@ SRC_FILES_NH_CORE = \
     Util/BigInt.c \
     Util/ArrayList.c \
     Util/Debug.c \
+    Util/Queue.c \
     Config/Parser.c \
     Config/Tokenizer.c \
     Config/Config.c \
@@ -158,6 +159,7 @@ SRC_FILES_NH_WEBIDL = \
     Common/About.c \
 
 SRC_FILES_NH_ECMASCRIPT = \
+    Engine/Runtime.c \
     Engine/Lexer.c \
     Engine/Agent.c \
     Engine/Script.c \

@@ -35,32 +35,49 @@ static nh_html_Agent nh_html_createAgent(
     return Agent;
 }
 
-NH_API_RESULT nh_html_obtainSimilarOriginWindowAgent(
-    nh_html_Origin Origin, nh_html_BrowsingContextGroup *Group_p, bool requestsOAC,
+static nh_html_Site *nh_html_obtainSite(
+    *nh_html_Origin Origin_p)
+{
+    // TODO
+    return NULL;
+}
+
+void *nh_html_obtainSimilarOriginWindowAgent(
+    nh_html_Origin *Origin_p, nh_html_BrowsingContextGroup *Group_p, bool requestsOAC,
     nh_ecmascript_Agent **Agent_pp)
 {
-    nh_html_Site Site = nh_html_obtainSite(Origin);
-    nh_html_Site Key = Site;
-    if (Group.crossOriginIsolationMode == "none") {
-        Key = Origin;
-    } else if (Group.historicalAgentClusterKeyMap[Origin] exists) {
-        Key = Group.historicalAgentClusterKeyMap[Origin];
-    } else {
-        if (requestsOAC) {
-            Key = Origin;
-            Group.historicalAgentClusterKeyMap[Origin] = Key;
-        }
-    }
-    if (Group.agentClusterKeymap[key] doesnt exist) {
-        nh_ecmascript_AgentCluster AgentCluster_p = nh_ecmascript_createAgentCluster();
-        AgentCluster_p->crossOriginIsolationMode = Group_p->crossOriginIsolationMode;
-        if (nh_html_isOrigin(Key)) {
-            AgentCluster_p->isOriginKeyed = true;
-        }
-        nh_html_Agent *Agent_p = nh_html_createAgent(false);
-        nh_core_addToList(&AgentCluster_p->Agents, Agent_p);
-        Group_p->AgentClusterMap[key] = AgentCluster;
-    }
-    *Agent_pp = Group.AgentClusterMap[key].SimilarOriginWindowAgent;
-    return NH_API_SUCCESS;
+//    nh_html_Site *Site_p = nh_html_obtainSite(Origin_p);
+//    nh_html_Site *Key_p = Site_p;
+//
+//    if (Group.crossOriginIsolationMode == "none") {
+//        Key = Origin;
+//    } else if (Group.historicalAgentClusterKeyMap[Origin] exists) {
+//        Key = Group.historicalAgentClusterKeyMap[Origin];
+//    } else {
+//        if (requestsOAC) {
+//            Key = Origin;
+//            Group.historicalAgentClusterKeyMap[Origin] = Key;
+//        }
+//    }
+//    if (Group.agentClusterKeymap[key] doesnt exist) {
+//        nh_ecmascript_AgentCluster AgentCluster_p = nh_ecmascript_createAgentCluster();
+//        AgentCluster_p->crossOriginIsolationMode = Group_p->crossOriginIsolationMode;
+//        if (nh_html_isOrigin(Key)) {
+//            AgentCluster_p->isOriginKeyed = true;
+//        }
+//        nh_html_Agent *Agent_p = nh_html_createAgent(false);
+//        nh_core_addToList(&AgentCluster_p->Agents, Agent_p);
+//        Group_p->AgentClusterMap[key] = AgentCluster;
+//    }
+//    *Agent_pp = Group.AgentClusterMap[key].SimilarOriginWindowAgent;
+    return NULL;
+}
+
+nh_html_createRealm(
+    nh_html_Agent *Agent_p)
+{
+    nh_ecmascript_initializeHostDefinedRealm();
+    currentContext = agent.ExecutionContextStack[agent.ExecutionContextStack.length - 1]
+
+    return currentContext;
 }

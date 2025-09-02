@@ -54,7 +54,7 @@ NH_API_RESULT nh_html_createNewBrowsingContextAndDocument(
     Origin_p = nh_html_determineTheOrigin(AboutBlank, sandboxFlags, CreatorOrigin_p);
     nh_html_PermissionsPolicy PermissionsPolicy = nh_html_createPermissionsPolicy(Embedder_p, Origin_p);
 
-    nh_ecmascript_Agent *Agent_p = nh_html_obtainSimilarOriginWindowAgent(Origin_p, Group_p, false);
+    nh_html_Agent *Agent_p = nh_html_obtainSimilarOriginWindowAgent(Origin_p, Group_p, false);
     nh_ecmascript_Realm *RealmExecutionContext_p = nh_html_createRealm(Agent_p);
  
 //    Window_p = nh_html_createWindow(ExecutionContext_p->Realm_p);
@@ -77,7 +77,8 @@ static nh_html_BrowsingContextGroup nh_html_initBrowsingContextGroup()
 
 // https://html.spec.whatwg.org/#creating-a-new-browsing-context-group-and-document
 NH_API_RESULT nh_html_createNewBrowsingContextGroupAndDocument(
-    nh_html_UserAgent *UserAgent_p, nh_html_BrowsingContextGroup **BrowsingContextGroup_pp, nh_webidl_Object **Document_pp)
+    nh_html_UserAgent *UserAgent_p, nh_html_BrowsingContextGroup **BrowsingContextGroup_pp,
+    nh_webidl_Object **Document_pp)
 {
     nh_html_BrowsingContextGroup *Group_p = nh_core_allocate(sizeof(nh_html_BrowsingContextGroup));
     NH_CORE_CHECK_MEM_2(NULL, Group_p)
@@ -89,6 +90,8 @@ NH_API_RESULT nh_html_createNewBrowsingContextGroupAndDocument(
     NH_CORE_CHECK(nh_html_createNewBrowsingContextAndDocument(NULL, NULL, Group_p, &BrowsingContext_p, Document_pp))
 
     nh_core_appendToList(&Group_p->BrowsingContexts, BrowsingContext_p);
+
+    *BrowsingContextGroup_pp = Group_p;
 
     return NH_API_SUCCESS;
 }

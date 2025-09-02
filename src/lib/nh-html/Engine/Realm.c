@@ -31,4 +31,3 @@ nh_ecmascript_RealmExecutionContext *nh_html_createJavaScriptRealm(
 
     return ExecutionContext_p;
 }
-

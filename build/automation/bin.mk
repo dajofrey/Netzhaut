@@ -39,11 +39,12 @@ BIN_NH_ECMASCRIPT = bin/nh-ecmascript
 BIN_NH_WSI = bin/nh-wsi
 
 # Keep this as first (default) target.
-all: $(BIN_NH_MONITOR) $(BIN_NH_WSI)
+all: $(BIN_NH_MONITOR) $(BIN_NH_WSI) $(BIN_NH_ECMASCRIPT)
 
 # Build targets for each binary
 bin-nh-wsi: $(BIN_NH_WSI)
 bin-nh-monitor: $(BIN_NH_MONITOR)
+bin-nh-ecmascript: $(BIN_NH_ECMASCRIPT)
 
 build_termoskanne:
 	(cd external/Termoskanne && make -f build/automation/Makefile lib NETZHAUT_PATH=$(CURDIR))

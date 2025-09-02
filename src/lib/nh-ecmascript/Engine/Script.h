@@ -45,7 +45,7 @@
     );
 
     // https://www.ecma-international.org/ecma-262/#sec-runtime-semantics-scriptevaluation
-    nh_ecmascript_Completion nh_ecmascript_evaluateScript(
+    NH_API_RESULT nh_ecmascript_evaluateScript(
         nh_ecmascript_Script *Script_p
     );
 

@@ -30,21 +30,21 @@ nh_ecmascript_ExecutionContext *nh_ecmascript_allocateExecutionContext()
 
 nh_ecmascript_ExecutionContext *nh_ecmascript_getRunningExecutionContext()
 {
-    return nh_core_peekStack(&nh_ecmascript_getCurrentAgent()->ExecutionContextStack);
+    return NULL;
 }
 
 nh_ecmascript_ScriptOrModule *nh_ecmascript_getActiveScriptOrModule()
 {
-    nh_ecmascript_Agent *Agent_p = nh_ecmascript_getCurrentAgent();
-
-    if (Agent_p->ExecutionContextStack.size == 0) {return NULL;}
-
-    for (int i = Agent_p->ExecutionContextStack.size - 1; i >= 0; ++i) {
-        nh_ecmascript_ExecutionContext *ExecutionContext_p = Agent_p->ExecutionContextStack.pp[i];
-        if (ExecutionContext_p->ScriptOrModule.handle_p != NULL) {
-            return &ExecutionContext_p->ScriptOrModule;
-        }
-    }
+//    nh_ecmascript_Agent *Agent_p = nh_ecmascript_getCurrentAgent();
+//
+//    if (Agent_p->ExecutionContextStack.size == 0) {return NULL;}
+//
+//    for (int i = Agent_p->ExecutionContextStack.size - 1; i >= 0; ++i) {
+//        nh_ecmascript_ExecutionContext *ExecutionContext_p = Agent_p->ExecutionContextStack.pp[i];
+//        if (ExecutionContext_p->ScriptOrModule.handle_p != NULL) {
+//            return &ExecutionContext_p->ScriptOrModule;
+//        }
+//    }
 
     return NULL;
 }

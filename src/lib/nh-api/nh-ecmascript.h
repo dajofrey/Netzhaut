@@ -27,4 +27,8 @@ nh_api_Script *nh_api_parseScript(
     char *sourceText_p, nh_api_Realm *Realm_p, int encoding
 );
 
+NH_API_RESULT nh_api_evaluateScript(
+    nh_api_Script *Script_p
+);
+
 #endif // NH_API_NH_ECMASCRIPT_H

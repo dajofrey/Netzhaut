@@ -8,7 +8,7 @@
 
 // INCLUDES ========================================================================================
 
-#include "Document.h"
+#include "Window.h"
 
 #include "../../nh-dom/Interfaces/Node.h"
 #include "../../nh-webidl/Runtime/Object.h"
@@ -17,17 +17,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// DECLARE =========================================================================================
-
-// INITIALIZE ======================================================================================
+// FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_html_initializeDocument(
     nh_webidl_Object *Document_p)
 {
     return NH_API_SUCCESS;
 }
-
-// API =============================================================================================
 
 nh_webidl_Object *nh_html_createDocument()
 {
@@ -37,4 +33,10 @@ nh_webidl_Object *nh_html_createDocument()
     nh_dom_setNodeDocument(NH_WEBIDL_GET_DOM_NODE(Document_p), Document_p);
 
     return Document_p;
+}
+
+void *nh_html_openWindow(
+    nh_ecmascript_Agent *Agent_p)
+{
+    
 }

@@ -10,6 +10,7 @@
 
 #include "Initialize.h"
 #include "IndexMap.h"
+#include "../Engine/Runtime.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -20,6 +21,7 @@
 NH_API_RESULT nh_ecmascript_initialize()
 {
     NH_CORE_CHECK(nh_ecmascript_createIndexMap())
+    nh_ecmascript_startRuntime(NULL);
     return NH_API_SUCCESS;
 }
 

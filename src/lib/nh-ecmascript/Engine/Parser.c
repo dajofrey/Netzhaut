@@ -266,6 +266,10 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseEasyRecursiveProductionStep(
     nh_ecmascript_Parser *Parser_p, nh_ecmascript_ParseNode *Previous_p, char *name_p, bool commaSeparated, 
     nh_ecmascript_ParseResult (*parseItem_f)(nh_ecmascript_Parser *Parser_p)) 
 {
+    if (Parser_p->unparsed == 0) {
+        return nh_ecmascript_initParseResult(Previous_p);
+    }
+
     if (commaSeparated && Previous_p != NULL) {
         if (Parser_p->unparsed > 0 && Parser_p->Tokens_p[0].String.p[0] != ',') {
             return nh_ecmascript_initParseResult(Previous_p);
@@ -1218,8 +1222,7 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseExpressionStatement(
         nh_core_appendToList(&ExpressionStatement_p->Children, Result.Node_p);
         nh_core_appendToList(&ExpressionStatement_p->Children, Semicolon_p);
 
-        *Parser_p = nh_ecmascript_advanceParser(LocalParser, 1);
-
+        *Parser_p = LocalParser.unparsed > 0 ? nh_ecmascript_advanceParser(LocalParser, 1) : LocalParser;
         return nh_ecmascript_initParseResult(ExpressionStatement_p);
     }
 

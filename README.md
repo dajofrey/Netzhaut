@@ -8,6 +8,7 @@ Popular examples are Chromium (Chrome, Google), Gecko (Firefox, Google) and WebK
   
  - [Build](#Build)
  - [Binaries](#Binaries)
+ - [Design](#Design)
  - [FAQ](#FAQ)
 
 ## Build
@@ -79,6 +80,14 @@ Launches a CLI interface for monitoring.
 ./nh-wsi
 ```
 Launches empty window for testing purposes.
+
+## Design
+
+### nh-ecmascript
+
+Host/ECMAScript sends jobs to Runtime workload (1 runtime workload)  
+Runtime enques jobs in Agent  
+Agent Cluster (x cluster workloads) executes jobs from Agent  
 
 ## FAQ
 

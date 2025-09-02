@@ -30,3 +30,12 @@ nh_api_Script *nh_api_parseScript(
     nh_ecmascript_parseScript_f parseScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_parseScript");
     return parseScript_f ? parseScript_f(sourceText_p, Realm_p, encoding) : NULL;
 }
+
+NH_API_RESULT nh_api_evaluateScript(
+    nh_api_Script *Script_p)
+{
+    typedef NH_API_RESULT (*nh_ecmascript_evaluateScript_f)(nh_api_Script *Script_p); 
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_ecmascript_evaluateScript_f evaluateScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_evaluateScript");
+    return evaluateScript_f ? evaluateScript_f(Script_p) : NH_API_ERROR_BAD_STATE;
+}

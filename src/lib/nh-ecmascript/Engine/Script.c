@@ -25,7 +25,7 @@
 #include <string.h>
 #include <stdio.h>
 
-// PARSE ===========================================================================================
+// FUNCTIONS =======================================================================================
 
 static NH_API_RESULT nh_ecmascript_prepareText(
     nh_ecmascript_Script *Script_p, nh_encoding_UTF32String *UnicodeCodepoints_p, 
@@ -83,10 +83,8 @@ nh_ecmascript_Script *nh_ecmascript_parseScript(
     return Script_p;
 }
 
-// EVALUATE ========================================================================================
-
 // https://tc39.es/ecma262/#sec-runtime-semantics-scriptevaluation
-nh_ecmascript_Completion nh_ecmascript_evaluateScript(
+NH_API_RESULT nh_ecmascript_evaluateScript(
     nh_ecmascript_Script *Script_p)
 {
     nh_ecmascript_Environment *GlobalEnvironment_p = Script_p->Realm_p->GlobalEnvironment_p;
@@ -104,14 +102,15 @@ nh_ecmascript_Completion nh_ecmascript_evaluateScript(
     ScriptContext_p->LexicalEnvironment_p  = GlobalEnvironment_p; 
 // TODO Suspend the currently running execution context. 
 
-    nh_core_pushStack(&nh_ecmascript_getCurrentAgent()->ExecutionContextStack, ScriptContext_p);
+//    nh_core_pushStack(&nh_ecmascript_getCurrentAgent()->ExecutionContextStack, ScriptContext_p);
 
     nh_ecmascript_ParseNode *ScriptBody_p = Script_p->ECMAScriptCode_p->Children.pp[0];
     nh_ecmascript_Completion Result = nh_ecmascript_globalDeclarationInstantiation(ScriptBody_p, GlobalEnvironment_p);
-
+puts("ok");
     if (Result.type == NH_ECMASCRIPT_COMPLETION_NORMAL) {
         Result = nh_ecmascript_evaluateScriptBody(ScriptBody_p);
     }
 
-    return Result;
+    return 0;
+//    return Result;
 }

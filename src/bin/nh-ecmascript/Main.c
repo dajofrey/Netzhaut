@@ -36,13 +36,14 @@ int main(
     void *script_p = nh_api_getFileData(argv_pp[1], &size);
 
     if (!script_p || !size) {
-        puts("Getting file data failed. Exiting.");
-        return 1;
+        script_p = argv_pp[1];
+        puts("Getting file data failed.");
     }
 
 //    if (nh_api_addLogCallback(printLog)) {return 1;}
 
-    nh_api_parseScript(script_p, NULL, 0);
+    nh_api_Script *Script_p = nh_api_parseScript(script_p, NULL, 0);
+    nh_api_evaluateScript(Script_p);
 
     nh_api_terminate();
 }
