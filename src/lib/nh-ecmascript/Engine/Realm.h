@@ -1,8 +1,6 @@
 #ifndef NH_ECMASCRIPT_REALM_H
 #define NH_ECMASCRIPT_REALM_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -14,10 +12,7 @@
 #include "Environment.h"
 
 #include "../Common/Includes.h"
-
 #include "../../nh-core/Util/Stack.h"
-
-#endif
 
 /** @addtogroup lib_nh-ecmascript_structs
  *  @{
@@ -188,34 +183,24 @@
 //        nh_ecmascript_Object WeakSetPrototype;
     } nh_ecmascript_Intrinsics;
 
-/** @} */
+// STRUCTS ====================================================================
 
-/** @addtogroup lib_nh-ecmascript_structs
- *  @{
- */
+typedef struct nh_ecmascript_RealmHostDefined {
+    char *temporary_p;
+} nh_ecmascript_RealmHostDefined;
 
-    typedef struct nh_ecmascript_RealmHostDefined {
-        char *temporary_p;
-    } nh_ecmascript_RealmHostDefined;
+// https://tc39.es/ecma262/#sec-code-realms
+typedef struct nh_ecmascript_Realm {
+    nh_ecmascript_Intrinsics Intrinsics;
+    nh_ecmascript_Object *GlobalObject_p;
+    nh_ecmascript_Environment *GlobalEnvironment_p;
+    nh_ecmascript_RealmHostDefined HostDefined;
+} nh_ecmascript_Realm;
 
-    // https://tc39.es/ecma262/#sec-code-realms
-    typedef struct nh_ecmascript_Realm {
-        nh_ecmascript_Intrinsics Intrinsics;
-        nh_ecmascript_Object *GlobalObject_p;
-        nh_ecmascript_Environment *GlobalEnvironment_p;
-        nh_ecmascript_RealmHostDefined HostDefined;
-    } nh_ecmascript_Realm;
+// FUNCTIONS ==============================================================
 
-/** @} */
-
-/** @addtogroup lib_nh-ecmascript_functions
- *  @{
- */
-
-    NH_API_RESULT nh_ecmascript_initializeHostDefinedRealm(
-        nh_ecmascript_Agent *Agent_p, nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p
-    );
-
-/** @} */
+NH_API_RESULT nh_ecmascript_initializeHostDefinedRealmImplementation(
+    nh_ecmascript_Agent *Agent_p, nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p
+);
 
 #endif

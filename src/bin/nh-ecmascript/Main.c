@@ -42,6 +42,9 @@ int main(
 
 //    if (nh_api_addLogCallback(printLog)) {return 1;}
 
+    nh_api_Runtime *Runtime_p = nh_api_startRuntime();
+    nh_api_Agent *Agent_p = nh_api_createAgent();
+
     nh_api_Script *Script_p = nh_api_parseScript(script_p, NULL, 0);
     nh_api_evaluateScript(Script_p);
 

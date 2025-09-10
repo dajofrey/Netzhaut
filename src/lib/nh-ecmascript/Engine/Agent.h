@@ -21,6 +21,7 @@ typedef struct nh_ecmascript_Agent {
     nh_Stack ExecutionContextStack;
     nh_core_Queue Jobs;
     nh_core_Queue HostCommands;
+    nh_ecmascript_AgentCluster *Cluster_p;
     bool littleEndian;
     bool canBlock;
     int signifier;
@@ -29,12 +30,26 @@ typedef struct nh_ecmascript_Agent {
     bool isLockFree8;
 //        nh_ecmascript_CandidateExecution CandidateExecution;
     nh_core_List KeptAlive;
+    bool inUse;
 } nh_ecmascript_Agent;
+
+typedef struct nh_ecmascript_Job {
+    nh_ecmascript_Agent *Agent_p;
+    int type;
+    bool done;
+    void *result_p;
+} nh_ecmascript_Job;
+
+typedef struct nh_ecmascript_Job nh_ecmascript_HostCommand;
 
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_ecmascript_startAgentCluster(
     void *Runtime_p, nh_ecmascript_AgentCluster *AgentCluster_p 
+);
+
+nh_api_Realm *nh_ecmascript_initializeHostDefinedRealm(
+    nh_ecmascript_Agent *Agent_p
 );
 
 #endif

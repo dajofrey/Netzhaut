@@ -22,6 +22,32 @@
 
 // FUNCTIONS =======================================================================================
 
+nh_api_Runtime *nh_api_startRuntime()
+{
+    typedef nh_api_Runtime *(*nh_ecmascript_startRuntime_f)(); 
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_ecmascript_startRuntime_f startRuntime_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_startRuntime");
+    return startRuntime_f ? startRuntime_f() : NULL;
+}
+
+nh_api_Agent *nh_api_createAgent(
+    nh_api_Runtime *Runtime_p)
+{
+    typedef nh_api_Agent *(*nh_ecmascript_createAgent_f)(nh_api_Runtime *Runtime_p); 
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_ecmascript_createAgent_f createAgent_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_createAgent");
+    return createAgent_f ? createAgent_f(Runtime_p) : NULL;
+}
+
+nh_api_Realm *nh_api_initializeHostDefinedRealm(
+    nh_api_Agent *Agent_p)
+{
+    typedef nh_api_Realm *(*nh_ecmascript_initializeHostDefinedRealm_f)(nh_api_Agent *Agent_p); 
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_ecmascript_initializeHostDefinedRealm_f initializeHostDefinedRealm_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_initializeHostDefinedRealm");
+    return initializeHostDefinedRealm_f ? initializeHostDefinedRealm_f(Agent_p) : NULL;
+}
+
 nh_api_Script *nh_api_parseScript(
     char *sourceText_p, nh_api_Realm *Realm_p, int encoding)
 {

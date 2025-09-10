@@ -335,6 +335,21 @@ static void nh_core_assignToThread(
     return;
 }
 
+void nh_core_runOrSleep(
+    nh_core_Workload *Workload_p)
+{
+    // If the thread that handles the workload is executing this code, 
+    // we can just execute the function directly.
+    if (Workload_p->Thread_p == nh_core_getThread()) {
+        nh_core_runWorkload(Workload_p, NULL);
+    }
+
+    // Otherwise we need to wait for the executing thread to do its work.
+    else {sleep(100);}
+
+    return;
+}
+
 void nh_core_waitForCompletion(
     nh_core_Workload *Workload_p, NH_SIGNAL signal)
 {
@@ -400,7 +415,7 @@ void *nh_core_getWorkloadArg()
 
 // EXECUTE =========================================================================================
 
-NH_API_RESULT nh_core_executeWorkloadCommand(
+void *nh_core_executeWorkloadCommand(
     void *handle_p, int type, void *p, int byteSize)
 {
     nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
@@ -414,6 +429,7 @@ NH_API_RESULT nh_core_executeWorkloadCommand(
     Command_p->type = type;
     Command_p->p = p;
     Command_p->length = byteSize;
+    Command_p->result_p = NULL;
 
     if (byteSize > 0) {
         Command_p->p = nh_core_allocate(byteSize+1);
@@ -439,7 +455,7 @@ NH_API_RESULT nh_core_executeWorkloadCommand(
 
     if (byteSize > 0) {nh_core_free(Command_p->p);}
 
-    return NH_API_SUCCESS;
+    return Command_p->result_p;
 }
 
 NH_API_RESULT nh_core_executeWorkload(

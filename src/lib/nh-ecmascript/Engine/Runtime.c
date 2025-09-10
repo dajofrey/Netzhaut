@@ -56,27 +56,42 @@ static NH_SIGNAL nh_ecmascript_runRuntime(
     return NH_SIGNAL_IDLE;
 }
 
+static bool nh_ecmascript_findAgent(
+    nh_ecmascript_Runtime *Runtime_p, nh_core_WorkloadCommand *Command_p)
+{
+    bool ok = false;
+    for (int i = 0; i < Runtime_p->AgentClusters.size && !ok; ++i) {
+        nh_ecmascript_AgentCluster *AgentCluster_p = Runtime_p->AgentClusters.pp[i];
+        for (int j = 0; j < AgentCluster_p->Agents.size && !ok; ++j) {
+            nh_ecmascript_Agent *Agent_p = AgentCluster_p->Agents.pp[j];
+            if (Agent_p->inUse == false) {
+                Agent_p->inUse = true;
+                Agent_p->Cluster_p = AgentCluster_p;
+                Command_p->result_p = Agent_p;
+                ok = true;
+            }
+        }
+    }
+    return ok;
+}
+
 static NH_SIGNAL nh_ecmascript_runRuntimeCommand(
     void *args_p, nh_core_WorkloadCommand *Command_p)
 {
     nh_ecmascript_Runtime *Runtime_p = args_p;
 
     switch (Command_p->type) {
-        case NH_ECMASCRIPT_RUNTIME_COMMAND_START_AGENT_CLUSTER :
+        case 0 :
         {
-            nh_ecmascript_AgentCluster *AgentCluster_p = (nh_ecmascript_AgentCluster*)nh_core_allocate(sizeof(nh_ecmascript_AgentCluster));
-            nh_core_appendToList(&Runtime_p->AgentClusters, AgentCluster_p);
-            nh_ecmascript_startAgentCluster(Runtime_p, AgentCluster_p);
+            if (!nh_ecmascript_findAgent(Runtime_p, Command_p)) {
+                // create agent cluster + agent
+                nh_ecmascript_AgentCluster *AgentCluster_p = (nh_ecmascript_AgentCluster*)nh_core_allocate(sizeof(nh_ecmascript_AgentCluster));
+                nh_core_appendToList(&Runtime_p->AgentClusters, AgentCluster_p);
+                nh_ecmascript_startAgentCluster(Runtime_p, AgentCluster_p);
+                // try again
+                nh_ecmascript_findAgent(Runtime_p, Command_p);
+            }
         }
-        case NH_ECMASCRIPT_RUNTIME_COMMAND_GLOBAL_DECLARATION_INSTANTIATION :
-            // TODO
-            break;
-        case NH_ECMASCRIPT_RUNTIME_COMMAND_PARSE_SCRIPT :
-            // TODO
-            break;
-        case NH_ECMASCRIPT_RUNTIME_COMMAND_SCRIPT_EVALUATION :
-            // TODO
-            break;
         default :
             return NH_SIGNAL_ERROR;
     }
@@ -94,10 +109,16 @@ static void nh_ecmascript_freeRuntime(
     nh_core_free(Runtime_p);
 }
 
-void nh_ecmascript_startRuntime(
+static void nh_ecmascript_enqueueRuntimeCommand(
+    nh_api_Runtime *Runtime_p, int type, void *p, size_t size)
+{
+    nh_core_executeWorkloadCommand(Runtime_p, type, p, size);
+}
+
+nh_api_Runtime *nh_ecmascript_startRuntime(
     void *args_p)
 {
-    nh_core_activateWorkload(
+    return nh_core_activateWorkload(
         nh_ecmascript_initRuntime,
         nh_ecmascript_runRuntime,
         nh_ecmascript_freeRuntime,
@@ -107,8 +128,8 @@ void nh_ecmascript_startRuntime(
     );
 }
 
-void nh_ecmascript_enqueueRuntimeCommand(
-    )
+nh_api_Agent *nh_ecmascript_createAgent(
+    nh_api_Runtime *Runtime_p)
 {
-//    nh_core_executeWorkloadCommand(Workloads_p[j].args_p, NH_CORE_CONFIG_COMMAND, Setting_p, 0);
+    return nh_core_executeWorkloadCommand(Runtime_p, 0, NULL, 0);
 }

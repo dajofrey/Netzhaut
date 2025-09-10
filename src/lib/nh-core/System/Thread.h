@@ -48,6 +48,7 @@
         int type;
         void *p;
         int length;
+        void *result_p;
     } nh_core_WorkloadCommand;
 
     typedef struct nh_SignalCounter {
@@ -130,7 +131,7 @@
     /**
      * @param byteSize Specify 0 for no allocation.
      */
-    NH_API_RESULT nh_core_executeWorkloadCommand(
+    void *nh_core_executeWorkloadCommand(
         void *handle_p, int type, void *p, int byteSize
     );
 
@@ -167,6 +168,10 @@
 
     NH_API_RESULT nh_sleepMs(
         int milliseconds
+    );
+
+    void nh_core_runOrSleep(
+        nh_core_Workload *Workload_p
     );
 
     void nh_core_waitForCompletion(

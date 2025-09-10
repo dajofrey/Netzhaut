@@ -17,12 +17,22 @@
 
 typedef struct nh_api_Script nh_api_Script;
 typedef struct nh_api_Realm nh_api_Realm;
+typedef struct nh_api_Runtime nh_api_Runtime;
+typedef struct nh_api_Agent nh_api_Agent;
 
 // FUNCTIONS =======================================================================================
 
-/**
- * Todo.
- */
+nh_api_Runtime *nh_api_startRuntime(
+);
+
+nh_api_Agent *nh_api_createAgent(
+    nh_api_Runtime *Runtime_p
+);
+
+nh_api_Realm *nh_api_initializeHostDefinedRealm(
+    nh_api_Agent *Agent_p 
+);
+
 nh_api_Script *nh_api_parseScript(
     char *sourceText_p, nh_api_Realm *Realm_p, int encoding
 );

@@ -7,25 +7,18 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
+#include "../Common/Includes.h"
 #include "../../nh-core/Util/Stack.h"
 #include "../../nh-core/Util/Array.h"
 
-// TYPES ===========================================================================================
-
-typedef enum NH_ECMASCRIPT_RUNTIME_COMMAND_E {
-    NH_ECMASCRIPT_RUNTIME_COMMAND_START_AGENT_CLUSTER,
-    NH_ECMASCRIPT_RUNTIME_COMMAND_GLOBAL_DECLARATION_INSTANTIATION,
-    NH_ECMASCRIPT_RUNTIME_COMMAND_PARSE_SCRIPT,
-    NH_ECMASCRIPT_RUNTIME_COMMAND_SCRIPT_EVALUATION,
-} NH_ECMASCRIPT_RUNTIME_COMMAND_E;
-
 // FUNCTIONS =======================================================================================
 
-void nh_ecmascript_startRuntime(
+nh_api_Runtime *nh_ecmascript_startRuntime(
     void *args_p
 );
 
-void nh_ecmascript_enqueueRuntimeCommand(
+nh_api_Agent *nh_ecmascript_createAgent(
+    nh_api_Runtime *Runtime_p
 );
 
 #endif
