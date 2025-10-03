@@ -27,6 +27,8 @@ typedef struct nh_ecmascript_Object nh_ecmascript_Object;
         NH_ECMASCRIPT_TYPE_NUMBER,
         NH_ECMASCRIPT_TYPE_BIG_INT,
         NH_ECMASCRIPT_TYPE_OBJECT,
+        NH_ECMASCRIPT_TYPE_INFINITY,
+        NH_ECMASCRIPT_TYPE_NOT_A_NUMBER,
     } NH_ECMASCRIPT_TYPE;
 
 /** @} */

@@ -17,7 +17,7 @@ static const int lookup_p[] = {
      0
 };
 
-static const char *globalPropertyNames_pp[] = {
+static const char *defaultGlobalBindings_pp[] = {
 // values
     "globalThis",
     "Infinity",
@@ -105,8 +105,8 @@ static nh_ecmascript_Property *nh_ecmascript_getGlobalProperty(
     switch (i) 
     {
           case 0 :
-          case 1 :
-          case 2 :
+          case 1 : Value.type = NH_ECMASCRIPT_TYPE_INFINITY; break;
+          case 2 : Value.type = NH_ECMASCRIPT_TYPE_NOT_A_NUMBER; break;
           case 3 : Value.type = NH_ECMASCRIPT_TYPE_UNDEFINED; break;
           case 4 :
           case 5 :
@@ -169,10 +169,10 @@ nh_ecmascript_Object *nh_ecmascript_setDefaultGlobalBindings(
 {
     nh_ecmascript_Object *Global_p = Realm_p->GlobalObject_p;
 
-    for (int i = 0; i < sizeof(globalPropertyNames_pp) / sizeof(globalPropertyNames_pp[0]); ++i) 
+    for (int i = 0; i < sizeof(defaultGlobalBindings_pp) / sizeof(defaultGlobalBindings_pp[0]); ++i) 
     {
-        Realm_p->Intrinsics.Keys_p[i].p = (char*)globalPropertyNames_pp[i];
-        Realm_p->Intrinsics.Keys_p[i].length  = strlen(globalPropertyNames_pp[i]);
+        Realm_p->Intrinsics.Keys_p[i].p = (char*)defaultGlobalBindings_pp[i];
+        Realm_p->Intrinsics.Keys_p[i].length  = strlen(defaultGlobalBindings_pp[i]);
 
         nh_ecmascript_Property *Property_p = nh_ecmascript_getGlobalProperty(Realm_p, i);
         Property_p->Key = nh_ecmascript_wrapString(&Realm_p->Intrinsics.Keys_p[i]);
@@ -189,4 +189,3 @@ NH_API_RESULT nh_ecmascript_freeDefaultGlobalBindings(
     // TODO
     return NH_API_SUCCESS;
 }
-

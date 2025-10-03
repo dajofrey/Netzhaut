@@ -39,13 +39,13 @@ nh_api_Agent *nh_api_createAgent(
     return createAgent_f ? createAgent_f(Runtime_p) : NULL;
 }
 
-nh_api_Realm *nh_api_initializeHostDefinedRealm(
+nh_api_Realm *nh_api_initializeRealm(
     nh_api_Agent *Agent_p)
 {
-    typedef nh_api_Realm *(*nh_ecmascript_initializeHostDefinedRealm_f)(nh_api_Agent *Agent_p); 
+    typedef nh_api_Realm *(*nh_ecmascript_initializeRealm_f)(nh_api_Agent *Agent_p); 
     nh_core_Loader *Loader_p = nh_api_getLoader();
-    nh_ecmascript_initializeHostDefinedRealm_f initializeHostDefinedRealm_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_initializeHostDefinedRealm");
-    return initializeHostDefinedRealm_f ? initializeHostDefinedRealm_f(Agent_p) : NULL;
+    nh_ecmascript_initializeRealm_f initializeRealm_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_enqueueInitializeRealm");
+    return initializeRealm_f ? initializeRealm_f(Agent_p) : NULL;
 }
 
 nh_api_Script *nh_api_parseScript(
@@ -53,7 +53,7 @@ nh_api_Script *nh_api_parseScript(
 {
     typedef nh_api_Script *(*nh_ecmascript_parseScript_f)(char *sourceText_p, nh_api_Realm *Realm_p, int encoding); 
     nh_core_Loader *Loader_p = nh_api_getLoader();
-    nh_ecmascript_parseScript_f parseScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_parseScript");
+    nh_ecmascript_parseScript_f parseScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_enqueueParseScript");
     return parseScript_f ? parseScript_f(sourceText_p, Realm_p, encoding) : NULL;
 }
 
@@ -62,6 +62,6 @@ NH_API_RESULT nh_api_evaluateScript(
 {
     typedef NH_API_RESULT (*nh_ecmascript_evaluateScript_f)(nh_api_Script *Script_p); 
     nh_core_Loader *Loader_p = nh_api_getLoader();
-    nh_ecmascript_evaluateScript_f evaluateScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_evaluateScript");
+    nh_ecmascript_evaluateScript_f evaluateScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_enqueueEvaluateScript");
     return evaluateScript_f ? evaluateScript_f(Script_p) : NH_API_ERROR_BAD_STATE;
 }

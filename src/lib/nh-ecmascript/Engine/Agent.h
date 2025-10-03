@@ -38,9 +38,13 @@ typedef struct nh_ecmascript_Job {
     int type;
     bool done;
     void *result_p;
+    void *args_p;
+    size_t size;
 } nh_ecmascript_Job;
 
 typedef struct nh_ecmascript_Job nh_ecmascript_HostCommand;
+typedef struct nh_ecmascript_Realm nh_ecmascript_Realm;
+typedef struct nh_ecmascript_Script nh_ecmascript_Script;
 
 // FUNCTIONS =======================================================================================
 
@@ -48,8 +52,20 @@ NH_API_RESULT nh_ecmascript_startAgentCluster(
     void *Runtime_p, nh_ecmascript_AgentCluster *AgentCluster_p 
 );
 
-nh_api_Realm *nh_ecmascript_initializeHostDefinedRealm(
-    nh_ecmascript_Agent *Agent_p
+nh_api_Realm *nh_ecmascript_enqueueInitializeRealm(
+    nh_api_Agent *Agent_p
+);
+
+NH_API_RESULT nh_ecmascript_enqueueInstallHostGlobals(
+    nh_ecmascript_Realm *Realm_p, void *Globals_p
+);
+
+nh_api_Script *nh_ecmascript_enqueueParseScript(
+    char *src_p, nh_ecmascript_Realm *Realm_p, int encoding
+);
+
+NH_API_RESULT nh_ecmascript_enqueueEvaluateScript(
+    nh_ecmascript_Script *Script_p
 );
 
 #endif

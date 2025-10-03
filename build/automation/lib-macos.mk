@@ -181,12 +181,12 @@ SRC_FILES_NH_ECMASCRIPT = \
     Engine/PropertyDescriptor.c \
     Engine/Instantiation.c \
     Engine/OrdinaryObject.c \
+    Engine/GlobalObject.c \
     StaticSemantics/Misc.c \
     StaticSemantics/DeclaredNames.c \
     StaticSemantics/BoundNames.c \
     StaticSemantics/ScopedDeclarations.c \
     StaticSemantics/ParameterLists.c \
-    Intrinsics/GlobalObject.c \
     Intrinsics/Object.c \
     Intrinsics/Function.c \
     Common/Initialize.c \

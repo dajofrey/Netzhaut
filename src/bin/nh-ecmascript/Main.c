@@ -33,19 +33,19 @@ int main(
     }
 
     long size = 0;
-    void *script_p = nh_api_getFileData(argv_pp[1], &size);
+    void *src_p = nh_api_getFileData(argv_pp[1], &size);
 
-    if (!script_p || !size) {
-        script_p = argv_pp[1];
+    if (!src_p || !size) {
+        src_p = argv_pp[1];
         puts("Getting file data failed.");
     }
 
 //    if (nh_api_addLogCallback(printLog)) {return 1;}
 
     nh_api_Runtime *Runtime_p = nh_api_startRuntime();
-    nh_api_Agent *Agent_p = nh_api_createAgent();
-
-    nh_api_Script *Script_p = nh_api_parseScript(script_p, NULL, 0);
+    nh_api_Agent *Agent_p = nh_api_createAgent(Runtime_p);
+    nh_api_Realm *Realm_p = nh_api_initializeRealm(Agent_p);
+    nh_api_Script *Script_p = nh_api_parseScript(src_p, Realm_p, 0);
     nh_api_evaluateScript(Script_p);
 
     nh_api_terminate();

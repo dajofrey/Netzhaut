@@ -11,6 +11,7 @@
 
 // INCLUDES ========================================================================================
 
+#include "nh-ecmascript.h"
 #include "nh-gfx.h"
 
 // STRUCTS =========================================================================================
@@ -22,16 +23,17 @@ typedef struct nh_api_DocumentContext nh_api_DocumentContext;
 
 // FUNCTIONS =======================================================================================
 
-/**
- * Todo.
- */
+nh_api_HostGlobals nh_api_getHTMLGlobals(
+);
+
+NH_API_RESULT nh_api_freeHTMLGlobals(
+    nh_api_HostGlobals *Globals_p
+);
+
 nh_api_DocumentContext *nh_api_createDocumentContext(
     bool browsingContext
 );
 
-/**
- * Todo.
- */
 NH_API_RESULT nh_api_loadBytes(
     nh_api_DocumentContext *Context_p, char *bytes_p, unsigned long long size
 );

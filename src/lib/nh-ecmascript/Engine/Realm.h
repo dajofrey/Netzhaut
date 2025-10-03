@@ -1,5 +1,5 @@
-#ifndef NH_ECMASCRIPT_REALM_H
-#define NH_ECMASCRIPT_REALM_H
+#ifndef NH_ECMASCRIPT_ENGINE_REALM_H
+#define NH_ECMASCRIPT_ENGINE_REALM_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -14,58 +14,56 @@
 #include "../Common/Includes.h"
 #include "../../nh-core/Util/Stack.h"
 
-/** @addtogroup lib_nh-ecmascript_structs
- *  @{
- */
+// STRUCTS ================================================================================
 
-    typedef struct nh_ecmascript_IntrinsicObject {
-        // internal
-        nh_ecmascript_String Keys_p[29];
-        nh_ecmascript_Property Properties_p[29];
-        // main objects
-        nh_ecmascript_Object Constructor;
-        nh_ecmascript_Object Prototype;
-        // object constructor builtin function objects
-        nh_ecmascript_Object Assign;
-        nh_ecmascript_Object Create;
-        nh_ecmascript_Object DefineProperties;
-        nh_ecmascript_Object DefineProperty;
-        nh_ecmascript_Object Entries;
-        nh_ecmascript_Object Freeze;
-        nh_ecmascript_Object FromEntries;
-        nh_ecmascript_Object GetOwnPropertyDescriptor;
-        nh_ecmascript_Object GetOwnPropertyDescriptors;
-        nh_ecmascript_Object GetOwnPropertyNames;
-        nh_ecmascript_Object GetOwnPropertySymbols;
-        nh_ecmascript_Object GetPrototypeOf;
-        nh_ecmascript_Object Is;
-        nh_ecmascript_Object IsExtensible;
-        nh_ecmascript_Object IsFrozen;
-        nh_ecmascript_Object IsSealed;
-        nh_ecmascript_Object Keys;
-        nh_ecmascript_Object PreventExtensions;
-        nh_ecmascript_Object Seal;
-        nh_ecmascript_Object SetPrototypeOf;
-        nh_ecmascript_Object Values;
-        // object prototype  builtin function objects
-        nh_ecmascript_Object HasOwnProperty;
-        nh_ecmascript_Object IsPrototypeOf;
-        nh_ecmascript_Object PropertyIsEnumerable;
-        nh_ecmascript_Object ToLocaleString;
-        nh_ecmascript_Object ToString;
-        nh_ecmascript_Object ValueOf;
-    } nh_ecmascript_IntrinsicObject;
+typedef struct nh_ecmascript_IntrinsicObject {
+    // internal
+    nh_ecmascript_String Keys_p[29];
+    nh_ecmascript_Property Properties_p[29];
+    // main objects
+    nh_ecmascript_Object Constructor;
+    nh_ecmascript_Object Prototype;
+    // object constructor builtin function objects
+    nh_ecmascript_Object Assign;
+    nh_ecmascript_Object Create;
+    nh_ecmascript_Object DefineProperties;
+    nh_ecmascript_Object DefineProperty;
+    nh_ecmascript_Object Entries;
+    nh_ecmascript_Object Freeze;
+    nh_ecmascript_Object FromEntries;
+    nh_ecmascript_Object GetOwnPropertyDescriptor;
+    nh_ecmascript_Object GetOwnPropertyDescriptors;
+    nh_ecmascript_Object GetOwnPropertyNames;
+    nh_ecmascript_Object GetOwnPropertySymbols;
+    nh_ecmascript_Object GetPrototypeOf;
+    nh_ecmascript_Object Is;
+    nh_ecmascript_Object IsExtensible;
+    nh_ecmascript_Object IsFrozen;
+    nh_ecmascript_Object IsSealed;
+    nh_ecmascript_Object Keys;
+    nh_ecmascript_Object PreventExtensions;
+    nh_ecmascript_Object Seal;
+    nh_ecmascript_Object SetPrototypeOf;
+    nh_ecmascript_Object Values;
+    // object prototype  builtin function objects
+    nh_ecmascript_Object HasOwnProperty;
+    nh_ecmascript_Object IsPrototypeOf;
+    nh_ecmascript_Object PropertyIsEnumerable;
+    nh_ecmascript_Object ToLocaleString;
+    nh_ecmascript_Object ToString;
+    nh_ecmascript_Object ValueOf;
+} nh_ecmascript_IntrinsicObject;
 
-    typedef struct nh_ecmascript_IntrinsicFunction {
-        nh_ecmascript_Object Constructor;
-        nh_ecmascript_Object Prototype;
-    } nh_ecmascript_IntrinsicFunction;
+typedef struct nh_ecmascript_IntrinsicFunction {
+    nh_ecmascript_Object Constructor;
+    nh_ecmascript_Object Prototype;
+} nh_ecmascript_IntrinsicFunction;
 
-    typedef struct nh_ecmascript_Intrinsics {
-        // internal
-        nh_ecmascript_String Keys_p[52];
-        nh_ecmascript_Property Properties_p[52];
-        // global object properties
+typedef struct nh_ecmascript_Intrinsics {
+    // internal
+    nh_ecmascript_String Keys_p[52];
+    nh_ecmascript_Property Properties_p[52];
+    // global object properties
 //        nh_ecmascript_Object AggregateError;
 //        nh_ecmascript_Object Array;
 //        nh_ecmascript_Object ArrayBuffer;
@@ -181,9 +179,7 @@
 //        nh_ecmascript_Object WeakMapPrototype;
 //        nh_ecmascript_Object WeakSet;
 //        nh_ecmascript_Object WeakSetPrototype;
-    } nh_ecmascript_Intrinsics;
-
-// STRUCTS ====================================================================
+} nh_ecmascript_Intrinsics;
 
 typedef struct nh_ecmascript_RealmHostDefined {
     char *temporary_p;
@@ -191,6 +187,7 @@ typedef struct nh_ecmascript_RealmHostDefined {
 
 // https://tc39.es/ecma262/#sec-code-realms
 typedef struct nh_ecmascript_Realm {
+    nh_ecmascript_Agent *Agent_p;
     nh_ecmascript_Intrinsics Intrinsics;
     nh_ecmascript_Object *GlobalObject_p;
     nh_ecmascript_Environment *GlobalEnvironment_p;
@@ -199,8 +196,8 @@ typedef struct nh_ecmascript_Realm {
 
 // FUNCTIONS ==============================================================
 
-NH_API_RESULT nh_ecmascript_initializeHostDefinedRealmImplementation(
-    nh_ecmascript_Agent *Agent_p, nh_ecmascript_Object *GlobalObject_p, nh_ecmascript_Object *ThisValue_p
+nh_ecmascript_Realm *nh_ecmascript_initializeRealm(
+    nh_ecmascript_Agent *Agent_p
 );
 
 #endif

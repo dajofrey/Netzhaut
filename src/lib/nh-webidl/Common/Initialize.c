@@ -28,4 +28,3 @@ NH_API_RESULT nh_webidl_initialize()
 
     return NH_API_SUCCESS;
 }
-

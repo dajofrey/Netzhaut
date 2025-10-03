@@ -11,6 +11,7 @@
 #include "Agent.h"
 #include "Script.h"
 #include "ExecutionContext.h"
+#include "Realm.h"
 
 #include "../Common/IndexMap.h"
 #include "../Common/Log.h"
@@ -30,6 +31,16 @@ typedef struct nh_ecmascript_AgentClusterArgs {
     nh_ecmascript_AgentCluster *AgentCluster_p;
 } nh_ecmascript_AgentClusterArgs;
 
+typedef struct nh_ecmascript_ParseScriptArgs {
+    nh_ecmascript_Realm *Realm_p;
+    char *src_p;
+} nh_ecmascript_ParseScriptArgs;
+
+typedef struct nh_ecmascript_InstallHostGlobalsArgs {
+    void *Globals_p;
+    nh_ecmascript_Realm *Realm_p;
+} nh_ecmascript_InstallHostGlobalsArgs;
+
 // FUNCTIONS =======================================================================================
 
 static nh_ecmascript_Agent *nh_ecmascript_initAgent()
@@ -42,11 +53,6 @@ static nh_ecmascript_Agent *nh_ecmascript_initAgent()
     Agent_p->littleEndian = NH_SYSTEM.littleEndian;
     Agent_p->KeptAlive = nh_core_initList(8);
     Agent_p->inUse = false;
-
-//    NH_CORE_CHECK(NULL, nh_ecmascript_initializeHostDefinedRealm(&Agent_p->ExecutionContextStack))
-//
-//    nh_ecmascript_ExecutionContext *ExecutionContext_p = nh_core_peekStack(&Agent_p->ExecutionContextStack);
-//    ExecutionContext_p->Realm_p->HostDefined.temporary_p = nh_core_allocateBytes(Args_p->p);
 
     return Agent_p;
 }
@@ -87,17 +93,28 @@ static NH_API_RESULT nh_ecmascript_runHostCommand(
 {
     switch (HostCommand_p->type) {
         case 0 :
-            // TODO
+            HostCommand_p->result_p = nh_ecmascript_initializeRealm(Agent_p);
             HostCommand_p->done = true;
             break;
         case 1 :
-            // TODO
+        {
+            nh_ecmascript_InstallHostGlobalsArgs *Args_p = HostCommand_p->args_p; 
+//            nh_ecmascript_installHostGlobals(Args_p->Realm_p, Args_p->Globals_p);
+            HostCommand_p->result_p = NULL;
+            HostCommand_p->done = true;
             break;
+        }
         case 2 :
-            // TODO
+        {
+            nh_ecmascript_ParseScriptArgs *Args_p = HostCommand_p->args_p; 
+            nh_ecmascript_Script *Script_p = nh_ecmascript_parseScript(Args_p->src_p, Args_p->Realm_p, 0);
+            HostCommand_p->result_p = Script_p;
+            HostCommand_p->done = true;
             break;
+        }
         case 3 :
-            // TODO
+            nh_ecmascript_evaluateScript(HostCommand_p->args_p);
+            HostCommand_p->done = true;
             break;
         default :
             return NH_API_ERROR_BAD_STATE;
@@ -172,21 +189,23 @@ NH_API_RESULT nh_ecmascript_startAgentCluster(
     return NH_API_SUCCESS;
 }
 
-static nh_ecmascript_HostCommand *nh_ecmascript_enqueueHostCommand(
-    nh_ecmascript_Agent *Agent_p, int type, void *p, size_t size)
+static void *nh_ecmascript_enqueueHostCommand(
+    nh_ecmascript_Agent *Agent_p, int type, void *args_p, size_t size)
 {
     nh_ecmascript_HostCommand *HostCommand_p = (nh_ecmascript_HostCommand*)nh_core_allocate(sizeof(nh_ecmascript_HostCommand));
     memset(HostCommand_p, NULL, sizeof(nh_ecmascript_HostCommand));
     HostCommand_p->type = type;
     HostCommand_p->Agent_p = Agent_p;
+    HostCommand_p->args_p = args_p;
+    HostCommand_p->size = size;
     nh_core_executeWorkloadCommand(Agent_p->Cluster_p, 0, HostCommand_p, sizeof(HostCommand_p)); 
     nh_core_Workload *Workload_p = nh_core_getWorkload(Agent_p->Cluster_p);
     while (HostCommand_p->done == false) {
         nh_core_runOrSleep(Workload_p);
     }
-    nh_ecmascript_Realm *Realm_p = HostCommand_p->result_p;
+    void *result_p = HostCommand_p->result_p;
     nh_core_free(HostCommand_p);
-    return Realm_p;
+    return result_p;
 }
 
 //static void nh_ecmascript_enqueueJob(
@@ -198,8 +217,33 @@ static nh_ecmascript_HostCommand *nh_ecmascript_enqueueHostCommand(
 //    nh_core_executeWorkloadCommand(Agent_p->Cluster_p, 1, Job_p, sizeof(Job_p)); 
 //}
 
-nh_api_Realm *nh_ecmascript_initializeHostDefinedRealm(
-    nh_ecmascript_Agent *Agent_p)
+nh_api_Realm *nh_ecmascript_enqueueInitializeRealm(
+    nh_api_Agent *Agent_p)
 {
     return nh_ecmascript_enqueueHostCommand(Agent_p, 0, NULL, 0);
+}
+
+NH_API_RESULT nh_ecmascript_enqueueInstallHostGlobals(
+    nh_ecmascript_Realm *Realm_p, void *Globals_p)
+{
+    nh_ecmascript_InstallHostGlobalsArgs Args;
+    Args.Realm_p = Realm_p;
+    Args.Globals_p = Globals_p;
+    return nh_ecmascript_enqueueHostCommand(Realm_p->Agent_p, 1, NULL, 0);
+}
+
+nh_api_Script *nh_ecmascript_enqueueParseScript(
+    char *src_p, nh_ecmascript_Realm *Realm_p, int encoding)
+{
+    nh_ecmascript_ParseScriptArgs Args;
+    Args.src_p = src_p;
+    Args.Realm_p = Realm_p;
+    return nh_ecmascript_enqueueHostCommand(Realm_p->Agent_p, 2, &Args, sizeof(nh_ecmascript_ParseScriptArgs));
+}
+
+NH_API_RESULT nh_ecmascript_enqueueEvaluateScript(
+    nh_ecmascript_Script *Script_p)
+{
+    nh_ecmascript_enqueueHostCommand(Script_p->Realm_p->Agent_p, 3, Script_p, 0);
+    return NH_API_SUCCESS;
 }

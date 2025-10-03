@@ -71,34 +71,34 @@ int main(
         return 1;
     }
 
-    nh_api_DocumentContext *DocumentContext_p = nh_api_createDocumentContext(false);
-    if (!DocumentContext_p) {
-        puts("Creating document context failed. Exiting.");
-        return 1;
-    }
-
-    nh_api_LayoutEngine *LayoutEngine_p = nh_api_createLayoutEngine(DocumentContext_p);
-    if (!LayoutEngine_p) {
-        puts("Creating layout engine failed. Exiting.");
-        return 1;
-    }
-
-    nh_api_Renderer *Renderer_p = nh_api_createRenderer(LayoutEngine_p);
-    if (!Renderer_p) {
-        puts("Creating renderer failed. Exiting.");
-        return 1;
-    }
-
-    if (nh_api_addViewport(Renderer_p, Viewport_p)) {
-        puts("Adding viewport to renderer failed. Exiting.");
-        return 1;
-    }
-    if (nh_api_loadBytes(DocumentContext_p, document_p, size)) {
-        puts("Loading bytes into document failed. Exiting.");
-        return 1;
-    }
-
-    nh_api_setWindowEventListener(Window_p, handleInput);
+//    nh_api_DocumentContext *DocumentContext_p = nh_api_createDocumentContext(false);
+//    if (!DocumentContext_p) {
+//        puts("Creating document context failed. Exiting.");
+//        return 1;
+//    }
+//
+//    nh_api_LayoutEngine *LayoutEngine_p = nh_api_createLayoutEngine(DocumentContext_p);
+//    if (!LayoutEngine_p) {
+//        puts("Creating layout engine failed. Exiting.");
+//        return 1;
+//    }
+//
+//    nh_api_Renderer *Renderer_p = nh_api_createRenderer(LayoutEngine_p);
+//    if (!Renderer_p) {
+//        puts("Creating renderer failed. Exiting.");
+//        return 1;
+//    }
+//
+//    if (nh_api_addViewport(Renderer_p, Viewport_p)) {
+//        puts("Adding viewport to renderer failed. Exiting.");
+//        return 1;
+//    }
+//    if (nh_api_loadBytes(DocumentContext_p, document_p, size)) {
+//        puts("Loading bytes into document failed. Exiting.");
+//        return 1;
+//    }
+//
+//    nh_api_setWindowEventListener(Window_p, handleInput);
 
     while (1) {
         int result = nh_api_run();
