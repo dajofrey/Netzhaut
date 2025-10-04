@@ -11,14 +11,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-void printLog(
-    char *node_p, char *options_p, char *message_p)
-{
-    if (strstr(node_p, "nh-ecmascript")) {
-        printf("%s %s\n", node_p, message_p);
-    }
-}
-
 int main(
     int argc, char **argv_pp) 
 {
@@ -40,13 +32,11 @@ int main(
         puts("Getting file data failed.");
     }
 
-//    if (nh_api_addLogCallback(printLog)) {return 1;}
-
     nh_api_Runtime *Runtime_p = nh_api_startRuntime();
     nh_api_Agent *Agent_p = nh_api_createAgent(Runtime_p);
     nh_api_Realm *Realm_p = nh_api_initializeRealm(Agent_p);
     nh_api_Script *Script_p = nh_api_parseScript(src_p, Realm_p, 0);
-    nh_api_evaluateScript(Script_p);
+//    nh_api_evaluateScript(Script_p);
 
     nh_api_terminate();
 }

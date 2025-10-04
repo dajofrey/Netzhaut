@@ -558,6 +558,7 @@ nh_core_Array nh_ecmascript_discardRedundantInputElements(
     nh_core_Array DirtyInputElements)
 {
     nh_core_Array CleanInputElements = nh_core_initArray(sizeof(nh_ecmascript_InputElement), 64);
+    bool lineTerminatorBefore = false;
 
     for (int i = 0; i < DirtyInputElements.length; ++i) 
     {
@@ -565,14 +566,21 @@ nh_core_Array nh_ecmascript_discardRedundantInputElements(
         if (InputElement_p->type == NH_ECMASCRIPT_INPUT_ELEMENT_WHITE_SPACE) {
             continue;
         }
+        if (InputElement_p->type == NH_ECMASCRIPT_INPUT_ELEMENT_LINE_TERMINATOR) {
+            lineTerminatorBefore = true;
+            continue;
+        }
 
         nh_ecmascript_InputElement *InputElementCopy_p = (nh_ecmascript_InputElement*)nh_core_incrementArray(&CleanInputElements);
         InputElementCopy_p->type = InputElement_p->type;
         InputElementCopy_p->String = nh_core_initString(32);
+        InputElementCopy_p->hasLineTerminatorBefore = lineTerminatorBefore;
 
         nh_core_appendToString(
             &InputElementCopy_p->String, InputElement_p->String.p, InputElement_p->String.length
         );
+
+        lineTerminatorBefore = false;
     }
 
     return CleanInputElements;
@@ -589,5 +597,3 @@ bool nh_ecmascript_isNumericToken(
 
     return false;
 }
-
-

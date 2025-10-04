@@ -193,12 +193,12 @@ static void *nh_ecmascript_enqueueHostCommand(
     nh_ecmascript_Agent *Agent_p, int type, void *args_p, size_t size)
 {
     nh_ecmascript_HostCommand *HostCommand_p = (nh_ecmascript_HostCommand*)nh_core_allocate(sizeof(nh_ecmascript_HostCommand));
-    memset(HostCommand_p, NULL, sizeof(nh_ecmascript_HostCommand));
+    memset(HostCommand_p, 0, sizeof(nh_ecmascript_HostCommand));
     HostCommand_p->type = type;
     HostCommand_p->Agent_p = Agent_p;
     HostCommand_p->args_p = args_p;
     HostCommand_p->size = size;
-    nh_core_executeWorkloadCommand(Agent_p->Cluster_p, 0, HostCommand_p, sizeof(HostCommand_p)); 
+    nh_core_executeWorkloadCommand(Agent_p->Cluster_p, 0, HostCommand_p, 0); 
     nh_core_Workload *Workload_p = nh_core_getWorkload(Agent_p->Cluster_p);
     while (HostCommand_p->done == false) {
         nh_core_runOrSleep(Workload_p);

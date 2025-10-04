@@ -45,6 +45,7 @@
     typedef struct nh_ecmascript_InputElement {
         NH_ECMASCRIPT_INPUT_ELEMENT type;
         nh_encoding_UTF8String String;
+        bool hasLineTerminatorBefore;
     } nh_ecmascript_InputElement;
 
 /** @} */

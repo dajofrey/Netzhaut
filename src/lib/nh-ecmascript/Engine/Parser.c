@@ -72,6 +72,8 @@ const char *NH_ECMASCRIPT_RESERVED_WORDS_PP[] = {
 };
 
 const char *NH_ECMASCRIPT_PARSE_NODE_NAMES_PP[] = {
+    "ArrayLiteral",
+    "ElementList",
     "AdditiveExpression",
     "Arguments",
     "ArrayBindingPattern",
@@ -175,6 +177,7 @@ const char *NH_ECMASCRIPT_PARSE_NODE_NAMES_PP[] = {
     "ScriptBody",
     "ShiftExpression",
     "ShortCircuitExpression",
+    "SpreadElement",
     "SingleNameBinding",
     "Statement",
     "StatementList",
@@ -207,6 +210,10 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseStatementList(
 );
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseIdentifier(
+    nh_ecmascript_Parser *Parser_p
+);
+
+static nh_ecmascript_ParseResult nh_ecmascript_parseAssignmentExpression(
     nh_ecmascript_Parser *Parser_p
 );
 
@@ -263,37 +270,31 @@ static nh_ecmascript_Parser nh_ecmascript_advanceParser(
 }
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseEasyRecursiveProductionStep(
-    nh_ecmascript_Parser *Parser_p, nh_ecmascript_ParseNode *Previous_p, char *name_p, bool commaSeparated, 
+    nh_ecmascript_Parser *Parser_p, nh_ecmascript_ParseNode *Parent_p, char *name_p, bool commaSeparated, 
     nh_ecmascript_ParseResult (*parseItem_f)(nh_ecmascript_Parser *Parser_p)) 
 {
-    if (Parser_p->unparsed == 0) {
-        return nh_ecmascript_initParseResult(Previous_p);
-    }
-
-    if (commaSeparated && Previous_p != NULL) {
+    if (commaSeparated && Parent_p != NULL) {
         if (Parser_p->unparsed > 0 && Parser_p->Tokens_p[0].String.p[0] != ',') {
-            return nh_ecmascript_initParseResult(Previous_p);
+            return nh_ecmascript_initParseResult(Parent_p);
         }
         *Parser_p = nh_ecmascript_advanceParser(*Parser_p, 1);
     }
 
     nh_ecmascript_ParseResult Result = parseItem_f(Parser_p);
     if (Result.Node_p == NULL || Result.SyntaxErrors.size > 0) {
-        return nh_ecmascript_initParseResult(Previous_p);
+        return nh_ecmascript_initParseResult(Parent_p);
     }
 
-    nh_ecmascript_ParseNode *NewNonTerminal_p = nh_ecmascript_allocateNonTerminalParseNode(name_p, 2);
-
-    if (Previous_p == NULL) {
-        NewNonTerminal_p->Children = nh_core_initList(1);
-        nh_core_appendToList(&NewNonTerminal_p->Children, Result.Node_p);
+    if (Parent_p == NULL) {
+        Parent_p = nh_ecmascript_allocateNonTerminalParseNode(name_p, 2);
+        Parent_p->Children = nh_core_initList(8);
+        nh_core_appendToList(&Parent_p->Children, Result.Node_p);
     }
     else {
-        nh_core_appendToList(&NewNonTerminal_p->Children, Previous_p);
-        nh_core_appendToList(&NewNonTerminal_p->Children, Result.Node_p);
+        nh_core_appendToList(&Parent_p->Children, Result.Node_p);
     }
 
-    return nh_ecmascript_parseEasyRecursiveProductionStep(Parser_p, NewNonTerminal_p, name_p, commaSeparated, parseItem_f);
+    return nh_ecmascript_parseEasyRecursiveProductionStep(Parser_p, Parent_p, name_p, commaSeparated, parseItem_f);
 }
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseEasyRecursiveProduction(
@@ -473,6 +474,186 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseStringLiteral(
     return nh_ecmascript_initParseResult(NULL);
 }
 
+static nh_ecmascript_ParseResult nh_ecmascript_parseElision(
+    nh_ecmascript_Parser *Parser_p)
+{
+    if (Parser_p->unparsed <= 0 || Parser_p->Tokens_p[0].String.p[0] != ',') {
+        return nh_ecmascript_initParseResult(NULL);
+    }
+
+    nh_ecmascript_Parser LocalParser = *Parser_p;
+    int commaCount = 0;
+    nh_ecmascript_ParseNode *Elision_p = nh_ecmascript_allocateNonTerminalParseNode("Elision", 2);
+
+    while (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ',') {
+        nh_ecmascript_ParseNode *Comma_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+        nh_core_appendToList(&Elision_p->Children, Comma_p);
+        LocalParser = nh_ecmascript_advanceParser(LocalParser, 1);
+        commaCount++;
+    }
+
+    if (commaCount <= 0) {return nh_ecmascript_initParseResult(NULL);}    
+    *Parser_p = LocalParser;
+    return nh_ecmascript_initParseResult(Elision_p);
+}
+
+static bool nh_ecmascript_consumeDots(
+    nh_ecmascript_Parser *Parser_p, nh_ecmascript_ParseNode *Parent_p)
+{
+    // Accept either a single token "..." or three consecutive '.' tokens
+    if (Parser_p->unparsed > 0 && !strcmp(Parser_p->Tokens_p[0].String.p, "...")) {
+        nh_ecmascript_ParseNode *DotsToken_p = nh_ecmascript_allocateTerminalParseNode(&Parser_p->Tokens_p[0]);
+        nh_core_appendToList(&Parent_p->Children, DotsToken_p);
+        *Parser_p = nh_ecmascript_advanceParser(*Parser_p, 1);
+        return true;
+    }
+
+    if (Parser_p->unparsed >= 3 && Parser_p->Tokens_p[0].String.p[0] == '.' && Parser_p->Tokens_p[1].String.p[0] == '.' && Parser_p->Tokens_p[2].String.p[0] == '.') {
+        nh_ecmascript_ParseNode *Dot1_p = nh_ecmascript_allocateTerminalParseNode(&Parser_p->Tokens_p[0]);
+        nh_ecmascript_ParseNode *Dot2_p = nh_ecmascript_allocateTerminalParseNode(&Parser_p->Tokens_p[1]);
+        nh_ecmascript_ParseNode *Dot3_p = nh_ecmascript_allocateTerminalParseNode(&Parser_p->Tokens_p[2]);
+        nh_core_appendToList(&Parent_p->Children, Dot1_p);
+        nh_core_appendToList(&Parent_p->Children, Dot2_p);
+        nh_core_appendToList(&Parent_p->Children, Dot3_p);
+        *Parser_p = nh_ecmascript_advanceParser(*Parser_p, 3);
+        return true;
+    }
+
+    return false;
+}
+
+static nh_ecmascript_ParseResult nh_ecmascript_parseSpreadElement(
+    nh_ecmascript_Parser *Parser_p)
+{
+    nh_ecmascript_ParseNode *SpreadElement_p = nh_ecmascript_allocateNonTerminalParseNode("SpreadElement", 2);
+    nh_ecmascript_Parser LocalParser = *Parser_p;
+
+    if (!nh_ecmascript_consumeDots(&LocalParser, SpreadElement_p)) {
+        return nh_ecmascript_initParseResult(NULL);
+    }
+
+    nh_ecmascript_ParseResult Arg = nh_ecmascript_parseAssignmentExpression(&LocalParser);
+    if (Arg.Node_p == NULL || Arg.SyntaxErrors.size > 0) {
+        nh_ecmascript_freeParseNode(SpreadElement_p);
+        return nh_ecmascript_initParseResult(NULL);
+    }
+
+    nh_core_appendToList(&SpreadElement_p->Children, Arg.Node_p);
+    *Parser_p = LocalParser;
+    return nh_ecmascript_initParseResult(SpreadElement_p);
+}
+
+static nh_ecmascript_ParseResult nh_ecmascript_parseElementList(
+    nh_ecmascript_Parser *Parser_p)
+{
+    nh_ecmascript_Parser LocalParser = *Parser_p;
+    nh_ecmascript_ParseNode *ElementList_p = nh_ecmascript_allocateNonTerminalParseNode("ElementList", 4);
+
+    // Optional leading Elision
+    nh_ecmascript_ParseResult LeadElision = nh_ecmascript_parseElision(&LocalParser);
+    if (LeadElision.Node_p != NULL && LeadElision.SyntaxErrors.size == 0) {
+        nh_core_appendToList(&ElementList_p->Children, LeadElision.Node_p);
+    }
+
+    // First element: AssignmentExpression or SpreadElement
+    nh_ecmascript_ParseResult First = nh_ecmascript_parseSpreadElement(&LocalParser);
+    if (First.Node_p == NULL) { First = nh_ecmascript_parseAssignmentExpression(&LocalParser); }
+    if (First.Node_p == NULL || First.SyntaxErrors.size > 0) {
+        nh_ecmascript_freeParseNode(ElementList_p);
+        return nh_ecmascript_initParseResult(NULL);
+    }
+    nh_core_appendToList(&ElementList_p->Children, First.Node_p);
+
+    // Zero or more: , Elision_opt (AssignmentExpression | SpreadElement)
+    while (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ',') {
+        nh_ecmascript_ParseNode *Comma_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+        LocalParser = nh_ecmascript_advanceParser(LocalParser, 1);
+        nh_core_appendToList(&ElementList_p->Children, Comma_p);
+
+        nh_ecmascript_ParseResult MidElision = nh_ecmascript_parseElision(&LocalParser);
+        if (MidElision.Node_p != NULL && MidElision.SyntaxErrors.size == 0) {
+            nh_core_appendToList(&ElementList_p->Children, MidElision.Node_p);
+        }
+
+        nh_ecmascript_ParseResult Next = nh_ecmascript_parseSpreadElement(&LocalParser);
+        if (Next.Node_p == NULL) { Next = nh_ecmascript_parseAssignmentExpression(&LocalParser); }
+        if (Next.Node_p == NULL || Next.SyntaxErrors.size > 0) {
+            nh_ecmascript_freeParseNode(ElementList_p);
+            return nh_ecmascript_initParseResult(NULL);
+        }
+        nh_core_appendToList(&ElementList_p->Children, Next.Node_p);
+    }
+
+    *Parser_p = LocalParser;
+    return nh_ecmascript_initParseResult(ElementList_p);
+}
+
+static nh_ecmascript_ParseResult nh_ecmascript_parseArrayLiteral(
+    nh_ecmascript_Parser *Parser_p)
+{
+    if (Parser_p->unparsed <= 0 || Parser_p->Tokens_p[0].String.p[0] != '[') {
+        return nh_ecmascript_initParseResult(NULL);
+    }
+
+    nh_ecmascript_Parser LocalParser = nh_ecmascript_advanceParser(*Parser_p, 1);
+    nh_ecmascript_ParseNode *ArrayLiteral_p = nh_ecmascript_allocateNonTerminalParseNode("ArrayLiteral", 6);
+    nh_ecmascript_ParseNode *LeftBracket_p  = nh_ecmascript_allocateTerminalParseNode(&Parser_p->Tokens_p[0]);
+    nh_core_appendToList(&ArrayLiteral_p->Children, LeftBracket_p);
+
+    // Case: immediate closing ']'
+    if (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ']') {
+        nh_ecmascript_ParseNode *RightBracket_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+        nh_core_appendToList(&ArrayLiteral_p->Children, RightBracket_p);
+        *Parser_p = nh_ecmascript_advanceParser(LocalParser, 1);
+        return nh_ecmascript_initParseResult(ArrayLiteral_p);
+    }
+
+    // Try ElementList
+    nh_ecmascript_ParseResult Elements = nh_ecmascript_parseElementList(&LocalParser);
+    if (Elements.Node_p != NULL && Elements.SyntaxErrors.size == 0) {
+        nh_core_appendToList(&ArrayLiteral_p->Children, Elements.Node_p);
+
+        // Optional trailing comma
+        if (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ',') {
+            nh_ecmascript_ParseNode *Comma_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+            LocalParser = nh_ecmascript_advanceParser(LocalParser, 1);
+            nh_core_appendToList(&ArrayLiteral_p->Children, Comma_p);
+
+            // Optional trailing elision after the final comma
+            nh_ecmascript_ParseResult TrailElision = nh_ecmascript_parseElision(&LocalParser);
+            if (TrailElision.Node_p != NULL && TrailElision.SyntaxErrors.size == 0) {
+                nh_core_appendToList(&ArrayLiteral_p->Children, TrailElision.Node_p);
+            }
+        }
+
+        if (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ']') {
+            nh_ecmascript_ParseNode *RightBracket_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+            nh_core_appendToList(&ArrayLiteral_p->Children, RightBracket_p);
+            *Parser_p = nh_ecmascript_advanceParser(LocalParser, 1);
+            return nh_ecmascript_initParseResult(ArrayLiteral_p);
+        }
+
+        nh_ecmascript_freeParseNode(ArrayLiteral_p);
+        return nh_ecmascript_initParseResult(NULL);
+    }
+
+    // Try only elision followed by ']'
+    nh_ecmascript_Parser OnlyElisionParser = LocalParser;
+    nh_ecmascript_ParseResult OnlyElision = nh_ecmascript_parseElision(&OnlyElisionParser);
+    if (OnlyElision.Node_p != NULL && OnlyElision.SyntaxErrors.size == 0) {
+        if (OnlyElisionParser.unparsed > 0 && OnlyElisionParser.Tokens_p[0].String.p[0] == ']') {
+            nh_core_appendToList(&ArrayLiteral_p->Children, OnlyElision.Node_p);
+            nh_ecmascript_ParseNode *RightBracket_p = nh_ecmascript_allocateTerminalParseNode(&OnlyElisionParser.Tokens_p[0]);
+            nh_core_appendToList(&ArrayLiteral_p->Children, RightBracket_p);
+            *Parser_p = nh_ecmascript_advanceParser(OnlyElisionParser, 1);
+            return nh_ecmascript_initParseResult(ArrayLiteral_p);
+        }
+    }
+
+    nh_ecmascript_freeParseNode(ArrayLiteral_p);
+    return nh_ecmascript_initParseResult(NULL);
+}
+
 static nh_ecmascript_ParseResult nh_ecmascript_parseLiteral(
     nh_ecmascript_Parser *Parser_p)
 {
@@ -515,6 +696,13 @@ static nh_ecmascript_ParseResult nh_ecmascript_parsePrimaryExpression(
     nh_ecmascript_Parser *Parser_p)
 {
     nh_ecmascript_ParseResult Result = nh_ecmascript_initParseResult(NULL);
+    Result = nh_ecmascript_parseArrayLiteral(Parser_p);
+
+    if (Result.Node_p != NULL && Result.SyntaxErrors.size == 0) {
+        nh_ecmascript_ParseNode *PrimaryExpression_p = nh_ecmascript_allocateNonTerminalParseNode("PrimaryExpression", 1);
+        nh_core_appendToList(&PrimaryExpression_p->Children, Result.Node_p);
+        return nh_ecmascript_initParseResult(PrimaryExpression_p);
+    }
 
     if (!strcmp("this", Parser_p->Tokens_p[0].String.p)) 
     {
@@ -1141,6 +1329,7 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseVariableDeclarationList(
 static nh_ecmascript_ParseResult nh_ecmascript_parseVariableStatement(
     nh_ecmascript_Parser *Parser_p)
 {
+puts(Parser_p->Tokens_p[0].String.p);
     if (Parser_p->unparsed <= 0 || strcmp(Parser_p->Tokens_p[0].String.p, "var")) {
         return nh_ecmascript_initParseResult(NULL);
     }
@@ -1222,7 +1411,6 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseExpressionStatement(
         nh_core_appendToList(&ExpressionStatement_p->Children, Result.Node_p);
         nh_core_appendToList(&ExpressionStatement_p->Children, Semicolon_p);
 
-        *Parser_p = LocalParser.unparsed > 0 ? nh_ecmascript_advanceParser(LocalParser, 1) : LocalParser;
         return nh_ecmascript_initParseResult(ExpressionStatement_p);
     }
 
@@ -1324,4 +1512,3 @@ nh_ecmascript_ParseResult nh_ecmascript_parseText(
 
     return Result;
 }
-

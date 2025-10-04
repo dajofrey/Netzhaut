@@ -50,26 +50,27 @@ NH_API_RESULT nh_ecmascript_logDecoder(
 NH_API_RESULT nh_ecmascript_logLexer(
     void *handle_p, nh_core_Array *InputElements_p, bool dirty)
 {
-//    for (int i = 0; i < InputElements_p->length; ++i) 
-//    {
-//        nh_ecmascript_InputElement *InputElement_p = &((nh_ecmascript_InputElement*)InputElements_p->p)[i];
-//        char message_p[512] = {'\0'};
-//
-//        nh_core_String String = nh_core_initString(64);
-//        nh_core_appendToString(&String, InputElement_p->String.p, InputElement_p->String.length);
-//
-//        for (int i = 0; i < String.length; ++i) {
-//            if (String.p[i] == '\n' || String.p[i] == '\r') {String.p[i] = ' ';}
-//        }
-//
-//        sprintf(
-//            message_p, dirty ? "[nh-ecmascript:%p:LexerDirty]{%s [%s]}" : "[nh-ecmascript:%p:LexerClean]{%s [%s]}",
-//            handle_p, NH_ECMASCRIPT_INPUT_ELEMENTS_PP[InputElement_p->type], String.p 
-//        );
-//
-//        nh_core_log(message_p);
-//        nh_core_freeString(&String);
-//    }
+    for (int i = 0; i < InputElements_p->length; ++i) 
+    {
+        nh_ecmascript_InputElement *InputElement_p = &((nh_ecmascript_InputElement*)InputElements_p->p)[i];
+        char message_p[512] = {'\0'};
+
+        nh_core_String String = nh_core_initString(64);
+        nh_core_appendToString(&String, InputElement_p->String.p, InputElement_p->String.length);
+
+        for (int i = 0; i < String.length; ++i) {
+            if (String.p[i] == '\n' || String.p[i] == '\r') {String.p[i] = ' ';}
+        }
+
+        sprintf(
+            message_p, "%s [%s]", String.p, NH_ECMASCRIPT_INPUT_ELEMENTS_PP[InputElement_p->type]
+        );
+
+        char addr_p[255];
+        sprintf(addr_p, dirty ? "nh-ecmascript:%p:LexerDirty" : "nh-ecmascript:%p:LexerClean", handle_p);
+        nh_core_log(addr_p, NULL, message_p);
+        nh_core_freeString(&String);
+    }
 
     return NH_API_SUCCESS;
 }
