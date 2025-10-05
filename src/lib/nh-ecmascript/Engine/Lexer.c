@@ -235,7 +235,8 @@ static unsigned int nh_ecmascript_isPunctuator(
         ||  (codepoints_p[0] == '&' && codepoints_p[1] == '=')
         ||  (codepoints_p[0] == '|' && codepoints_p[1] == '=')
         ||  (codepoints_p[0] == '^' && codepoints_p[1] == '=')
-        ||  (codepoints_p[0] == '=' && codepoints_p[1] == '>'))
+        ||  (codepoints_p[0] == '=' && codepoints_p[1] == '>')
+        ||  (codepoints_p[0] == '/' && codepoints_p[1] == '='))
         {
             return 2;
         }
@@ -267,7 +268,8 @@ static unsigned int nh_ecmascript_isPunctuator(
     ||  codepoints_p[0] == '~' 
     ||  codepoints_p[0] == '?' 
     ||  codepoints_p[0] == ':' 
-    ||  codepoints_p[0] == '=') 
+    ||  codepoints_p[0] == '='
+    ||  codepoints_p[0] == '/') 
     {
         return 1;
     }
@@ -335,7 +337,6 @@ static unsigned int nh_ecmascript_isNumericLiteral(
     NH_ENCODING_UTF32 *codepoints_p, unsigned int length, NH_ECMASCRIPT_INPUT_ELEMENT *type_p)
 {
 // NonDecimalHexIntegerLiteral
-
     int digits = nh_ecmascript_isHexIntegerLiteral(codepoints_p, length);
     if (digits > 0) {
         *type_p = NH_ECMASCRIPT_INPUT_ELEMENT_TOKEN_NON_DECIMAL_HEX_INTEGER_LITERAL;

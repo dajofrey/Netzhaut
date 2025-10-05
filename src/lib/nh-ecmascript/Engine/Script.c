@@ -106,7 +106,7 @@ NH_API_RESULT nh_ecmascript_evaluateScript(
 
     nh_ecmascript_ParseNode *ScriptBody_p = Script_p->ECMAScriptCode_p->Children.pp[0];
     nh_ecmascript_Completion Result = nh_ecmascript_globalDeclarationInstantiation(ScriptBody_p, GlobalEnvironment_p);
-puts("ok");
+
     if (Result.type == NH_ECMASCRIPT_COMPLETION_NORMAL) {
         Result = nh_ecmascript_evaluateScriptBody(ScriptBody_p);
     }
