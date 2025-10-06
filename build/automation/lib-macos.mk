@@ -163,7 +163,7 @@ SRC_FILES_NH_ECMASCRIPT = \
     Engine/Lexer.c \
     Engine/Agent.c \
     Engine/Script.c \
-    Engine/Parser.c \
+    Engine/CST.c \
     Engine/Realm.c \
     Engine/InternalSlots.c \
     Engine/ObjectType.c \

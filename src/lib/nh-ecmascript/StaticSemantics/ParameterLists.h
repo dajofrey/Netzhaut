@@ -11,7 +11,7 @@
 
 #endif
 
-#include "../Engine/Parser.h"
+#include "../Engine/CST.h"
 
 /** @addtogroup lib_nh-ecmascript_functions
  *  @{

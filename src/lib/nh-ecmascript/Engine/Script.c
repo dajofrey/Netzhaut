@@ -10,7 +10,7 @@
 
 #include "Script.h"
 #include "Lexer.h"
-#include "Parser.h"
+#include "CST.h"
 #include "ExecutionContext.h"
 #include "Instantiation.h"
 #include "Evaluation.h"
@@ -70,7 +70,7 @@ nh_ecmascript_Script *nh_ecmascript_parseScript(
     nh_core_Array DirtyInputElements, CleanInputElements;
     NH_CORE_CHECK_2(NULL, nh_ecmascript_prepareText(Script_p, &UnicodeCodepoints, &DirtyInputElements, &CleanInputElements))
 
-    nh_ecmascript_ParseResult Result = nh_ecmascript_parseText(CleanInputElements, NH_ECMASCRIPT_PARSE_NODE_SCRIPT);
+    nh_ecmascript_ParseResult Result = nh_ecmascript_parseCST(CleanInputElements, NH_ECMASCRIPT_PARSE_NODE_SCRIPT);
     if (Result.Node_p == NULL || Result.SyntaxErrors.size > 0) {
         nh_core_free(Script_p);
         return NULL;;

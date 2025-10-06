@@ -10,7 +10,6 @@
 
 #include "Reference.h"
 #include "Lexer.h"
-#include "Parser.h"
 #include "ExecutionContext.h"
 #include "Instantiation.h"
 

@@ -8,7 +8,7 @@
 
 // INCLUDES ========================================================================================
 
-#include "Parser.h"
+#include "CST.h"
 #include "Lexer.h"
 
 #include "../Common/IndexMap.h"
@@ -76,6 +76,7 @@ const char *NH_ECMASCRIPT_PARSE_NODE_NAMES_PP[] = {
     "ElementList",
     "AdditiveExpression",
     "Arguments",
+    "ArgumentList",
     "ArrayBindingPattern",
     "ArrowFunction",
     "AssignmentExpression",
@@ -220,6 +221,10 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseIdentifier(
 );
 
 static nh_ecmascript_ParseResult nh_ecmascript_parseAssignmentExpression(
+    nh_ecmascript_Parser *Parser_p
+);
+
+static nh_ecmascript_ParseResult nh_ecmascript_parseArgumentList(
     nh_ecmascript_Parser *Parser_p
 );
 
@@ -873,6 +878,41 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseNewExpression(
     return nh_ecmascript_initParseResult(NULL);
 }
 
+static nh_ecmascript_ParseResult nh_ecmascript_parseArgumentList(
+    nh_ecmascript_Parser *Parser_p)
+{
+    nh_ecmascript_Parser LocalParser = *Parser_p;
+
+    // First: SpreadElement or AssignmentExpression
+    nh_ecmascript_ParseResult First = nh_ecmascript_parseSpreadElement(&LocalParser);
+    if (First.Node_p == NULL) { First = nh_ecmascript_parseAssignmentExpression(&LocalParser); }
+    if (First.Node_p == NULL || First.SyntaxErrors.size > 0) {
+        return nh_ecmascript_initParseResult(NULL);
+    }
+
+    nh_ecmascript_ParseNode *ArgumentList_p = nh_ecmascript_allocateNonTerminalParseNode("ArgumentList", 8);
+    nh_core_appendToList(&ArgumentList_p->Children, First.Node_p);
+
+    // Zero or more: , (SpreadElement | AssignmentExpression)
+    while (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ',') {
+        nh_ecmascript_ParseNode *Comma_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+        LocalParser = nh_ecmascript_advanceParser(LocalParser, 1);
+
+        nh_ecmascript_ParseResult Next = nh_ecmascript_parseSpreadElement(&LocalParser);
+        if (Next.Node_p == NULL) { Next = nh_ecmascript_parseAssignmentExpression(&LocalParser); }
+        if (Next.Node_p == NULL || Next.SyntaxErrors.size > 0) {
+            nh_ecmascript_freeParseNode(ArgumentList_p);
+            return nh_ecmascript_initParseResult(NULL);
+        }
+
+        nh_core_appendToList(&ArgumentList_p->Children, Comma_p);
+        nh_core_appendToList(&ArgumentList_p->Children, Next.Node_p);
+    }
+
+    *Parser_p = LocalParser;
+    return nh_ecmascript_initParseResult(ArgumentList_p);
+}
+
 static nh_ecmascript_ParseResult nh_ecmascript_parseArguments(
     nh_ecmascript_Parser *Parser_p)
 {
@@ -881,20 +921,41 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseArguments(
     }
 
     nh_ecmascript_Parser LocalParser = nh_ecmascript_advanceParser(*Parser_p, 1);
+    nh_ecmascript_ParseNode *Arguments_p = nh_ecmascript_allocateNonTerminalParseNode("Arguments", 4);
+    nh_ecmascript_ParseNode *LeftParen_p = nh_ecmascript_allocateTerminalParseNode(&Parser_p->Tokens_p[0]);
+    nh_core_appendToList(&Arguments_p->Children, LeftParen_p);
 
-    if (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ')') 
-    {
-        nh_ecmascript_ParseNode *Arguments_p    = nh_ecmascript_allocateNonTerminalParseNode("Arguments", 1);
-        nh_ecmascript_ParseNode *LeftBracket_p  = nh_ecmascript_allocateTerminalParseNode(&Parser_p->Tokens_p[0]);
-        nh_ecmascript_ParseNode *RightBracket_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
-
-        nh_core_appendToList(&Arguments_p->Children, LeftBracket_p);
-        nh_core_appendToList(&Arguments_p->Children, RightBracket_p);
-
+    // Empty ()
+    if (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ')') {
+        nh_ecmascript_ParseNode *RightParen_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+        nh_core_appendToList(&Arguments_p->Children, RightParen_p);
         *Parser_p = nh_ecmascript_advanceParser(LocalParser, 1);
         return nh_ecmascript_initParseResult(Arguments_p);
     }
 
+    nh_ecmascript_ParseResult List = nh_ecmascript_parseArgumentList(&LocalParser);
+    if (List.Node_p == NULL || List.SyntaxErrors.size > 0) {
+        nh_ecmascript_freeParseNode(Arguments_p);
+        return nh_ecmascript_initParseResult(NULL);
+    }
+    nh_core_appendToList(&Arguments_p->Children, List.Node_p);
+
+    // Optional trailing comma before ')'
+    if (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ',') {
+        // Don't require an item after it; ')' must follow
+        nh_ecmascript_ParseNode *TrailingComma_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+        LocalParser = nh_ecmascript_advanceParser(LocalParser, 1);
+        nh_core_appendToList(&Arguments_p->Children, TrailingComma_p);
+    }
+
+    if (LocalParser.unparsed > 0 && LocalParser.Tokens_p[0].String.p[0] == ')') {
+        nh_ecmascript_ParseNode *RightParen_p = nh_ecmascript_allocateTerminalParseNode(&LocalParser.Tokens_p[0]);
+        nh_core_appendToList(&Arguments_p->Children, RightParen_p);
+        *Parser_p = nh_ecmascript_advanceParser(LocalParser, 1);
+        return nh_ecmascript_initParseResult(Arguments_p);
+    }
+
+    nh_ecmascript_freeParseNode(Arguments_p);
     return nh_ecmascript_initParseResult(NULL);
 }
 
@@ -1842,7 +1903,7 @@ static nh_ecmascript_ParseResult nh_ecmascript_parseScriptNode(
 }
 
 // https://tc39.es/ecma262/#sec-parsetext
-nh_ecmascript_ParseResult nh_ecmascript_parseText(
+nh_ecmascript_ParseResult nh_ecmascript_parseCST(
     nh_core_Array InputElements, NH_ECMASCRIPT_PARSE_NODE goalSymbol)
 {
     nh_ecmascript_Parser Parser;

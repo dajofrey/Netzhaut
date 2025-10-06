@@ -10,7 +10,7 @@
 
 #include "IndexMap.h"
 
-#include "../Engine/Parser.h"
+#include "../Engine/CST.h"
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>

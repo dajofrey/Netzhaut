@@ -10,7 +10,7 @@
  */
 
 #include "Completion.h"
-#include "Parser.h"
+#include "CST.h"
 
 #endif
 
