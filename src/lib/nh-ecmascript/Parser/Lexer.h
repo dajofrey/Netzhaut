@@ -1,7 +1,5 @@
-#ifndef NH_ECMASCRIPT_LEXER_H
-#define NH_ECMASCRIPT_LEXER_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_ECMASCRIPT_PARSER_LEXER_H
+#define NH_ECMASCRIPT_PARSER_LEXER_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -9,9 +7,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "Type.h"
-
-#endif
+#include "../Engine/Type.h"
 
 /** @addtogroup lib_nh-ecmascript_enums
  *  @{
@@ -58,22 +54,14 @@
 
 /** @} */
 
-/** @addtogroup lib_nh-ecmascript_functions
- *  @{
- */
+NH_API_RESULT nh_ecmascript_runLexer(
+    void *Script_p, nh_encoding_UTF32String *UnicodeCodepoints_p,
+    nh_core_Array *DirtyInputElements_p, nh_core_Array *CleanInputElements_p
+);
 
-    nh_core_Array nh_ecmascript_getInputElements(
-        nh_encoding_UTF32String Codepoints
-    );
 
-    nh_core_Array nh_ecmascript_discardRedundantInputElements(
-        nh_core_Array DirtyInputElements
-    );
-
-    bool nh_ecmascript_isNumericToken(
-        nh_ecmascript_InputElement *InputElement_p
-    );
-
-/** @} */
+bool nh_ecmascript_isNumericToken(
+    nh_ecmascript_InputElement *InputElement_p
+);
 
 #endif

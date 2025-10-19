@@ -12,7 +12,6 @@
 #include "nh-core.h"
 
 #include "../nh-core/Loader/Loader.h" 
-#include "../nh-ecmascript/Engine/Script.h"
 
 #include <dlfcn.h>
 #include <stddef.h>

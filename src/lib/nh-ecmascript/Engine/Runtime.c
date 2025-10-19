@@ -10,7 +10,7 @@
 
 #include "Runtime.h"
 #include "Agent.h"
-#include "Script.h"
+#include "../Parser/Script.h"
 #include "ExecutionContext.h"
 
 #include "../Common/IndexMap.h"

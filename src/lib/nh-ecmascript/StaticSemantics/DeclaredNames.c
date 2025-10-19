@@ -471,4 +471,3 @@ nh_core_List nh_ecmascript_getTopLevelVarDeclaredNames(
 
     return nh_core_initList(8);
 }
-

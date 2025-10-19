@@ -9,10 +9,11 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "Realm.h"
-#include "CST.h"
-#include "Environment.h"
+#include "../Engine/Realm.h"
+#include "../Engine/Environment.h"
 
+#include "../Parser/CST.h"
+#include "../Parser/AST.h"
 #include "../Common/Includes.h"
 
 #endif
@@ -29,7 +30,7 @@
     typedef struct nh_ecmascript_Script {
         nh_ecmascript_Realm *Realm_p;
         nh_ecmascript_Environment *Environment_p;
-        nh_ecmascript_ParseNode *ECMAScriptCode_p;
+        nh_ecmascript_ASTNode *ECMAScriptCode_p;
         nh_ecmascript_ScriptHostDefined HostDefined;
     } nh_ecmascript_Script;
 
@@ -42,11 +43,6 @@
     // https://tc39.es/ecma262/#sec-parse-script
     nh_ecmascript_Script *nh_ecmascript_parseScript(
         char *sourceText_p, nh_ecmascript_Realm *Realm_p, int encoding
-    );
-
-    // https://www.ecma-international.org/ecma-262/#sec-runtime-semantics-scriptevaluation
-    NH_API_RESULT nh_ecmascript_evaluateScript(
-        nh_ecmascript_Script *Script_p
     );
 
 /** @} */

@@ -9,11 +9,12 @@
 // INCLUDES ========================================================================================
 
 #include "Reference.h"
-#include "Lexer.h"
 #include "ExecutionContext.h"
-#include "Instantiation.h"
+#include "../Interpreter/Instantiation.h"
 
+#include "../Parser/Lexer.h"
 #include "../Common/Log.h"
+
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>

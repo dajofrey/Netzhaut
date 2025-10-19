@@ -10,9 +10,9 @@
  */
 
 #include "Realm.h"
-#include "CST.h"
 #include "Environment.h"
 
+#include "../Parser/CST.h"
 #include "../Common/Includes.h"
 
 #endif

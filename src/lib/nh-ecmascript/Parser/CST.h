@@ -1,7 +1,5 @@
-#ifndef NH_ECMASCRIPT_PARSER_H
-#define NH_ECMASCRIPT_PARSER_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_ECMASCRIPT_PARSER_CST_H
+#define NH_ECMASCRIPT_PARSER_CST_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -10,12 +8,8 @@
  */
 
 #include "Lexer.h"
-
 #include "../Common/Includes.h"
-
 #include <stdlib.h>
-
-#endif
 
 /** @addtogroup lib_nh-ecmascript_enums
  *  @{
@@ -64,8 +58,11 @@
     } NH_ECMASCRIPT_RESERVED_WORD;
 
     typedef enum NH_ECMASCRIPT_PARSE_NODE {
+        NH_ECMASCRIPT_PARSE_NODE_ARRAY_LITERAL,
+        NH_ECMASCRIPT_PARSE_NODE_ELEMENT_LIST,
         NH_ECMASCRIPT_PARSE_NODE_ADDITIVE_EXPRESSION,
         NH_ECMASCRIPT_PARSE_NODE_ARGUMENTS,
+        NH_ECMASCRIPT_PARSE_NODE_ARGUMENT_LIST,
         NH_ECMASCRIPT_PARSE_NODE_ARRAY_BINDING_PATTERN,
         NH_ECMASCRIPT_PARSE_NODE_ARROW_FUNCTION,
         NH_ECMASCRIPT_PARSE_NODE_ASSIGNMENT_EXPRESSION,
@@ -169,6 +166,7 @@
         NH_ECMASCRIPT_PARSE_NODE_SCRIPT_BODY,
         NH_ECMASCRIPT_PARSE_NODE_SHIFT_EXPRESSION,
         NH_ECMASCRIPT_PARSE_NODE_SHORT_CIRCUIT_EXPRESSION,
+        NH_ECMASCRIPT_PARSE_NODE_SPREAD_ELEMENT,
         NH_ECMASCRIPT_PARSE_NODE_SINGLE_NAME_BINDING,
         NH_ECMASCRIPT_PARSE_NODE_STATEMENT,
         NH_ECMASCRIPT_PARSE_NODE_STATEMENT_LIST,
@@ -220,7 +218,7 @@
  *  @{
  */
 
-    nh_ecmascript_ParseResult nh_ecmascript_parseText(
+    nh_ecmascript_ParseResult nh_ecmascript_parseCST(
         nh_core_Array InputElements, NH_ECMASCRIPT_PARSE_NODE goalSymbol
     );
 

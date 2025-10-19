@@ -9,6 +9,8 @@
 // INCLUDES ========================================================================================
 
 #include "Lexer.h"
+#include "Script.h"
+#include "../Common/Log.h"
 
 #include "../../nh-encoding/Base/UnicodeDataHelper.h"
 #include "../../nh-encoding/Encodings/UTF8.h"
@@ -49,7 +51,7 @@ const char *NH_ECMASCRIPT_INPUT_ELEMENTS_PP[] = {
     "TokenTemplateSubstitutionTail",
 };
 
-// LEXER ===========================================================================================
+// FUNCTIONS ========================================================================================
 
 static bool nh_ecmascript_isDigit(
     NH_ENCODING_UTF32 codepoint, bool zero)
@@ -534,7 +536,7 @@ DEFINE_INPUT_ELEMENT: ;
 return count;
 }
 
-nh_core_Array nh_ecmascript_getInputElements(
+static nh_core_Array nh_ecmascript_getInputElements(
     nh_encoding_UTF32String Codepoints)
 {
     nh_core_Array InputElements = nh_core_initArray(sizeof(nh_ecmascript_InputElement), 64);
@@ -552,10 +554,8 @@ nh_core_Array nh_ecmascript_getInputElements(
     return InputElements;
 }
 
-// DISCARD REDUNDANT INPUT ELEMENTS ================================================================
-
 // https://tc39.es/ecma262/#sec-lexical-and-regexp-grammars
-nh_core_Array nh_ecmascript_discardRedundantInputElements(
+static nh_core_Array nh_ecmascript_discardRedundantInputElements(
     nh_core_Array DirtyInputElements)
 {
     nh_core_Array CleanInputElements = nh_core_initArray(sizeof(nh_ecmascript_InputElement), 64);
@@ -587,8 +587,6 @@ nh_core_Array nh_ecmascript_discardRedundantInputElements(
     return CleanInputElements;
 }
 
-// IS NUMERIC LITERAL ==============================================================================
-
 bool nh_ecmascript_isNumericToken(
     nh_ecmascript_InputElement *InputElement_p)
 {
@@ -597,4 +595,20 @@ bool nh_ecmascript_isNumericToken(
     }
 
     return false;
+}
+
+NH_API_RESULT nh_ecmascript_runLexer(
+    void *Script_p, nh_encoding_UTF32String *UnicodeCodepoints_p,
+    nh_core_Array *DirtyInputElements_p, nh_core_Array *CleanInputElements_p)
+{
+    // https://tc39.es/ecma262/#sec-ecmascript-language-lexical-grammar
+    nh_ecmascript_logDecoder((nh_ecmascript_Script*)Script_p, UnicodeCodepoints_p);
+
+    *DirtyInputElements_p = nh_ecmascript_getInputElements(*UnicodeCodepoints_p);
+    nh_ecmascript_logLexer((nh_ecmascript_Script*)Script_p, DirtyInputElements_p, true);
+
+    *CleanInputElements_p = nh_ecmascript_discardRedundantInputElements(*DirtyInputElements_p);
+    nh_ecmascript_logLexer((nh_ecmascript_Script*)Script_p, CleanInputElements_p, false);
+
+    return NH_API_SUCCESS;
 }

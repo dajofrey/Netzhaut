@@ -9,7 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "Script.h"
+#include "../Parser/Script.h"
 #include "Realm.h"
 #include "Environment.h"
 #include "Reference.h"
@@ -37,6 +37,7 @@
         nh_ecmascript_ScriptOrModule ScriptOrModule;
         nh_ecmascript_Environment *LexicalEnvironment_p;
         nh_ecmascript_Environment *VariableEnvironment_p;
+        nh_ecmascript_Environment *PrivateEnvironment_p;
     } nh_ecmascript_ExecutionContext;
 
 /** @} */

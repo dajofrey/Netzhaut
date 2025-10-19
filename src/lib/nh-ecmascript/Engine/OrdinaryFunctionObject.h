@@ -13,7 +13,7 @@
 #include "InternalSlots.h"
 #include "Properties.h"
 #include "ObjectType.h"
-#include "CST.h"
+#include "../Parser/CST.h"
 #include "Environment.h"
 
 #include "../../nh-core/Util/List.h"

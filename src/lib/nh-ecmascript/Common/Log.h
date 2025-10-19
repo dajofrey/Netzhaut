@@ -11,7 +11,8 @@
 
 #include "Result.h"
 
-#include "../Engine/CST.h"
+#include "../Parser/CST.h"
+#include "../Parser/AST.h"
 
 #endif
 
@@ -29,6 +30,10 @@
 
     NH_API_RESULT nh_ecmascript_logParseTree(
         void *handle_p, nh_ecmascript_ParseNode *ParseNode_p, nh_ecmascript_ParseNode *Parent_p, int depth, bool *branch_p
+    );
+
+    NH_API_RESULT nh_ecmascript_logAST(
+        void *handle_p, nh_ecmascript_ASTNode *ASTNode_p, nh_ecmascript_ASTNode *Parent_p, int depth, bool *branch_p
     );
 
     NH_API_RESULT _nh_ecmascript_logBegin(

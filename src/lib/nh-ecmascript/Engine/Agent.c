@@ -9,7 +9,8 @@
 // INCLUDES =======================================================================================
 
 #include "Agent.h"
-#include "Script.h"
+#include "../Parser/Script.h"
+#include "../Interpreter/Evaluation.h"
 #include "ExecutionContext.h"
 #include "Realm.h"
 

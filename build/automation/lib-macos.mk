@@ -160,10 +160,7 @@ SRC_FILES_NH_WEBIDL = \
 
 SRC_FILES_NH_ECMASCRIPT = \
     Engine/Runtime.c \
-    Engine/Lexer.c \
     Engine/Agent.c \
-    Engine/Script.c \
-    Engine/CST.c \
     Engine/Realm.c \
     Engine/InternalSlots.c \
     Engine/ObjectType.c \
@@ -173,15 +170,19 @@ SRC_FILES_NH_ECMASCRIPT = \
     Engine/Properties.c \
     Engine/Environment.c \
     Engine/OrdinaryFunctionObject.c \
-    Engine/Evaluation.c \
     Engine/ExecutionContext.c \
     Engine/CompletionOrReference.c \
     Engine/Reference.c \
     Engine/TestAndCompare.c \
     Engine/PropertyDescriptor.c \
-    Engine/Instantiation.c \
     Engine/OrdinaryObject.c \
     Engine/GlobalObject.c \
+    Parser/Lexer.c \
+    Parser/CST.c \
+    Parser/AST.c \
+    Parser/Script.c \
+    Interpreter/Evaluation.c \
+    Interpreter/Instantiation.c \
     StaticSemantics/Misc.c \
     StaticSemantics/DeclaredNames.c \
     StaticSemantics/BoundNames.c \
