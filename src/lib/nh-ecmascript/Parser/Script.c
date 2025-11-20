@@ -61,10 +61,9 @@ nh_ecmascript_Script *nh_ecmascript_parseScript(
 
     bool branch_p[1024] = {0};
     nh_ecmascript_logParseTree(Script_p, Result.Node_p, NULL, 0, branch_p);
-    Script_p->ECMAScriptCode_p = Result.Node_p;
 
     nh_ecmascript_ASTNode *AST_p = nh_ecmascript_parseAST(Result.Node_p);
-//    nh_ecmascript_logParseTree(Script_p, Result.Node_p, NULL, 0, branch_p);
+    Script_p->ECMAScriptCode_p = AST_p;
     
     return Script_p;
 }

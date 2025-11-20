@@ -206,25 +206,26 @@
 //    return strdup("undefined");
 //}
 //
-///* ---------- Interpreter core: evaluate AST nodes ---------- */
-//
-///* Forward */
-//static JSValue nh_ecmascript_evaluateNode(nh_ecmascript_ASTNode *node, Env *env);
-//
-///* Evaluate a list (nh_core_List) of AST nodes and return last value */
-//static JSValue nh_ecmascritp_evaluateList(
-//    nh_core_List *L, Env *env)
-//{
-//    if (!L) return js_undefined();
-//    size_t n = nh_core_list_size(L);
-//    JSValue last = js_undefined();
-//    for (size_t i = 0; i < n; ++i) {
-//        nh_ecmascript_ASTNode *c = (nh_ecmascript_ASTNode*) nh_core_list_get(L, i);
-//        last = nh_ecmascript_evaluateNode(c, env);
-//    }
-//    return last;
-//}
-//
+/* ---------- Interpreter core: evaluate AST nodes ---------- */
+
+/* Forward */
+static nh_ecmascript_Completion nh_ecmascript_evaluateNode(
+    nh_ecmascript_ASTNode *Node_p, nh_ecmascript_Environment *Environment_p
+);
+
+/* Evaluate a list (nh_core_List) of AST nodes and return last value */
+static nh_ecmascript_Completion nh_ecmascript_evaluateList(
+    nh_core_List *List_p, nh_ecmascript_Environment *Environment_p)
+{
+    if (!List_p) return nh_ecmascript_normalEmptyCompletion();
+    nh_ecmascript_Completion last = nh_ecmascript_normalEmptyCompletion();
+    for (size_t i = 0; i < List_p->size; ++i) {
+        nh_ecmascript_ASTNode *Node_p = (nh_ecmascript_ASTNode*)List_p->pp[i];
+        last = nh_ecmascript_evaluateNode(Node_p, Environment_p);
+    }
+    return last;
+}
+
 ///* helper: evaluate identifier as reference (value) */
 //static JSValue eval_identifier(nh_ecmascript_ASTNode *id, Env *env) {
 //    if (!id || id->type != NH_ECMASCRIPT_AST_NODE_IDENTIFIER) return js_undefined();
@@ -313,17 +314,17 @@
 //    }
 //    return false;
 //}
-//
-//static JSValue nh_ecmascript_evaluateNode(
-//    nh_ecmascript_ASTNode *node, Env *env)
-//{
-//    if (!node) return js_undefined();
-//
-//    switch (node->type) {
-//        case NH_ECMASCRIPT_AST_NODE_PROGRAM:
-//            /* Evaluate program body in given env; return last value */
-//            return nh_ecmascript_evaluateList(&node->Program.Body, env);
-//
+
+static nh_ecmascript_Completion nh_ecmascript_evaluateNode(
+    nh_ecmascript_ASTNode *Node_p, nh_ecmascript_Environment *Environment_p)
+{
+    if (!Node_p) return nh_ecmascript_normalEmptyCompletion();
+
+    switch (Node_p->type) {
+        case NH_ECMASCRIPT_AST_NODE_PROGRAM:
+            /* Evaluate program body in given env; return last value */
+            return nh_ecmascript_evaluateList(&Node_p->Program.Body, Environment_p);
+
 //        case NH_ECMASCRIPT_AST_NODE_BLOCK_STATEMENT:
 //            /* new lexical environment for block (simplified: same env for now) */
 //            return nh_ecmascript_evalList(&node->BlockStatement.Body, env);
@@ -483,12 +484,12 @@
 //            /* TODO: free loopEnv bindings if necessary */
 //            return js_undefined();
 //        }
-//
-//        default:
-//            /* Not implemented: return undefined */
-//            return js_undefined();
-//    }
-//}
+
+        default:
+            /* Not implemented: return undefined */
+            return nh_ecmascript_normalEmptyCompletion();
+    }
+}
 
 nh_ecmascript_Completion nh_ecmascript_evaluateScript(
     nh_ecmascript_Script *Script_p)
@@ -507,12 +508,12 @@ nh_ecmascript_Completion nh_ecmascript_evaluateScript(
     // Ignore "9. Suspend the running execution context." for now
 
     nh_core_pushStack(&Script_p->Realm_p->Agent_p->ExecutionContextStack, &ScriptContext);
-    
+ 
     nh_ecmascript_ASTNode *Root_p = Script_p->ECMAScriptCode_p;
     nh_ecmascript_Completion Result = nh_ecmascript_globalDeclarationInstantiation(Root_p, GlobalEnvironment_p);
 
     if (1) {
-//        nh_ecmascript_evaluateNode(Root_p);
+        nh_ecmascript_evaluateNode(Root_p, GlobalEnvironment_p);
     }
 
     return nh_ecmascript_normalEmptyCompletion();

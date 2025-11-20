@@ -47,6 +47,7 @@ SRC_FILES_NH_API = \
     nh-ecmascript.c \
     nh-encoding.c \
     nh-monitor.c \
+    nh-webidl.c \
 
 SRC_FILES_NH_CORE = \
     Loader/Library.c \
@@ -151,6 +152,7 @@ SRC_FILES_NH_WEBIDL = \
     Runtime/Object.c \
     Runtime/Type.c \
     Runtime/String.c \
+    Runtime/HostGlobals.c \
     Common/Log.c \
     Common/Initialize.c \
     Common/Terminate.c \
@@ -183,9 +185,8 @@ SRC_FILES_NH_ECMASCRIPT = \
     Parser/Script.c \
     Interpreter/Evaluation.c \
     Interpreter/Instantiation.c \
+    Interpreter/DeclaredNames.c \
     StaticSemantics/Misc.c \
-    StaticSemantics/DeclaredNames.c \
-    StaticSemantics/BoundNames.c \
     StaticSemantics/ScopedDeclarations.c \
     StaticSemantics/ParameterLists.c \
     Intrinsics/Object.c \

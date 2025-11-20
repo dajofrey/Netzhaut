@@ -2,6 +2,7 @@
 
 # Declare a string array
 files=(
+    "build/data/idl/System/Console.idl"
     "build/data/idl/DOM/TreeWalker.idl"
     "build/data/idl/DOM/Text.idl"
     "build/data/idl/DOM/StaticRange.idl"
@@ -204,7 +205,7 @@ generate_output() {
     done
 
     echo -e "\n// FRAGMENT_NAMES ==================================================================================\n" >> "$OUTPUT_FILE"
-    echo -e "NH_BYTE *NH_WEBIDL_FRAGMENT_NAMES_PP[] = {" >> "$OUTPUT_FILE"
+    echo -e "char *NH_WEBIDL_FRAGMENT_NAMES_PP[] = {" >> "$OUTPUT_FILE"
     for file in "${files[@]}"; do
         new_name=$(echo "$file" | sed 's|build/data/idl/||; s|/|_|g; s/\.idl$//')
         echo "    \"$new_name\"," >> "$OUTPUT_FILE"
@@ -213,7 +214,7 @@ generate_output() {
     echo -e "size_t NH_WEBIDL_FRAGMENT_NAMES_PP_COUNT = sizeof(NH_WEBIDL_FRAGMENT_NAMES_PP) / sizeof(NH_WEBIDL_FRAGMENT_NAMES_PP[0]);\n" >> "$OUTPUT_FILE"
 
     echo -e "// FRAGMENTS =======================================================================================\n" >> "$OUTPUT_FILE"
-    echo -e "NH_UNSIGNED_BYTE *NH_WEBIDL_FRAGMENTS_PP[] = {" >> "$OUTPUT_FILE"
+    echo -e "unsigned char *NH_WEBIDL_FRAGMENTS_PP[] = {" >> "$OUTPUT_FILE"
     for file in "${files[@]}"; do
         new_name=$(echo "$file" | sed 's|build/data/idl/||; s|/|_|g; s/\.idl$//')
         echo "    nh_webidl_${new_name}_p," >> "$OUTPUT_FILE"

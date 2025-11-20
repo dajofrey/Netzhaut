@@ -189,3 +189,13 @@ NH_API_RESULT nh_ecmascript_freeDefaultGlobalBindings(
     // TODO
     return NH_API_SUCCESS;
 }
+
+NH_API_RESULT nh_ecmascript_installHostGlobals(
+    nh_ecmascript_Realm *Realm_p, nh_api_HostGlobals *HostGlobals_p)
+{
+    for (int i = 0; i < HostGlobals_p->size; ++i) {
+
+    }
+
+    return NH_API_SUCCESS;
+}

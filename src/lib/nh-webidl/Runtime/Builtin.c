@@ -13,6 +13,7 @@
 
 #include "Builtin.h"
 
+#include "../Specifications/System/Console.idl.inc"
 #include "../Specifications/DOM/TreeWalker.idl.inc"
 #include "../Specifications/DOM/Text.idl.inc"
 #include "../Specifications/DOM/StaticRange.idl.inc"
@@ -176,6 +177,7 @@
 // FRAGMENT_NAMES ==================================================================================
 
 char *NH_WEBIDL_FRAGMENT_NAMES_PP[] = {
+    "System_Console",
     "DOM_TreeWalker",
     "DOM_Text",
     "DOM_StaticRange",
@@ -342,6 +344,7 @@ size_t NH_WEBIDL_FRAGMENT_NAMES_PP_COUNT = sizeof(NH_WEBIDL_FRAGMENT_NAMES_PP) /
 // FRAGMENTS =======================================================================================
 
 unsigned char *NH_WEBIDL_FRAGMENTS_PP[] = {
+    nh_webidl_System_Console_p,
     nh_webidl_DOM_TreeWalker_p,
     nh_webidl_DOM_Text_p,
     nh_webidl_DOM_StaticRange_p,
@@ -508,6 +511,7 @@ size_t NH_WEBIDL_FRAGMENTS_PP_COUNT = sizeof(NH_WEBIDL_FRAGMENTS_PP) / sizeof(NH
 // FRAGMENT LENGTHS ================================================================================
 
 const unsigned int NH_WEBIDL_FRAGMENT_LENGTHS_P[] = {
+    nh_webidl_System_Console_p_len,
     nh_webidl_DOM_TreeWalker_p_len,
     nh_webidl_DOM_Text_p_len,
     nh_webidl_DOM_StaticRange_p_len,

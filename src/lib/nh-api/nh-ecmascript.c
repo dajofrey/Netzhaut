@@ -64,3 +64,12 @@ NH_API_RESULT nh_api_evaluateScript(
     nh_ecmascript_evaluateScript_f evaluateScript_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_enqueueEvaluateScript");
     return evaluateScript_f ? evaluateScript_f(Script_p) : NH_API_ERROR_BAD_STATE;
 }
+
+NH_API_RESULT nh_api_installHostGlobals(
+    nh_api_Realm *Realm_p, nh_api_HostGlobals HostGlobals)
+{
+    typedef NH_API_RESULT (*nh_api_installHostGlobals_f)(nh_api_Realm *Realm_p, nh_api_HostGlobals HostGlobals); 
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_api_installHostGlobals_f installHostGlobals_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_ECMASCRIPT, 0, "nh_ecmascript_enqueueInstallHostGlobals");
+    return installHostGlobals_f ? installHostGlobals_f(Realm_p, HostGlobals) : NH_API_ERROR_BAD_STATE;
+}

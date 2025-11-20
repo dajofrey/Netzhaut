@@ -681,6 +681,5 @@ nh_ecmascript_ASTNode *nh_ecmascript_parseAST(
         return Program_p;
     }
     
-    
     return NULL; 
 }

@@ -9,13 +9,12 @@
 // INCLUDES ========================================================================================
 
 #include "Instantiation.h"
+#include "DeclaredNames.h"
 
 #include "../Engine/TestAndCompare.h"
 #include "../Engine/OrdinaryFunctionObject.h"
 #include "../Engine/ExecutionContext.h"
 
-#include "../StaticSemantics/BoundNames.h"
-#include "../StaticSemantics/DeclaredNames.h"
 #include "../StaticSemantics/ScopedDeclarations.h"
 #include "../StaticSemantics/Misc.h"
 
@@ -111,34 +110,34 @@ static bool nh_ecmascript_nameInList(
 nh_ecmascript_Completion nh_ecmascript_globalDeclarationInstantiation(
     nh_ecmascript_ASTNode *ScriptBody_p, nh_ecmascript_Environment *GlobalEnvironment_p)
 {
-//    nh_core_List LexNames = nh_ecmascript_getLexicallyDeclaredNames(ScriptBody_p);
-//    nh_core_List VarNames = nh_ecmascript_getVarDeclaredNames(ScriptBody_p);
-//
-//    for (int i = 0; i < LexNames.size; ++i) 
-//    {
-//        if (nh_ecmascript_hasVarDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
-//            return nh_ecmascript_throwTypeError();
-//        }
-//        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
-//            return nh_ecmascript_throwTypeError();
-//        }
-//        bool hasRestrictedGlobal = nh_ecmascript_hasRestrictedGlobalProperty(GlobalEnvironment_p->Handle_p, LexNames.pp[i]);
-//        if (hasRestrictedGlobal) {
-//            return nh_ecmascript_throwTypeError();
-//        }
-//    }
-//
-//    for (int i = 0; i < VarNames.size; ++i) 
-//    {
-//        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, VarNames.pp[i])) {
-//            return nh_ecmascript_throwTypeError();
-//        }
-//    }
-//
-//    nh_core_List VarDeclarations = nh_ecmascript_getVarScopedDeclarations(ScriptBody_p);
-//    nh_core_List FunctionsToInitialize = nh_core_initList(16);
-//    nh_core_List DeclaredFunctionNames = nh_core_initList(16);
-//
+    nh_core_List LexNames = nh_ecmascript_getLexicallyDeclaredNames(ScriptBody_p);
+    nh_core_List VarNames = nh_ecmascript_getVarDeclaredNames(ScriptBody_p);
+
+    for (int i = 0; i < LexNames.size; ++i) 
+    {
+        if (nh_ecmascript_hasVarDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
+            return nh_ecmascript_throwTypeError();
+        }
+        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
+            return nh_ecmascript_throwTypeError();
+        }
+        bool hasRestrictedGlobal = nh_ecmascript_hasRestrictedGlobalProperty(GlobalEnvironment_p->Handle_p, LexNames.pp[i]);
+        if (hasRestrictedGlobal) {
+            return nh_ecmascript_throwTypeError();
+        }
+    }
+
+    for (int i = 0; i < VarNames.size; ++i) 
+    {
+        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, VarNames.pp[i])) {
+            return nh_ecmascript_throwTypeError();
+        }
+    }
+
+    nh_core_List VarDeclarations = nh_ecmascript_getVarScopedDeclarations(ScriptBody_p);
+    nh_core_List FunctionsToInitialize = nh_core_initList(16);
+    nh_core_List DeclaredFunctionNames = nh_core_initList(16);
+
 //    for (int i = VarDeclarations.size - 1; i >= 0; --i) 
 //    {
 //        nh_ecmascript_ParseNode *Declaration_p = VarDeclarations.pp[i];
@@ -223,12 +222,12 @@ nh_ecmascript_Completion nh_ecmascript_globalDeclarationInstantiation(
 //    for (int i = 0; i < DeclaredVarNames.size; ++i) {
 //        nh_ecmascript_createGlobalVarBinding(GlobalEnvironment_p->Handle_p, DeclaredVarNames.pp[i], false);
 //    }
-//
-//    nh_core_freeList(&LexNames, false);
-//    nh_core_freeList(&VarNames, false);
+
+    nh_core_freeList(&LexNames, false);
+    nh_core_freeList(&VarNames, false);
 //    nh_core_freeList(&DeclaredVarNames, false);
-//    nh_core_freeList(&DeclaredFunctionNames, false);
-//    nh_core_freeList(&FunctionsToInitialize, false);
+    nh_core_freeList(&DeclaredFunctionNames, false);
+    nh_core_freeList(&FunctionsToInitialize, false);
 //    nh_core_freeList(&VarDeclarations, false);
 //    nh_core_freeList(&LexDeclarations, false);
 

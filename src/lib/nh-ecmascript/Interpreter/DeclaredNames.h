@@ -9,7 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "../Parser/CST.h"
+#include "../Parser/AST.h"
 
 #endif
 
@@ -20,7 +20,7 @@
 // correponds to https://tc39.es/ecma262/#sec-syntax-directed-operations-scope-analysis
 
     nh_core_List nh_ecmascript_getLexicallyDeclaredNames(
-        nh_ecmascript_ParseNode *Node_p
+        nh_ecmascript_ASTNode *Node_p
     );
 
     nh_core_List nh_ecmascript_getTopLevelLexicallyDeclaredNames(
@@ -28,7 +28,7 @@
     );
 
     nh_core_List nh_ecmascript_getVarDeclaredNames(
-        nh_ecmascript_ParseNode *Node_p
+        nh_ecmascript_ASTNode *Node_p
     );
 
     nh_core_List nh_ecmascript_getTopLevelVarDeclaredNames(

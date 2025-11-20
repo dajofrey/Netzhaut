@@ -67,6 +67,15 @@ Displays an HTML file.
 `file-path` File-path to HTML file.  
 `config-options` If specified, passes custom config-options to Netzhaut.
 
+### nh-ecmascript
+```bash
+./nh-ecmascript <file-path> [config-options]
+```  
+Runs a ECMAScript script.  
+
+`file-path` File-path to ECMAScript file.  
+`config-options` If specified, passes custom config-options to Netzhaut.
+
 ### nh-monitor
 ```bash
 ./nh-monitor <port>

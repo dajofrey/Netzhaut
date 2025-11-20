@@ -11,8 +11,7 @@
 #include "Environment.h"
 #include "TestAndCompare.h"
 
-#include "../StaticSemantics/BoundNames.h"
-#include "../StaticSemantics/DeclaredNames.h"
+#include "../Interpreter/DeclaredNames.h"
 #include "../StaticSemantics/ScopedDeclarations.h"
 
 #include "../../nh-core/System/Memory.h"

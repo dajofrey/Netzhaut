@@ -9,10 +9,12 @@
 // INCLUDES =======================================================================================
 
 #include "Agent.h"
-#include "../Parser/Script.h"
-#include "../Interpreter/Evaluation.h"
 #include "ExecutionContext.h"
 #include "Realm.h"
+#include "GlobalObject.h"
+
+#include "../Parser/Script.h"
+#include "../Interpreter/Evaluation.h"
 
 #include "../Common/IndexMap.h"
 #include "../Common/Log.h"
@@ -100,7 +102,7 @@ static NH_API_RESULT nh_ecmascript_runHostCommand(
         case 1 :
         {
             nh_ecmascript_InstallHostGlobalsArgs *Args_p = HostCommand_p->args_p; 
-//            nh_ecmascript_installHostGlobals(Args_p->Realm_p, Args_p->Globals_p);
+            nh_ecmascript_installHostGlobals(Args_p->Realm_p, Args_p->Globals_p);
             HostCommand_p->result_p = NULL;
             HostCommand_p->done = true;
             break;
