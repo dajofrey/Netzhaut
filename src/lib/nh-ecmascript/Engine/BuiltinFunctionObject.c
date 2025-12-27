@@ -80,15 +80,15 @@ nh_ecmascript_Object *nh_ecmascript_createBuiltinFunctionObject(
         return NULL;
     }
 
-    FunctionObject_p->InternalSlots     = nh_ecmascript_initInternalSlots(lookup_p, lookupLength);
-    FunctionObject_p->Properties        = nh_core_initList(8);
-    FunctionObject_p->InternalMethods_p = &BuiltinFunctionObjectInternalMethods;
-
-    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_REALM, Realm_p);
-    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE, Prototype_p);
-    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*)true);
-    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_INITIAL_NAME, NULL);
-    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_BUILTIN, call_f);
+//    FunctionObject_p->InternalSlots     = nh_ecmascript_initInternalSlots(lookup_p, lookupLength);
+//    FunctionObject_p->Properties        = nh_core_initList(8);
+//    FunctionObject_p->InternalMethods_p = &BuiltinFunctionObjectInternalMethods;
+//
+//    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_REALM, Realm_p);
+//    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_PROTOTYPE, Prototype_p);
+//    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*)true);
+//    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_INITIAL_NAME, NULL);
+//    nh_ecmascript_setInternalSlot(&FunctionObject_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_BUILTIN, call_f);
 
     return FunctionObject_p;
 }

@@ -10,8 +10,9 @@
 
 #include "Runtime.h"
 #include "Agent.h"
-#include "../Parser/Script.h"
 #include "ExecutionContext.h"
+#include "../Parser/Script.h"
+#include "../Intrinsics/Parser.h"
 
 #include "../Common/IndexMap.h"
 #include "../Common/Log.h"
@@ -23,12 +24,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-// STRUCTS =========================================================================================
-
-typedef struct nh_ecmascript_Runtime {
-    nh_core_List AgentClusters;
-} nh_ecmascript_Runtime;
 
 // FUNCTIONS =======================================================================================
 
@@ -44,6 +39,8 @@ static void *nh_ecmascript_initRuntime(
 
     nh_ecmascript_Runtime *Runtime_p = (nh_ecmascript_Runtime*)nh_core_allocate(sizeof(nh_ecmascript_Runtime));
     Runtime_p->AgentClusters = nh_core_initList(32);
+    Runtime_p->IntrinsicTemplates = nh_ecmascript_parseIntrinsicTemplates();
+    if (Runtime_p->IntrinsicTemplates.size == 0) {return NULL;}
 
     return Runtime_p;
 }

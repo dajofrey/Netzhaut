@@ -24,9 +24,9 @@ nh_ecmascript_Object *nh_ecmascript_abstractMakeBasicObject(
     nh_ecmascript_Object *Obj_p = (nh_ecmascript_Object*)nh_core_allocate(sizeof(nh_ecmascript_Object));
     NH_CORE_CHECK_MEM_2(NULL, Obj_p)
 
-    Obj_p->Properties = nh_ecmascript_initProperties(8);
-    Obj_p->InternalSlots = nh_ecmascript_initInternalSlots(lookup_p, lookupLength);
-    Obj_p->InternalMethods_p = &NH_ECMASCRIPT_ORDINARY_OBJECT_INTERNAL_METHODS; 
+//    Obj_p->Properties = nh_ecmascript_initProperties(8);
+//    Obj_p->InternalSlots = nh_ecmascript_initInternalSlots(lookup_p, lookupLength);
+//    Obj_p->InternalMethods_p = &NH_ECMASCRIPT_ORDINARY_OBJECT_INTERNAL_METHODS; 
 
     nh_ecmascript_setInternalSlot(&Obj_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_EXTENSIBLE, (void*) true);
 
@@ -83,63 +83,67 @@ nh_ecmascript_Completion nh_ecmascript_abstractDefinePropertyOrThrow(
 {
     nh_ecmascript_allocatePropertyKeyAndValue(&PropertyKey, &PropertyDescriptor);
 
-    NH_ECMASCRIPT_BOOLEAN success = Object_p->InternalMethods_p->defineOwnProperty_f(
-        Object_p, PropertyKey, PropertyDescriptor
-    );
+//    NH_ECMASCRIPT_BOOLEAN success = Object_p->InternalMethods_p->defineOwnProperty_f(
+//        Object_p, PropertyKey, PropertyDescriptor
+//    );
 
-    if (success == false) {return nh_ecmascript_throwTypeError();}
+//    if (success == false) {return nh_ecmascript_throwTypeError();}
 
-    return nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(success));
+    return nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(false));
 }
 
 bool nh_ecmascript_abstractHasProperty(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Any PropertyKey)
 {
-    return Object_p->InternalMethods_p->hasProperty_f(Object_p, PropertyKey);
+return false;
+//    return Object_p->InternalMethods_p->hasProperty_f(Object_p, PropertyKey);
 }
 
 bool nh_ecmascript_abstractHasOwnProperty(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Any PropertyKey)
 {
-    nh_ecmascript_PropertyDescriptor Descriptor = Object_p->InternalMethods_p->getOwnProperty_f(Object_p, PropertyKey);
-    if (Descriptor.type == -1) {return false;}
-
+//    nh_ecmascript_PropertyDescriptor Descriptor = Object_p->InternalMethods_p->getOwnProperty_f(Object_p, PropertyKey);
+//    if (Descriptor.type == -1) {return false;}
+//
     return true;
 }
 
 bool nh_ecmascript_abstractIsExtensible(
     nh_ecmascript_Object *Object_p)
 {
-    return Object_p->InternalMethods_p->isExtensible_f(Object_p);
+return false;
+//    return Object_p->InternalMethods_p->isExtensible_f(Object_p);
 }
 
 nh_ecmascript_Completion nh_ecmascript_abstractSet(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Any Key, nh_ecmascript_Any Value, bool _throw)
 {
-    bool success = Object_p->InternalMethods_p->set_f(Object_p, Key, Value, nh_ecmascript_wrapObject(Object_p));
-    if (!success && _throw) {return nh_ecmascript_throwTypeError();}
+//    bool success = Object_p->InternalMethods_p->set_f(Object_p, Key, Value, nh_ecmascript_wrapObject(Object_p));
+//    if (!success && _throw) {return nh_ecmascript_throwTypeError();}
 
-    return nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(success));
+    return nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(false));
 }
 
 NH_ECMASCRIPT_BOOLEAN nh_ecmascript_abstractCreateDataProperty(
     nh_ecmascript_Object *Object_p, nh_ecmascript_Any PropertyKey, nh_ecmascript_Any Value)
 {
-    nh_ecmascript_PropertyDescriptor Descriptor;
-    Descriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
-    Descriptor.enumerable = true;
-    Descriptor.configurable = true;
-    Descriptor.Fields.Data.Value = Value;
-    Descriptor.Fields.Data.writable = true; 
-
-    return Object_p->InternalMethods_p->defineOwnProperty_f(Object_p, PropertyKey, Descriptor);
+//    nh_ecmascript_PropertyDescriptor Descriptor;
+//    Descriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
+//    Descriptor.enumerable = true;
+//    Descriptor.configurable = true;
+//    Descriptor.Fields.Data.Value = Value;
+//    Descriptor.Fields.Data.writable = true; 
+//
+//    return Object_p->InternalMethods_p->defineOwnProperty_f(Object_p, PropertyKey, Descriptor);
+return false;
 }
 
 nh_ecmascript_Completion nh_ecmascript_abstractCall(
     nh_ecmascript_Any F, nh_ecmascript_Any Value, nh_core_List Arguments)
 {
-    if (!nh_ecmascript_isCallable(F)) {return nh_ecmascript_throwTypeError();}
-
-    return ((nh_ecmascript_Object*)Value.handle_p)->InternalMethods_p->call_f(Value.handle_p, Value, Arguments);
+//    if (!nh_ecmascript_isCallable(F)) {return nh_ecmascript_throwTypeError();}
+//
+//    return ((nh_ecmascript_Object*)Value.handle_p)->InternalMethods_p->call_f(Value.handle_p, Value, Arguments);
+    return nh_ecmascript_normalCompletion(nh_ecmascript_wrapBoolean(false));
 }
 

@@ -210,18 +210,18 @@ bool nh_ecmascript_canDeclareGlobalFunction(
     nh_ecmascript_ObjectEnvironment *ObjectEnvironment_p = GlobalEnvironment_p->ObjectEnvironment_p->Handle_p;
     nh_ecmascript_Object *GlobalObject_p = ObjectEnvironment_p->BindingObject_p;
 
-    nh_ecmascript_PropertyDescriptor Descriptor = 
-        GlobalObject_p->InternalMethods_p->getOwnProperty_f(GlobalObject_p, nh_ecmascript_wrapString(Name_p));
-
-    if (Descriptor.type == -1) {
-
-    }
-    if (Descriptor.configurable) {return true;}
-    if (nh_ecmascript_isDataDescriptor(Descriptor)) {
-        if (Descriptor.Fields.Data.writable && Descriptor.enumerable) {
-            return true;
-        } 
-    }
+//    nh_ecmascript_PropertyDescriptor Descriptor = 
+//        GlobalObject_p->InternalMethods_p->getOwnProperty_f(GlobalObject_p, nh_ecmascript_wrapString(Name_p));
+//
+//    if (Descriptor.type == -1) {
+//
+//    }
+//    if (Descriptor.configurable) {return true;}
+//    if (nh_ecmascript_isDataDescriptor(Descriptor)) {
+//        if (Descriptor.Fields.Data.writable && Descriptor.enumerable) {
+//            return true;
+//        } 
+//    }
 
     return false;
 }

@@ -1,0 +1,109 @@
+intrinsic Object {
+    type: constructor
+
+    prototype: %FunctionPrototype%     // because Object is a function
+    instancePrototype: %ObjectPrototype%
+
+    // Built-in internal slots defined by ECMA-262
+    internalSlots {
+        [[Call]]: ObjectConstructorCall
+        [[Construct]]: ObjectConstructorConstruct
+        [[Realm]]: current
+        [[ScriptOrModule]]: null
+    }
+
+    // Define the own properties of the %Object% constructor
+    properties {
+
+        // Object.length === 1
+        "length": {
+            value: 1,
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
+
+        // Object.prototype = %ObjectPrototype%
+        "prototype": {
+            value: %ObjectPrototype%,
+            writable: false,
+            enumerable: false,
+            configurable: false
+        }
+
+        "assign": {
+            length: 2,
+            attributes: { writable, configurable },
+        }
+
+        "create": {
+            length: 2,
+            attributes: { writable, configurable },
+        }
+
+        "defineProperty": {
+            length: 3,
+            attributes: { writable, configurable },
+        }
+
+        "defineProperties": {
+            length: 2,
+            attributes: { writable, configurable },
+        }
+
+        "keys": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "values": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "entries": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "getOwnPropertyDescriptor": {
+            length: 2,
+            attributes: { writable, configurable }
+        }
+
+        "getOwnPropertyDescriptors": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "getPrototypeOf": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "setPrototypeOf": {
+            length: 2,
+            attributes: { writable, configurable }
+        }
+
+        "is": {
+            length: 2,
+            attributes: { writable, configurable }
+        }
+
+        "freeze": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "seal": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "preventExtensions": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+    }
+}

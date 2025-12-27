@@ -13,7 +13,7 @@
 // STRUCTS =========================================================================================
 
 typedef struct nh_ecmascript_AgentCluster {
-    void *Runtime_p;
+    nh_ecmascript_Runtime *Runtime_p;
     nh_core_List Agents;
 } nh_ecmascript_AgentCluster;
 

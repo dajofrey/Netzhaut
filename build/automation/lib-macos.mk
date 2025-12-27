@@ -189,8 +189,9 @@ SRC_FILES_NH_ECMASCRIPT = \
     StaticSemantics/Misc.c \
     StaticSemantics/ScopedDeclarations.c \
     StaticSemantics/ParameterLists.c \
-    Intrinsics/Object.c \
-    Intrinsics/Function.c \
+    Intrinsics/Templates.c \
+    Intrinsics/Tokenizer.c \
+    Intrinsics/Parser.c \
     Common/Initialize.c \
     Common/Terminate.c \
     Common/Log.c \

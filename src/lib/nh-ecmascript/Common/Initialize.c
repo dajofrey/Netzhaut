@@ -22,4 +22,3 @@ NH_API_RESULT nh_ecmascript_initialize()
     NH_CORE_CHECK(nh_ecmascript_createIndexMap())
     return NH_API_SUCCESS;
 }
-

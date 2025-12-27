@@ -11,6 +11,13 @@
 #include "../../nh-core/Util/Stack.h"
 #include "../../nh-core/Util/Array.h"
 
+// STRUCTS =========================================================================================
+
+typedef struct nh_ecmascript_Runtime {
+    nh_core_List AgentClusters;
+    nh_core_List IntrinsicTemplates;
+} nh_ecmascript_Runtime;
+
 // FUNCTIONS =======================================================================================
 
 nh_api_Runtime *nh_ecmascript_startRuntime(

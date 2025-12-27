@@ -56,32 +56,32 @@ nh_ecmascript_Object *nh_ecmascript_ordinaryFunctionCreate(
     nh_ecmascript_Object *Function_p = nh_ecmascript_ordinaryObjectCreate(Prototype_p, lookup_p, 16);
     NH_CORE_CHECK_NULL_2(NULL, Function_p)
 
-    Function_p->InternalMethods_p = &InternalMethods;
-
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_SOURCE_TEXT, NULL);
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_FORMAL_PARAMETERS, ParameterList_p);
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_ECMASCRIPT_CODE, Body_p);
-
-    // TODO If the source text matching Body is strict mode code, let Strict be true; else let Strict be false.
-    bool strict = false;
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_STRICT, (void*)strict);
-
-    if (thisMode == NH_ECMASCRIPT_THIS_MODE_LEXICAL) {
-        nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_THIS_MODE, (void*)NH_ECMASCRIPT_THIS_MODE_LEXICAL);
-    } else if (strict) {
-        nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_THIS_MODE, (void*)NH_ECMASCRIPT_THIS_MODE_STRICT);
-    } else {
-        nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_THIS_MODE, (void*)NH_ECMASCRIPT_THIS_MODE_GLOBAL);
-    }
-
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_IS_CLASS_CONSTRUCTOR, (void*)false);
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_ENVIRONMENT, Scope_p);
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_SCRIPT_OR_MODULE, nh_ecmascript_getActiveScriptOrModule());
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_REALM, nh_ecmascript_getRunningExecutionContext()->Realm_p);
-    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_HOME_OBJECT, NULL);
-
-    int len = nh_ecmascript_getExpectedArgumentCount(ParameterList_p);
-    nh_ecmascript_setFunctionLength(Function_p, len);
+//    Function_p->InternalMethods_p = &InternalMethods;
+//
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_SOURCE_TEXT, NULL);
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_FORMAL_PARAMETERS, ParameterList_p);
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_ECMASCRIPT_CODE, Body_p);
+//
+//    // TODO If the source text matching Body is strict mode code, let Strict be true; else let Strict be false.
+//    bool strict = false;
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_STRICT, (void*)strict);
+//
+//    if (thisMode == NH_ECMASCRIPT_THIS_MODE_LEXICAL) {
+//        nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_THIS_MODE, (void*)NH_ECMASCRIPT_THIS_MODE_LEXICAL);
+//    } else if (strict) {
+//        nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_THIS_MODE, (void*)NH_ECMASCRIPT_THIS_MODE_STRICT);
+//    } else {
+//        nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_THIS_MODE, (void*)NH_ECMASCRIPT_THIS_MODE_GLOBAL);
+//    }
+//
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_IS_CLASS_CONSTRUCTOR, (void*)false);
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_ENVIRONMENT, Scope_p);
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_SCRIPT_OR_MODULE, nh_ecmascript_getActiveScriptOrModule());
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_REALM, nh_ecmascript_getRunningExecutionContext()->Realm_p);
+//    nh_ecmascript_setInternalSlot(&Function_p->InternalSlots, NH_ECMASCRIPT_INTERNAL_SLOT_HOME_OBJECT, NULL);
+//
+//    int len = nh_ecmascript_getExpectedArgumentCount(ParameterList_p);
+//    nh_ecmascript_setFunctionLength(Function_p, len);
 
     return Function_p;
 }
@@ -109,14 +109,14 @@ nh_ecmascript_Completion nh_ecmascript_setFunctionName(
         // TODO
     }
 
-    if (Function_p->InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_INITIAL_NAME] >= 0) {
-        // TODO 
-    }
-
-    if (prefix_p != NULL) {
-        // TODO
-    }
-
+//    if (Function_p->InternalSlots.lookup_p[NH_ECMASCRIPT_INTERNAL_SLOT_INITIAL_NAME] >= 0) {
+//        // TODO 
+//    }
+//
+//    if (prefix_p != NULL) {
+//        // TODO
+//    }
+//
     nh_ecmascript_PropertyDescriptor Descriptor;
     Descriptor.type = NH_ECMASCRIPT_PROPERTY_DATA;
     Descriptor.enumerable   = false;

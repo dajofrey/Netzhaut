@@ -14,6 +14,7 @@
 #include "Properties.h"
 
 #include "../../nh-core/Util/List.h"
+#include "../../nh-core/Util/HashMap.h"
 
 #endif
 
@@ -65,10 +66,24 @@
         );
     } nh_ecmascript_InternalMethods;
 
+    typedef enum NH_ECMASCRIPT_OBJECT_E { 
+        NH_ECMASCRIPT_OBJECT_ORDINARY,
+        NH_ECMASCRIPT_OBJECT_FUNCTION,
+        NH_ECMASCRIPT_OBJECT_ARRAY,
+    } NH_ECMASCRIPT_OBJECT_E;
+ 
     typedef struct nh_ecmascript_Object {
-        nh_ecmascript_Properties Properties;
-        nh_ecmascript_InternalSlots InternalSlots;
-        nh_ecmascript_InternalMethods *InternalMethods_p;
+        NH_ECMASCRIPT_OBJECT_E type;
+        struct nh_ecmascript_Object *Prototype_p;
+        bool isCallable;
+        bool isConstructor;
+        nh_core_List InternalSlots;
+        // own properties
+        nh_core_HashMap Properties;
+        // for function objects
+        void *nativeCall;
+        void *nativeConstruct;
+        unsigned int functionLength;
     } nh_ecmascript_Object;
 
 /** @} */
