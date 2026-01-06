@@ -62,19 +62,19 @@ typedef struct nh_ecmascript_Reference {
     );
 
     nh_ecmascript_Reference nh_ecmascript_getIdentifierReference(
-        nh_ecmascript_Environment *Environment_p, nh_encoding_UTF8String *Name_p, NH_ECMASCRIPT_BOOLEAN strict
+        nh_ecmascript_Environment *Environment_p, nh_ecmascript_Value name, bool strict
     );
 
-    NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isPropertyReference(
+    bool nh_ecmascript_isPropertyReference(
         nh_ecmascript_Reference Reference
     );
     
     nh_ecmascript_Completion nh_ecmascript_getValue(
-        nh_ecmascript_Completion Completion, nh_ecmascript_Reference Reference
+        nh_ecmascript_Reference Reference, nh_ecmascript_Realm *Realm_p
     );
 
     nh_ecmascript_Completion nh_ecmascript_putValue(
-        nh_ecmascript_Reference Reference, nh_ecmascript_Any Value
+        nh_ecmascript_Reference Reference, nh_ecmascript_Value Value, nh_ecmascript_Realm *Realm_p
     );
 
 /** @} */

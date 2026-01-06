@@ -52,3 +52,21 @@ void *nh_core_getFromHashMap(
 
     return handle_p;
 }
+
+unsigned int nh_core_getHashMapLength(
+    nh_core_HashMap *Map_p)
+{
+    return hashmap_length(*Map_p);
+}
+
+void *nh_core_getValueFromHashMapUsingIndex(
+    nh_core_HashMap *Map_p, unsigned int index)
+{
+    return hashmap_getFromIndex(*Map_p, index);
+}
+
+char *nh_core_getKeyFromHashMapUsingIndex(
+    nh_core_HashMap *Map_p, unsigned int index)
+{
+    return hashmap_getKeyFromIndex(*Map_p, index);
+}

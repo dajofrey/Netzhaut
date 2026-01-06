@@ -13,6 +13,7 @@
 
 #include "Object.h"
 #include "../Parser/CST.h"
+#include "../../nh-encoding/Encodings/UTF8.h"
 
 // ENUMS ===========================================================================================
 

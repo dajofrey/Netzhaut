@@ -78,4 +78,9 @@ extern void hashmap_free(map_t in);
  */
 extern int hashmap_length(map_t in);
 
+extern void *hashmap_getFromIndex(map_t in, unsigned int index);
+
+extern char *hashmap_getKeyFromIndex(map_t in, unsigned int index);
+
+
 #endif // __HASHMAP_H__

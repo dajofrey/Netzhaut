@@ -12,7 +12,7 @@
 #include "DeclaredNames.h"
 
 #include "../Engine/TestAndCompare.h"
-#include "../Engine/OrdinaryFunctionObject.h"
+#include "../Engine/Object.h"
 #include "../Engine/ExecutionContext.h"
 
 #include "../StaticSemantics/ScopedDeclarations.h"
@@ -49,42 +49,42 @@ nh_ecmascript_Object *nh_ecmascript_instantiateFunctionObject(
 nh_ecmascript_Object *nh_ecmascript_instantiateOrdinaryFunctionObject(
     nh_ecmascript_Environment *Scope_p, nh_ecmascript_ParseNode *Node_p)
 {
-    if (Node_p->type != NH_ECMASCRIPT_PARSE_NODE_FUNCTION_DECLARATION) {return NULL;}
-
-    if (((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->type == NH_ECMASCRIPT_PARSE_NODE_BINDING_IDENTIFIER) 
-    {
-        nh_encoding_UTF8String *Name_p = &Node_p->Value_p->String;
-
-        // TODO Let sourceText be the source text matched by FunctionDeclaration.
-
-        nh_ecmascript_Object *Function_p = nh_ecmascript_ordinaryFunctionCreate(
-            &nh_ecmascript_getCurrentRealm()->Intrinsics.Function.Prototype, NULL, Node_p->Children.pp[1],
-            Node_p->Children.pp[2], NH_ECMASCRIPT_THIS_MODE_NON_LEXICAL, Scope_p
-        );
-
-        nh_ecmascript_setFunctionName(Function_p, nh_ecmascript_wrapString(Name_p), NULL);
-        nh_ecmascript_makeConstructor(Function_p, false, NULL);
-
-        return Function_p;
-    }
-    else {
-
-        nh_ecmascript_String Name;
-        Name.p = "default";
-        Name.length  = 7;
-
-        // TODO Let sourceText be the source text matched by FunctionDeclaration.
-
-        nh_ecmascript_Object *Function_p = nh_ecmascript_ordinaryFunctionCreate(
-            &nh_ecmascript_getCurrentRealm()->Intrinsics.Function.Prototype, NULL, Node_p->Children.pp[1],
-            Node_p->Children.pp[2], NH_ECMASCRIPT_THIS_MODE_NON_LEXICAL, Scope_p
-        );
-
-        nh_ecmascript_setFunctionName(Function_p, nh_ecmascript_wrapString(&Name), NULL);
-        nh_ecmascript_makeConstructor(Function_p, false, NULL);
-
-        return Function_p;
-    }
+//    if (Node_p->type != NH_ECMASCRIPT_PARSE_NODE_FUNCTION_DECLARATION) {return NULL;}
+//
+//    if (((nh_ecmascript_ParseNode*)Node_p->Children.pp[0])->type == NH_ECMASCRIPT_PARSE_NODE_BINDING_IDENTIFIER) 
+//    {
+//        nh_encoding_UTF8String *Name_p = &Node_p->Value_p->String;
+//
+//        // TODO Let sourceText be the source text matched by FunctionDeclaration.
+//
+//        nh_ecmascript_Object *Function_p = nh_ecmascript_ordinaryFunctionCreate(
+//            &nh_ecmascript_getCurrentRealm()->Intrinsics.Function.Prototype, NULL, Node_p->Children.pp[1],
+//            Node_p->Children.pp[2], NH_ECMASCRIPT_THIS_MODE_NON_LEXICAL, Scope_p
+//        );
+//
+//        nh_ecmascript_setFunctionName(Function_p, nh_ecmascript_wrapString(Name_p), NULL);
+//        nh_ecmascript_makeConstructor(Function_p, false, NULL);
+//
+//        return Function_p;
+//    }
+//    else {
+//
+//        nh_ecmascript_String Name;
+//        Name.p = "default";
+//        Name.length  = 7;
+//
+//        // TODO Let sourceText be the source text matched by FunctionDeclaration.
+//
+//        nh_ecmascript_Object *Function_p = nh_ecmascript_ordinaryFunctionCreate(
+//            &nh_ecmascript_getCurrentRealm()->Intrinsics.Function.Prototype, NULL, Node_p->Children.pp[1],
+//            Node_p->Children.pp[2], NH_ECMASCRIPT_THIS_MODE_NON_LEXICAL, Scope_p
+//        );
+//
+//        nh_ecmascript_setFunctionName(Function_p, nh_ecmascript_wrapString(&Name), NULL);
+//        nh_ecmascript_makeConstructor(Function_p, false, NULL);
+//
+//        return Function_p;
+//    }
 
     return NULL;
 }
@@ -110,33 +110,33 @@ static bool nh_ecmascript_nameInList(
 nh_ecmascript_Completion nh_ecmascript_globalDeclarationInstantiation(
     nh_ecmascript_ASTNode *ScriptBody_p, nh_ecmascript_Environment *GlobalEnvironment_p)
 {
-    nh_core_List LexNames = nh_ecmascript_getLexicallyDeclaredNames(ScriptBody_p);
-    nh_core_List VarNames = nh_ecmascript_getVarDeclaredNames(ScriptBody_p);
-
-    for (int i = 0; i < LexNames.size; ++i) 
-    {
-        if (nh_ecmascript_hasVarDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
-            return nh_ecmascript_throwTypeError();
-        }
-        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
-            return nh_ecmascript_throwTypeError();
-        }
-        bool hasRestrictedGlobal = nh_ecmascript_hasRestrictedGlobalProperty(GlobalEnvironment_p->Handle_p, LexNames.pp[i]);
-        if (hasRestrictedGlobal) {
-            return nh_ecmascript_throwTypeError();
-        }
-    }
-
-    for (int i = 0; i < VarNames.size; ++i) 
-    {
-        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, VarNames.pp[i])) {
-            return nh_ecmascript_throwTypeError();
-        }
-    }
-
-    nh_core_List VarDeclarations = nh_ecmascript_getVarScopedDeclarations(ScriptBody_p);
-    nh_core_List FunctionsToInitialize = nh_core_initList(16);
-    nh_core_List DeclaredFunctionNames = nh_core_initList(16);
+//    nh_core_List LexNames = nh_ecmascript_getLexicallyDeclaredNames(ScriptBody_p);
+//    nh_core_List VarNames = nh_ecmascript_getVarDeclaredNames(ScriptBody_p);
+//
+//    for (int i = 0; i < LexNames.size; ++i) 
+//    {
+//        if (nh_ecmascript_hasVarDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
+//            return nh_ecmascript_throwTypeError();
+//        }
+//        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, LexNames.pp[i])) {
+//            return nh_ecmascript_throwTypeError();
+//        }
+//        bool hasRestrictedGlobal = nh_ecmascript_hasRestrictedGlobalProperty(GlobalEnvironment_p->Handle_p, LexNames.pp[i]);
+//        if (hasRestrictedGlobal) {
+//            return nh_ecmascript_throwTypeError();
+//        }
+//    }
+//
+//    for (int i = 0; i < VarNames.size; ++i) 
+//    {
+//        if (nh_ecmascript_hasLexicalDeclaration(GlobalEnvironment_p->Handle_p, VarNames.pp[i])) {
+//            return nh_ecmascript_throwTypeError();
+//        }
+//    }
+//
+//    nh_core_List VarDeclarations = nh_ecmascript_getVarScopedDeclarations(ScriptBody_p);
+//    nh_core_List FunctionsToInitialize = nh_core_initList(16);
+//    nh_core_List DeclaredFunctionNames = nh_core_initList(16);
 
 //    for (int i = VarDeclarations.size - 1; i >= 0; --i) 
 //    {
@@ -223,11 +223,11 @@ nh_ecmascript_Completion nh_ecmascript_globalDeclarationInstantiation(
 //        nh_ecmascript_createGlobalVarBinding(GlobalEnvironment_p->Handle_p, DeclaredVarNames.pp[i], false);
 //    }
 
-    nh_core_freeList(&LexNames, false);
-    nh_core_freeList(&VarNames, false);
-//    nh_core_freeList(&DeclaredVarNames, false);
-    nh_core_freeList(&DeclaredFunctionNames, false);
-    nh_core_freeList(&FunctionsToInitialize, false);
+//    nh_core_freeList(&LexNames, false);
+//    nh_core_freeList(&VarNames, false);
+////    nh_core_freeList(&DeclaredVarNames, false);
+//    nh_core_freeList(&DeclaredFunctionNames, false);
+//    nh_core_freeList(&FunctionsToInitialize, false);
 //    nh_core_freeList(&VarDeclarations, false);
 //    nh_core_freeList(&LexDeclarations, false);
 

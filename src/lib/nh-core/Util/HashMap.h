@@ -36,4 +36,16 @@ void *nh_core_getFromHashMap(
     nh_core_HashMap *Map_p, char *key_p
 );
 
+unsigned int nh_core_getHashMapLength(
+    nh_core_HashMap *Map_p
+);
+
+void *nh_core_getValueFromHashMapUsingIndex(
+    nh_core_HashMap *Map_p, unsigned int index
+);
+
+char *nh_core_getKeyFromHashMapUsingIndex(
+    nh_core_HashMap *Map_p, unsigned int index
+);
+
 #endif 

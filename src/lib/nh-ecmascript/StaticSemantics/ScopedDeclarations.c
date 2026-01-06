@@ -10,7 +10,7 @@
 
 #include "ScopedDeclarations.h"
 
-#include "../Engine/Type.h"
+#include "../Engine/Value.h"
 #include "../../nh-core/Util/List.h"
 
 #include <stdio.h>

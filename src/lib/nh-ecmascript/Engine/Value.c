@@ -9,8 +9,12 @@
 // INCLUDES =======================================================================================
 
 #include "Value.h"
+#include "Realm.h"
 #include "Object.h"
+#include "Completion.h"
+
 #include <math.h>
+#include <string.h>
 
 // FUNCTIONS =========================================================================================
 
@@ -27,22 +31,22 @@ nh_ecmascript_Completion nh_ecmascript_toObject(
         case NH_ECMASCRIPT_VALUE_BOOLEAN:
             // Create a new Boolean Object with [[BooleanData]] internal slot
             // You'll need to implement Boolean constructor first
-            return nh_ecmascript_throwInternalError("Boolean boxing not yet implemented", Realm_p);
+            return nh_ecmascript_throwTypeError("Boolean boxing not yet implemented", Realm_p);
 
         case NH_ECMASCRIPT_VALUE_NUMBER:
             // Create a new Number Object
-            return nh_ecmascript_throwInternalError("Number boxing not yet implemented", Realm_p);
+            return nh_ecmascript_throwTypeError("Number boxing not yet implemented", Realm_p);
 
         case NH_ECMASCRIPT_VALUE_STRING:
             // Create a new String Object
-            return nh_ecmascript_throwInternalError("String boxing not yet implemented", Realm_p);
+            return nh_ecmascript_throwTypeError("String boxing not yet implemented", Realm_p);
 
         case NH_ECMASCRIPT_VALUE_OBJECT:
             // If it's already an object, just return it
             return nh_ecmascript_normalCompletion(Value);
 
         case NH_ECMASCRIPT_VALUE_SYMBOL:
-            return nh_ecmascript_throwInternalError("Symbol boxing not yet implemented", Realm_p);
+            return nh_ecmascript_throwTypeError("Symbol boxing not yet implemented", Realm_p);
 
         default:
             return nh_ecmascript_throwTypeError("Unknown type", Realm_p);
@@ -68,7 +72,7 @@ bool nh_ecmascript_toBoolean(
         case NH_ECMASCRIPT_VALUE_STRING:
             // false if empty string, otherwise true.
             // (Assumes your string implementation has a length check)
-            return nh_string_length(v.p.string) > 0;
+            return strlen(v.p.string) > 0;
             
         case NH_ECMASCRIPT_VALUE_OBJECT:
         case NH_ECMASCRIPT_VALUE_SYMBOL:
@@ -92,19 +96,19 @@ nh_ecmascript_Completion nh_ecmascript_toString(
         case NH_ECMASCRIPT_VALUE_BOOLEAN:
             return nh_ecmascript_normalCompletion(nh_ecmascript_makeString(v.p.boolean ? "true" : "false"));
         case NH_ECMASCRIPT_VALUE_NUMBER:
-            // You'll need a helper like nh_core_formatNumberToString
-            return nh_ecmascript_normalCompletion(nh_ecmascript_formatNumber(v.p.number));
+//            // You'll need a helper like nh_core_formatNumberToString
+//            return nh_ecmascript_normalCompletion(nh_ecmascript_formatNumber(v.p.number));
         case NH_ECMASCRIPT_VALUE_STRING:
             return nh_ecmascript_normalCompletion(v);
         case NH_ECMASCRIPT_VALUE_SYMBOL:
             return nh_ecmascript_throwTypeError("Cannot convert a Symbol value to a string", Realm_p);
         case NH_ECMASCRIPT_VALUE_OBJECT: {
-            nh_ecmascript_Completion prim = nh_ecmascript_toPrimitive(v, NH_ECMASCRIPT_HINT_STRING, Realm_p);
+            nh_ecmascript_Completion prim = nh_ecmascript_toPrimitive(v, NH_ECMASCRIPT_PREFERRED_TYPE_STRING, Realm_p);
             if (prim.type == NH_ECMASCRIPT_COMPLETION_THROW) return prim;
-            return nh_ecmascript_toString(prim.value, Realm_p);
+            return nh_ecmascript_toString(prim.Value, Realm_p);
         }
         default:
-            return nh_ecmascript_throwInternalError("Unknown type in toString", Realm_p);
+            return nh_ecmascript_throwTypeError("Unknown type in toString", Realm_p);
     }
 }
 
@@ -114,10 +118,10 @@ nh_ecmascript_Completion nh_ecmascript_toPropertyKey(
     nh_ecmascript_Realm *Realm_p) 
 {
     // 1. Let key be ? ToPrimitive(v, string).
-    nh_ecmascript_Completion keyComp = nh_ecmascript_toPrimitive(v, NH_ECMASCRIPT_HINT_STRING, Realm_p);
+    nh_ecmascript_Completion keyComp = nh_ecmascript_toPrimitive(v, NH_ECMASCRIPT_PREFERRED_TYPE_STRING, Realm_p);
     if (keyComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return keyComp;
     
-    nh_ecmascript_Value key = keyComp.value;
+    nh_ecmascript_Value key = keyComp.Value;
 
     // 2. If Type(key) is Symbol, return key.
     if (key.tag == NH_ECMASCRIPT_VALUE_SYMBOL) {
@@ -131,11 +135,11 @@ nh_ecmascript_Completion nh_ecmascript_toPropertyKey(
 // https://tc39.es/ecma262/#sec-ordinarytoprimitive
 static nh_ecmascript_Completion nh_ecmascript_ordinaryToPrimitive(
     nh_ecmascript_Object *O_p, 
-    nh_ecmascript_PreferredType hint, 
+    NH_ECMASCRIPT_PREFERRED_TYPE_E hint, 
     nh_ecmascript_Realm *Realm_p) 
 {
     const char *methodNames[2];
-    if (hint == NH_ECMASCRIPT_HINT_STRING) {
+    if (hint == NH_ECMASCRIPT_PREFERRED_TYPE_STRING) {
         methodNames[0] = "toString";
         methodNames[1] = "valueOf";
     } else {
@@ -148,13 +152,13 @@ static nh_ecmascript_Completion nh_ecmascript_ordinaryToPrimitive(
         nh_ecmascript_Completion methodComp = nh_ecmascript_get(O_p, methodNames[i], Realm_p);
         if (methodComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return methodComp;
         
-        nh_ecmascript_Value method = methodComp.value;
+        nh_ecmascript_Value method = methodComp.Value;
         if (method.tag == NH_ECMASCRIPT_VALUE_OBJECT) { // Simplified check for "IsCallable"
-             nh_ecmascript_Completion callComp = nh_ecmascript_call(
-                 method.p.object, nh_ecmascript_makeObject(O_p), NULL, 0, Realm_p
-             );
-             if (callComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return callComp;
-             if (callComp.value.tag != NH_ECMASCRIPT_VALUE_OBJECT) return callComp;
+//             nh_ecmascript_Completion callComp = nh_ecmascript_call(
+//                 method.p.object, nh_ecmascript_makeObject(O_p), NULL, 0, Realm_p
+//             );
+//             if (callComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return callComp;
+//             if (callComp.Value.tag != NH_ECMASCRIPT_VALUE_OBJECT) return callComp;
         }
     }
 
@@ -164,7 +168,7 @@ static nh_ecmascript_Completion nh_ecmascript_ordinaryToPrimitive(
 // https://tc39.es/ecma262/#sec-toprimitive
 nh_ecmascript_Completion nh_ecmascript_toPrimitive(
     nh_ecmascript_Value v, 
-    nh_ecmascript_PreferredType hint, 
+    NH_ECMASCRIPT_PREFERRED_TYPE_E hint, 
     nh_ecmascript_Realm *Realm_p) 
 {
     if (v.tag != NH_ECMASCRIPT_VALUE_OBJECT) {

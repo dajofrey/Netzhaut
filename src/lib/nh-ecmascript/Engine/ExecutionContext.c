@@ -19,7 +19,7 @@
 
 nh_ecmascript_ExecutionContext *nh_ecmascript_allocateExecutionContext()
 {
-    nh_ecmascript_ExecutionContext *Context_p = nh_core_allocate(sizeof(nh_ecmascript_ExecutionContext)); 
+    nh_ecmascript_ExecutionContext *Context_p = (nh_ecmascript_ExecutionContext*)nh_core_allocate(sizeof(nh_ecmascript_ExecutionContext)); 
     if (Context_p == NULL) return NULL;
 
     // Initialize all pointers to NULL to prevent garbage access
@@ -41,7 +41,8 @@ nh_ecmascript_ExecutionContext *nh_ecmascript_getRunningExecutionContext()
         return NULL;
     }
     // The running context is always the top of the stack
-    return nh_core_getLastElement(&Agent_p->ExecutionContextStack);
+//    return nh_core_getLastElement(&Agent_p->ExecutionContextStack);
+return NULL;
 }
 
 // 9.4.2 GetActiveScriptOrModule
@@ -51,10 +52,10 @@ nh_ecmascript_ScriptOrModule *nh_ecmascript_getActiveScriptOrModule()
     
     // Search from top to bottom for the first context that has a Script/Module
     for (int i = Agent_p->ExecutionContextStack.size - 1; i >= 0; --i) {
-        nh_ecmascript_ExecutionContext *ctx = nh_core_getElement(&Agent_p->ExecutionContextStack, i);
-        if (ctx->ScriptOrModule.handle_p != NULL) {
-            return &ctx->ScriptOrModule;
-        }
+//        nh_ecmascript_ExecutionContext *ctx = nh_core_getElement(&Agent_p->ExecutionContextStack, i);
+//        if (ctx->ScriptOrModule.handle_p != NULL) {
+//            return &ctx->ScriptOrModule;
+//        }
     }
     return NULL;
 }
@@ -73,17 +74,17 @@ nh_ecmascript_Reference nh_ecmascript_resolveBinding(
 
     // You can determine strictness from the ScriptOrModule or the Function object
     bool strict = false;
-    if (runningContext->Function_p && runningContext->Function_p->strict) {
-        strict = true;
-    }
+//    if (runningContext->Function_p && runningContext->Function_p->strict) {
+//        strict = true;
+//    }
 
-    return nh_ecmascript_getIdentifierReference(Environment_p, Name_p, strict);
+    return nh_ecmascript_getIdentifierReference(Environment_p, nh_ecmascript_makeString(Name_p), strict);
 }
 
 void nh_ecmascript_pushExecutionContext(nh_ecmascript_ExecutionContext *Context_p)
 {
-    nh_ecmascript_Agent *Agent_p = nh_ecmascript_getRunningAgent();
-    nh_core_addToList(&Agent_p->ExecutionContextStack, Context_p);
+//    nh_ecmascript_Agent *Agent_p = nh_ecmascript_getRunningAgent();
+//    nh_core_addToList(&Agent_p->ExecutionContextStack, Context_p);
 }
 
 void nh_ecmascript_popExecutionContext()
@@ -91,7 +92,7 @@ void nh_ecmascript_popExecutionContext()
     nh_ecmascript_Agent *Agent_p = nh_ecmascript_getRunningAgent();
     // In C, you'll need to decide if popping also frees the memory
     // or if the Garbage Collector handles it.
-    nh_ecmascript_ExecutionContext *Context_p = nh_core_removeLastElement(&Agent_p->ExecutionContextStack);
+//    nh_ecmascript_ExecutionContext *Context_p = nh_core_removeLastElement(&Agent_p->ExecutionContextStack);
     
     // nh_core_free(Context_p); // Only if not GC'd
 }
@@ -102,5 +103,6 @@ nh_ecmascript_Value nh_ecmascript_resolveThisBinding()
     nh_ecmascript_ExecutionContext *context = nh_ecmascript_getRunningExecutionContext();
     
     // The spec says to start the search from the LexicalEnvironment
-    return nh_ecmascript_getThisBinding(context->LexicalEnvironment_p, context->Realm_p);
+//    return nh_ecmascript_getThisBinding(context->LexicalEnvironment_p, context->Realm_p);
+return nh_ecmascript_makeUndefined();
 }

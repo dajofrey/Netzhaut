@@ -10,7 +10,7 @@
 
 #include "DeclaredNames.h"
 
-#include "../Engine/Type.h"
+#include "../Engine/Value.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"

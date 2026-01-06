@@ -10,6 +10,7 @@
 
 #include "Environment.h"
 #include "TestAndCompare.h"
+#include "PropertyDescriptor.h"
 
 #include "../Interpreter/DeclaredNames.h"
 #include "../StaticSemantics/ScopedDeclarations.h"
@@ -182,7 +183,7 @@ nh_ecmascript_Environment *nh_ecmascript_newGlobalEnvironment(
     nh_ecmascript_Object *GlobalObject_p, 
     nh_ecmascript_Object *ThisValue_p) 
 {
-    nh_ecmascript_Environment *Env_p = nh_core_allocate(sizeof(nh_ecmascript_Environment));
+    nh_ecmascript_Environment *Env_p = (nh_ecmascript_Environment*)nh_core_allocate(sizeof(nh_ecmascript_Environment));
     NH_CORE_CHECK_MEM_2(NULL, Env_p)
 
     // 1. Set the type to GLOBAL (Spec 9.1.1.4)
@@ -195,7 +196,7 @@ nh_ecmascript_Environment *nh_ecmascript_newGlobalEnvironment(
 
     // 3. Setup the Declarative Record
     // This is essentially a fresh HashMap for 'let' and 'const' variables.
-    nh_core_initializeHashMap(&Env_p->records.global.declarativeRecord, 16);
+//    nh_core_initializeHashMap(&Env_p->records.global.declarativeRecord, 16);
 
     // 4. Set the [[GlobalThisValue]] (Spec 9.1.1.4.10)
     // Usually, this is just the Global Object itself.
@@ -216,19 +217,19 @@ bool nh_ecmascript_canDeclareGlobalFunction(
     
     // You need a GetOwnProperty internal call here
     nh_ecmascript_PropertyDescriptor desc;
-    bool found = nh_ecmascript_getOwnProperty(globalObj, name, &desc, Realm_p);
-
-    if (!found) {
-        nh_ecmascript_Completion extensible = nh_ecmascript_isExtensible(globalObj, Realm_p);
-        return extensible.value.p.boolean;
-    }
-
-    if (desc.configurable) return true;
-    
-    // If it's a data property, it must be writable and enumerable
-    if (desc.type == NH_ECMASCRIPT_PROPERTY_DATA && desc.writable && desc.enumerable) {
-        return true;
-    }
+//    bool found = nh_ecmascript_getOwnProperty(globalObj, name, &desc, Realm_p);
+//
+//    if (!found) {
+//        nh_ecmascript_Completion extensible = nh_ecmascript_isExtensible(globalObj, Realm_p);
+//        return extensible.value.p.boolean;
+//    }
+//
+//    if (desc.configurable) return true;
+//    
+//    // If it's a data property, it must be writable and enumerable
+//    if (desc.type == NH_ECMASCRIPT_PROPERTY_DATA && desc.writable && desc.enumerable) {
+//        return true;
+//    }
 
     return false;
 }
@@ -241,11 +242,11 @@ bool nh_ecmascript_canDeclareGlobalVar(
     nh_ecmascript_Object *globalObj = env->records.global.objectRecord;
     
     // 1. If property exists, it's fine (re-declaration is allowed for var)
-    if (nh_ecmascript_hasProperty(globalObj, name, Realm_p)) return true;
+//    if (nh_ecmascript_hasProperty(globalObj, name, Realm_p)) return true;
 
     // 2. If it doesn't exist, we must be able to add it
     nh_ecmascript_Completion extensible = nh_ecmascript_isExtensible(globalObj, Realm_p);
-    return extensible.value.p.boolean;
+    return extensible.Value.p.boolean;
 }
 
 nh_ecmascript_Completion nh_ecmascript_createGlobalVarBinding(
@@ -254,15 +255,15 @@ nh_ecmascript_Completion nh_ecmascript_createGlobalVarBinding(
     bool deletable, 
     nh_ecmascript_Realm *Realm_p)
 {
-    nh_ecmascript_Object *globalObj = env->records.global.objectRecord;
-    
-    if (!nh_ecmascript_hasProperty(globalObj, name, Realm_p)) {
-        // Create the property on the actual object (e.g. window.x)
-        nh_ecmascript_createDataPropertyOrThrow(
-            globalObj, name, nh_ecmascript_makeUndefined(), 
-            true, true, deletable, Realm_p
-        );
-    }
+//    nh_ecmascript_Object *globalObj = env->records.global.objectRecord;
+//    
+//    if (!nh_ecmascript_hasProperty(globalObj, name, Realm_p)) {
+//        // Create the property on the actual object (e.g. window.x)
+//        nh_ecmascript_createDataPropertyOrThrow(
+//            globalObj, name, nh_ecmascript_makeUndefined(), 
+//            true, true, deletable, Realm_p
+//        );
+//    }
 
     // Keep track of the name in your VarNames list for the Global Environment
     // (You'll need to add a List to your records.global struct for this)
@@ -274,11 +275,12 @@ bool nh_ecmascript_hasRestrictedGlobalProperty(
     const char *name, 
     nh_ecmascript_Realm *Realm_p)
 {
-    nh_ecmascript_PropertyDescriptor desc;
-    bool found = nh_ecmascript_getOwnProperty(env->records.global.objectRecord, name, &desc, Realm_p);
-    
-    if (!found) return false;
-    return !desc.configurable;
+//    nh_ecmascript_PropertyDescriptor desc;
+//    bool found = nh_ecmascript_getOwnProperty(env->records.global.objectRecord, name, &desc, Realm_p);
+//    
+//    if (!found) return false;
+//    return !desc.configurable;
+return false;
 }
 
 //bool nh_ecmascript_hasVarDeclaration(
@@ -339,36 +341,36 @@ bool nh_ecmascript_hasRestrictedGlobalProperty(
 
 bool nh_ecmascript_hasBinding(nh_ecmascript_Environment *env, const char *name)
 {
-    switch (env->type) {
-        case NH_ECMASCRIPT_ENV_DECLARATIVE:
-            return nh_ecmascript_findBinding(env, name) != NULL;
-
-        case NH_ECMASCRIPT_ENV_OBJECT:
-            // Object environments (like 'with') check the actual object
-            return nh_ecmascript_hasProperty(env->records.object.Object_p, name, NULL);
-
-        case NH_ECMASCRIPT_ENV_GLOBAL:
-            // Global checks declarative first, then the global object
-            if (nh_ecmascript_findGlobalDeclarativeBinding(env, name)) return true;
-            return nh_ecmascript_hasProperty(env->records.global.objectRecord, name, NULL);
-    }
+//    switch (env->type) {
+//        case NH_ECMASCRIPT_ENV_DECLARATIVE:
+//            return nh_ecmascript_findBinding(env, name) != NULL;
+//
+//        case NH_ECMASCRIPT_ENV_OBJECT:
+//            // Object environments (like 'with') check the actual object
+//            return nh_ecmascript_hasProperty(env->records.object.Object_p, name, NULL);
+//
+//        case NH_ECMASCRIPT_ENV_GLOBAL:
+//            // Global checks declarative first, then the global object
+//            if (nh_ecmascript_findGlobalDeclarativeBinding(env, name)) return true;
+//            return nh_ecmascript_hasProperty(env->records.global.objectRecord, name, NULL);
+//    }
     return false;
 }
 
 nh_ecmascript_Completion nh_ecmascript_createMutableBinding(
     nh_ecmascript_Environment *env, const char *name, bool deletable)
 {
-    if (env->type == NH_ECMASCRIPT_ENV_DECLARATIVE) {
-        nh_ecmascript_Binding b = {
-            ._mutable = true,
-            .deletable = deletable,
-            .initialized = false,
-            .Name_p = nh_encoding_createUTF8String(name),
-            .Value = nh_ecmascript_makeUndefined()
-        };
-        nh_core_addToList(&env->records.declarative.Bindings, &b);
-        return nh_ecmascript_normalEmptyCompletion();
-    }
+//    if (env->type == NH_ECMASCRIPT_ENV_DECLARATIVE) {
+//        nh_ecmascript_Binding b = {
+//            ._mutable = true,
+//            .deletable = deletable,
+//            .initialized = false,
+//            .Name_p = nh_encoding_createUTF8String(name),
+//            .Value = nh_ecmascript_makeUndefined()
+//        };
+//        nh_core_addToList(&env->records.declarative.Bindings, &b);
+//        return nh_ecmascript_normalEmptyCompletion();
+//    }
     
     // Global and Object environments typically use DefineOwnProperty under the hood
     // ... logic for Global/Object ...
@@ -378,14 +380,14 @@ nh_ecmascript_Completion nh_ecmascript_createMutableBinding(
 nh_ecmascript_Completion nh_ecmascript_initializeBinding(
     nh_ecmascript_Environment *env, const char *name, nh_ecmascript_Value val)
 {
-    if (env->type == NH_ECMASCRIPT_ENV_DECLARATIVE) {
-        nh_ecmascript_Binding *b = nh_ecmascript_findBinding(env, name);
-        if (b) {
-            b->Value = val;
-            b->initialized = true;
-            return nh_ecmascript_normalEmptyCompletion();
-        }
-    }
+//    if (env->type == NH_ECMASCRIPT_ENVIRONMENT_DECLARATIVE) {
+//        nh_ecmascript_Binding *b = nh_ecmascript_findBinding(env, name);
+//        if (b) {
+//            b->Value = val;
+//            b->initialized = true;
+//            return nh_ecmascript_normalEmptyCompletion();
+//        }
+//    }
     // Handle Global/Object initialization
     return nh_ecmascript_normalEmptyCompletion();
 }
@@ -397,45 +399,45 @@ nh_ecmascript_Completion nh_ecmascript_setMutableBinding(
     bool strict, 
     nh_ecmascript_Realm *Realm_p)
 {
-    switch (env->type) {
-        case NH_ECMASCRIPT_ENV_DECLARATIVE: {
-            nh_ecmascript_Binding *b = nh_ecmascript_findBinding(env, name);
-            if (!b) return nh_ecmascript_throwReferenceError("Binding not found", Realm_p);
-            if (!b->initialized) return nh_ecmascript_throwReferenceError("TDZ", Realm_p);
-            if (!b->_mutable) {
-                if (strict) return nh_ecmascript_throwTypeError("Assigning to const", Realm_p);
-                return nh_ecmascript_normalEmptyCompletion();
-            }
-            b->Value = val;
-            return nh_ecmascript_normalEmptyCompletion();
-        }
-
-        case NH_ECMASCRIPT_ENV_OBJECT:
-            return nh_ecmascript_set(env->records.object.Object_p, name, val, Realm_p);
-
-        case NH_ECMASCRIPT_ENV_GLOBAL:
-            // 1. Check declarative (let/const)
-            nh_ecmascript_Binding *db = nh_ecmascript_findGlobalDeclarativeBinding(env, name);
-            if (db) {
-                // Same logic as declarative block above
-                db->Value = val; 
-                return nh_ecmascript_normalEmptyCompletion();
-            }
-            // 2. Fallback to global object
-            return nh_ecmascript_set(env->records.global.objectRecord, name, val, Realm_p);
-    }
-    return nh_ecmascript_throwInternalError("Env error", Realm_p);
+//    switch (env->type) {
+//        case NH_ECMASCRIPT_ENV_DECLARATIVE: {
+//            nh_ecmascript_Binding *b = nh_ecmascript_findBinding(env, name);
+//            if (!b) return nh_ecmascript_throwReferenceError("Binding not found", Realm_p);
+//            if (!b->initialized) return nh_ecmascript_throwReferenceError("TDZ", Realm_p);
+//            if (!b->_mutable) {
+//                if (strict) return nh_ecmascript_throwTypeError("Assigning to const", Realm_p);
+//                return nh_ecmascript_normalEmptyCompletion();
+//            }
+//            b->Value = val;
+//            return nh_ecmascript_normalEmptyCompletion();
+//        }
+//
+//        case NH_ECMASCRIPT_ENV_OBJECT:
+//            return nh_ecmascript_set(env->records.object.Object_p, name, val, Realm_p);
+//
+//        case NH_ECMASCRIPT_ENV_GLOBAL:
+//            // 1. Check declarative (let/const)
+//            nh_ecmascript_Binding *db = nh_ecmascript_findGlobalDeclarativeBinding(env, name);
+//            if (db) {
+//                // Same logic as declarative block above
+//                db->Value = val; 
+//                return nh_ecmascript_normalEmptyCompletion();
+//            }
+//            // 2. Fallback to global object
+//            return nh_ecmascript_set(env->records.global.objectRecord, name, val, Realm_p);
+//    }
+    return nh_ecmascript_normalEmptyCompletion();
 }
 
 static nh_ecmascript_Binding* nh_ecmascript_findBinding(nh_ecmascript_Environment *env, const char *name)
 {
-    // Iterate through your core list
-    for (size_t i = 0; i < nh_core_getListSize(&env->records.declarative.Bindings); i++) {
-        nh_ecmascript_Binding *b = nh_core_getElement(&env->records.declarative.Bindings, i);
-        if (strcmp(b->Name_p->p, name) == 0) {
-            return b;
-        }
-    }
+//    // Iterate through your core list
+//    for (size_t i = 0; i < nh_core_getListSize(&env->records.declarative.Bindings); i++) {
+//        nh_ecmascript_Binding *b = nh_core_getElement(&env->records.declarative.Bindings, i);
+//        if (strcmp(b->Name_p->p, name) == 0) {
+//            return b;
+//        }
+//    }
     return NULL;
 }
 
@@ -446,54 +448,54 @@ nh_ecmascript_Completion nh_ecmascript_getBindingValue(
     bool strict,
     nh_ecmascript_Realm *Realm_p)
 {
-    switch (env->type) {
-        
-        case NH_ECMASCRIPT_ENV_DECLARATIVE: {
-            // 1. Search the list for the binding
-            nh_ecmascript_Binding *binding = nh_ecmascript_findBinding(env, name);
-            
-            // 2. If not found, this is an internal engine error (GetValue should have found it)
-            if (!binding) return nh_ecmascript_throwReferenceError("Binding not found", Realm_p);
+//    switch (env->type) {
+//        
+//        case NH_ECMASCRIPT_ENV_DECLARATIVE: {
+//            // 1. Search the list for the binding
+//            nh_ecmascript_Binding *binding = nh_ecmascript_findBinding(env, name);
+//            
+//            // 2. If not found, this is an internal engine error (GetValue should have found it)
+//            if (!binding) return nh_ecmascript_throwReferenceError("Binding not found", Realm_p);
+//
+//            // 3. Check for "Temporal Dead Zone" (let/const declared but not initialized)
+//            if (!binding->initialized) {
+//                return nh_ecmascript_throwReferenceError("Variable used before initialization", Realm_p);
+//            }
+//
+//            return nh_ecmascript_normalCompletion(binding->Value);
+//        }
+//
+//        case NH_ECMASCRIPT_ENV_OBJECT: {
+//            // Object environments (like 'with' blocks) look up properties on an actual object
+//            nh_ecmascript_Object *O = env->records.object.Object_p;
+//            
+//            // Note: If property doesn't exist, the spec says return undefined (or handle 'with' rules)
+//            bool has = nh_ecmascript_hasProperty(O, name, Realm_p);
+//            if (!has) {
+//                if (strict) return nh_ecmascript_throwReferenceError("Property not found", Realm_p);
+//                return nh_ecmascript_normalCompletion(nh_ecmascript_makeUndefined());
+//            }
+//
+//            return nh_ecmascript_get(O, name, Realm_p);
+//        }
+//
+//        case NH_ECMASCRIPT_ENV_GLOBAL: {
+//            // Global environments are special: they check both a declarative list (let/const) 
+//            // and an object record (var/functions on the window/global object).
+//            
+//            // 1. Check declarative part (e.g., 'let x' at top level)
+//            nh_ecmascript_Binding *decl = nh_ecmascript_findGlobalDeclarativeBinding(env, name);
+//            if (decl) {
+//                if (!decl->initialized) return nh_ecmascript_throwReferenceError("TDZ", Realm_p);
+//                return nh_ecmascript_normalCompletion(decl->Value);
+//            }
+//
+//            // 2. Check object part (e.g., 'var x' or 'window.x')
+//            return nh_ecmascript_get(env->records.global.objectRecord, name, Realm_p);
+//        }
+//    }
 
-            // 3. Check for "Temporal Dead Zone" (let/const declared but not initialized)
-            if (!binding->initialized) {
-                return nh_ecmascript_throwReferenceError("Variable used before initialization", Realm_p);
-            }
-
-            return nh_ecmascript_normalCompletion(binding->Value);
-        }
-
-        case NH_ECMASCRIPT_ENV_OBJECT: {
-            // Object environments (like 'with' blocks) look up properties on an actual object
-            nh_ecmascript_Object *O = env->records.object.Object_p;
-            
-            // Note: If property doesn't exist, the spec says return undefined (or handle 'with' rules)
-            bool has = nh_ecmascript_hasProperty(O, name, Realm_p);
-            if (!has) {
-                if (strict) return nh_ecmascript_throwReferenceError("Property not found", Realm_p);
-                return nh_ecmascript_normalCompletion(nh_ecmascript_makeUndefined());
-            }
-
-            return nh_ecmascript_get(O, name, Realm_p);
-        }
-
-        case NH_ECMASCRIPT_ENV_GLOBAL: {
-            // Global environments are special: they check both a declarative list (let/const) 
-            // and an object record (var/functions on the window/global object).
-            
-            // 1. Check declarative part (e.g., 'let x' at top level)
-            nh_ecmascript_Binding *decl = nh_ecmascript_findGlobalDeclarativeBinding(env, name);
-            if (decl) {
-                if (!decl->initialized) return nh_ecmascript_throwReferenceError("TDZ", Realm_p);
-                return nh_ecmascript_normalCompletion(decl->Value);
-            }
-
-            // 2. Check object part (e.g., 'var x' or 'window.x')
-            return nh_ecmascript_get(env->records.global.objectRecord, name, Realm_p);
-        }
-    }
-
-    return nh_ecmascript_throwInternalError("Unknown environment type", Realm_p);
+    return nh_ecmascript_normalEmptyCompletion();
 }
 
 // https://tc39.es/ecma262/#sec-createglobalfunctionbinding
@@ -504,41 +506,42 @@ nh_ecmascript_Completion nh_ecmascript_createGlobalFunctionBinding(
     bool configurable,
     nh_ecmascript_Realm *Realm_p)
 {
-    nh_ecmascript_Object *globalObj = env->records.global.objectRecord;
-    
-    // 1. Prepare a Descriptor for the new function
-    nh_ecmascript_PropertyDescriptor desc;
-    memset(&desc, 0, sizeof(desc)); // Initialize all presence bits to 0
-    
-    desc.Value = V;
-    desc.presence.hasValue = 1;
-    
-    desc.writable = true;
-    desc.presence.hasWritable = 1;
-    
-    desc.enumerable = true;
-    desc.presence.hasEnumerable = 1;
-    
-    desc.configurable = configurable;
-    desc.presence.hasConfigurable = 1;
-
-    // 2. Check if the property already exists
-    nh_ecmascript_PropertyDescriptor existing;
-    bool found = nh_ecmascript_getOwnProperty(globalObj, name, &existing, Realm_p);
-
-    if (!found) {
-        // Create new property on global object
-        return nh_ecmascript_defineOwnProperty(globalObj, name, desc, Realm_p);
-    } 
-    
-    // 3. If it exists but is configurable, we update its value
-    if (existing.configurable) {
-        return nh_ecmascript_defineOwnProperty(globalObj, name, desc, Realm_p);
-    }
-
-    // 4. Special case: If it's not configurable but writable, we just set the value
-    // This happens with legacy vars/functions on the global object
-    return nh_ecmascript_set(globalObj, name, V, Realm_p);
+//    nh_ecmascript_Object *globalObj = env->records.global.objectRecord;
+//    
+//    // 1. Prepare a Descriptor for the new function
+//    nh_ecmascript_PropertyDescriptor desc;
+//    memset(&desc, 0, sizeof(desc)); // Initialize all presence bits to 0
+//    
+//    desc.Value = V;
+//    desc.presence.hasValue = 1;
+//    
+//    desc.writable = true;
+//    desc.presence.hasWritable = 1;
+//    
+//    desc.enumerable = true;
+//    desc.presence.hasEnumerable = 1;
+//    
+//    desc.configurable = configurable;
+//    desc.presence.hasConfigurable = 1;
+//
+//    // 2. Check if the property already exists
+//    nh_ecmascript_PropertyDescriptor existing;
+//    bool found = nh_ecmascript_getOwnProperty(globalObj, name, &existing, Realm_p);
+//
+//    if (!found) {
+//        // Create new property on global object
+//        return nh_ecmascript_defineOwnProperty(globalObj, name, desc, Realm_p);
+//    } 
+//    
+//    // 3. If it exists but is configurable, we update its value
+//    if (existing.configurable) {
+//        return nh_ecmascript_defineOwnProperty(globalObj, name, desc, Realm_p);
+//    }
+//
+//    // 4. Special case: If it's not configurable but writable, we just set the value
+//    // This happens with legacy vars/functions on the global object
+//    return nh_ecmascript_set(globalObj, name, V, Realm_p);
+return nh_ecmascript_normalEmptyCompletion();
 }
 
 // https://tc39.es/ecma262/#sec-getthisbinding
@@ -546,30 +549,30 @@ nh_ecmascript_Value nh_ecmascript_getThisBinding(
     nh_ecmascript_Environment *env,
     nh_ecmascript_Realm *Realm_p)
 {
-    switch (env->type) {
-        case NH_ECMASCRIPT_ENV_GLOBAL:
-            // Global environment has a dedicated slot for this (usually the Global Object)
-            return env->records.global.globalThisValue;
-
-        case NH_ECMASCRIPT_ENV_OBJECT:
-            // Object environments (like 'with') don't provide a 'this' binding.
-            // The spec says they return undefined, as the search continues outward.
-            return nh_ecmascript_makeUndefined();
-
-        case NH_ECMASCRIPT_ENV_DECLARATIVE: {
-            // Functional environments are a subset of declarative ones.
-            // If this is a function environment, it stores the 'this' value used during the call.
-            if (env->type == NH_ECMASCRIPT_ENV_FUNCTION) {
-                // You'll need to add 'thisValue' to your function record struct
-                return env->records.function.thisValue;
-            }
-            
-            // For block scopes {}, 'this' is inherited from the outer environment
-            if (env->outer != NULL) {
-                return nh_ecmascript_getThisBinding(env->outer, Realm_p);
-            }
-            return nh_ecmascript_makeUndefined();
-        }
-    }
+//    switch (env->type) {
+//        case NH_ECMASCRIPT_ENV_GLOBAL:
+//            // Global environment has a dedicated slot for this (usually the Global Object)
+//            return env->records.global.globalThisValue;
+//
+//        case NH_ECMASCRIPT_ENV_OBJECT:
+//            // Object environments (like 'with') don't provide a 'this' binding.
+//            // The spec says they return undefined, as the search continues outward.
+//            return nh_ecmascript_makeUndefined();
+//
+//        case NH_ECMASCRIPT_ENV_DECLARATIVE: {
+//            // Functional environments are a subset of declarative ones.
+//            // If this is a function environment, it stores the 'this' value used during the call.
+//            if (env->type == NH_ECMASCRIPT_ENV_FUNCTION) {
+//                // You'll need to add 'thisValue' to your function record struct
+//                return env->records.function.thisValue;
+//            }
+//            
+//            // For block scopes {}, 'this' is inherited from the outer environment
+//            if (env->outer != NULL) {
+//                return nh_ecmascript_getThisBinding(env->outer, Realm_p);
+//            }
+//            return nh_ecmascript_makeUndefined();
+//        }
+//    }
     return nh_ecmascript_makeUndefined();
 }

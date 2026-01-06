@@ -1,16 +1,9 @@
 intrinsic %Boolean% {
-    kind: constructor
-
-    // Boolean is a function
-    prototype: %FunctionPrototype%
-    instancePrototype: %BooleanPrototype%
-
-    internalMethods {
-        [[Call]]: BooleanConstructorCall
-        [[Construct]]: BooleanConstructorConstruct
-    }
 
     internalSlots {
+        [[Prototype]]: %FunctionPrototype%
+        [[Call]]: BooleanConstructorCall
+        [[Construct]]: BooleanConstructorConstruct
         [[Realm]]: current
         [[ScriptOrModule]]: null
     }

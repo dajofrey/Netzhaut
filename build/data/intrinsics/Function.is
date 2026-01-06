@@ -1,16 +1,9 @@
 intrinsic %Function% {
-    kind: function
-
-    // %Function% is a function object
-    prototype: %FunctionPrototype%
-    instancePrototype: %FunctionPrototype%
-
-    internalMethods {
-        [[Call]]: FunctionConstructorCall
-        [[Construct]]: FunctionConstructorConstruct
-    }
 
     internalSlots {
+        [[Prototype]]: %FunctionPrototype%
+        [[Call]]: FunctionConstructorCall
+        [[Construct]]: FunctionConstructorConstruct
         [[Realm]]: current
         [[ScriptOrModule]]: null
     }

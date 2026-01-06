@@ -1,10 +1,9 @@
 intrinsic %ArrayPrototype% {
-    kind: arrayExotic
-
-    prototype: %ObjectPrototype%
 
     internalSlots {
+        [[Prototype]]: %ObjectPrototype%
         [[Realm]]: current
+        [[ArrayLength]]: 0
     }
 
     properties {

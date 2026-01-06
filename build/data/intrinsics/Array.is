@@ -1,16 +1,9 @@
 intrinsic %Array% {
-    kind: constructor
-
-    // Array is a function
-    prototype: %FunctionPrototype%
-    instancePrototype: %ArrayPrototype%
-
-    internalMethods {
-        [[Call]]: ArrayConstructorCall
-        [[Construct]]: ArrayConstructorConstruct
-    }
 
     internalSlots {
+        [[Prototype]]: %FunctionPrototype%
+        [[Call]]: ArrayConstructorCall
+        [[Construct]]: ArrayConstructorConstruct
         [[Realm]]: current
         [[ScriptOrModule]]: null
     }

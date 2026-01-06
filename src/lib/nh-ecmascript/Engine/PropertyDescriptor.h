@@ -7,10 +7,12 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "Type.h"
+#include "Value.h"
 #include "Object.h"
 
 // STRUCTS =========================================================================================================================
+
+typedef struct nh_ecmascript_Object nh_ecmascript_Object;
 
 typedef struct nh_ecmascript_PropertyDescriptor {
     struct {

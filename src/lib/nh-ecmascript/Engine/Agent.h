@@ -68,4 +68,5 @@ NH_API_RESULT nh_ecmascript_enqueueEvaluateScript(
     nh_ecmascript_Script *Script_p
 );
 
+nh_ecmascript_Agent *nh_ecmascript_getRunningAgent();
 #endif

@@ -8,7 +8,7 @@
  */
 
 #include "Agent.h"
-#include "ObjectType.h"
+#include "Object.h"
 #include "Environment.h"
 
 #include "../Common/Includes.h"

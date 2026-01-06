@@ -1,25 +1,25 @@
 intrinsic %ThrowTypeError% {
-    kind: function
-
-    callable: true
-    constructable: false
-
-    prototype: %FunctionPrototype%
-    instancePrototype: null
-
-    internalMethods {
-        [[Call]]: ThrowTypeError
-    }
 
     internalSlots {
+        [[Prototype]]: %FunctionPrototype%
+        [[Call]]: ThrowTypeError
         [[Realm]]: current
-        [[ScriptOrModule]]: null
     }
 
     properties {
-        // No own properties
+        // Spec: length is 0, [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false
+        "length": { 
+            value: 0, 
+            writable: false, enumerable: false, configurable: false 
+        }
+        
+        // Spec: name is "", [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false
+        "name": { 
+            value: "", 
+            writable: false, enumerable: false, configurable: false 
+        }
     }
 
-    // Post-creation steps
+    // This ensures [[Extensible]] is false and all properties are locked
     freeze: true
 }

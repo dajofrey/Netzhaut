@@ -1,9 +1,7 @@
 intrinsic %BooleanPrototype% {
-    kind: ordinary
-
-    prototype: %ObjectPrototype%
 
     internalSlots {
+        [[Prototype]]: %ObjectPrototype%
         [[Realm]]: current
         [[BooleanData]]: false
     }

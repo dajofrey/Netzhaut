@@ -1,26 +1,54 @@
 intrinsic %FunctionPrototype% {
-    kind: ordinary // Note: Some specs treat this as a "Built-in Function" kind
-    
-    // Internal Slots
-    prototype: %ObjectPrototype%
-    isCallable: true
-    isConstructor: false // Crucial: Function.prototype cannot be 'new'ed
-    
+
+    internalSlots {
+        [[Prototype]]: %ObjectPrototype%
+        // Spec: A built-in function object that accepts any arguments and returns undefined.
+        [[Call]]: FunctionPrototypeCall 
+        [[Realm]]: current
+    }
+
     properties {
-        "constructor": { value: %Function%, writable: true, enumerable: false, configurable: true }
-        "name": { value: "", writable: false, enumerable: false, configurable: true }
-        "length": { value: 0, writable: false, enumerable: false, configurable: true }
+        "constructor": { 
+            value: %Function%, 
+            writable: true, enumerable: false, configurable: true 
+        }
+
+        // Function.prototype.name is ""
+        "name": { 
+            value: "", 
+            writable: false, enumerable: false, configurable: true 
+        }
+
+        // Function.prototype.length is 0
+        "length": { 
+            value: 0, 
+            writable: false, enumerable: false, configurable: true 
+        }
         
-        "call": { length: 1, writable: true, enumerable: false, configurable: true }
-        "apply": { length: 2, writable: true, enumerable: false, configurable: true }
-        "bind": { length: 1, writable: true, enumerable: false, configurable: true }
-        "toString": { length: 0, writable: true, enumerable: false, configurable: true }
+        "call": { 
+            length: 1, 
+            attributes: { writable, configurable } 
+        }
+
+        "apply": { 
+            length: 2, 
+            attributes: { writable, configurable } 
+        }
+
+        "bind": { 
+            length: 1, 
+            attributes: { writable, configurable } 
+        }
+
+        "toString": { 
+            length: 0, 
+            attributes: { writable, configurable } 
+        }
         
-        [Symbol.hasInstance]: { 
-            value: %FunctionPrototype_hasInstance%, // Special built-in logic
-            writable: false, 
-            enumerable: false, 
-            configurable: false 
+        // This is a Symbol-keyed property
+        "@@hasInstance": { 
+            value: %FunctionPrototypeHasInstance%, 
+            writable: false, enumerable: false, configurable: false 
         }
     }
 }

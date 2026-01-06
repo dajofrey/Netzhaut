@@ -249,3 +249,9 @@ NH_API_RESULT nh_ecmascript_enqueueEvaluateScript(
     nh_ecmascript_enqueueHostCommand(Script_p->Realm_p->Agent_p, 3, Script_p, 0);
     return NH_API_SUCCESS;
 }
+
+nh_ecmascript_Agent *nh_ecmascript_getRunningAgent()
+{
+return NULL;
+}
+

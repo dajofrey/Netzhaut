@@ -10,7 +10,7 @@
 
 #include "Misc.h"
 
-#include "../Engine/Type.h"
+#include "../Engine/Value.h"
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>

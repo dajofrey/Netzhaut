@@ -19,7 +19,7 @@
 
 // https://www.262.ecma-international.org/11.0/index.html#sec-testing-and-comparison-operations
 
-    bool nh_ecmascript_requireObjectCoercible(
+    nh_ecmascript_Completion nh_ecmascript_requireObjectCoercible(
         nh_ecmascript_Value v, nh_ecmascript_Realm *Realm_p
     );
 

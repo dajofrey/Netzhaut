@@ -26,11 +26,11 @@ bool nh_ecmascript_sameValue(
         double dy = y.p.number;
         
         // Handle NaN (NaN is the only value not equal to itself)
-        if (isnan(dx) && isnan(dy)) return true;
+//        if (isnan(dx) && isnan(dy)) return true;
         
         // Handle +0 vs -0
         if (dx == 0 && dy == 0) {
-            return signbit(dx) == signbit(dy);
+//            return signbit(dx) == signbit(dy);
         }
         
         return dx == dy;
@@ -68,8 +68,10 @@ bool nh_ecmascript_isCallable(nh_ecmascript_Value v)
     if (v.tag != NH_ECMASCRIPT_VALUE_OBJECT) return false;
     
     // Check if it's one of your function types
-    return (v.p.object->type == NH_ECMASCRIPT_OBJECT_FUNCTION_BUILTIN || 
-            v.p.object->type == NH_ECMASCRIPT_OBJECT_FUNCTION_ORDINARY);
+//    return (v.p.object->type == NH_ECMASCRIPT_OBJECT_FUNCTION_BUILTIN || 
+//            v.p.object->type == NH_ECMASCRIPT_OBJECT_FUNCTION_ORDINARY);
+
+return false;
 }
 
 // https://tc39.es/ecma262/#sec-isconstructor
@@ -79,7 +81,8 @@ bool nh_ecmascript_isConstructor(nh_ecmascript_Value v)
     
     // Not all functions are constructors (e.g., Arrow Functions)
     // You should add an 'isConstructor' flag to your nh_ecmascript_Object struct
-    return v.p.object->isConstructor;
+//    return v.p.object->isConstructor;
+return false;
 }
 
 // https://tc39.es/ecma262/#sec-requireobjectcoercible
@@ -102,7 +105,9 @@ nh_ecmascript_Completion nh_ecmascript_isExtensible(
     // return O_p->ops->isExtensible(O_p, Realm_p);
 
     // Using your current Option A approach (Hardcoded Ordinary):
-    return nh_ecmascript_ordinaryIsExtensible(O_p, Realm_p);
+//    return nh_ecmascript_ordinaryIsExtensible(O_p, Realm_p);
+
+return nh_ecmascript_normalEmptyCompletion();
 }
 
 // Internal "Ordinary" implementation
@@ -110,31 +115,32 @@ nh_ecmascript_Completion nh_ecmascript_ordinaryIsExtensible(
     nh_ecmascript_Object *O_p,
     nh_ecmascript_Realm *Realm_p) 
 {
-    return nh_ecmascript_normalCompletion(nh_ecmascript_makeBoolean(O_p->extensible));
+//    return nh_ecmascript_normalCompletion(nh_ecmascript_makeBoolean(O_p->extensible));
+return nh_ecmascript_normalEmptyCompletion();
 }
 
 // https://tc39.es/ecma262/#sec-isarray
-nh_ecmascript_Completion nh_ecmascript_isArray(
+bool nh_ecmascript_isArray(
     nh_ecmascript_Value argument,
     nh_ecmascript_Realm *Realm_p) 
 {
     // 1. If Type(argument) is not Object, return false.
     if (argument.tag != NH_ECMASCRIPT_VALUE_OBJECT) {
-        return nh_ecmascript_normalCompletion(nh_ecmascript_makeBoolean(false));
+        return false;
     }
     
     nh_ecmascript_Object *O_p = argument.p.object;
 
     // 2. If O_p is an Array exotic object, return true.
     if (O_p->type == NH_ECMASCRIPT_OBJECT_ARRAY) {
-        return nh_ecmascript_normalCompletion(nh_ecmascript_makeBoolean(true));
+        return true;
     }
 
     // 3. If O_p is a Proxy exotic object, unwrap and recurse
-    if (O_p->type == NH_ECMASCRIPT_OBJECT_PROXY) {
-        // Here you would check the proxy target
-        // return nh_ecmascript_isArray(O_p->proxyTarget, Realm_p);
-    }
+//    if (O_p->type == NH_ECMASCRIPT_OBJECT_PROXY) {
+//        // Here you would check the proxy target
+//        // return nh_ecmascript_isArray(O_p->proxyTarget, Realm_p);
+//    }
 
-    return nh_ecmascript_normalCompletion(nh_ecmascript_makeBoolean(false));
+    return false;
 }

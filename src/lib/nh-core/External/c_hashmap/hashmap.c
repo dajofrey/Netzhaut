@@ -395,3 +395,20 @@ int hashmap_length(map_t in){
 	if(m != NULL) return m->size;
 	else return 0;
 }
+
+void *hashmap_getFromIndex(map_t in, unsigned int index) {
+    if (hashmap_length(in) <= index) {
+        return NULL;
+    }
+    hashmap_map* m = (hashmap_map *) in;
+    return m->data[index].data;	
+}
+
+char *hashmap_getKeyFromIndex(map_t in, unsigned int index) {
+    if (hashmap_length(in) <= index) {
+        return NULL;
+    }
+    hashmap_map* m = (hashmap_map *) in;
+    return m->data[index].key;	
+}
+

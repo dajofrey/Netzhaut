@@ -46,18 +46,18 @@ nh_ecmascript_Reference nh_ecmascript_getIdentifierReference(
     }
 
     // 2. Check if the current environment has the binding
-    if (nh_ecmascript_hasBinding(env, name.p.string)) {
-        nh_ecmascript_Reference ref;
-        ref.baseType = NH_ECMASCRIPT_REF_BASE_ENVIRONMENT;
-        ref.Base.Environment_p = env;
-        ref.ReferencedName = name;
-        ref.strict = strict;
-        ref.ThisValue.hasValue = false;
-        return ref;
-    }
+//    if (nh_ecmascript_hasBinding(env, name.p.string)) {
+//        nh_ecmascript_Reference ref;
+//        ref.baseType = NH_ECMASCRIPT_REF_BASE_ENVIRONMENT;
+//        ref.Base.Environment_p = env;
+//        ref.ReferencedName = name;
+//        ref.strict = strict;
+//        ref.ThisValue.hasValue = false;
+//        return ref;
+//    }
 
     // 3. Recurse to outer environment
-    return nh_ecmascript_getIdentifierReference(env->Outer_p, name, strict);
+    return nh_ecmascript_getIdentifierReference(NULL, name, strict);
 }
 
 bool nh_ecmascript_isPropertyReference(nh_ecmascript_Reference ref)
@@ -82,7 +82,7 @@ nh_ecmascript_Completion nh_ecmascript_getValue(
 
         if (ref.baseType == NH_ECMASCRIPT_REF_BASE_PRIMITIVE) {
             // Autoboxing: convert primitive to temporary object (e.g. "a".length)
-            baseObj = nh_ecmascript_toObject(ref.Base.Primitive, Realm_p);
+//            baseObj = nh_ecmascript_toObject(ref.Base.Primitive, Realm_p);
         } else {
             baseObj = ref.Base.Object_p;
         }
@@ -93,12 +93,12 @@ nh_ecmascript_Completion nh_ecmascript_getValue(
     
     // 3. Handle Environment References (local/global variables)
     else {
-        return nh_ecmascript_getBindingValue(
-            ref.Base.Environment_p, 
-            ref.ReferencedName.p.string, 
-            ref.strict,
-            Realm_p
-        );
+ //       return nh_ecmascript_getBindingValue(
+ //           ref.Base.Environment_p, 
+ //           ref.ReferencedName.p.string, 
+ //           ref.strict,
+ //           Realm_p
+ //       );
     }
 }
 
@@ -114,7 +114,7 @@ nh_ecmascript_Completion nh_ecmascript_putValue(
             return nh_ecmascript_throwReferenceError("Assigning to undefined variable", Realm_p);
         }
         // In non-strict mode, assigning to unresolvable creates a global variable
-        return nh_ecmascript_set(Realm_p->globalObject, ref.ReferencedName.p.string, value, Realm_p);
+ //       return nh_ecmascript_set(Realm_p->globalObject, ref.ReferencedName.p.string, value, Realm_p);
     }
 
     // 2. Handle Property References
@@ -122,7 +122,7 @@ nh_ecmascript_Completion nh_ecmascript_putValue(
         nh_ecmascript_Object *baseObj;
         
         if (ref.baseType == NH_ECMASCRIPT_REF_BASE_PRIMITIVE) {
-            baseObj = nh_ecmascript_toObject(ref.Base.Primitive, Realm_p);
+//            baseObj = nh_ecmascript_toObject(ref.Base.Primitive, Realm_p);
         } else {
             baseObj = ref.Base.Object_p;
         }
@@ -132,12 +132,12 @@ nh_ecmascript_Completion nh_ecmascript_putValue(
 
     // 3. Handle Environment References
     else {
-        return nh_ecmascript_setMutableBinding(
-            ref.Base.Environment_p,
-            ref.ReferencedName.p.string,
-            value,
-            ref.strict,
-            Realm_p
-        );
+//        return nh_ecmascript_setMutableBinding(
+//            ref.Base.Environment_p,
+//            ref.ReferencedName.p.string,
+//            value,
+//            ref.strict,
+//            Realm_p
+//        );
     }
 }

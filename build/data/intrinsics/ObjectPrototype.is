@@ -1,10 +1,7 @@
 intrinsic %ObjectPrototype% {
-    kind: ordinary
-
-    // %Object.prototype% is the root of most prototype chains
-    prototype: null
 
     internalSlots {
+        [[Prototype]]: null
         [[Realm]]: current
     }
 

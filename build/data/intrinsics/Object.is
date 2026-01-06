@@ -1,21 +1,21 @@
 intrinsic %Object% {
-    kind: function 
 
-    prototype: %FunctionPrototype%     // because Object is a function
-    instancePrototype: %ObjectPrototype%
-
-    internalMethods {
+    internalSlots {
+        [[Prototype]]: %FunctionPrototype%     // because Object is a function
+        [[Realm]]: current
+        [[ScriptOrModule]]: null
         [[Call]]: ObjectConstructorCall
         [[Construct]]: ObjectConstructorConstruct
     }
 
-    internalSlots {
-        [[Realm]]: current
-        [[ScriptOrModule]]: null
-    }
-
     // Define the own properties of the %Object% constructor
     properties {
+        "name": {
+            value: "Object",
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
 
         // Object.length === 1
         "length": {
