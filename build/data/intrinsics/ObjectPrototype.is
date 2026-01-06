@@ -1,0 +1,80 @@
+intrinsic %ObjectPrototype% {
+    kind: ordinary
+
+    // %Object.prototype% is the root of most prototype chains
+    prototype: null
+
+    internalSlots {
+        [[Realm]]: current
+    }
+
+    properties {
+
+        "constructor": {
+            value: %Object%,
+            writable: true,
+            enumerable: false,
+            configurable: true
+        }
+
+        "hasOwnProperty": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "isPrototypeOf": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "propertyIsEnumerable": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "toString": {
+            length: 0,
+            attributes: { writable, configurable }
+        }
+
+        "toLocaleString": {
+            length: 0,
+            attributes: { writable, configurable }
+        }
+
+        "valueOf": {
+            length: 0,
+            attributes: { writable, configurable }
+        }
+
+        "__defineGetter__": {
+            length: 2,
+            attributes: { writable, configurable }
+        }
+
+        "__defineSetter__": {
+            length: 2,
+            attributes: { writable, configurable }
+        }
+
+        "__lookupGetter__": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "__lookupSetter__": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "__proto__": {
+            kind: accessor,
+
+            get: ObjectProtoGetter,
+            set: ObjectProtoSetter,
+
+            enumerable: false,
+            configurable: true
+        }
+    }
+}

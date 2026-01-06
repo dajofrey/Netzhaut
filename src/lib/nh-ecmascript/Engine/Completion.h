@@ -1,8 +1,6 @@
 #ifndef NH_ECMASCRIPT_COMPLETION_H
 #define NH_ECMASCRIPT_COMPLETION_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -11,42 +9,20 @@
 
 #include "Type.h"
 
-#endif
+// https://tc39.es/ecma262/#sec-completion-record-specification-type
+typedef enum NH_ECMASCRIPT_COMPLETION_E {
+    NH_ECMASCRIPT_COMPLETION_NORMAL = 0,
+    NH_ECMASCRIPT_COMPLETION_BREAK,
+    NH_ECMASCRIPT_COMPLETION_CONTINUE,
+    NH_ECMASCRIPT_COMPLETION_RETURN,
+    NH_ECMASCRIPT_COMPLETION_THROW,
+} NH_ECMASCRIPT_COMPLETION_E;
 
-/** @addtogroup lib_nh-ecmascript_enums
- *  @{
- */
-
-    typedef enum NH_ECMASCRIPT_COMPLETION {
-        NH_ECMASCRIPT_COMPLETION_NORMAL,
-        NH_ECMASCRIPT_COMPLETION_BREAK,
-        NH_ECMASCRIPT_COMPLETION_CONTINUE,
-        NH_ECMASCRIPT_COMPLETION_RETURN,
-        NH_ECMASCRIPT_COMPLETION_THROW,
-    } NH_ECMASCRIPT_COMPLETION;
-
-/** @} */
-
-/** @addtogroup lib_nh-ecmascript_structs
- *  @{
- */
-
-    typedef struct nh_ecmascript_CompletionValue {
-        bool empty;
-        nh_ecmascript_Any Payload;
-    } nh_ecmascript_CompletionValue;
-
-    typedef struct nh_ecmascript_CompletionTarget {
-        bool empty;
-        nh_encoding_UTF8String String;
-    } nh_ecmascript_CompletionTarget;
-
-    // https://tc39.es/ecma262/#sec-completion-record-specification-type
-    typedef struct nh_ecmascript_Completion {
-        NH_ECMASCRIPT_COMPLETION type;
-        nh_ecmascript_CompletionValue Value;
-        nh_ecmascript_CompletionTarget Target;
-    } nh_ecmascript_Completion;
+typedef struct nh_ecmascript_Completion {
+    NH_ECMASCRIPT_COMPLETION_E type;
+    nh_ecmascript_Value Value;  // Use your new Value struct here
+    void *target;               // Usually a String pointer or NULL
+} nh_ecmascript_Completion;
 
 /** @} */
 

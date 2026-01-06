@@ -9,7 +9,7 @@
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
 
-#include "ObjectType.h"
+#include "Object.h"
 
 #endif
 
@@ -19,24 +19,24 @@
 
 // https://www.262.ecma-international.org/11.0/index.html#sec-testing-and-comparison-operations
 
-//    bool nh_ecmascript_requireObjectCoercible(
-//        argument
-//    );
-//
-//    bool nh_ecmascript_isArray(
-//        argument
-//    );
-
-    NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isCallable(
-        nh_ecmascript_Any Value
+    bool nh_ecmascript_requireObjectCoercible(
+        nh_ecmascript_Value v, nh_ecmascript_Realm *Realm_p
     );
 
-//    bool nh_ecmascript_isConstructor(
-//        nh_ecmascript_Type Value
-//    );
+    bool nh_ecmascript_isArray(
+        nh_ecmascript_Value v, nh_ecmascript_Realm *Realm_p
+    );
+
+    bool nh_ecmascript_isCallable(
+        nh_ecmascript_Value Value
+    );
+
+    bool nh_ecmascript_isConstructor(
+        nh_ecmascript_Value Value
+    );
 
     nh_ecmascript_Completion nh_ecmascript_isExtensible(
-        nh_ecmascript_Object *Object_p
+        nh_ecmascript_Object *Object_p, nh_ecmascript_Realm *Realm_p
     );
 
 //    bool nh_ecmascript_isInteger(
@@ -58,19 +58,19 @@
 //    bool nh_ecmascript_isStringPrefix(
 //        p, q
 //    );
-//
-//    bool nh_ecmascript_sameValue(
-//        x, y
-//    );
-//
+
+    bool nh_ecmascript_sameValue(
+        nh_ecmascript_Value x, nh_ecmascript_Value y
+    );
+
 //    bool nh_ecmascript_sameValueZero(
 //        x, y
 //    );
 //
-//    bool nh_ecmascript_sameValueNonNumeric(
-//        x, y
-//    );
-//
+    bool nh_ecmascript_sameValueNonNumeric(
+        nh_ecmascript_Value x, nh_ecmascript_Value y
+    );
+
 //    bool nh_ecmascript_abstractRelationalComparison(
 //    );
 //

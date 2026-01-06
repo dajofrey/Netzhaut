@@ -545,7 +545,7 @@ static nh_core_Array nh_ecmascript_discardRedundantTokens(
 
 // TOKENIZE ========================================================================================
 
-nh_core_Array nh_ecmascript_tokenizeIntrinsic(
+nh_core_Array nh_ecmascript_tokenizeIntrinsicTemplate(
     char *logName_p, char *fragment_p)
 {
     nh_encoding_UTF32String Codepoints = nh_encoding_decodeUTF8(fragment_p, strlen(fragment_p), NULL);
@@ -562,7 +562,7 @@ nh_core_Array nh_ecmascript_tokenizeIntrinsic(
     return CleanTokens;
 }
 
-void nh_ecmascript_freeIntrinsicTokens(
+void nh_ecmascript_freeIntrinsicTemplateTokens(
     nh_core_Array Tokens)
 {
     for (int i = 0; i < Tokens.length; ++i)

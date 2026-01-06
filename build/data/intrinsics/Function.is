@@ -1,0 +1,44 @@
+intrinsic %Function% {
+    kind: function
+
+    // %Function% is a function object
+    prototype: %FunctionPrototype%
+    instancePrototype: %FunctionPrototype%
+
+    internalMethods {
+        [[Call]]: FunctionConstructorCall
+        [[Construct]]: FunctionConstructorConstruct
+    }
+
+    internalSlots {
+        [[Realm]]: current
+        [[ScriptOrModule]]: null
+    }
+
+    properties {
+
+        // Function.length === 1
+        "length": {
+            value: 1,
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
+
+        // Function.prototype === %FunctionPrototype%
+        "prototype": {
+            value: %FunctionPrototype%,
+            writable: false,
+            enumerable: false,
+            configurable: false
+        }
+
+        // Function.name === "Function"
+        "name": {
+            value: "Function",
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
+    }
+}

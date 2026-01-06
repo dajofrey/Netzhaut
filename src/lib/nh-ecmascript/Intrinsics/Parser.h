@@ -27,6 +27,16 @@ typedef enum NH_ECMASCRIPT_INTRINSIC_VALUE_E {
     NH_ECMASCRIPT_INTRINSIC_VALUE_ATTRIBUTES_SET // set of identifiers: { writable, configurable }
 } NH_ECMASCRIPT_INTRINSIC_VALUE_E;
 
+typedef enum NH_ECMASCRIPT_INTERNAL_SLOT_E {
+    NH_ECMASCRIPT_INTERNAL_SLOT_NULL,
+    NH_ECMASCRIPT_INTERNAL_SLOT_CURRENT_REALM,
+    NH_ECMASCRIPT_INTERNAL_SLOT_INTRINSIC_REF,
+    NH_ECMASCRIPT_INTERNAL_SLOT_BOOLEAN,
+    NH_ECMASCRIPT_INTERNAL_SLOT_NUMBER,
+    NH_ECMASCRIPT_INTERNAL_SLOT_UNDEFINED,
+    NH_ECMASCRIPT_INTERNAL_SLOT_PRIVATE_ELEMENTS,
+} NH_ECMASCRIPT_INTERNAL_SLOT_E;
+
 // STRUCTS ====================================================
 
 typedef struct nh_ecmascript_IntrinsicTemplateValue {
@@ -44,21 +54,23 @@ typedef struct nh_ecmascript_IntrinsicTemplateProperty {
     nh_ecmascript_IntrinsicTemplateValue *value;
 } nh_ecmascript_IntrinsicTemplateProperty;
 
-typedef struct nh_ecmascript_InternalSlot {
-    char *name; // like [[Call]]
-    nh_ecmascript_IntrinsicTemplateValue *value;
-} nh_ecmascript_InternalSlot;
+typedef struct nh_ecmascript_InternalSlotTemplate {
+    NH_ECMASCRIPT_INTERNAL_SLOT_E type;
+    union { 
+        bool boolean;
+        double number;
+    };
+} nh_ecmascript_InternalSlotTemplate;
 
 typedef struct nh_ecmascript_IntrinsicTemplate {
     char *name; // intrinsic identifier (without %)
-    NH_ECMASCRIPT_OBJECT_E type; // value of type: constructor / ordinaryObject / ...
+    NH_ECMASCRIPT_OBJECT_E kind; // value of type: constructor / ordinaryObject / ...
     char *prototype_p; // percent-wrapped target name (without %)
     char *instancePrototype;
     bool isCallable;
     bool isConstructor;
     bool isExotic;
-    nh_ecmascript_InternalSlot **internalSlots;
-    int internalSlotsCount;
+    nh_core_List InternalSlotTemplates;
     nh_ecmascript_IntrinsicTemplateProperty **properties; // named properties under properties { ... }
     int propertiesCount;
 } nh_ecmascript_IntrinsicTemplate;

@@ -1,0 +1,76 @@
+intrinsic %ArrayPrototype% {
+    kind: arrayExotic
+
+    prototype: %ObjectPrototype%
+
+    internalSlots {
+        [[Realm]]: current
+    }
+
+    properties {
+
+        "constructor": {
+            value: %Array%,
+            writable: true,
+            enumerable: false,
+            configurable: true
+        }
+
+        "length": {
+            value: 0,
+            writable: true,
+            enumerable: false,
+            configurable: false
+        }
+
+        // Mutating methods
+        "push": { length: 1, attributes: { writable, configurable } }
+        "pop": { length: 0, attributes: { writable, configurable } }
+        "shift": { length: 0, attributes: { writable, configurable } }
+        "unshift": { length: 1, attributes: { writable, configurable } }
+        "splice": { length: 2, attributes: { writable, configurable } }
+
+        // Iteration
+        "forEach": { length: 1, attributes: { writable, configurable } }
+        "map": { length: 1, attributes: { writable, configurable } }
+        "filter": { length: 1, attributes: { writable, configurable } }
+        "reduce": { length: 1, attributes: { writable, configurable } }
+        "reduceRight": { length: 1, attributes: { writable, configurable } }
+
+        // Accessors
+        "slice": { length: 2, attributes: { writable, configurable } }
+        "concat": { length: 1, attributes: { writable, configurable } }
+        "includes": { length: 1, attributes: { writable, configurable } }
+        "indexOf": { length: 1, attributes: { writable, configurable } }
+
+        // Iterators
+        "keys": { length: 0, attributes: { writable, configurable } }
+        "values": { length: 0, attributes: { writable, configurable } }
+        "entries": { length: 0, attributes: { writable, configurable } }
+
+        [Symbol.iterator]: {
+            value: ArrayValues,
+            writable: true,
+            enumerable: false,
+            configurable: true
+        }
+
+        [Symbol.unscopables]: {
+            value: {
+                "copyWithin": true,
+                "entries": true,
+                "fill": true,
+                "find": true,
+                "findIndex": true,
+                "flat": true,
+                "flatMap": true,
+                "includes": true,
+                "keys": true,
+                "values": true
+            },
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
+    }
+}

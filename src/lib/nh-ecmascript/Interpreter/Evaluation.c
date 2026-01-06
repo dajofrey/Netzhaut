@@ -18,7 +18,38 @@
 #include <string.h>
 #include <stdio.h>
 
-// EVALUATE ========================================================================================
+// FUNCTIONS ======================================================================================
+
+nh_ecmascript_Completion nh_ecmascript_call(
+    nh_ecmascript_Object *Function_p,
+    nh_ecmascript_Value ThisValue,
+    nh_ecmascript_Value *Arguments_p,
+    size_t ArgumentCount,
+    nh_ecmascript_Realm *Realm_p)
+{
+    // 1. Validation (Spec 7.3.13)
+    if (!Function_p || !Function_p->isCallable) {
+        // In a real engine, you would return a TypeError completion here
+        return nh_ecmascript_throwTypeError("Target is not a function", Realm_p);
+    }
+
+    // 2. Native Branch (For your Intrinsics and WebIDL Host Functions)
+    if (Function_p->nativeHandler != NULL) {
+        // We call the C function pointer we looked up earlier
+        return Function_p->nativeHandler(
+            Function_p,
+            Arguments_p,
+            ArgumentCount,
+            Realm_p
+        );
+    }
+
+    // 3. Script Branch (For functions written in JavaScript)
+    // This is where you would call your Interpreter loop
+    // return nh_ecmascript_executeBytecode(Function_p, ThisValue, Arguments_p, ArgumentCount);
+    
+    return nh_ecmascript_throwInternalError("Interpreter not yet implemented", Realm_p);
+}
 
 //typedef enum {
 //    VAL_UNDEFINED,

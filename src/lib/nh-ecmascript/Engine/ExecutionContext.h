@@ -29,16 +29,27 @@
         void *handle_p;
     } nh_ecmascript_ScriptOrModule;
 
-    // https://www.262.ecma-international.org/11.0/index.html#sec-execution-contexts
-    typedef struct nh_ecmascript_ExecutionContext {
-//        nh_ecmascript_CodeEvalution CodeEvalution;
-        nh_ecmascript_Object *Function_p;
-        nh_ecmascript_Realm *Realm_p;
-        nh_ecmascript_ScriptOrModule ScriptOrModule;
-        nh_ecmascript_Environment *LexicalEnvironment_p;
-        nh_ecmascript_Environment *VariableEnvironment_p;
-        nh_ecmascript_Environment *PrivateEnvironment_p;
-    } nh_ecmascript_ExecutionContext;
+// https://www.262.ecma-international.org/11.0/index.html#sec-execution-contexts
+typedef struct nh_ecmascript_ExecutionContext {
+    // 1. Spec components
+    nh_ecmascript_Object      *Function_p;           // The function being executed (or NULL for global)
+    nh_ecmascript_Realm       *Realm_p;
+    nh_ecmascript_ScriptOrModule ScriptOrModule;
+    
+    nh_ecmascript_Environment *LexicalEnvironment_p; // For 'let/const'
+    nh_ecmascript_Environment *VariableEnvironment_p;// For 'var'
+    nh_ecmascript_Environment *PrivateEnvironment_p; // For class #private fields
+    
+    // 2. The "This" Cache
+    nh_ecmascript_Value        ThisBinding;          // Fast access to 'this'
+
+    // 3. Interpreter State
+    uint8_t                   *ip;                   // Instruction Pointer (if using bytecode)
+    // OR: nh_ecmascript_ParseNode *currentNode;     // If using an AST interpreter
+
+    // 4. Stack Linkage
+    struct nh_ecmascript_ExecutionContext *Previous_p; // The context to return to after 'pop'
+} nh_ecmascript_ExecutionContext;
 
 /** @} */
 

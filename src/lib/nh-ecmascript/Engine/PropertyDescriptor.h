@@ -1,8 +1,6 @@
 #ifndef NH_ECMASCRIPT_PROPERTY_DESCRIPTOR_H
 #define NH_ECMASCRIPT_PROPERTY_DESCRIPTOR_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -10,43 +8,35 @@
  */
 
 #include "Type.h"
+#include "Object.h"
 
-#endif
+// STRUCTS =========================================================================================================================
 
-/** @addtogroup lib_nh-ecmascript_structs
- *  @{
- */
+typedef struct nh_ecmascript_PropertyDescriptor {
+    struct {
+        // Presence flags
+        unsigned int hasValue : 1;
+        unsigned int hasWritable : 1;
+        unsigned int hasGet : 1;
+        unsigned int hasSet : 1;
+        unsigned int hasEnumerable : 1;
+        unsigned int hasConfigurable : 1;
+        
+        // The actual values for boolean attributes
+        unsigned int writable : 1;
+        unsigned int enumerable : 1;
+        unsigned int configurable : 1;
+    } flags;
 
-    typedef struct nh_ecmascript_DataPropertyDescriptor {
-        nh_ecmascript_Any Value;
-        NH_ECMASCRIPT_BOOLEAN writable;
-    } nh_ecmascript_DataPropertyDescriptor;
+    nh_ecmascript_Value Value;
+    nh_ecmascript_Object *Get;
+    nh_ecmascript_Object *Set;
+} nh_ecmascript_PropertyDescriptor;
 
-    typedef struct nh_ecmascript_AccessorPropertyDescriptor {
-        nh_ecmascript_Any Get;
-        nh_ecmascript_Any Set;
-    } nh_ecmascript_AccessorPropertyDescriptor;
+// FUNCTIONS =======================================================================================================================
 
-    typedef union nh_ecmascript_PropertyDescriptorFields {
-        nh_ecmascript_DataPropertyDescriptor Data;
-        nh_ecmascript_AccessorPropertyDescriptor Accessor;
-    } nh_ecmascript_PropertyDescriptorFields;
-
-    typedef struct nh_ecmascript_PropertyDescriptor {
-        int type;
-        nh_ecmascript_PropertyDescriptorFields Fields;
-        NH_ECMASCRIPT_BOOLEAN enumerable;
-        NH_ECMASCRIPT_BOOLEAN configurable;
-    } nh_ecmascript_PropertyDescriptor;
-
-/** @} */
-
-/** @addtogroup lib_nh-ecmascript_functions
- *  @{
- */
-
-    nh_ecmascript_PropertyDescriptor nh_ecmascript_undefinedPropertyDescriptor(
-    );
+nh_ecmascript_PropertyDescriptor nh_ecmascript_undefinedPropertyDescriptor(
+);
 
 //    nh_ecmascript_PropertyDescriptorWrapper nh_ecmascript_wrapPropertyDescriptor(
 //        nh_ecmascript_PropertyDescriptor Descriptor
@@ -55,29 +45,33 @@
 //    nh_ecmascript_PropertyDescriptorWrapper nh_ecmascript_undefinedPropertyDescriptorWrapper(
 //    );
 
-    // https://tc39.es/ecma262/#sec-isaccessordescriptor
-    NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isAccessorDescriptor(
-        nh_ecmascript_PropertyDescriptor Descriptor 
-    );
+void nh_ecmascript_applyDescriptorToProperty(
+    nh_ecmascript_PropertyDescriptor *Desc_p,
+    nh_ecmascript_Property *Prop_p
+);
 
-    // https://tc39.es/ecma262/#sec-isdatadescriptor
-    NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isDataDescriptor (
-        nh_ecmascript_PropertyDescriptor Descriptor
-    );
+bool nh_ecmascript_isAccessorDescriptor(
+    nh_ecmascript_PropertyDescriptor Descriptor 
+);
 
-    // https://tc39.es/ecma262/#sec-isgenericdescriptor
-    NH_ECMASCRIPT_BOOLEAN nh_ecmascript_isGenericDescriptor (
-        nh_ecmascript_PropertyDescriptor Descriptor
-    );
+bool nh_ecmascript_isDataDescriptor (
+    nh_ecmascript_PropertyDescriptor Descriptor
+);
+
+bool nh_ecmascript_isGenericDescriptor (
+    nh_ecmascript_PropertyDescriptor Descriptor
+);
 
 //    nh_ecmascript_fromPropertyDescriptor(
 //        Desc
 //    );
 //
-//    nh_ecmascript_toPropertyDescriptor(
-//        Obj
-//    );
-//
+
+nh_ecmascript_Completion nh_ecmascript_toPropertyDescriptor(
+    nh_ecmascript_Value ObjVal, 
+    nh_ecmascript_Realm *Realm_p
+); 
+
 //    nh_ecmascript_completePropertyDescriptor(
 //        Desc
 //    );

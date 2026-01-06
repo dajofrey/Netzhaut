@@ -509,7 +509,7 @@ nh_ecmascript_IntrinsicTemplate *nh_ecmascript_parseIntrinsicTemplate(
         }
 
         // handle known fields
-        if (strcmp(field, "type") == 0) {
+        if (strcmp(field, "kind") == 0) {
             // value is an identifier
             if (!is_token(&Parser, NH_ECMASCRIPT_TOKEN_IDENTIFIER)) {
                 parser_error(&Parser, "expected identifier for type: got '%s'", tokstr(&Parser));
@@ -517,11 +517,11 @@ nh_ecmascript_IntrinsicTemplate *nh_ecmascript_parseIntrinsicTemplate(
                 nh_encoding_UTF8String v = Parser.tokens[Parser.idx].String;
                 char type_p[64] = {0};
                 memcpy(type_p, v.p, v.length); 
-                Template_p->type = NH_ECMASCRIPT_OBJECT_ORDINARY;
+                Template_p->kind = NH_ECMASCRIPT_OBJECT_ORDINARY;
                 if (!strcmp(type_p, "function")) {
-                    Template_p->type = NH_ECMASCRIPT_OBJECT_FUNCTION;
+                    Template_p->kind = NH_ECMASCRIPT_OBJECT_FUNCTION;
                 } else if (!strcmp(type_p, "array")) {
-                    Template_p->type = NH_ECMASCRIPT_OBJECT_ARRAY;
+                    Template_p->kind = NH_ECMASCRIPT_OBJECT_ARRAY;
                 }
                 Parser.idx++;
             }
@@ -693,7 +693,7 @@ static void dump_value(nh_ecmascript_IntrinsicTemplateValue *v, int indent) {
 static void nh_ecmascript_dump(nh_ecmascript_IntrinsicTemplate *i) {
     if (!i) return;
     printf("Intrinsic %s\n", i->name ? i->name : "<anon>");
-    if (i->type) printf("  type: %d\n", i->type);
+    if (i->kind) printf("  kind: %d\n", i->kind);
     if (i->prototype_p) printf("  prototype: %s\n", i->prototype_p);
     if (i->instancePrototype) printf("  instancePrototype: %s\n", i->instancePrototype);
     if (i->internalSlotsCount) {
@@ -758,7 +758,7 @@ nh_core_List nh_ecmascript_parseIntrinsicTemplates()
 {
     nh_core_List Templates = nh_core_initList(16);
 
-    for (int i = 0; i > NH_ECMASCRIPT_INTRINSIC_TEMPLATE_NAMES_PP_COUNT; ++i) {
+    for (int i = 0; i < NH_ECMASCRIPT_INTRINSIC_TEMPLATE_NAMES_PP_COUNT; ++i) {
         nh_core_Array Tokens = nh_ecmascript_tokenizeIntrinsicTemplate(NULL, NH_ECMASCRIPT_INTRINSIC_TEMPLATES_PP[i]);
         nh_ecmascript_IntrinsicTemplate *Template_p = nh_ecmascript_parseIntrinsicTemplate(Tokens);
         nh_core_freeArray(&Tokens);

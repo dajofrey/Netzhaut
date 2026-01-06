@@ -164,21 +164,14 @@ SRC_FILES_NH_ECMASCRIPT = \
     Engine/Runtime.c \
     Engine/Agent.c \
     Engine/Realm.c \
-    Engine/InternalSlots.c \
-    Engine/ObjectType.c \
-    Engine/Type.c \
-    Engine/BuiltinFunctionObject.c \
+    Engine/Object.c \
+    Engine/Value.c \
     Engine/Completion.c \
-    Engine/Properties.c \
     Engine/Environment.c \
-    Engine/OrdinaryFunctionObject.c \
     Engine/ExecutionContext.c \
-    Engine/CompletionOrReference.c \
     Engine/Reference.c \
     Engine/TestAndCompare.c \
     Engine/PropertyDescriptor.c \
-    Engine/OrdinaryObject.c \
-    Engine/GlobalObject.c \
     Parser/Lexer.c \
     Parser/CST.c \
     Parser/AST.c \
@@ -189,9 +182,12 @@ SRC_FILES_NH_ECMASCRIPT = \
     StaticSemantics/Misc.c \
     StaticSemantics/ScopedDeclarations.c \
     StaticSemantics/ParameterLists.c \
-    Intrinsics/Templates.c \
+    Intrinsics/PropertyMethods.gen.c \
+    Intrinsics/InternalMethods.gen.c \
+    Intrinsics/Templates.gen.c \
     Intrinsics/Tokenizer.c \
     Intrinsics/Parser.c \
+    Intrinsics/Builtin/Object.c \
     Common/Initialize.c \
     Common/Terminate.c \
     Common/Log.c \

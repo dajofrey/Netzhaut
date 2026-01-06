@@ -2,7 +2,15 @@
 
 # Declare a string array
 files=(
-    "build/data/intrinsics/Object.is")
+    "build/data/intrinsics/Array.is"
+    "build/data/intrinsics/ArrayPrototype.is"
+    "build/data/intrinsics/Boolean.is"
+    "build/data/intrinsics/BooleanPrototype.is"
+    "build/data/intrinsics/Function.is"
+    "build/data/intrinsics/FunctionPrototype.is"
+    "build/data/intrinsics/Object.is"
+    "build/data/intrinsics/ObjectPrototype.is"
+    "build/data/intrinsics/ThrowTypeError.is")
 
 # Iterate through each string in the array
 for f in "${files[@]}"; do
@@ -23,7 +31,7 @@ LICENSE_NOTICE="\
  */\n\n"
 
 # Output file
-OUTPUT_FILE="src/lib/nh-ecmascript/Intrinsics/Templates.c"
+OUTPUT_FILE="src/lib/nh-ecmascript/Intrinsics/Templates.gen.c"
 
 # Function to extract the filename from the path
 get_filename() {

@@ -1,0 +1,44 @@
+intrinsic %Boolean% {
+    kind: constructor
+
+    // Boolean is a function
+    prototype: %FunctionPrototype%
+    instancePrototype: %BooleanPrototype%
+
+    internalMethods {
+        [[Call]]: BooleanConstructorCall
+        [[Construct]]: BooleanConstructorConstruct
+    }
+
+    internalSlots {
+        [[Realm]]: current
+        [[ScriptOrModule]]: null
+    }
+
+    properties {
+
+        // Boolean.length === 1
+        "length": {
+            value: 1,
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
+
+        // Boolean.prototype === %BooleanPrototype%
+        "prototype": {
+            value: %BooleanPrototype%,
+            writable: false,
+            enumerable: false,
+            configurable: false
+        }
+
+        // Boolean.name === "Boolean"
+        "name": {
+            value: "Boolean",
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
+    }
+}

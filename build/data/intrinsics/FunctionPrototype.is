@@ -1,0 +1,26 @@
+intrinsic %FunctionPrototype% {
+    kind: ordinary // Note: Some specs treat this as a "Built-in Function" kind
+    
+    // Internal Slots
+    prototype: %ObjectPrototype%
+    isCallable: true
+    isConstructor: false // Crucial: Function.prototype cannot be 'new'ed
+    
+    properties {
+        "constructor": { value: %Function%, writable: true, enumerable: false, configurable: true }
+        "name": { value: "", writable: false, enumerable: false, configurable: true }
+        "length": { value: 0, writable: false, enumerable: false, configurable: true }
+        
+        "call": { length: 1, writable: true, enumerable: false, configurable: true }
+        "apply": { length: 2, writable: true, enumerable: false, configurable: true }
+        "bind": { length: 1, writable: true, enumerable: false, configurable: true }
+        "toString": { length: 0, writable: true, enumerable: false, configurable: true }
+        
+        [Symbol.hasInstance]: { 
+            value: %FunctionPrototype_hasInstance%, // Special built-in logic
+            writable: false, 
+            enumerable: false, 
+            configurable: false 
+        }
+    }
+}

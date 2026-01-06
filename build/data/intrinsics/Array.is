@@ -1,0 +1,56 @@
+intrinsic %Array% {
+    kind: constructor
+
+    // Array is a function
+    prototype: %FunctionPrototype%
+    instancePrototype: %ArrayPrototype%
+
+    internalMethods {
+        [[Call]]: ArrayConstructorCall
+        [[Construct]]: ArrayConstructorConstruct
+    }
+
+    internalSlots {
+        [[Realm]]: current
+        [[ScriptOrModule]]: null
+    }
+
+    properties {
+
+        "length": {
+            value: 1,
+            writable: false,
+            enumerable: false,
+            configurable: true
+        }
+
+        "prototype": {
+            value: %ArrayPrototype%,
+            writable: false,
+            enumerable: false,
+            configurable: false
+        }
+
+        "isArray": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "from": {
+            length: 1,
+            attributes: { writable, configurable }
+        }
+
+        "of": {
+            length: 0,
+            attributes: { writable, configurable }
+        }
+
+        [Symbol.species]: {
+            kind: accessor,
+            get: ArraySpeciesGetter,
+            enumerable: false,
+            configurable: true
+        }
+    }
+}

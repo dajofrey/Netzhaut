@@ -21,23 +21,36 @@
  *  @{
  */
 
-    typedef struct nh_ecmascript_ReferenceBase {
-        bool unresolvable;
-        nh_ecmascript_Any Value;
+typedef enum {
+    NH_ECMASCRIPT_REF_BASE_UNRESOLVABLE,
+    NH_ECMASCRIPT_REF_BASE_OBJECT,
+    NH_ECMASCRIPT_REF_BASE_ENVIRONMENT,
+    NH_ECMASCRIPT_REF_BASE_PRIMITIVE // For things like "string".length
+} nh_ecmascript_ReferenceBaseType;
+
+typedef struct nh_ecmascript_Reference {
+    // 1. Base Value: The 'location' of the reference
+    nh_ecmascript_ReferenceBaseType baseType;
+    union {
+        nh_ecmascript_Object      *Object_p;
         nh_ecmascript_Environment *Environment_p;
-    } nh_ecmascript_ReferenceBase;
+        nh_ecmascript_Value        Primitive; // For primitive coercion
+    } Base;
 
-    typedef struct nh_ecmascript_ReferenceValue {
-        bool empty;
-        nh_ecmascript_Any Payload;
-    } nh_ecmascript_ReferenceValue;
+    // 2. Referenced Name: The property name or variable name
+    // (Must be String or Symbol)
+    nh_ecmascript_Value ReferencedName;
 
-    typedef struct nh_ecmascript_Reference {
-        nh_ecmascript_ReferenceBase Base;
-        nh_ecmascript_Any ReferencedName;
-        NH_ECMASCRIPT_BOOLEAN strict;
-        nh_ecmascript_ReferenceValue ThisValue;
-    } nh_ecmascript_Reference;
+    // 3. Strict Flag
+    bool strict;
+
+    // 4. ThisValue: Only used for Super references
+    // If it's empty, we use the Base as 'this'.
+    struct {
+        bool hasValue;
+        nh_ecmascript_Value Value;
+    } ThisValue;
+} nh_ecmascript_Reference;
 
 /** @} */
 

@@ -1,0 +1,30 @@
+intrinsic %BooleanPrototype% {
+    kind: ordinary
+
+    prototype: %ObjectPrototype%
+
+    internalSlots {
+        [[Realm]]: current
+        [[BooleanData]]: false
+    }
+
+    properties {
+
+        "constructor": {
+            value: %Boolean%,
+            writable: true,
+            enumerable: false,
+            configurable: true
+        }
+
+        "toString": {
+            length: 0,
+            attributes: { writable, configurable }
+        }
+
+        "valueOf": {
+            length: 0,
+            attributes: { writable, configurable }
+        }
+    }
+}

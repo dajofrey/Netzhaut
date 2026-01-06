@@ -1,0 +1,25 @@
+intrinsic %ThrowTypeError% {
+    kind: function
+
+    callable: true
+    constructable: false
+
+    prototype: %FunctionPrototype%
+    instancePrototype: null
+
+    internalMethods {
+        [[Call]]: ThrowTypeError
+    }
+
+    internalSlots {
+        [[Realm]]: current
+        [[ScriptOrModule]]: null
+    }
+
+    properties {
+        // No own properties
+    }
+
+    // Post-creation steps
+    freeze: true
+}

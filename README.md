@@ -98,6 +98,12 @@ Host/ECMAScript sends jobs to Runtime workload (1 runtime workload)
 Runtime enques jobs in Agent  
 Agent Cluster (x cluster workloads) executes jobs from Agent  
 
+#### Add a new intrinsic method
+1. add it to .is
+2. run generator
+3. implement function
+4. compile
+
 ## FAQ
 
 ### How-to use nh-monitor

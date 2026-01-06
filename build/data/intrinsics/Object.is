@@ -1,13 +1,15 @@
-intrinsic Object {
-    type: constructor
+intrinsic %Object% {
+    kind: function 
 
     prototype: %FunctionPrototype%     // because Object is a function
     instancePrototype: %ObjectPrototype%
 
-    // Built-in internal slots defined by ECMA-262
-    internalSlots {
+    internalMethods {
         [[Call]]: ObjectConstructorCall
         [[Construct]]: ObjectConstructorConstruct
+    }
+
+    internalSlots {
         [[Realm]]: current
         [[ScriptOrModule]]: null
     }
