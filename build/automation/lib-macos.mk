@@ -165,6 +165,7 @@ SRC_FILES_NH_ECMASCRIPT = \
     Engine/Agent.c \
     Engine/Realm.c \
     Engine/Object.c \
+    Engine/Methods.c \
     Engine/Value.c \
     Engine/Completion.c \
     Engine/Environment.c \
@@ -172,6 +173,7 @@ SRC_FILES_NH_ECMASCRIPT = \
     Engine/Reference.c \
     Engine/TestAndCompare.c \
     Engine/PropertyDescriptor.c \
+    Engine/Shape.c \
     Parser/Lexer.c \
     Parser/CST.c \
     Parser/AST.c \

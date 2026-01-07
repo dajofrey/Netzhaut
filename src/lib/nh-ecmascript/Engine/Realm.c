@@ -22,234 +22,115 @@
 
 // FUNCTIONS ======================================================================================
 
-// Checks if a template value { get: ..., set: ... } is an accessor
-//bool nh_ecmascript_isAccessorTemplate(nh_ecmascript_PropertyTemplateValue *Val_p) {
-//    if (Val_p->kind != NH_ECMASCRIPT_PROPERTY_TEMPLATE_OBJECT) return false;
-//    
-//    for (int i = 0; i < Val_p->props_count; i++) {
-//        if (strcmp(Val_p->props[i]->name, "get") == 0 || 
-//            strcmp(Val_p->props[i]->name, "set") == 0) {
-//            return true;
-//        }
-//    }
-//    return false;
-//}
-//
-//// Checks if a template value { length: 1 } is intended to be a function
-//bool nh_ecmascript_isFunctionTemplate(nh_ecmascript_PropertyTemplateValue *Val_p) {
-//    if (Val_p->kind != NH_ECMASCRIPT_PROPERTY_TEMPLATE_OBJECT) return false;
-//    
-//    for (int i = 0; i < Val_p->props_count; i++) {
-//        if (strcmp(Val_p->props[i]->name, "length") == 0) return true;
-//    }
-//    return false;
-//}
-//
-//static void* nh_ecmascript_resolveSymbol(const char *intrinsicName, const char *propName) {
-//    char fullName[512];
-//    char lowerIntrinsic[256];
-//    
-//    // Lowercase the intrinsic name for the symbol: Object -> object
-//    for(int i = 0; intrinsicName[i]; i++) lowerIntrinsic[i] = tolower(intrinsicName[i]);
-//    lowerIntrinsic[strlen(intrinsicName)] = '\0';
-//
-//    // Format: nh_ecmascript_object_assign
-//    snprintf(fullName, sizeof(fullName), "nh_ecmascript_%s_%s", lowerIntrinsic, propName);
-//    
-//    void *sym = dlsym(RTLD_DEFAULT, fullName);
-//    if (!sym) {
-//        // Fallback: Check without the prefix if you use raw names for internal methods
-//        sym = dlsym(RTLD_DEFAULT, propName); 
-//    }
-//    return sym;
-//}
-//
-//static nh_ecmascript_Value nh_ecmascript_resolveTemplateValue(
-//    nh_ecmascript_PropertyTemplateValue *Val_p, nh_ecmascript_Realm *Realm_p) 
-//{
-//    if (Val_p->kind == NH_ECMASCRIPT_PROPERTY_TEMPLATE_INTRINSIC_REF) {
-//        // Look up the already allocated object shell from Pass 1
-//        nh_ecmascript_Object *target = nh_core_getFromHashMap(&Realm_p->Intrinsics, Val_p->raw);
-//        return nh_ecmascript_makeObject(target);
-//    }
-//    
-//    if (Val_p->kind == NH_ECMASCRIPT_PROPERTY_TEMPLATE_NUMBER) {
-//        return nh_ecmascript_makeNumber(atof(Val_p->raw));
-//    }
-//
-//    if (Val_p->kind == NH_ECMASCRIPT_PROPERTY_TEMPLATE_STRING) {
-//        return nh_ecmascript_makeString(Val_p->raw);
-//    }
-//
-//    return nh_ecmascript_makeUndefined();
-//}
-//
-//static NH_API_RESULT nh_ecmascript_allocateIntrinsicObjects(
-//    nh_core_List *Templates_p, nh_ecmascript_Realm *Realm_p)
-//{
-//    for (int i = 0; i < Templates_p->size; ++i) {
-//        nh_ecmascript_IntrinsicTemplate *Template_p = Templates_p->pp[i];
-//
-//        nh_ecmascript_Object *Object_p = (nh_ecmascript_Object*)nh_core_allocate(sizeof(nh_ecmascript_Object));
-//        Object_p->type = Template_p->kind;
-//        Object_p->isCallable = Template_p->isCallable;
-//        Object_p->isConstructor = Template_p->isConstructor;
-//        Object_p->isExotic = Template_p->isExotic;
-//        Object_p->Prototype_p = NULL;
-//
-//        nh_core_addToHashMap(&Realm_p->Intrinsics, Template_p->name, Object_p);
-//    }
-//
-//    return NH_API_SUCCESS;
-//}
-//
-//static NH_API_RESULT nh_ecmascript_linkIntrinsicPrototypes(
-//    nh_core_List *Templates_p, nh_ecmascript_Realm *Realm_p)
-//{
-//    for (int i = 0; i < Templates_p->size; ++i) {
-//        nh_ecmascript_IntrinsicTemplate *Template_p = Templates_p->pp[i];
-//        nh_ecmascript_Object *Object_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, Template_p->name);
-//        if (Template_p->prototype_p != NULL) {
-//            Object_p->Prototype_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, Template_p->prototype_p);
-//        }
-//    }
-//    return NH_API_SUCCESS;
-//}
-//
-//static NH_API_RESULT nh_ecmascript_initializeIntrinsicInternalSlots(
-//    nh_core_List *Templates_p, nh_ecmascript_Realm *Realm_p)
-//{
-//    for (int i = 0; i < Templates_p->size; ++i) {
-//        nh_ecmascript_IntrinsicTemplate *Template_p = Templates_p->pp[i];
-//        nh_ecmascript_Object *Object_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, Template_p->name);
-//        if (Object_p == NULL) {return NH_API_ERROR_BAD_STATE;}
-//
-//        Object_p->InternalSlots = nh_core_initList(Template_p->InternalSlotTemplates.size);
-//
-//        for (int j = 0; j < Template_p->InternalSlotTemplates.size; ++j) {
-//            nh_ecmascript_InternalSlotTemplate *InternalSlotTemplate_p = Template_p->InternalSlotTemplates.pp[j];
-//            nh_ecmascript_InternalSlot *InternalSlot_p = (nh_ecmascript_InternalSlot*)nh_core_allocate(sizeof(nh_ecmascript_InternalSlot));
-//            nh_core_appendToList(&Object_p->InternalSlots, InternalSlot_p);
-//
-//            InternalSlot_p->type = InternalSlotTemplate_p->type;
-//
-//            // TODO private elements "All objects have an internal slot named [[PrivateElements]]
-//
-//            switch (InternalSlotTemplate_p->type) {
-//                case NH_ECMASCRIPT_INTERNAL_SLOT_NULL :
-//                    break; 
-//                case NH_ECMASCRIPT_INTERNAL_SLOT_UNDEFINED :
-//                    break; 
-//                case NH_ECMASCRIPT_INTERNAL_SLOT_BOOLEAN :
-//                   InternalSlot_p->boolean = InternalSlotTemplate_p->boolean;
-//                   break; 
-//                case NH_ECMASCRIPT_INTERNAL_SLOT_NUMBER :
-//                   InternalSlot_p->number = InternalSlotTemplate_p->number;
-//                   break; 
-//                case NH_ECMASCRIPT_INTERNAL_SLOT_CURRENT_REALM :
-//                   InternalSlot_p->p = Realm_p;
-//                   break; 
-//                case NH_ECMASCRIPT_INTERNAL_SLOT_INTRINSIC_REF :
-//                   break; 
-//                default :
-//                   return NH_API_ERROR_BAD_STATE;
-//            }
-//        }
-//    }
-//
-//    return NH_API_SUCCESS;
-//}
-//
-//static NH_API_RESULT nh_ecmascript_attachInternalMethods(
-//    nh_core_List *Templates_p, nh_ecmascript_Realm *Realm_p)
-//{
-//    for (int i = 0; i < Templates_p->size; ++i) {
-//        nh_ecmascript_IntrinsicTemplate *Template_p = Templates_p->pp[i];
-//        nh_ecmascript_Object *Object_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, Template_p->name);
-//
-//        for (int j = 0; j < Template_p->InternalMethodTemplates.size; j++) {
-//            nh_ecmascript_InternalMethodTemplate *m = (nh_ecmascript_InternalMethodTemplate*)nh_core_getFromList(&Template_p->InternalMethodTemplates, j);
-//            
-//            // Look up the symbol directly (e.g., "ObjectConstructorCall")
-//            void *func = dlsym(RTLD_DEFAULT, m->implementation_symbol);
-//            
-//            if (!func) {
-//                // If not found, try the prefixed version
-//                func = nh_ecmascript_resolveSymbol(Template_p->name, m->implementation_symbol);
-//            }
-//
-//            if (strcmp(m->name, "[[Call]]") == 0) Object_p->Methods.call = func;
-//            if (strcmp(m->name, "[[Construct]]") == 0) Object_p->Methods.construct = func;
-//        }
-//    }
-//    return NH_API_SUCCESS;
-//}
-//
-//static NH_API_RESULT nh_ecmascript_defineIntrinsicProperties(
-//    nh_core_List *Templates_p, nh_ecmascript_Realm *Realm_p)
-//{
-//    for (int i = 0; i < Templates_p->size; ++i) {
-//        nh_ecmascript_IntrinsicTemplate *Template_p = Templates_p->pp[i];
-//        nh_ecmascript_Object *Object_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, Template_p->name);
-//
-//        if (!Object_p) continue;
-//
-//        for (int j = 0; j < Template_p->PropertyTemplates.size; ++j) {
-//            nh_ecmascript_PropertyTemplate *PropTemp_p = Template_p->PropertyTemplates.pp[j];
-//            
-//            // --- CASE A: Accessor Property (__proto__) ---
-//            if (PropTemp_p->value->kind == NH_ECMASCRIPT_PROPERTY_TEMPLATE_OBJECT && 
-//                nh_ecmascript_isAccessorTemplate(PropTemp_p->value)) {
-//                
-//                void *getter = nh_ecmascript_resolveSymbol(Template_p->name, "get"); // simplified
-//                void *setter = nh_ecmascript_resolveSymbol(Template_p->name, "set");
-//
-//                nh_ecmascript_createAccessorProperty(
-//                    Object_p, PropTemp_p->name, 
-//                    getter, setter, 
-//                    false, // enumerable
-//                    true   // configurable
-//                );
-//            }
-//            // --- CASE B: Built-in Function ---
-//            else if (nh_ecmascript_isFunctionTemplate(PropTemp_p->value)) {
-//                void *handler = nh_ecmascript_resolveSymbol(Template_p->name, PropTemp_p->name);
-//                
-//                int length = nh_ecmascript_getTemplateInt(PropTemp_p->value, "length");
-//
-//                nh_ecmascript_Object *Func_p = nh_ecmascript_createBuiltinFunction(
-//                    PropTemp_p->name, length, "TODO", handler, Realm_p
-//                );
-//
-//                nh_ecmascript_createDataProperty(
-//                    Object_p, PropTemp_p->name, nh_ecmascript_makeObject(Func_p),
-//                    true, false, true
-//                );
-//            }
-//            // --- CASE C: Static Value / Intrinsic Reference ---
-//            else {
-//                nh_ecmascript_Value val = nh_ecmascript_resolveTemplateValue(PropTemp_p->value, Realm_p);
-//                nh_ecmascript_createDataProperty(
-//                    Object_p, PropTemp_p->name, val,
-//                    true, false, true
-//                );
-//            }
-//        }
-//    }
-//    return NH_API_SUCCESS;
-//}
+// Helper to map template string keys to array indices
+static int nh_ecmascript_getSlotIndex(const char *key) {
+    if (key == NULL) return -1;
 
-// corresponds to https://tc39.es/ecma262/#sec-createintrinsics
+    /* --- Function Object Slots --- */
+    if (strcmp(key, "[[Call]]") == 0)              return NH_ECMASCRIPT_SLOT_CALL;
+    if (strcmp(key, "[[Construct]]") == 0)         return NH_ECMASCRIPT_SLOT_CONSTRUCT;
+    if (strcmp(key, "[[FormalParameters]]") == 0)  return NH_ECMASCRIPT_SLOT_FORMAL_PARAMETERS;
+    if (strcmp(key, "[[ECMAScriptCode]]") == 0)    return NH_ECMASCRIPT_SLOT_ECMASCRIPT_CODE;
+    if (strcmp(key, "[[ConstructorKind]]") == 0)   return NH_ECMASCRIPT_SLOT_CONSTRUCTOR_KIND;
+    if (strcmp(key, "[[Realm]]") == 0)             return NH_ECMASCRIPT_SLOT_REALM;
+    if (strcmp(key, "[[ScriptOrModule]]") == 0)    return NH_ECMASCRIPT_SLOT_SCRIPT_OR_MODULE;
+    if (strcmp(key, "[[Environment]]") == 0)       return NH_ECMASCRIPT_SLOT_ENVIRONMENT;
+
+    /* --- Common State Slots --- */
+    if (strcmp(key, "[[Extensible]]") == 0)        return NH_ECMASCRIPT_SLOT_EXTENSIBLE;
+    if (strcmp(key, "[[PrivateElements]]") == 0)   return NH_ECMASCRIPT_SLOT_PRIVATE_ELEMENTS;
+    if (strcmp(key, "[[Prototype]]") == 0)         return NH_ECMASCRIPT_SLOT_PROTOTYPE;
+
+    /* --- Built-in Specific Slots --- */
+    if (strcmp(key, "[[DateValue]]") == 0)         return NH_ECMASCRIPT_SLOT_DATE_VALUE;
+    if (strcmp(key, "[[ErrorData]]") == 0)         return NH_ECMASCRIPT_SLOT_ERROR_DATA;
+    if (strcmp(key, "[[ArrayLength]]") == 0)       return NH_ECMASCRIPT_SLOT_ARRAY_LENGTH;
+    if (strcmp(key, "[[MapData]]") == 0)           return NH_ECMASCRIPT_SLOT_MAP_DATA;
+    if (strcmp(key, "[[SetData]]") == 0)           return NH_ECMASCRIPT_SLOT_SET_DATA;
+    if (strcmp(key, "[[PromiseState]]") == 0)      return NH_ECMASCRIPT_SLOT_PROMISE_STATE;
+    if (strcmp(key, "[[PromiseResult]]") == 0)     return NH_ECMASCRIPT_SLOT_PROMISE_RESULT;
+
+    return -1;
+}
+
 static NH_API_RESULT nh_ecmascript_createIntrinsics(
     nh_core_List *Templates_p, nh_ecmascript_Realm *Realm_p)
 {
-    Realm_p->Intrinsics = nh_core_createHashMap();
+    // PASS 1: Allocate all "Headers" and "Slots"
+    for (int i = 0; i < Templates_p->size; ++i) {
+        nh_ecmascript_IntrinsicTemplate *T = Templates_p->pp[i];
+        
+        // A. Determine if it's a function by checking for [[Call]] in InternalSlots
+        bool isCallable = false;
+        void *nativeSteps_p = NULL;
+        for (int s = 0; s < T->InternalSlots.size; s++) {
+            nh_ecmascript_KeyValuePair *slot = T->InternalSlots.pp[s];
+            if (strcmp(slot->key, "[[Call]]") == 0) {
+                isCallable = true;
+                nativeSteps_p = nh_ecmascript_getNativeSteps(slot->value->data.string_p);
+                break;
+            }
+        }
 
-//    NH_CORE_CHECK(nh_ecmascript_allocateIntrinsicObjects(Templates_p, Realm_p))
-//    NH_CORE_CHECK(nh_ecmascript_linkIntrinsicPrototypes(Templates_p, Realm_p))
-//    NH_CORE_CHECK(nh_ecmascript_initializeIntrinsicInternalSlots(Templates_p, Realm_p))
-//    NH_CORE_CHECK(nh_ecmascript_attachInternalMethods(Templates_p, Realm_p))
-//    NH_CORE_CHECK(nh_ecmascript_defineIntrinsicProperties(Templates_p, Realm_p))
+        // B. Create the Object instance
+        nh_ecmascript_Object *O_p;
+        if (isCallable) {
+            O_p = nh_ecmascript_createBuiltinFunction(nativeSteps_p, &T->InternalSlots, Realm_p, NULL);
+        } else {
+            O_p = nh_ecmascript_ordinaryObjectCreate(NULL, &T->InternalSlots, Realm_p);
+        }
+
+        // C. Register in Realm
+        nh_core_addToHashMap(&Realm_p->Intrinsics, T->name, O_p);
+    }
+
+    // PASS 2: Wiring and Properties
+    for (int i = 0; i < Templates_p->count; ++i) {
+        nh_ecmascript_IntrinsicTemplate *T = Templates_p->pp[i];
+        nh_ecmascript_Object *O_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, T->name);
+
+        // 1. Resolve slots 
+        for (int s = 0; s < T->InternalSlots.count; s++) {
+            nh_ecmascript_KeyValuePair *slot_template = T->InternalSlots.pp[s];
+            
+            // 1. Get the destination index in the flat Slots array
+            int index = nh_ecmascript_getSlotIndex(slot_template->key);
+            
+            if (index != -1) {
+                // 2. Resolve the value (Intrinsic ref, Boolean, Number, etc.)
+                nh_ecmascript_Value Value = nh_ecmascript_resolveTemplateValue(
+                    slot_template->value, Realm_p
+                );
+        
+                // 3. Special handling for [[Call]]/[[Construct]] 
+                // These were already partially handled in Pass 1, but we ensure 
+                // the Slots is fully synced here.
+                if (strcmp(slot_template->key, "[[Call]]") == 0 || 
+                    strcmp(slot_template->key, "[[Construct]]") == 0) {
+                    
+                    void *ptr = nh_ecmascript_getNativeSteps(slot_template->value->data.string_p);
+                    O_p->Slots[index] = nh_ecmascript_makeInternalPointer(ptr);
+                } else {
+                    // 4. Standard slot assignment
+                    O_p->Slots[index] = value;
+                }
+            }
+        }
+
+        // 2. Define Public Properties
+        for (int p = 0; p < T->Properties.count; p++) {
+            nh_ecmascript_KeyValuePair *prop = T->Properties.pp[p];
+            
+            nh_ecmascript_Value val = nh_ecmascript_resolveTemplateValue(prop->value, Realm_p);
+            
+            nh_ecmascript_PropertyDescriptor desc = {
+                .value = val, .writable = true, .enumerable = false, .configurable = true
+            };
+
+            // This evolves the Shape and populates Properties_p
+            O_p->Methods_p->defineOwnProperty(O_p, prop->key, &desc, Realm_p);
+        }
+    }
 
     return NH_API_SUCCESS;
 }

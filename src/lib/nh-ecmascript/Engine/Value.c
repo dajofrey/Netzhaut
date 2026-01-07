@@ -53,7 +53,7 @@ nh_ecmascript_Completion nh_ecmascript_toObject(
     }
 }
 
-bool nh_ecmascript_toBoolean(
+bool nh_ecmascript_toBool(
     nh_ecmascript_Value v) 
 {
     switch (v.tag) {

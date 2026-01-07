@@ -44,7 +44,7 @@ typedef struct nh_ecmascript_Value {
 
 // FUNCTIONS =======================================================================
 
-bool nh_ecmascript_toBoolean(
+bool nh_ecmascript_toBool(
     nh_ecmascript_Value Value
 );
 
@@ -60,10 +60,7 @@ nh_ecmascript_Completion nh_ecmascript_toPrimitive(
 );
 
 static inline nh_ecmascript_Value nh_ecmascript_makeInternalPointer(void *ptr) {
-    nh_ecmascript_Value v;
-    v.tag = NH_ECMASCRIPT_VALUE_INTERNAL_POINTER;
-    v.p.internalPointer = ptr; // Ensure your union has this field!
-    return v;
+    return (nh_ecmascript_Value){ .tag = NH_ECMASCRIPT_VALUE_INTERNAL_POINTER, .p.internalPointer = ptr };
 }
 
 static inline nh_ecmascript_Value nh_ecmascript_makeUndefined() {

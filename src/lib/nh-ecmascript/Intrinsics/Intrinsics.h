@@ -56,4 +56,13 @@ typedef struct nh_ecmascript_IntrinsicTemplate {
 nh_core_List nh_ecmascript_parseIntrinsicTemplates(
 );
 
+void *nh_ecmascript_getNativeSteps(
+    char *name_p
+);
+
+nh_ecmascript_Value nh_ecmascript_resolveTemplateValue(
+    nh_ecmascript_TemplateNode *Node_p,
+    nh_ecmascript_Realm *Realm_p
+);
+
 #endif

@@ -25,62 +25,64 @@
 
 // FUNCTIONS =======================================================================================
 
-typedef struct {
+typedef struct nh_ecmascript_TemplateParser{
     nh_ecmascript_Token *tokens;
     int count;
     int pos;
-} IntrinsicParser;
+} nh_ecmascript_TemplateParser;
 
 // Helper: Get current token and advance
-nh_ecmascript_Token* nh_ecmascript_consume(
-    IntrinsicParser *P)
+static nh_ecmascript_Token* nh_ecmascript_consume(
+    nh_ecmascript_TemplateParser *Parser_p)
 {
-    if (P->pos >= P->count) return NULL;
+    if (Parser_p->pos >= Parser_p->count) return NULL;
     // Skip trivia: whitespace, line terminators, comments
-    while (P->pos < P->count && (P->tokens[P->pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
-        P->pos++;
+    while (Parser_p->pos < Parser_p->count && (Parser_p->tokens[Parser_p->pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
+        Parser_p->pos++;
     }
-    return &P->tokens[P->pos++];
+    return &Parser_p->tokens[Parser_p->pos++];
 }
 
 // Helper: Peek at the token AFTER the next meaningful token without advancing
-nh_ecmascript_Token* nh_ecmascript_peek_next(
-    IntrinsicParser *P)
+static nh_ecmascript_Token* nh_ecmascript_peekNext(
+    nh_ecmascript_TemplateParser *Parser_p)
 {
-    int temp_pos = P->pos;
+    int temp_pos = Parser_p->pos;
 
     // 1. Skip trivia to find the FIRST meaningful token
-    while (temp_pos < P->count && (P->tokens[temp_pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
+    while (temp_pos < Parser_p->count && (Parser_p->tokens[temp_pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
         temp_pos++;
     }
 
     // 2. Advance past that first meaningful token
-    if (temp_pos < P->count) {
+    if (temp_pos < Parser_p->count) {
         temp_pos++;
     }
 
     // 3. Skip trivia again to find the SECOND meaningful token
-    while (temp_pos < P->count && (P->tokens[temp_pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
+    while (temp_pos < Parser_p->count && (Parser_p->tokens[temp_pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
         temp_pos++;
     }
 
     // 4. Return the second token if it exists
-    return (temp_pos < P->count) ? &P->tokens[temp_pos] : NULL;
+    return (temp_pos < Parser_p->count) ? &Parser_p->tokens[temp_pos] : NULL;
 }
 
 // Helper: Peek without advancing
-nh_ecmascript_Token* nh_ecmascript_peek(
-    IntrinsicParser *P)
+static nh_ecmascript_Token* nh_ecmascript_peek(
+    nh_ecmascript_TemplateParser *Parser_p)
 {
-    int temp_pos = P->pos;
-    while (temp_pos < P->count && (P->tokens[temp_pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
+    int temp_pos = Parser_p->pos;
+    while (temp_pos < Parser_p->count && (Parser_p->tokens[temp_pos].type <= NH_ECMASCRIPT_TOKEN_COMMENT)) {
         temp_pos++;
     }
-    return (temp_pos < P->count) ? &P->tokens[temp_pos] : NULL;
+    return (temp_pos < Parser_p->count) ? &Parser_p->tokens[temp_pos] : NULL;
 }
 
 // Helper: Recursive Node Parser (The heart of "No Interpretation")
-nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(IntrinsicParser *P) {
+static nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(
+    nh_ecmascript_TemplateParser *P)
+{
     nh_ecmascript_Token *t = nh_ecmascript_peek(P);
     nh_ecmascript_TemplateNode *node = calloc(1, sizeof(nh_ecmascript_TemplateNode));
 
@@ -96,7 +98,7 @@ nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(IntrinsicParser *P) {
         nh_ecmascript_consume(P); // skip {
         
         // Peek to see if it's a mapping { key: value } or a list { val1, val2 }
-        nh_ecmascript_Token *next = nh_ecmascript_peek_next(P);
+        nh_ecmascript_Token *next = nh_ecmascript_peekNext(P);
         if (next && next->type == NH_ECMASCRIPT_TOKEN_PUNCTUATOR && strcmp(next->String.p, ":") == 0) {
             node->kind = NH_ECMASCRIPT_TEMPLATE_NODE_PAIRS;
             node->data.Pairs = nh_core_initList(8);
@@ -146,9 +148,10 @@ nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(IntrinsicParser *P) {
 }
 
 nh_ecmascript_IntrinsicTemplate* nh_ecmascript_parseIntrinsicTemplate(
-    nh_ecmascript_Token *tokens, int count) 
+    nh_ecmascript_Token *tokens,
+    int count) 
 {
-    IntrinsicParser P = { tokens, count, 0 };
+    nh_ecmascript_TemplateParser P = { tokens, count, 0 };
     if (strcmp(nh_ecmascript_consume(&P)->String.p, "intrinsic") != 0) return NULL;
 
     nh_ecmascript_IntrinsicTemplate *T = calloc(1, sizeof(nh_ecmascript_IntrinsicTemplate));
