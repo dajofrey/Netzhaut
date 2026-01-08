@@ -10,19 +10,19 @@ intrinsic %FunctionPrototype% {
     properties {
         "constructor": { 
             value: %Function%, 
-            writable: true, enumerable: false, configurable: true 
+            attributes: { configurable } 
         }
 
         // Function.prototype.name is ""
         "name": { 
             value: "", 
-            writable: false, enumerable: false, configurable: true 
+            attributes: { configurable } 
         }
 
         // Function.prototype.length is 0
         "length": { 
             value: 0, 
-            writable: false, enumerable: false, configurable: true 
+            attributes: { configurable } 
         }
         
         "call": { 
@@ -45,10 +45,8 @@ intrinsic %FunctionPrototype% {
             attributes: { writable, configurable } 
         }
         
-        // This is a Symbol-keyed property
-        "@@hasInstance": { 
+        [Symbol.hasInstance]: { 
             value: %FunctionPrototypeHasInstance%, 
-            writable: false, enumerable: false, configurable: false 
         }
     }
 }

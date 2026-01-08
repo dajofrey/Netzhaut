@@ -13,25 +13,18 @@ intrinsic %Function% {
         // Function.length === 1
         "length": {
             value: 1,
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable },
         }
 
         // Function.prototype === %FunctionPrototype%
         "prototype": {
             value: %FunctionPrototype%,
-            writable: false,
-            enumerable: false,
-            configurable: false
         }
 
         // Function.name === "Function"
         "name": {
             value: "Function",
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable },
         }
     }
 }

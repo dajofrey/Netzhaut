@@ -12,16 +12,11 @@ intrinsic %Array% {
 
         "length": {
             value: 1,
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable }
         }
 
         "prototype": {
             value: %ArrayPrototype%,
-            writable: false,
-            enumerable: false,
-            configurable: false
         }
 
         "isArray": {
@@ -42,8 +37,7 @@ intrinsic %Array% {
         [Symbol.species]: {
             kind: accessor,
             get: ArraySpeciesGetter,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable }
         }
     }
 }

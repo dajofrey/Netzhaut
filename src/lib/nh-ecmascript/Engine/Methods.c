@@ -70,7 +70,8 @@ nh_ecmascript_Completion nh_ecmascript_ordinaryDefineOwnProperty(
 
         // B. Find or Create a new Shape for this transition
         // This moves Object_p->Shape_p to a new Shape that includes P
-        nh_ecmascript_Shape *NewShape_p = nh_ecmascript_transitionShape(Object_p->Shape_p, name_p, 0, 0); // TODO
+        uint8_t attrs = nh_ecmascript_getAttributeFlags(Desc_p);
+        nh_ecmascript_Shape *NewShape_p = nh_ecmascript_transitionShape(Object_p->Shape_p, name_p, attrs, 0); // TODO
         Object_p->Shape_p = NewShape_p;
 
         // C. Get the new index (usually the last index in the new shape)

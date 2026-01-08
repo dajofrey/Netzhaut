@@ -9,9 +9,7 @@ intrinsic %ObjectPrototype% {
 
         "constructor": {
             value: %Object%,
-            writable: true,
-            enumerable: false,
-            configurable: true
+            attributes: { writable, configurable }
         }
 
         "hasOwnProperty": {
@@ -70,8 +68,7 @@ intrinsic %ObjectPrototype% {
             get: ObjectProtoGetter,
             set: ObjectProtoSetter,
 
-            enumerable: false,
-            configurable: true
+            attributes: { configurable }
         }
     }
 }

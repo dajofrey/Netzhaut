@@ -85,6 +85,53 @@ static bool nh_ecmascript_is(nh_ecmascript_TemplateParser *P, const char *s) {
     return t && strcmp(t->String.p, s) == 0;
 }
 
+static char* nh_ecmascript_parseKey(nh_ecmascript_TemplateParser *P) {
+    nh_ecmascript_Token *t = nh_ecmascript_peek(P);
+    if (!t) return strdup("EOF");
+
+    // Case 1 & 2: Brackets (Slots or Symbols)
+    if (strcmp(t->String.p, "[") == 0) {
+        char buffer[1024] = {0};
+        nh_ecmascript_Token *next = nh_ecmascript_peekNext(P);
+        
+        if (next && strcmp(next->String.p, "[") == 0) {
+            nh_ecmascript_consume(P); // [
+            nh_ecmascript_consume(P); // [
+            char *name = nh_ecmascript_consume(P)->String.p;
+            if (nh_ecmascript_is(P, "]")) nh_ecmascript_consume(P);
+            if (nh_ecmascript_is(P, "]")) nh_ecmascript_consume(P);
+            snprintf(buffer, sizeof(buffer), "[[%s]]", name);
+            return strdup(buffer);
+        }
+
+        int depth = 0;
+        while (P->pos < P->count) {
+            nh_ecmascript_Token *part = nh_ecmascript_consume(P);
+            strncat(buffer, part->String.p, sizeof(buffer) - strlen(buffer) - 1);
+            if (strcmp(part->String.p, "[") == 0) depth++;
+            else if (strcmp(part->String.p, "]") == 0) {
+                depth--;
+                if (depth == 0) break;
+            }
+        }
+        return strdup(buffer);
+    }
+
+    // Case 3: Strings (Strip quotes)
+    if (t->type == NH_ECMASCRIPT_TOKEN_STRING) {
+        nh_ecmascript_consume(P);
+        char *src = t->String.p;
+        size_t len = strlen(src);
+        if (len >= 2 && src[0] == '"' && src[len-1] == '"') {
+            return strndup(src + 1, len - 2);
+        }
+        return strdup(src);
+    }
+
+    // Case 4: Standard Identifiers
+    return strdup(nh_ecmascript_consume(P)->String.p);
+}
+
 // Fixed Node Parser
 static nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(nh_ecmascript_TemplateParser *P) {
     nh_ecmascript_Token *t = nh_ecmascript_peek(P);
@@ -107,16 +154,29 @@ static nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(nh_ecmascript_Templat
         if (next && strcmp(next->String.p, ":") == 0) {
             node->kind = NH_ECMASCRIPT_TEMPLATE_NODE_PAIRS;
             node->data.Pairs = nh_core_initList(8);
+
+            // Inside nh_ecmascript_parseIntrinsicTemplate, the internalSlots/properties loop:
             while (!nh_ecmascript_is(P, "}")) {
                 nh_ecmascript_KeyValuePair *pair = calloc(1, sizeof(nh_ecmascript_KeyValuePair));
-                pair->key = strdup(nh_ecmascript_consume(P)->String.p);
-                pair->key_is_symbol = (pair->key[0] == '@' || pair->key[0] == '[');
                 
-                nh_ecmascript_consume(P); // skip :
+                // 1. Get the key
+                pair->key = nh_ecmascript_parseKey(P);
+                pair->key_is_symbol = (pair->key[0] == '[' && pair->key[1] != '[');
+            
+                // 2. MUST consume the colon
+                if (nh_ecmascript_is(P, ":")) {
+                    nh_ecmascript_consume(P); 
+                }
+            
+                // 3. Parse the value node
                 pair->value = nh_ecmascript_parseNode(P);
                 nh_core_appendToList(&node->data.Pairs, pair);
-                
-                if (nh_ecmascript_is(P, ",")) nh_ecmascript_consume(P);
+            
+                // 4. IMPORTANT: Skip the comma if it exists! 
+                // This stops the next loop iteration from seeing ',' as a key.
+                if (nh_ecmascript_is(P, ",")) {
+                    nh_ecmascript_consume(P);
+                }
             }
         } else {
             node->kind = NH_ECMASCRIPT_TEMPLATE_NODE_NODES;
@@ -174,25 +234,22 @@ nh_ecmascript_IntrinsicTemplate* nh_ecmascript_parseIntrinsicTemplate(nh_ecmascr
             nh_core_List *target_list = (section_name[0] == 'i') ? &T->InternalSlots : &T->Properties;
             nh_ecmascript_consume(&P); // {
 
+            // Inside nh_ecmascript_parseIntrinsicTemplate
             while (!nh_ecmascript_is(&P, "}")) {
                 nh_ecmascript_KeyValuePair *pair = calloc(1, sizeof(nh_ecmascript_KeyValuePair));
-                
-                // FIXED: Handle [[SlotName]]
-                if (nh_ecmascript_is(&P, "[")) {
-                    nh_ecmascript_consume(&P); // [
-                    nh_ecmascript_consume(&P); // [
-                    pair->key = strdup(nh_ecmascript_consume(&P)->String.p);
-                    nh_ecmascript_consume(&P); // ]
-                    nh_ecmascript_consume(&P); // ]
-                } else {
-                    pair->key = strdup(nh_ecmascript_consume(&P)->String.p);
-                }
-                
-                pair->key_is_symbol = (pair->key[0] == '@' || pair->key[0] == '[');
-                nh_ecmascript_consume(&P); // :
+            
+                // Delegate ALL key parsing to the specialized function
+                pair->key = nh_ecmascript_parseKey(&P);
+                pair->key_is_symbol = (pair->key[0] == '[' && pair->key[1] != '[');
+            
+                nh_ecmascript_consume(&P); // skip :
                 pair->value = nh_ecmascript_parseNode(&P);
                 nh_core_appendToList(target_list, pair);
+                
+                // Optional: skip comma if your template uses them
+                if (nh_ecmascript_is(&P, ",")) nh_ecmascript_consume(&P);
             }
+
             nh_ecmascript_consume(&P); // }
         } else {
             // Top-level field handling

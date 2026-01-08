@@ -24,7 +24,7 @@ typedef struct nh_ecmascript_PropertyDescriptor nh_ecmascript_PropertyDescriptor
 
 typedef enum NH_ECMASCRIPT_SLOT_E {
     /* --- Function Object Slots (10.2) --- */
-    NH_ECMASCRIPT_SLOT_CALL = 0,                // [[Call]]
+    NH_ECMASCRIPT_SLOT_CALL = 0,            // [[Call]]
     NH_ECMASCRIPT_SLOT_CONSTRUCT,           // [[Construct]]
     NH_ECMASCRIPT_SLOT_FORMAL_PARAMETERS,   // [[FormalParameters]]
     NH_ECMASCRIPT_SLOT_ECMASCRIPT_CODE,     // [[ECMAScriptCode]]

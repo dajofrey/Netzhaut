@@ -75,9 +75,18 @@ nh_ecmascript_Completion nh_ecmascript_toPropertyDescriptor(
     nh_ecmascript_Realm *Realm_p
 ); 
 
+nh_ecmascript_PropertyDescriptor nh_ecmascript_getPropertyDescriptor(
+    nh_ecmascript_Value value,
+    uint8_t attrs
+);
+
 //    nh_ecmascript_completePropertyDescriptor(
 //        Desc
 //    );
+
+uint8_t nh_ecmascript_getAttributeFlags(
+    nh_ecmascript_PropertyDescriptor *desc
+);
 
 /** @} */
 

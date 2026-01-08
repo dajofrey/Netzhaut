@@ -10,16 +10,12 @@ intrinsic %ArrayPrototype% {
 
         "constructor": {
             value: %Array%,
-            writable: true,
-            enumerable: false,
-            configurable: true
+            attributes: { writable, configurable }
         }
 
         "length": {
             value: 0,
-            writable: true,
-            enumerable: false,
-            configurable: false
+            attributes: { writable }
         }
 
         // Mutating methods
@@ -49,9 +45,7 @@ intrinsic %ArrayPrototype% {
 
         [Symbol.iterator]: {
             value: ArrayValues,
-            writable: true,
-            enumerable: false,
-            configurable: true
+            attributes: { writable, configurable }
         }
 
         [Symbol.unscopables]: {
@@ -67,9 +61,7 @@ intrinsic %ArrayPrototype% {
                 "keys": true,
                 "values": true
             },
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable }
         }
     }
 }

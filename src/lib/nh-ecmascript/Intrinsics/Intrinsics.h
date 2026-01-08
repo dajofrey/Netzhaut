@@ -16,12 +16,12 @@
 // ENUMS =====================================================================
 
 typedef enum NH_ECMASCRIPT_TEMPLATE_NODE_E {
-    NH_ECMASCRIPT_TEMPLATE_NODE_STRING,      // "toString"
+    NH_ECMASCRIPT_TEMPLATE_NODE_STRING = 0,      // "toString"
     NH_ECMASCRIPT_TEMPLATE_NODE_NUMBER,      // 1.0
     NH_ECMASCRIPT_TEMPLATE_NODE_BOOLEAN,     // true
     NH_ECMASCRIPT_TEMPLATE_NODE_IDENTIFIER,  // writable
-    NH_ECMASCRIPT_TEMPLATE_NODE_INTRINSIC,   // %Object%
     NH_ECMASCRIPT_TEMPLATE_NODE_NULL,        // null
+    NH_ECMASCRIPT_TEMPLATE_NODE_INTRINSIC,  // writable
     NH_ECMASCRIPT_TEMPLATE_NODE_NODES,        // { a, b, c }
     NH_ECMASCRIPT_TEMPLATE_NODE_PAIRS,      // { key: value, ... }
 } NH_ECMASCRIPT_TEMPLATE_NODE_E;
@@ -57,12 +57,22 @@ nh_core_List nh_ecmascript_parseIntrinsicTemplates(
 );
 
 void *nh_ecmascript_getNativeSteps(
-    char *name_p
+    char *objectName_p, char *functionName_p
 );
 
-nh_ecmascript_Value nh_ecmascript_resolveTemplateValue(
+nh_ecmascript_Value nh_ecmascript_resolveInternalSlot(
     nh_ecmascript_TemplateNode *Node_p,
     nh_ecmascript_Realm *Realm_p
+);
+
+nh_ecmascript_Value nh_ecmascript_resolveProperty(
+    char *parentName_p,
+    nh_ecmascript_KeyValuePair *Pair_p,
+    nh_ecmascript_Realm *Realm_p
+);
+
+uint8_t nh_ecmascript_getAttributesFromNode(
+    nh_ecmascript_TemplateNode *node
 );
 
 #endif

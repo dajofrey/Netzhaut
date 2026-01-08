@@ -15,6 +15,39 @@
 
 // FUNCTIONS =======================================================================================
 
+uint8_t nh_ecmascript_getAttributeFlags(
+    nh_ecmascript_PropertyDescriptor *desc)
+{
+    uint8_t attrs = 0;
+    // If not specified, the spec says default to false for new properties
+    if (desc->flags.hasWritable && desc->flags.writable)         attrs |= 0x01;
+    if (desc->flags.hasEnumerable && desc->flags.enumerable)     attrs |= 0x02;
+    if (desc->flags.hasConfigurable && desc->flags.configurable) attrs |= 0x04;
+    return attrs;
+}
+
+nh_ecmascript_PropertyDescriptor nh_ecmascript_getPropertyDescriptor(
+    nh_ecmascript_Value value, 
+    uint8_t attrs) 
+{
+    nh_ecmascript_PropertyDescriptor desc = {0};
+
+    // 1. Data properties always have these present
+    desc.flags.hasValue = true;
+    desc.Value = value;
+
+    desc.flags.hasWritable = true;
+    desc.flags.writable = (attrs & 0x01) ? 1 : 0;
+
+    desc.flags.hasEnumerable = true;
+    desc.flags.enumerable = (attrs & 0x02) ? 1 : 0;
+
+    desc.flags.hasConfigurable = true;
+    desc.flags.configurable = (attrs & 0x04) ? 1 : 0;
+
+    return desc;
+}
+
 nh_ecmascript_PropertyDescriptor nh_ecmascript_undefinedPropertyDescriptor()
 {
     nh_ecmascript_PropertyDescriptor Descriptor;

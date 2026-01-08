@@ -1,5 +1,5 @@
 // Object() as a function
-nh_ecmascript_Completion nh_ecmascript_objectConstructorCall(
+nh_ecmascript_Completion nh_ecmascript_object_objectConstructorCall(
     nh_ecmascript_Object *Object_p,
     nh_ecmascript_Value *Arguments_p,
     size_t argumentCount,
@@ -16,7 +16,7 @@ nh_ecmascript_Completion nh_ecmascript_objectConstructorCall(
 }
 
 // new Object() as a constructor
-nh_ecmascript_Completion nh_ecmascript_objectConstructorConstruct(
+nh_ecmascript_Completion nh_ecmascript_object_objectConstructorConstruct(
     nh_ecmascript_Object *Object_p,
     nh_ecmascript_Value *Arguments_p,
     size_t argumentCount,

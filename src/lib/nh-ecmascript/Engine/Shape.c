@@ -35,26 +35,33 @@ nh_ecmascript_Shape* nh_ecmascript_transitionShape(
     uint8_t attrs, 
     bool is_accessor) 
 {
-    // 1. Create a unique identifier for this specific transition
-    // We can use a stack-allocated string or a bit-packed ID
+    // 1. Safety check for parent
+    if (!parent) return NULL; 
+
+    // 2. Lookup existing transition
     char lookup_key[256];
     snprintf(lookup_key, sizeof(lookup_key), "%s:%d:%d", key, attrs, is_accessor);
 
-    // 2. Check the transition table using the composite key
     nh_ecmascript_Shape *existing = nh_core_getFromHashMap(&parent->Transitions, lookup_key);
     if (existing) return existing;
 
-    // 3. If it doesn't exist, create a new "Branch" in the tree
+    // 3. Create new Shape
     nh_ecmascript_Shape *new_shape = calloc(1, sizeof(nh_ecmascript_Shape));
     new_shape->parent = parent;
     new_shape->property_key = strdup(key);
     new_shape->attributes = attrs;
     new_shape->is_accessor = is_accessor;
     
-    // Indexing stays the same (depth of the chain)
-    new_shape->property_index = (parent->property_key == NULL) ? 0 : parent->property_index + 1;
+    // FIX: Indexing should be the count of properties BEFORE this one was added
+    new_shape->property_index = parent->property_count;
 
+    // FIX: Total count is the parent's count + 1
+    new_shape->property_count = parent->property_count + 1;
+
+    // 4. Initialize child transitions table
     new_shape->Transitions = nh_core_createHashMap();
+
+    // 5. Store in parent's transition table
     nh_core_addToHashMap(&parent->Transitions, strdup(lookup_key), new_shape);
 
     return new_shape;

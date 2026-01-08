@@ -196,7 +196,7 @@ nh_ecmascript_Environment *nh_ecmascript_newGlobalEnvironment(
 
     // 3. Setup the Declarative Record
     // This is essentially a fresh HashMap for 'let' and 'const' variables.
-//    nh_core_initializeHashMap(&Env_p->records.global.declarativeRecord, 16);
+    Env_p->records.global.declarativeRecord = nh_core_createHashMap();
 
     // 4. Set the [[GlobalThisValue]] (Spec 9.1.1.4.10)
     // Usually, this is just the Global Object itself.

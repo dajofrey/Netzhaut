@@ -10,9 +10,7 @@ intrinsic %BooleanPrototype% {
 
         "constructor": {
             value: %Boolean%,
-            writable: true,
-            enumerable: false,
-            configurable: true
+            attributes: { writable, configurable }
         }
 
         "toString": {

@@ -12,25 +12,18 @@ intrinsic %Object% {
     properties {
         "name": {
             value: "Object",
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable },
         }
 
         // Object.length === 1
         "length": {
             value: 1,
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable },
         }
 
         // Object.prototype = %ObjectPrototype%
         "prototype": {
             value: %ObjectPrototype%,
-            writable: false,
-            enumerable: false,
-            configurable: false
         }
 
         "assign": {

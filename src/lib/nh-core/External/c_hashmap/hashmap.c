@@ -396,19 +396,48 @@ int hashmap_length(map_t in){
 	else return 0;
 }
 
-void *hashmap_getFromIndex(map_t in, unsigned int index) {
-    if (hashmap_length(in) <= index) {
-        return NULL;
+/*
+ * Get the key of the Nth occupied element in the hashmap.
+ * Returns NULL if index is out of bounds.
+ */
+char* hashmap_getKeyFromIndex(
+    map_t in,
+    unsigned int index)
+{
+    hashmap_map* m = (hashmap_map*)in;
+    if (!m || index < 0 || index >= m->size) return NULL;
+
+    int count = 0;
+    for (int i = 0; i < m->table_size; i++) {
+        if (m->data[i].in_use) {
+            if (count == index) {
+                return m->data[i].key;
+            }
+            count++;
+        }
     }
-    hashmap_map* m = (hashmap_map *) in;
-    return m->data[index].data;	
+    return NULL;
 }
 
-char *hashmap_getKeyFromIndex(map_t in, unsigned int index) {
-    if (hashmap_length(in) <= index) {
-        return NULL;
-    }
-    hashmap_map* m = (hashmap_map *) in;
-    return m->data[index].key;	
-}
+/*
+ * Get the data of the Nth occupied element in the hashmap.
+ * Returns NULL if index is out of bounds.
+ */
+void *hashmap_getFromIndex(
+    map_t in,
+    unsigned int index)
+{
+    hashmap_map* m = (hashmap_map*)in;
+    if (!m || index < 0 || index >= m->size) return NULL;
 
+    int count = 0;
+    for (int i = 0; i < m->table_size; i++) {
+        if (m->data[i].in_use) {
+            if (count == index) {
+                return m->data[i].data;
+            }
+            count++;
+        }
+    }
+    return NULL;
+}

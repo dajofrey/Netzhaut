@@ -13,25 +13,18 @@ intrinsic %Boolean% {
         // Boolean.length === 1
         "length": {
             value: 1,
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable }
         }
 
         // Boolean.prototype === %BooleanPrototype%
         "prototype": {
             value: %BooleanPrototype%,
-            writable: false,
-            enumerable: false,
-            configurable: false
         }
 
         // Boolean.name === "Boolean"
         "name": {
             value: "Boolean",
-            writable: false,
-            enumerable: false,
-            configurable: true
+            attributes: { configurable }
         }
     }
 }

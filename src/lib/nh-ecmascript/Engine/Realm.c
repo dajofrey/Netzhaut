@@ -24,7 +24,9 @@
 // FUNCTIONS ======================================================================================
 
 // Helper to map template string keys to array indices
-static int nh_ecmascript_getSlotIndex(const char *key) {
+static int nh_ecmascript_getSlotIndex(
+    const char *key)
+{
     if (key == NULL) return -1;
 
     /* --- Function Object Slots --- */
@@ -55,7 +57,8 @@ static int nh_ecmascript_getSlotIndex(const char *key) {
 }
 
 static NH_API_RESULT nh_ecmascript_createIntrinsics(
-    nh_core_List *Templates_p, nh_ecmascript_Realm *Realm_p)
+    nh_core_List *Templates_p,
+    nh_ecmascript_Realm *Realm_p)
 {
     // PASS 1: Allocate all "Headers" and "Slots"
     for (int i = 0; i < Templates_p->size; ++i) {
@@ -68,7 +71,7 @@ static NH_API_RESULT nh_ecmascript_createIntrinsics(
             nh_ecmascript_KeyValuePair *slot = T->InternalSlots.pp[s];
             if (strcmp(slot->key, "[[Call]]") == 0) {
                 isCallable = true;
-                nativeSteps_p = nh_ecmascript_getNativeSteps(slot->value->data.string_p);
+                nativeSteps_p = nh_ecmascript_getNativeSteps(T->name, slot->value->data.string_p);
                 break;
             }
         }
@@ -96,10 +99,10 @@ static NH_API_RESULT nh_ecmascript_createIntrinsics(
             
             // 1. Get the destination index in the flat Slots array
             int index = nh_ecmascript_getSlotIndex(slot_template->key);
-            
             if (index != -1) {
+
                 // 2. Resolve the value (Intrinsic ref, Boolean, Number, etc.)
-                nh_ecmascript_Value Value = nh_ecmascript_resolveTemplateValue(
+                nh_ecmascript_Value Value = nh_ecmascript_resolveInternalSlot(
                     slot_template->value, Realm_p
                 );
         
@@ -108,8 +111,8 @@ static NH_API_RESULT nh_ecmascript_createIntrinsics(
                 // the Slots is fully synced here.
                 if (strcmp(slot_template->key, "[[Call]]") == 0 || 
                     strcmp(slot_template->key, "[[Construct]]") == 0) {
-                    
-                    void *ptr = nh_ecmascript_getNativeSteps(slot_template->value->data.string_p);
+
+                    void *ptr = nh_ecmascript_getNativeSteps(T->name, slot_template->value->data.string_p);
                     O_p->Slots[index] = nh_ecmascript_makeInternalPointer(ptr);
                 } else {
                     // 4. Standard slot assignment
@@ -117,23 +120,19 @@ static NH_API_RESULT nh_ecmascript_createIntrinsics(
                 }
             }
         }
-puts("ok");
-exit(0);
+
         // 2. Define Public Properties
         for (int p = 0; p < T->Properties.size; p++) {
-            nh_ecmascript_KeyValuePair *prop = T->Properties.pp[p];
-            
-            nh_ecmascript_Value Value = nh_ecmascript_resolveTemplateValue(prop->value, Realm_p);
-            
-            nh_ecmascript_PropertyDescriptor Descriptor = {
-                .Value = Value, 
-                .flags.hasWritable = true, .flags.writable = true,
-                .flags.hasEnumerable = true, .flags.enumerable = false,
-                .flags.hasConfigurable = true, .flags.configurable = true
-            };
+            nh_ecmascript_KeyValuePair *Property_p = T->Properties.pp[p];
+
+            nh_ecmascript_Value Value = nh_ecmascript_resolveProperty(T->name, Property_p, Realm_p);
+            uint8_t attrs = nh_ecmascript_getAttributesFromNode(&Property_p->value);
+
+            nh_ecmascript_PropertyDescriptor Descriptor =
+                nh_ecmascript_getPropertyDescriptor(Value, attrs);
 
             // This evolves the Shape and populates Properties_p
-            O_p->Methods_p->defineOwnProperty(O_p, prop->key, &Descriptor);
+            O_p->Methods_p->defineOwnProperty(O_p, Property_p->key, &Descriptor);
         }
     }
 
@@ -143,45 +142,38 @@ exit(0);
 static void nh_ecmascript_setDefaultGlobalBindings(
     nh_ecmascript_Realm *Realm_p)
 {
-//    nh_ecmascript_Object *Global_p = Realm_p->GlobalObject_p;
-//
-//    // 2. Iterate through your Intrinsics HashMap
-//    // We want to expose the "Constructors" (Object, Array, etc.) 
-//    // but usually NOT the prototypes (ObjectPrototype, ArrayPrototype) 
-//    // because those aren't global variables in JS.
-//
-//    unsigned int length = nh_core_getHashMapLength(&Realm_p->Intrinsics);
-//
-//    for (int i = 0; i < length; ++i) {
-//        char *name = nh_core_getKeyFromHashMapUsingIndex(&Realm_p->Intrinsics, i);
-//        nh_ecmascript_Object *Intrinsic_p = nh_core_getValueFromHashMapUsingIndex(&Realm_p->Intrinsics, i);
-//
-//        // Skip internal names like "ObjectPrototype" or "ArrayPrototype"
-//        // You only want to expose the actual constructor names.
-//        if (strstr(name, "Prototype") != NULL) {
-//            continue;
-//        }
-//
-//        // 3. Define the property on the Global Object
-//        // Spec: Writable=true, Enumerable=false, Configurable=true
-//        nh_ecmascript_createDataProperty(
-//            Global_p,
-//            name,
-//            nh_ecmascript_makeObject(Intrinsic_p),
-//            true,  // Writable
-//            false, // Enumerable
-//            true   // Configurable
-//        );
-//    }
-//
-//    // 4. Special Case: The 'globalThis' / 'window' / 'self' binding
-//    // In a browser, window.window === window.
-//    nh_ecmascript_createDataProperty(
-//        Global_p,
-//        "globalThis",
-//        nh_ecmascript_makeObject(Global_p),
-//        true, false, true
-//    );
+    nh_ecmascript_Object *Global_p = Realm_p->GlobalObject_p;
+    
+    // Spec Attributes for Global Object properties
+    // { [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: true }
+    nh_ecmascript_PropertyDescriptor desc = {
+        .flags.hasValue = true,
+        .Value = {0}, // To be filled in loop
+        .flags.hasWritable = true,
+        .flags.writable = true,
+        .flags.hasEnumerable = true,
+        .flags.enumerable = false,
+        .flags.hasConfigurable = true,
+        .flags.configurable = true
+    };
+
+    unsigned int length = nh_core_getHashMapLength(&Realm_p->Intrinsics);
+    for (unsigned int i = 0; i < length; ++i) {
+        char *intrinsic_name = nh_core_getKeyFromHashMapUsingIndex(&Realm_p->Intrinsics, i);
+        nh_ecmascript_Object *Intrinsic_p = nh_core_getValueFromHashMapUsingIndex(&Realm_p->Intrinsics, i);
+
+        if (strstr(intrinsic_name, "Prototype")) continue;
+
+        desc.Value = nh_ecmascript_makeObject(Intrinsic_p);
+
+        // Call the internal method directly from the object's vtable
+        // This is the "Truth" of the engine
+        Global_p->Methods_p->defineOwnProperty(Global_p, intrinsic_name, &desc);
+    }
+
+    // Special Case: globalThis
+    desc.Value = nh_ecmascript_makeObject(Global_p);
+    Global_p->Methods_p->defineOwnProperty(Global_p, "globalThis", &desc);
 }
 
 // corresponds to https://www.262.ecma-international.org/11.0/index.html#sec-initializehostdefinedrealm
@@ -193,7 +185,7 @@ nh_ecmascript_Realm *nh_ecmascript_initializeRealm(
     NH_CORE_CHECK_MEM_2(NULL, Realm_p)
 
     Realm_p->EmptyObjectShape_p = nh_ecmascript_createRootShape();
-    Realm_p->Agent_p = Agent_p; // aka agent signifier in the spec
+    Realm_p->Agent_p = Agent_p;
     Realm_p->GlobalObject_p = NULL;
     Realm_p->GlobalEnvironment_p = NULL;
     Realm_p->Intrinsics = nh_core_createHashMap();
@@ -210,10 +202,9 @@ nh_ecmascript_Realm *nh_ecmascript_initializeRealm(
 
     nh_core_pushStack(&Agent_p->ExecutionContextStack, NewContext_p);
 
-    nh_ecmascript_Object *ObjProto_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, "ObjectPrototype");
-    
     // Create an ordinary object with ObjectPrototype as [[Prototype]]
-    nh_ecmascript_Object *GlobalObject_p = nh_ecmascript_ordinaryObjectCreate(ObjProto_p, NULL);
+    nh_ecmascript_Object *ObjProto_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, "ObjectPrototype");
+    nh_ecmascript_Object *GlobalObject_p = nh_ecmascript_ordinaryObjectCreate(ObjProto_p, Realm_p);
     NH_CORE_CHECK_MEM_2(NULL, GlobalObject_p)
 
     Realm_p->GlobalObject_p = GlobalObject_p;
