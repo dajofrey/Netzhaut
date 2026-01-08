@@ -12,6 +12,7 @@
 #include "ExecutionContext.h"
 #include "Object.h"
 #include "Value.h"
+#include "PropertyDescriptor.h"
 
 #include "../Intrinsics/Intrinsics.h"
 #include "../../nh-core/System/Memory.h"
@@ -75,9 +76,9 @@ static NH_API_RESULT nh_ecmascript_createIntrinsics(
         // B. Create the Object instance
         nh_ecmascript_Object *O_p;
         if (isCallable) {
-            O_p = nh_ecmascript_createBuiltinFunction(nativeSteps_p, &T->InternalSlots, Realm_p, NULL);
+            O_p = nh_ecmascript_createBuiltinFunction(nativeSteps_p, Realm_p, NULL);
         } else {
-            O_p = nh_ecmascript_ordinaryObjectCreate(NULL, &T->InternalSlots, Realm_p);
+            O_p = nh_ecmascript_ordinaryObjectCreate(NULL, Realm_p);
         }
 
         // C. Register in Realm
@@ -85,12 +86,12 @@ static NH_API_RESULT nh_ecmascript_createIntrinsics(
     }
 
     // PASS 2: Wiring and Properties
-    for (int i = 0; i < Templates_p->count; ++i) {
+    for (int i = 0; i < Templates_p->size; ++i) {
         nh_ecmascript_IntrinsicTemplate *T = Templates_p->pp[i];
         nh_ecmascript_Object *O_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, T->name);
 
         // 1. Resolve slots 
-        for (int s = 0; s < T->InternalSlots.count; s++) {
+        for (int s = 0; s < T->InternalSlots.size; s++) {
             nh_ecmascript_KeyValuePair *slot_template = T->InternalSlots.pp[s];
             
             // 1. Get the destination index in the flat Slots array
@@ -112,23 +113,27 @@ static NH_API_RESULT nh_ecmascript_createIntrinsics(
                     O_p->Slots[index] = nh_ecmascript_makeInternalPointer(ptr);
                 } else {
                     // 4. Standard slot assignment
-                    O_p->Slots[index] = value;
+                    O_p->Slots[index] = Value;
                 }
             }
         }
-
+puts("ok");
+exit(0);
         // 2. Define Public Properties
-        for (int p = 0; p < T->Properties.count; p++) {
+        for (int p = 0; p < T->Properties.size; p++) {
             nh_ecmascript_KeyValuePair *prop = T->Properties.pp[p];
             
-            nh_ecmascript_Value val = nh_ecmascript_resolveTemplateValue(prop->value, Realm_p);
+            nh_ecmascript_Value Value = nh_ecmascript_resolveTemplateValue(prop->value, Realm_p);
             
-            nh_ecmascript_PropertyDescriptor desc = {
-                .value = val, .writable = true, .enumerable = false, .configurable = true
+            nh_ecmascript_PropertyDescriptor Descriptor = {
+                .Value = Value, 
+                .flags.hasWritable = true, .flags.writable = true,
+                .flags.hasEnumerable = true, .flags.enumerable = false,
+                .flags.hasConfigurable = true, .flags.configurable = true
             };
 
             // This evolves the Shape and populates Properties_p
-            O_p->Methods_p->defineOwnProperty(O_p, prop->key, &desc, Realm_p);
+            O_p->Methods_p->defineOwnProperty(O_p, prop->key, &Descriptor);
         }
     }
 
@@ -187,11 +192,13 @@ nh_ecmascript_Realm *nh_ecmascript_initializeRealm(
     nh_ecmascript_Realm *Realm_p = (nh_ecmascript_Realm*)nh_core_allocate(sizeof(nh_ecmascript_Realm));
     NH_CORE_CHECK_MEM_2(NULL, Realm_p)
 
-    NH_CORE_CHECK_2(NULL, nh_ecmascript_createIntrinsics(&Agent_p->Cluster_p->Runtime_p->IntrinsicTemplates, Realm_p))
-
+    Realm_p->EmptyObjectShape_p = nh_ecmascript_createRootShape();
     Realm_p->Agent_p = Agent_p; // aka agent signifier in the spec
     Realm_p->GlobalObject_p = NULL;
     Realm_p->GlobalEnvironment_p = NULL;
+    Realm_p->Intrinsics = nh_core_createHashMap();
+
+    NH_CORE_CHECK_2(NULL, nh_ecmascript_createIntrinsics(&Agent_p->Cluster_p->Runtime_p->IntrinsicTemplates, Realm_p))
 
     nh_ecmascript_ExecutionContext *NewContext_p = nh_ecmascript_allocateExecutionContext();
     NH_CORE_CHECK_MEM_2(NULL, NewContext_p)
@@ -206,7 +213,7 @@ nh_ecmascript_Realm *nh_ecmascript_initializeRealm(
     nh_ecmascript_Object *ObjProto_p = nh_core_getFromHashMap(&Realm_p->Intrinsics, "ObjectPrototype");
     
     // Create an ordinary object with ObjectPrototype as [[Prototype]]
-    nh_ecmascript_Object *GlobalObject_p = nh_ecmascript_ordinaryObjectCreate(ObjProto_p, NULL, -1);
+    nh_ecmascript_Object *GlobalObject_p = nh_ecmascript_ordinaryObjectCreate(ObjProto_p, NULL);
     NH_CORE_CHECK_MEM_2(NULL, GlobalObject_p)
 
     Realm_p->GlobalObject_p = GlobalObject_p;

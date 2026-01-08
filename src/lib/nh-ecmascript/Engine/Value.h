@@ -75,7 +75,7 @@ static inline nh_ecmascript_Value nh_ecmascript_makeNumber(double n) {
     return (nh_ecmascript_Value){ .tag = NH_ECMASCRIPT_VALUE_NUMBER, .p.number = n };
 }
 
-static inline nh_ecmascript_Value nh_ecmascript_makeBoolean(bool b) {
+static inline nh_ecmascript_Value nh_ecmascript_makeBool(bool b) {
     return (nh_ecmascript_Value){ .tag = NH_ECMASCRIPT_VALUE_BOOLEAN, .p.boolean = b };
 }
 

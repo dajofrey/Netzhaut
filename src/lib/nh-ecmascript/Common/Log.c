@@ -11,7 +11,6 @@
 #include "Log.h"
 
 #include "../Parser/Lexer.h"
-#include "../Parser/AST.h"
 #include "../../nh-core/Util/Debug.h"
 
 #include <stdio.h>
@@ -334,4 +333,79 @@ NH_API_RESULT nh_ecmascript_logAST(
     }
 
     return NH_API_SUCCESS;
+}
+
+// Helper for indentation
+static void nh_dump_indent(int indent) {
+    for (int i = 0; i < indent; i++) printf("  ");
+}
+
+static void nh_ecmascript_dumpTemplateNode(nh_ecmascript_TemplateNode *node_p, int indent) {
+    if (!node_p) {
+        printf("NULL");
+        return;
+    }
+
+    switch (node_p->kind) {
+        case NH_ECMASCRIPT_TEMPLATE_NODE_STRING:
+            printf("\"%s\"", node_p->data.string_p);
+            break;
+        case NH_ECMASCRIPT_TEMPLATE_NODE_NUMBER:
+            printf("%f", node_p->data.number);
+            break;
+        case NH_ECMASCRIPT_TEMPLATE_NODE_BOOLEAN:
+            printf(node_p->data.boolean ? "true" : "false");
+            break;
+        case NH_ECMASCRIPT_TEMPLATE_NODE_NODES:
+            printf("[\n");
+            for (int i = 0; i < node_p->data.Nodes.size; i++) {
+                nh_dump_indent(indent + 1);
+                nh_ecmascript_dumpTemplateNode((nh_ecmascript_TemplateNode *)node_p->data.Nodes.pp[i], indent + 1);
+                printf(i < node_p->data.Nodes.size - 1 ? ",\n" : "\n");
+            }
+            nh_dump_indent(indent);
+            printf("]");
+            break;
+        case NH_ECMASCRIPT_TEMPLATE_NODE_PAIRS: // Assuming this kind exists for 'Pairs'
+            printf("{\n");
+            for (int i = 0; i < node_p->data.Pairs.size; i++) {
+                nh_ecmascript_KeyValuePair *kvp = (nh_ecmascript_KeyValuePair *)node_p->data.Pairs.pp[i];
+                nh_dump_indent(indent + 1);
+                printf("%s%s: ", kvp->key_is_symbol ? "@@" : "", kvp->key);
+                nh_ecmascript_dumpTemplateNode(kvp->value, indent + 1);
+                printf(i < node_p->data.Pairs.size - 1 ? ",\n" : "\n");
+            }
+            nh_dump_indent(indent);
+            printf("}");
+            break;
+        default:
+            printf("<unknown node kind>");
+    }
+}
+
+void nh_ecmascript_logIntrinsicTemplate(
+    nh_ecmascript_IntrinsicTemplate *T_p)
+{
+    if (!T_p) return;
+
+    printf("=== Intrinsic Template: %%%s%% ===\n", T_p->name);
+
+    // 1. Dump Internal Slots
+    printf("  Internal Slots (%d):\n", T_p->InternalSlots.size);
+    for (int i = 0; i < T_p->InternalSlots.size; i++) {
+        nh_ecmascript_KeyValuePair *kvp = (nh_ecmascript_KeyValuePair *)T_p->InternalSlots.pp[i];
+        printf("    [[%s]]: ", kvp->key);
+        nh_ecmascript_dumpTemplateNode(kvp->value, 0); // Inline value
+        printf("\n");
+    }
+
+    // 2. Dump Properties
+    printf("  Properties (%d):\n", T_p->Properties.size);
+    for (int i = 0; i < T_p->Properties.size; i++) {
+        nh_ecmascript_KeyValuePair *kvp = (nh_ecmascript_KeyValuePair *)T_p->Properties.pp[i];
+        printf("    \"%s\": ", kvp->key);
+        nh_ecmascript_dumpTemplateNode(kvp->value, 2); // Indented value
+        printf("\n");
+    }
+    printf("==================================\n\n");
 }

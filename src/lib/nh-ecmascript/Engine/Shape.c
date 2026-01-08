@@ -10,6 +10,7 @@
 
 #include "Shape.h"
 #include "Realm.h"
+#include "../Intrinsics/Intrinsics.h"
 
 #include "../../nh-core/System/Memory.h"
 
@@ -18,10 +19,14 @@
 
 // FUNCTIONS ======================================================================================
 
-nh_ecmascript_Shape* nh_shape_createRoot() {
-    nh_ecmascript_Shape *root = nh_core_allocate(sizeof(nh_ecmascript_Shape));
-    root->Transitions = nh_core_createHashMap();
-    return root;
+nh_ecmascript_Shape* nh_ecmascript_createRootShape() 
+{
+    nh_ecmascript_Shape *Root_p = (nh_ecmascript_Shape*)nh_core_allocate(sizeof(nh_ecmascript_Shape));
+    Root_p->parent = NULL;
+    Root_p->property_key = NULL;
+    Root_p->property_index = -1;
+    Root_p->Transitions = nh_core_createHashMap();
+    return Root_p;
 }
 
 nh_ecmascript_Shape* nh_ecmascript_transitionShape(
@@ -36,7 +41,7 @@ nh_ecmascript_Shape* nh_ecmascript_transitionShape(
     snprintf(lookup_key, sizeof(lookup_key), "%s:%d:%d", key, attrs, is_accessor);
 
     // 2. Check the transition table using the composite key
-    nh_ecmascript_Shape *existing = nh_core_hashmap_get(&parent->Transitions, lookup_key);
+    nh_ecmascript_Shape *existing = nh_core_getFromHashMap(&parent->Transitions, lookup_key);
     if (existing) return existing;
 
     // 3. If it doesn't exist, create a new "Branch" in the tree
@@ -49,8 +54,8 @@ nh_ecmascript_Shape* nh_ecmascript_transitionShape(
     // Indexing stays the same (depth of the chain)
     new_shape->property_index = (parent->property_key == NULL) ? 0 : parent->property_index + 1;
 
-    nh_core_hashmap_init(&new_shape->Transitions);
-    nh_core_hashmap_put(&parent->Transitions, strdup(lookup_key), new_shape);
+    new_shape->Transitions = nh_core_createHashMap();
+    nh_core_addToHashMap(&parent->Transitions, strdup(lookup_key), new_shape);
 
     return new_shape;
 }
@@ -65,15 +70,15 @@ nh_ecmascript_Shape* nh_ecmascript_buildShapeFromTemplate(
 {
     nh_ecmascript_Shape *current = root;
 
-    for (int i = 0; i < property_templates->size; i++) {
-        nh_ecmascript_KeyValuePair *pair = nh_core_getFromList(property_templates, i);
-        
-        // Use our resolver helpers from earlier
-        uint8_t attrs = nh_ecmascript_resolveAttributes(pair->value);
-        bool is_accessor = (nh_ecmascript_computePropertyType(pair->value) == NH_PROP_TYPE_ACCESSOR);
-
-        current = nh_ecmascript_shapeTransition(current, pair->key, attrs, is_accessor);
-    }
+//    for (int i = 0; i < property_templates->size; i++) {
+//        nh_ecmascript_KeyValuePair *pair = nh_core_getFromList(property_templates, i);
+//        
+//        // Use our resolver helpers from earlier
+//        uint8_t attrs = nh_ecmascript_resolveAttributes(pair->value);
+//        bool is_accessor = (nh_ecmascript_computePropertyType(pair->value) == NH_PROP_TYPE_ACCESSOR);
+//
+//        current = nh_ecmascript_transitionShape(current, pair->key, attrs, is_accessor);
+//    }
 
     return current;
 }

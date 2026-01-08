@@ -11,6 +11,7 @@
 #include "Methods.h"
 #include "Realm.h"
 #include "Shape.h"
+#include "PropertyDescriptor.h"
 
 #include "../../nh-core/System/Memory.h"
 
@@ -63,13 +64,13 @@ nh_ecmascript_Completion nh_ecmascript_ordinaryDefineOwnProperty(
     // 2. If the property doesn't exist yet, we add it
     if (index == -1) {
         // A. Check [[Extensible]] (Slot 1)
-        if (!nh_ecmascript_toBool(Object_p->Slots_p[NH_SLOT_EXTENSIBLE])) {
+        if (!nh_ecmascript_toBool(Object_p->Slots[NH_ECMASCRIPT_SLOT_EXTENSIBLE])) {
             return nh_ecmascript_throwTypeError();
         }
 
         // B. Find or Create a new Shape for this transition
         // This moves Object_p->Shape_p to a new Shape that includes P
-        nh_ecmascript_Shape *NewShape_p = nh_ecmascript_transitionShape(Object_p->Shape_p, name_p);
+        nh_ecmascript_Shape *NewShape_p = nh_ecmascript_transitionShape(Object_p->Shape_p, name_p, 0, 0); // TODO
         Object_p->Shape_p = NewShape_p;
 
         // C. Get the new index (usually the last index in the new shape)
@@ -140,7 +141,7 @@ nh_ecmascript_Completion nh_ecmascript_ordinaryOwnPropertyKeys(
 nh_ecmascript_Completion nh_ecmascript_functionCall(
     nh_ecmascript_Object *F, 
     nh_ecmascript_Value thisArgument, 
-    nh_core_List argumentsList)
+    nh_core_List *argumentsList)
 {
     return nh_ecmascript_normalEmptyCompletion();
 }
@@ -155,7 +156,7 @@ nh_ecmascript_Completion nh_ecmascript_functionConstruct(
 
 // DATA ===========================================================================================
 
-static const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_ORDINARY = {
+const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_ORDINARY = {
     .getPrototypeOf    = nh_ecmascript_ordinaryGetPrototypeOf,
     .setPrototypeOf    = nh_ecmascript_ordinarySetPrototypeOf,
     .isExtensible      = nh_ecmascript_ordinaryIsExtensible,
@@ -171,7 +172,7 @@ static const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_ORDINARY = {
     .construct         = NULL
 };
 
-static const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_FUNCTION = {
+const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_FUNCTION = {
     .getPrototypeOf    = nh_ecmascript_ordinaryGetPrototypeOf,
     .setPrototypeOf    = nh_ecmascript_ordinarySetPrototypeOf,
     .isExtensible      = nh_ecmascript_ordinaryIsExtensible,
@@ -187,7 +188,7 @@ static const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_FUNCTION = {
     .construct         = nh_ecmascript_functionConstruct  // Standard 10.2.2
 };
 
-static const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_ARRAY = {
+const nh_ecmascript_ObjectMethods NH_ECMASCRIPT_METHODS_ARRAY = {
     .getPrototypeOf    = nh_ecmascript_ordinaryGetPrototypeOf,
     .setPrototypeOf    = nh_ecmascript_ordinarySetPrototypeOf,
     .isExtensible      = nh_ecmascript_ordinaryIsExtensible,

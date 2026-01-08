@@ -9,6 +9,8 @@
 // INCLUDES =======================================================================================
 
 #include "PropertyDescriptor.h"
+#include "TestAndCompare.h"
+
 #include <string.h>
 
 // FUNCTIONS =======================================================================================
@@ -45,58 +47,74 @@ bool nh_ecmascript_isGenericDescriptor(
 }
 
 // https://tc39.es/ecma262/#sec-on-property-descriptor-to-property
-void nh_ecmascript_applyDescriptorToProperty(
-    nh_ecmascript_PropertyDescriptor *Desc_p, 
-    nh_ecmascript_Property *Prop_p) 
-{
-    if (Desc_p->flags.hasEnumerable)   Prop_p->enumerable = Desc_p->flags.enumerable;
-    if (Desc_p->flags.hasConfigurable) Prop_p->configurable = Desc_p->flags.configurable;
-    
-    if (Prop_p->isAccessor) {
-        if (Desc_p->flags.hasGet) Prop_p->accessor.get = Desc_p->Get;
-        if (Desc_p->flags.hasSet) Prop_p->accessor.set = Desc_p->Set;
-    } else {
-        if (Desc_p->flags.hasValue)    Prop_p->data.value = Desc_p->Value;
-        if (Desc_p->flags.hasWritable) Prop_p->data.writable = Desc_p->flags.writable;
-    }
-}
+//void nh_ecmascript_applyDescriptorToProperty(
+//    nh_ecmascript_PropertyDescriptor *Desc_p, 
+//    nh_ecmascript_Property *Prop_p) 
+//{
+//    if (Desc_p->flags.hasEnumerable)   Prop_p->enumerable = Desc_p->flags.enumerable;
+//    if (Desc_p->flags.hasConfigurable) Prop_p->configurable = Desc_p->flags.configurable;
+//    
+//    if (Prop_p->isAccessor) {
+//        if (Desc_p->flags.hasGet) Prop_p->accessor.get = Desc_p->Get;
+//        if (Desc_p->flags.hasSet) Prop_p->accessor.set = Desc_p->Set;
+//    } else {
+//        if (Desc_p->flags.hasValue)    Prop_p->data.value = Desc_p->Value;
+//        if (Desc_p->flags.hasWritable) Prop_p->data.writable = Desc_p->flags.writable;
+//    }
+//}
 
-// https://tc39.es/ecma262/#sec-topropertydescriptor
+/**
+ * https://tc39.es/ecma262/#sec-topropertydescriptor
+ * Note: Desc_out should be allocated by the caller to avoid scope issues.
+ */
 nh_ecmascript_Completion nh_ecmascript_toPropertyDescriptor(
     nh_ecmascript_Value ObjVal, 
+    nh_ecmascript_PropertyDescriptor *Desc_out,
     nh_ecmascript_Realm *Realm_p) 
 {
-    // 1. If Type(ObjVal) is not Object, throw a TypeError
-    if (ObjVal.tag != NH_ECMASCRIPT_VALUE_OBJECT) {
-        return nh_ecmascript_throwTypeError("Property description must be an object", Realm_p);
+    // 1. Type Check
+    if (!nh_ecmascript_isObject(ObjVal)) {
+        return nh_ecmascript_throwTypeError();
     }
-    nh_ecmascript_Object *Obj_p = ObjVal.p.object;
-    nh_ecmascript_PropertyDescriptor desc = {0}; // Initialize all 'has' fields to false
+    nh_ecmascript_Object *Obj_p = nh_ecmascript_toObject(ObjVal, Realm_p).Value.p.object;
 
-    // 2. Helper for checking and fetching fields
-    // We check "enumerable", "configurable", "value", "writable", "get", "set"
+    // Initialize the descriptor (sets all 'has' flags to false)
+    memset(Desc_out, 0, sizeof(nh_ecmascript_PropertyDescriptor));
+
+    // 2. Helper Logic for each field
+    char *fields[] = {"enumerable", "configurable", "value", "writable", "get", "set"};
     
-    // Example: Handle "enumerable"
-	    if (nh_ecmascript_hasProperty(Obj_p, "enumerable", Realm_p)) {
-        desc.flags.hasEnumerable = true;
-//        desc.flags.enumerable = nh_ecmascript_toBoolean(nh_ecmascript_get(Obj_p, "enumerable", Realm_p));
+    for (int i = 0; i < 6; i++) {
+        // HasProperty?
+        nh_ecmascript_Completion hasComp = Obj_p->Methods_p->hasProperty(Obj_p, fields[i]);
+        if (hasComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return hasComp;
+
+        if (nh_ecmascript_toBool(hasComp.Value)) {
+            // Get the value
+            nh_ecmascript_Completion getComp = Obj_p->Methods_p->get(Obj_p, fields[i], Obj_p);
+            if (getComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return getComp;
+            nh_ecmascript_Value val = getComp.Value;
+
+            // Map to struct fields
+            if (i == 0) { Desc_out->flags.hasEnumerable = true; Desc_out->flags.enumerable = nh_ecmascript_toBool(val); }
+            else if (i == 1) { Desc_out->flags.hasConfigurable = true; Desc_out->flags.configurable = nh_ecmascript_toBool(val); }
+            else if (i == 2) { Desc_out->flags.hasValue = true; Desc_out->Value = val; }
+            else if (i == 3) { Desc_out->flags.hasWritable = true; Desc_out->flags.writable = nh_ecmascript_toBool(val); }
+            else if (i == 4) { 
+                if (!nh_ecmascript_isObject(val) && !nh_ecmascript_isUndefined(val)) return nh_ecmascript_throwTypeError();
+                Desc_out->flags.hasGet = true; Desc_out->Set = nh_ecmascript_isObject(val) ? nh_ecmascript_toObject(val, Realm_p).Value.p.object : NULL;
+            }
+            else if (i == 5) { 
+                if (!nh_ecmascript_isObject(val) && !nh_ecmascript_isUndefined(val)) return nh_ecmascript_throwTypeError();
+                Desc_out->flags.hasSet = true; Desc_out->Set = nh_ecmascript_isObject(val) ? nh_ecmascript_toObject(val, Realm_p).Value.p.object : NULL;
+            }
+        }
     }
 
-    // Example: Handle "value"
-    if (nh_ecmascript_hasProperty(Obj_p, "value", Realm_p)) {
-        desc.flags.hasValue = true;
-//        desc.Value = nh_ecmascript_get(Obj_p, "value", Realm_p);
+    // 3. Validation: Integrity Check
+    if ((Desc_out->flags.hasValue || Desc_out->flags.hasWritable) && (Desc_out->flags.hasGet || Desc_out->flags.hasSet)) {
+        return nh_ecmascript_throwTypeError();
     }
 
-    // 3. Validation: A descriptor cannot have both (Value/Writable) and (Get/Set)
-//    if ((desc.hasValue || desc.hasWritable) && (desc.hasGet || desc.hasSet)) {
-//        return nh_ecmascript_throwTypeError(
-//            "Invalid property descriptor. Cannot both specify accessors and a value or writable attribute", 
-//            Realm_p
-//        );
-//    }
-
-    // Wrap the C struct in a Completion (You might need a pointer or a specialized Value tag)
-    // Usually, you return this as a specialized internal type.
-    return nh_ecmascript_normalCompletion(nh_ecmascript_makeInternalPointer(&desc));
+    return nh_ecmascript_normalEmptyCompletion();
 }

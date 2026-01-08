@@ -12,7 +12,10 @@
 #include "Templates.h"
 #include "Parser.h"
 
+#include "../Common/Log.h"
+
 #include <string.h>
+#include <dlfcn.h>
 
 // FUNCTIONS =======================================================================================
 
@@ -23,6 +26,7 @@ nh_core_List nh_ecmascript_parseIntrinsicTemplates()
     for (int i = 0; i < NH_ECMASCRIPT_INTRINSIC_TEMPLATE_NAMES_PP_COUNT; ++i) {
         nh_core_Array Tokens = nh_ecmascript_tokenizeIntrinsicTemplate(NULL, NH_ECMASCRIPT_INTRINSIC_TEMPLATES_PP[i]);
         nh_ecmascript_IntrinsicTemplate *Template_p = nh_ecmascript_parseIntrinsicTemplate(Tokens.p, Tokens.length);
+        nh_ecmascript_logIntrinsicTemplate(Template_p);
         nh_core_freeArray(&Tokens);
         nh_core_appendToList(&Templates, Template_p);
     }
@@ -49,7 +53,7 @@ nh_ecmascript_Value nh_ecmascript_resolveTemplateValue(
             return nh_ecmascript_makeString(Node_p->data.string_p);
             
         case NH_ECMASCRIPT_TEMPLATE_NODE_BOOLEAN:
-            return nh_ecmascript_makeBoolean(Node_p->data.boolean);
+            return nh_ecmascript_makeBool(Node_p->data.boolean);
             
         case NH_ECMASCRIPT_TEMPLATE_NODE_NULL:
             return nh_ecmascript_makeNull();

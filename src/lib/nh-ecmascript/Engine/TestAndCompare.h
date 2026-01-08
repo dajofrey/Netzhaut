@@ -27,9 +27,19 @@
         nh_ecmascript_Value v, nh_ecmascript_Realm *Realm_p
     );
 
+    bool nh_ecmascript_isObject(
+        nh_ecmascript_Value Value
+    );
+
+
     bool nh_ecmascript_isCallable(
         nh_ecmascript_Value Value
     );
+
+    bool nh_ecmascript_isUndefined(
+        nh_ecmascript_Value Value
+    );
+
 
     bool nh_ecmascript_isConstructor(
         nh_ecmascript_Value Value

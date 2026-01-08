@@ -12,6 +12,7 @@
 #include "Realm.h"
 #include "Object.h"
 #include "Completion.h"
+#include "TestAndCompare.h"
 
 #include <math.h>
 #include <string.h>
@@ -133,6 +134,7 @@ nh_ecmascript_Completion nh_ecmascript_toPropertyKey(
 }
 
 // https://tc39.es/ecma262/#sec-ordinarytoprimitive
+// https://tc39.es/ecma262/#sec-ordinarytoprimitive
 static nh_ecmascript_Completion nh_ecmascript_ordinaryToPrimitive(
     nh_ecmascript_Object *O_p, 
     NH_ECMASCRIPT_PREFERRED_TYPE_E hint, 
@@ -148,21 +150,36 @@ static nh_ecmascript_Completion nh_ecmascript_ordinaryToPrimitive(
     }
 
     for (int i = 0; i < 2; i++) {
-        // Use your nh_ecmascript_get to find the method
-        nh_ecmascript_Completion methodComp = nh_ecmascript_get(O_p, methodNames[i], Realm_p);
+        // 1. Get the method (this uses the Shape + Properties_p logic we built)
+        nh_ecmascript_Completion methodComp = O_p->Methods_p->get(O_p, methodNames[i], O_p);
         if (methodComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return methodComp;
         
-        nh_ecmascript_Value method = methodComp.Value;
-        if (method.tag == NH_ECMASCRIPT_VALUE_OBJECT) { // Simplified check for "IsCallable"
-//             nh_ecmascript_Completion callComp = nh_ecmascript_call(
-//                 method.p.object, nh_ecmascript_makeObject(O_p), NULL, 0, Realm_p
-//             );
-//             if (callComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return callComp;
-//             if (callComp.Value.tag != NH_ECMASCRIPT_VALUE_OBJECT) return callComp;
+        nh_ecmascript_Value Method = methodComp.Value;
+
+        // 2. Proper IsCallable check using your new architecture
+        // A value is callable if it's an object AND has a [[Call]] internal method.
+        if (nh_ecmascript_isObject(Method)) {
+            nh_ecmascript_Object *methodObj = nh_ecmascript_toObject(Method, Realm_p).Value.p.object;
+            
+            if (methodObj->Methods_p->call != NULL) {
+                // 3. Call the method with O_p as the 'this' value (the Receiver)
+                nh_ecmascript_Value thisVal = nh_ecmascript_makeObject(O_p);
+                nh_ecmascript_Completion callComp = methodObj->Methods_p->call(
+                    methodObj, thisVal, NULL
+                );
+
+                if (callComp.type == NH_ECMASCRIPT_COMPLETION_THROW) return callComp;
+
+                // 4. If the result is a Primitive, we are done!
+                // In your tagging system, anything NOT an object (or NOT a pointer) is primitive.
+                if (!nh_ecmascript_isObject(callComp.Value)) {
+                    return callComp;
+                }
+            }
         }
     }
 
-    return nh_ecmascript_throwTypeError("Cannot convert object to primitive value", Realm_p);
+    return nh_ecmascript_throwTypeError();
 }
 
 // https://tc39.es/ecma262/#sec-toprimitive

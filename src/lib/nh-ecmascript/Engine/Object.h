@@ -10,6 +10,7 @@
 #include "Completion.h"
 #include "Value.h"
 #include "Methods.h"
+#include "Shape.h"
 
 #include "../Parser/AST.h"
 
@@ -60,8 +61,7 @@ typedef struct nh_ecmascript_Object {
 
 nh_ecmascript_Object *nh_ecmascript_ordinaryObjectCreate(
     nh_ecmascript_Object *proto_p,
-    void *internalSlots_p, // Reserved for exotic data
-    int initialCapacity
+    nh_ecmascript_Realm *Realm_p 
 );
 
 nh_ecmascript_Object *nh_ecmascript_ordinaryFunctionCreate(
@@ -73,35 +73,8 @@ nh_ecmascript_Object *nh_ecmascript_ordinaryFunctionCreate(
 
 nh_ecmascript_Object *nh_ecmascript_createBuiltinFunction(
     void *steps_p, 
-    nh_core_List *InternalSlotsList,
     nh_ecmascript_Realm *Realm_p,
     nh_ecmascript_Object *Prototype_p
-);
-
-nh_ecmascript_Completion nh_ecmascript_get(
-    nh_ecmascript_Object *O_p,
-    const char *P,
-    nh_ecmascript_Realm *Realm_p
-);
-
-nh_ecmascript_Completion nh_ecmascript_set(
-    nh_ecmascript_Object *O_p,
-    const char *P,
-    nh_ecmascript_Value V,
-    nh_ecmascript_Realm *Realm_p
-);
-
-nh_ecmascript_Completion nh_ecmascript_defineOwnProperty(
-    nh_ecmascript_Object *O_p,
-    const char *P,
-    nh_ecmascript_PropertyDescriptor *Desc_p,
-    nh_ecmascript_Realm *Realm_p
-);
-
-bool nh_ecmascript_hasProperty(
-    nh_ecmascript_Object *O_p,
-    const char *P,
-    nh_ecmascript_Realm *Realm_p
 );
 
 #endif

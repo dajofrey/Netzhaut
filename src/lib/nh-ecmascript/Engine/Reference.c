@@ -88,7 +88,7 @@ nh_ecmascript_Completion nh_ecmascript_getValue(
         }
 
         // Use the 'get' internal method we implemented in Object.c
-        return nh_ecmascript_get(baseObj, ref.ReferencedName.p.string, Realm_p);
+//        return nh_ecmascript_get(baseObj, ref.ReferencedName.p.string, Realm_p);
     } 
     
     // 3. Handle Environment References (local/global variables)
@@ -127,7 +127,7 @@ nh_ecmascript_Completion nh_ecmascript_putValue(
             baseObj = ref.Base.Object_p;
         }
 
-        return nh_ecmascript_set(baseObj, ref.ReferencedName.p.string, value, Realm_p);
+//        return nh_ecmascript_set(baseObj, ref.ReferencedName.p.string, value, Realm_p);
     }
 
     // 3. Handle Environment References

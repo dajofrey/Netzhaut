@@ -29,7 +29,7 @@ typedef struct nh_ecmascript_ObjectMethods {
     nh_ecmascript_Completion (*delete)(nh_ecmascript_Object *Object_p, char *p);
     nh_ecmascript_Completion (*ownPropertyKeys)(nh_ecmascript_Object *Object_p);
     // https://tc39.es/ecma262/#sec-ecmascript-function-objects
-    nh_ecmascript_Completion (*call)(nh_ecmascript_Object *Object_p, nh_ecmascript_Value thisArgument, nh_core_List argumentsList);
+    nh_ecmascript_Completion (*call)(nh_ecmascript_Object *Object_p, nh_ecmascript_Value thisArgument, nh_core_List *argumentsList);
     nh_ecmascript_Completion (*construct)(nh_ecmascript_Object *Object_p, nh_core_List argumentsList, nh_ecmascript_Object *newTarget);
 } nh_ecmascript_ObjectMethods;
 

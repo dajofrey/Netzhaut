@@ -47,10 +47,10 @@ nh_ecmascript_PropertyDescriptor nh_ecmascript_undefinedPropertyDescriptor(
 //    nh_ecmascript_PropertyDescriptorWrapper nh_ecmascript_undefinedPropertyDescriptorWrapper(
 //    );
 
-void nh_ecmascript_applyDescriptorToProperty(
-    nh_ecmascript_PropertyDescriptor *Desc_p,
-    nh_ecmascript_Property *Prop_p
-);
+//void nh_ecmascript_applyDescriptorToProperty(
+//    nh_ecmascript_PropertyDescriptor *Desc_p,
+//    nh_ecmascript_Property *Prop_p
+//);
 
 bool nh_ecmascript_isAccessorDescriptor(
     nh_ecmascript_PropertyDescriptor Descriptor 
@@ -71,6 +71,7 @@ bool nh_ecmascript_isGenericDescriptor (
 
 nh_ecmascript_Completion nh_ecmascript_toPropertyDescriptor(
     nh_ecmascript_Value ObjVal, 
+    nh_ecmascript_PropertyDescriptor *Desc_out,
     nh_ecmascript_Realm *Realm_p
 ); 
 

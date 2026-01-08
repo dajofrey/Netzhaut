@@ -62,6 +62,18 @@ bool nh_ecmascript_sameValueNonNumeric(
     }
 }
 
+bool nh_ecmascript_isUndefined(
+    nh_ecmascript_Value Value)
+{
+    return Value.tag == NH_ECMASCRIPT_VALUE_UNDEFINED;
+}
+
+bool nh_ecmascript_isObject(
+    nh_ecmascript_Value Value)
+{
+    return Value.tag == NH_ECMASCRIPT_VALUE_OBJECT;
+}
+
 // https://tc39.es/ecma262/#sec-iscallable
 bool nh_ecmascript_isCallable(nh_ecmascript_Value v) 
 {
@@ -110,37 +122,36 @@ nh_ecmascript_Completion nh_ecmascript_isExtensible(
 return nh_ecmascript_normalEmptyCompletion();
 }
 
-// Internal "Ordinary" implementation
-nh_ecmascript_Completion nh_ecmascript_ordinaryIsExtensible(
-    nh_ecmascript_Object *O_p,
-    nh_ecmascript_Realm *Realm_p) 
-{
-//    return nh_ecmascript_normalCompletion(nh_ecmascript_makeBoolean(O_p->extensible));
-return nh_ecmascript_normalEmptyCompletion();
-}
-
-// https://tc39.es/ecma262/#sec-isarray
+/**
+ * https://tc39.es/ecma262/#sec-isarray
+ */
 bool nh_ecmascript_isArray(
-    nh_ecmascript_Value argument,
+    nh_ecmascript_Value argument, 
     nh_ecmascript_Realm *Realm_p) 
 {
     // 1. If Type(argument) is not Object, return false.
-    if (argument.tag != NH_ECMASCRIPT_VALUE_OBJECT) {
+    // (Using your tag check logic)
+    if (argument.tag != NH_ECMASCRIPT_VALUE_OBJECT || argument.p.object == NULL) {
         return false;
     }
-    
+
     nh_ecmascript_Object *O_p = argument.p.object;
 
     // 2. If O_p is an Array exotic object, return true.
-    if (O_p->type == NH_ECMASCRIPT_OBJECT_ARRAY) {
+    // We identify "Array-ness" by checking if it uses the Array method table.
+    if (O_p->Methods_p == &NH_ECMASCRIPT_METHODS_ARRAY) {
         return true;
     }
 
-    // 3. If O_p is a Proxy exotic object, unwrap and recurse
-//    if (O_p->type == NH_ECMASCRIPT_OBJECT_PROXY) {
-//        // Here you would check the proxy target
-//        // return nh_ecmascript_isArray(O_p->proxyTarget, Realm_p);
+    // 3. If O_p is a Proxy exotic object, handle recursion.
+    // Proxies also have their own specific method table.
+//    if (O_p->Methods_p == &NH_ECMASCRIPT_METHODS_PROXY) {
+//        // According to 7.2.2, if it's a proxy, we check the target.
+//        // The target is stored in an internal slot for proxies.
+//        nh_ecmascript_Value target = O_p->Slots[NH_ECMASCRIPT_SLOT_PROXY_TARGET];
+//        return nh_ecmascript_isArray(target, Realm_p);
 //    }
 
     return false;
 }
+

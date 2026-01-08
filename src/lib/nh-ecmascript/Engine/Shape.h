@@ -1,16 +1,11 @@
-#ifndef NH_ECMASCRIPT_ENGINE_OBJECT_H
-#define NH_ECMASCRIPT_ENGINE_OBJECT_H
+#ifndef NH_ECMASCRIPT_ENGINE_SHAPE_H
+#define NH_ECMASCRIPT_ENGINE_SHAPE_H
 
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
  * Published under GNU LGPL. See Netzhaut/LICENSE.LGPL file.
  */
-
-#include "Completion.h"
-#include "Value.h"
-
-#include "../Parser/AST.h"
 
 #include "../../nh-core/Util/List.h"
 #include "../../nh-core/Util/HashMap.h"
@@ -20,8 +15,9 @@
 typedef struct nh_ecmascript_Shape {
     struct nh_ecmascript_Shape *parent;    // The shape we came from
     char *property_key;                    // The name of the property added
-    uint32_t property_index;               // Where this property lives in the object's value array
-    uint8_t attributes;                    // writable, enumerable, configurable
+    int32_t property_index;               // Where this property lives in the object's value array
+    int property_count;
+    int8_t attributes;                    // writable, enumerable, configurable
     bool is_accessor;                      // If true, the value at property_index is a getter/setter pair
 
     // Optional: Transition table (for when code adds a new property at runtime)
@@ -31,7 +27,7 @@ typedef struct nh_ecmascript_Shape {
 
 // FUNCTIONS =======================================================
 
-nh_ecmascript_Shape* nh_shape_createRoot(
+nh_ecmascript_Shape* nh_ecmascript_createRootShape(
 );
 
 nh_ecmascript_Shape* nh_ecmascript_transitionShape(

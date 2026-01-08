@@ -13,6 +13,7 @@
 
 #include "../Parser/CST.h"
 #include "../Parser/AST.h"
+#include "../Intrinsics/Intrinsics.h"
 
 #endif
 
@@ -46,6 +47,10 @@
     
     NH_API_RESULT _nh_ecmascript_logDiagnosticEnd(
         const char *file_p, const char *function_p, NH_API_RESULT result, int line
+    );
+
+    void nh_ecmascript_logIntrinsicTemplate(
+        nh_ecmascript_IntrinsicTemplate *T_p
     );
 
 /** @} */

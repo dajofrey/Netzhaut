@@ -10,6 +10,7 @@
 #include "Agent.h"
 #include "Object.h"
 #include "Environment.h"
+#include "Shape.h"
 
 #include "../Common/Includes.h"
 
@@ -18,17 +19,13 @@
 
 // STRUCTS ================================================================================
 
-typedef struct nh_ecmascript_RealmHostDefined {
-    char *temporary_p;
-} nh_ecmascript_RealmHostDefined;
-
 // https://tc39.es/ecma262/#sec-code-realms
 typedef struct nh_ecmascript_Realm {
     nh_ecmascript_Agent *Agent_p;
     nh_core_HashMap Intrinsics;
     nh_ecmascript_Object *GlobalObject_p;
     nh_ecmascript_Environment *GlobalEnvironment_p;
-    nh_ecmascript_RealmHostDefined HostDefined;
+    nh_ecmascript_Shape *EmptyObjectShape_p;
 } nh_ecmascript_Realm;
 
 // FUNCTIONS ==============================================================

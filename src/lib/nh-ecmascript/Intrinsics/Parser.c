@@ -79,53 +79,56 @@ static nh_ecmascript_Token* nh_ecmascript_peek(
     return (temp_pos < Parser_p->count) ? &Parser_p->tokens[temp_pos] : NULL;
 }
 
-// Helper: Recursive Node Parser (The heart of "No Interpretation")
-static nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(
-    nh_ecmascript_TemplateParser *P)
-{
+// Helper: Peek and verify token type/string
+static bool nh_ecmascript_is(nh_ecmascript_TemplateParser *P, const char *s) {
     nh_ecmascript_Token *t = nh_ecmascript_peek(P);
+    return t && strcmp(t->String.p, s) == 0;
+}
+
+// Fixed Node Parser
+static nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(nh_ecmascript_TemplateParser *P) {
+    nh_ecmascript_Token *t = nh_ecmascript_peek(P);
+    if (!t) return NULL;
+
     nh_ecmascript_TemplateNode *node = calloc(1, sizeof(nh_ecmascript_TemplateNode));
 
     // 1. INTRINSIC REFERENCE: %Name%
-    if (t->type == NH_ECMASCRIPT_TOKEN_PUNCTUATOR && strcmp(t->String.p, "%") == 0) {
+    if (nh_ecmascript_is(P, "%")) {
         nh_ecmascript_consume(P); // skip %
         node->kind = NH_ECMASCRIPT_TEMPLATE_NODE_INTRINSIC;
         node->data.string_p = strdup(nh_ecmascript_consume(P)->String.p);
         nh_ecmascript_consume(P); // skip closing %
     }
     // 2. PAIRS or NODES: { ... }
-    else if (t->type == NH_ECMASCRIPT_TOKEN_PUNCTUATOR && strcmp(t->String.p, "{") == 0) {
+    else if (nh_ecmascript_is(P, "{")) {
         nh_ecmascript_consume(P); // skip {
         
-        // Peek to see if it's a mapping { key: value } or a list { val1, val2 }
         nh_ecmascript_Token *next = nh_ecmascript_peekNext(P);
-        if (next && next->type == NH_ECMASCRIPT_TOKEN_PUNCTUATOR && strcmp(next->String.p, ":") == 0) {
+        if (next && strcmp(next->String.p, ":") == 0) {
             node->kind = NH_ECMASCRIPT_TEMPLATE_NODE_PAIRS;
             node->data.Pairs = nh_core_initList(8);
-            while (strcmp(nh_ecmascript_peek(P)->String.p, "}") != 0) {
+            while (!nh_ecmascript_is(P, "}")) {
                 nh_ecmascript_KeyValuePair *pair = calloc(1, sizeof(nh_ecmascript_KeyValuePair));
-                nh_ecmascript_Token *keyTok = nh_ecmascript_consume(P);
-                
-                pair->key = strdup(keyTok->String.p);
+                pair->key = strdup(nh_ecmascript_consume(P)->String.p);
                 pair->key_is_symbol = (pair->key[0] == '@' || pair->key[0] == '[');
                 
                 nh_ecmascript_consume(P); // skip :
                 pair->value = nh_ecmascript_parseNode(P);
-                
                 nh_core_appendToList(&node->data.Pairs, pair);
-                if (strcmp(nh_ecmascript_peek(P)->String.p, ",") == 0) nh_ecmascript_consume(P);
+                
+                if (nh_ecmascript_is(P, ",")) nh_ecmascript_consume(P);
             }
         } else {
             node->kind = NH_ECMASCRIPT_TEMPLATE_NODE_NODES;
             node->data.Nodes = nh_core_initList(8);
-            while (strcmp(nh_ecmascript_peek(P)->String.p, "}") != 0) {
+            while (!nh_ecmascript_is(P, "}")) {
                 nh_core_appendToList(&node->data.Nodes, nh_ecmascript_parseNode(P));
-                if (strcmp(nh_ecmascript_peek(P)->String.p, ",") == 0) nh_ecmascript_consume(P);
+                if (nh_ecmascript_is(P, ",")) nh_ecmascript_consume(P);
             }
         }
         nh_ecmascript_consume(P); // skip }
     }
-    // 3. PRIMITIVES & IDENTIFIERS
+    // 3. PRIMITIVES
     else {
         t = nh_ecmascript_consume(P);
         if (t->type == NH_ECMASCRIPT_TOKEN_STRING) {
@@ -147,57 +150,60 @@ static nh_ecmascript_TemplateNode* nh_ecmascript_parseNode(
     return node;
 }
 
-nh_ecmascript_IntrinsicTemplate* nh_ecmascript_parseIntrinsicTemplate(
-    nh_ecmascript_Token *tokens,
-    int count) 
-{
+nh_ecmascript_IntrinsicTemplate* nh_ecmascript_parseIntrinsicTemplate(nh_ecmascript_Token *tokens, int count) {
     nh_ecmascript_TemplateParser P = { tokens, count, 0 };
-    if (strcmp(nh_ecmascript_consume(&P)->String.p, "intrinsic") != 0) return NULL;
+    
+    if (!nh_ecmascript_is(&P, "intrinsic")) return NULL;
+    nh_ecmascript_consume(&P); 
 
     nh_ecmascript_IntrinsicTemplate *T = calloc(1, sizeof(nh_ecmascript_IntrinsicTemplate));
     T->InternalSlots = nh_core_initList(8);
     T->Properties = nh_core_initList(8);
 
     // Parse %Name%
-    nh_ecmascript_consume(&P); // skip %
+    nh_ecmascript_consume(&P); // %
     T->name = strdup(nh_ecmascript_consume(&P)->String.p);
-    nh_ecmascript_consume(&P); // skip %
-    nh_ecmascript_consume(&P); // skip {
+    nh_ecmascript_consume(&P); // %
+    nh_ecmascript_consume(&P); // {
 
-    while (strcmp(nh_ecmascript_peek(&P)->String.p, "}") != 0) {
-        char *section_name = nh_ecmascript_consume(&P)->String.p;
-        
-        // internalSlots { ... } or properties { ... }
+    while (!nh_ecmascript_is(&P, "}")) {
+        nh_ecmascript_Token *sectionTok = nh_ecmascript_consume(&P);
+        char *section_name = sectionTok->String.p;
+
         if (strcmp(section_name, "internalSlots") == 0 || strcmp(section_name, "properties") == 0) {
             nh_core_List *target_list = (section_name[0] == 'i') ? &T->InternalSlots : &T->Properties;
-            nh_ecmascript_consume(&P); // skip {
-            
-            while (strcmp(nh_ecmascript_peek(&P)->String.p, "}") != 0) {
+            nh_ecmascript_consume(&P); // {
+
+            while (!nh_ecmascript_is(&P, "}")) {
                 nh_ecmascript_KeyValuePair *pair = calloc(1, sizeof(nh_ecmascript_KeyValuePair));
                 
-                // Handle slot name [[Name]] vs property name "Name"
-                nh_ecmascript_Token *keyTok = nh_ecmascript_consume(&P);
-                pair->key = strdup(keyTok->String.p);
+                // FIXED: Handle [[SlotName]]
+                if (nh_ecmascript_is(&P, "[")) {
+                    nh_ecmascript_consume(&P); // [
+                    nh_ecmascript_consume(&P); // [
+                    pair->key = strdup(nh_ecmascript_consume(&P)->String.p);
+                    nh_ecmascript_consume(&P); // ]
+                    nh_ecmascript_consume(&P); // ]
+                } else {
+                    pair->key = strdup(nh_ecmascript_consume(&P)->String.p);
+                }
+                
                 pair->key_is_symbol = (pair->key[0] == '@' || pair->key[0] == '[');
-                
-                nh_ecmascript_consume(&P); // skip :
+                nh_ecmascript_consume(&P); // :
                 pair->value = nh_ecmascript_parseNode(&P);
-                
                 nh_core_appendToList(target_list, pair);
             }
-            nh_ecmascript_consume(&P); // skip }
-        }
-        else {
-            // Top-level fields (like 'freeze: true' or 'isExotic: true')
-            // We treat these as Internal Slots for the sake of "No Interpretation"
+            nh_ecmascript_consume(&P); // }
+        } else {
+            // Top-level field handling
             nh_ecmascript_KeyValuePair *pair = calloc(1, sizeof(nh_ecmascript_KeyValuePair));
             pair->key = strdup(section_name);
-            nh_ecmascript_consume(&P); // skip :
+            nh_ecmascript_consume(&P); // :
             pair->value = nh_ecmascript_parseNode(&P);
             nh_core_appendToList(&T->InternalSlots, pair);
         }
     }
     
-    nh_ecmascript_consume(&P); // skip closing }
+    nh_ecmascript_consume(&P); // }
     return T;
 }
