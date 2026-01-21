@@ -41,27 +41,3 @@ NH_API_RESULT nh_api_loadBytes(
 //    return loadBytes_f ? loadBytes_f(Context_p, bytes_p, size) : NH_API_ERROR_BAD_STATE;
 return 1;
 }
-
-nh_api_HostGlobals nh_api_getHTMLGlobals()
-{
-    typedef nh_api_HostGlobals (*nh_html_getHTMLGlobals_f)();
-    nh_core_Loader *Loader_p = nh_api_getLoader();
-    nh_html_getHTMLGlobals_f getHTMLGlobals_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_HTML, 0, "nh_html_getHTMLGlobals");
-    nh_api_HostGlobals HostGlobals;
-    memset(&HostGlobals, 0, sizeof(nh_api_HostGlobals));
-    return getHTMLGlobals_f ? getHTMLGlobals_f() : HostGlobals;
-}
-
-NH_API_RESULT nh_api_freeHTMLGlobals(
-    nh_api_HostGlobals *Globals_p)
-{
-    typedef void (*nh_html_freeHTMLGlobals_f)(nh_api_HostGlobals *Globals_p);
-    nh_core_Loader *Loader_p = nh_api_getLoader();
-    nh_html_freeHTMLGlobals_f freeHTMLGlobals_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_HTML, 0, "nh_html_freeHTMLGlobals");
-    if (freeHTMLGlobals_f) {
-        freeHTMLGlobals_f(Globals_p);
-        return NH_API_SUCCESS;
-    } else {
-        return NH_API_ERROR_BAD_STATE;
-    }
-}

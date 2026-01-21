@@ -11,8 +11,6 @@
 
 #include "../Common/Includes.h"
 
-#include "../../nh-webidl/Runtime/String.h"
-
 #endif
 
 /** @addtogroup lib_nh-css_enums
@@ -71,18 +69,18 @@
 
     typedef struct nh_css_PercentageToken {
         NH_CSS_TOKEN type;
-        NH_WEBIDL_DOUBLE value;
+        double value;
     } nh_css_PercentageToken;
 
     typedef struct nh_css_NumberToken {
         NH_CSS_TOKEN type;
-        NH_WEBIDL_DOUBLE value;
+        double value;
         bool isInteger;
     } nh_css_NumberToken;
 
     typedef struct nh_css_DimensionToken {
         NH_CSS_TOKEN type;
-        NH_WEBIDL_DOUBLE value;
+        double value;
         bool isInteger;
         nh_encoding_UTF32String Unit;
     } nh_css_DimensionToken;

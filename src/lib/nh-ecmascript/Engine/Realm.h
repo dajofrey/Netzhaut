@@ -23,6 +23,7 @@
 typedef struct nh_ecmascript_Realm {
     nh_ecmascript_Agent *Agent_p;
     nh_core_HashMap Intrinsics;
+    nh_core_HashMap WebIDL;
     nh_ecmascript_Object *GlobalObject_p;
     nh_ecmascript_Environment *GlobalEnvironment_p;
     nh_ecmascript_Shape *EmptyObjectShape_p;

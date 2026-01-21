@@ -122,21 +122,21 @@ SRC_FILES_NH_HTML = \
 #    Common/About.c \
 
 SRC_FILES_NH_DOM = \
-    Interfaces/NodeList.c \
-    Interfaces/EventTarget.c \
-    Interfaces/Node.c \
-    Interfaces/Document.c \
-    Interfaces/DocumentType.c \
-    Interfaces/Comment.c \
-    Interfaces/Element.c \
-    Interfaces/NamedNodeMap.c \
-    Interfaces/CharacterData.c \
-    Interfaces/Text.c \
-    Interfaces/Attr.c \
-    Common/Result.c \
-    Common/Initialize.c \
-    Common/Terminate.c \
-    Common/About.c \
+#    Interfaces/NodeList.c \
+#    Interfaces/EventTarget.c \
+#    Interfaces/Node.c \
+#    Interfaces/Document.c \
+#    Interfaces/DocumentType.c \
+#    Interfaces/Comment.c \
+#    Interfaces/Element.c \
+#    Interfaces/NamedNodeMap.c \
+#    Interfaces/CharacterData.c \
+#    Interfaces/Text.c \
+#    Interfaces/Attr.c \
+#    Common/Result.c \
+#    Common/Initialize.c \
+#    Common/Terminate.c \
+#    Common/About.c \
 
 SRC_FILES_NH_NETWORK = \
     Common/Log.c \
@@ -144,15 +144,12 @@ SRC_FILES_NH_NETWORK = \
     Common/About.c \
  
 SRC_FILES_NH_WEBIDL = \
-    Runtime/Tokenizer.c \
-    Runtime/Parser.c \
-    Runtime/Builtin.c \
-    Runtime/Definitions.c \
-    Runtime/Runtime.c \
-    Runtime/Object.c \
-    Runtime/Type.c \
-    Runtime/String.c \
-    Runtime/HostGlobals.c \
+    Utils/Tokenizer.c \
+    Utils/Parser.c \
+    Utils/Builtin.c \
+    Utils/Interface.c \
+    Utils/Global.c \
+    Utils/ECMAScriptBinding.c \
     Common/Log.c \
     Common/Initialize.c \
     Common/Terminate.c \
@@ -293,17 +290,17 @@ SRC_FILES_NH_CSS = \
     Common/About.c \
  
 SRC_FILES_NH_URL = \
-    Main/URLParser.c \
-    Main/HostParser.c \
-    Main/Helper.c \
-    Main/PercentEncode.c \
-    IDNA/IDNAMappingTable.c \
-    IDNA/IDNAProcessing.c \
-    Common/Log.c \
-    Common/Result.c \
-    Common/Initialize.c \
-    Common/About.c \
-    Common/Test.c \
+#    Main/URLParser.c \
+#    Main/HostParser.c \
+#    Main/Helper.c \
+#    Main/PercentEncode.c \
+#    IDNA/IDNAMappingTable.c \
+#    IDNA/IDNAProcessing.c \
+#    Common/Log.c \
+#    Common/Result.c \
+#    Common/Initialize.c \
+#    Common/About.c \
+#    Common/Test.c \
 
 SRC_FILES_NH_MONITOR = \
     Logger.c \

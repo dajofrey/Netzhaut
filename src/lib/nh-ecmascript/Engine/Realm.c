@@ -189,6 +189,7 @@ nh_ecmascript_Realm *nh_ecmascript_initializeRealm(
     Realm_p->GlobalObject_p = NULL;
     Realm_p->GlobalEnvironment_p = NULL;
     Realm_p->Intrinsics = nh_core_createHashMap();
+    Realm_p->WebIDL = nh_core_createHashMap();
 
     NH_CORE_CHECK_2(NULL, nh_ecmascript_createIntrinsics(&Agent_p->Cluster_p->Runtime_p->IntrinsicTemplates, Realm_p))
 
@@ -225,4 +226,22 @@ nh_ecmascript_Realm *nh_ecmascript_initializeRealm(
     NewContext_p->LexicalEnvironment_p  = Realm_p->GlobalEnvironment_p;
 
     return Realm_p;
+}
+
+/**
+ * @brief Finds a previously created Prototype for a given Interface name.
+ */
+nh_ecmascript_Object *nh_ecmascript_lookupPrototype(
+    const char *name_p, 
+    nh_ecmascript_Realm *Realm_p) 
+{
+    return nh_core_getFromHashMap(&Realm_p->WebIDL, name_p);
+}
+
+void nh_webidl_registerInterfacePrototype(
+    const char *name_p, 
+    nh_ecmascript_Object *Proto_p, 
+    nh_ecmascript_Realm *Realm_p) 
+{
+    nh_core_addToHashMap(&Realm_p->WebIDL, name_p, Proto_p);
 }

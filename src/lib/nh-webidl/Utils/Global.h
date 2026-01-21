@@ -1,7 +1,5 @@
-#ifndef NH_WEBIDL_RUNTIME_H
-#define NH_WEBIDL_RUNTIME_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_WEBIDL_GLOBAL_H
+#define NH_WEBIDL_GLOBAL_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -10,11 +8,10 @@
  */
 
 #include "Parser.h"
-#include "../Common/Includes.h"
-#include "../ECMAScriptBinding/Interface.h"
-#include "../../nh-core/Util/Array.h"
+#include "Interface.h"
 
-#endif
+#include "../Common/Includes.h"
+#include "../../nh-core/Util/Array.h"
 
 /** @addtogroup lib_nh-webidl_structs
  *  @{
@@ -27,9 +24,9 @@
         nh_core_Array Interfaces;
     } nh_webidl_Fragment;
 
-    typedef struct nh_webidl_Runtime {
+    typedef struct nh_webidl_Global {
         nh_core_Array Specifications;
-    } nh_webidl_Runtime;
+    } nh_webidl_Global;
 
 /** @} */
 
@@ -37,7 +34,7 @@
  *  @{
  */
 
-    extern nh_webidl_Runtime NH_WEBIDL_RUNTIME;
+    extern nh_webidl_Global NH_WEBIDL_GLOBAL;
 
 /** @} */
 
@@ -45,11 +42,7 @@
  *  @{
  */
 
-    NH_API_RESULT nh_webidl_initRuntime(
-    );
-
-    NH_API_RESULT nh_webidl_load(
-        char *specification_p, char *fragmentName_p, nh_webidl_FragmentParseResult ParseResult
+    NH_API_RESULT nh_webidl_createGlobal(
     );
 
     nh_webidl_Specification *nh_webidl_getSpecification(

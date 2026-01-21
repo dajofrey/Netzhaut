@@ -1,8 +1,6 @@
 #ifndef NH_WEBIDL_TOKENIZER_H
 #define NH_WEBIDL_TOKENIZER_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -10,8 +8,6 @@
  */
 
 #include "../Common/Includes.h"
-
-#endif
 
 /** @addtogroup lib_nh-webidl_enums
  *  @{

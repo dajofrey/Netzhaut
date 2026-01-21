@@ -9,9 +9,9 @@
 
 #include "Includes.h"
 
-#include "../Runtime/Tokenizer.h"
-#include "../Runtime/Parser.h"
-#include "../Runtime/Runtime.h"
+#include "../Utils/Tokenizer.h"
+#include "../Utils/Parser.h"
+#include "../Utils/Global.h"
 
 NH_API_RESULT nh_webidl_logTokens(
     char *fragmentName_p, nh_core_Array *Tokens_p, bool dirty

@@ -8,10 +8,8 @@
 
 // INCLUDES ========================================================================================
 
-#include "Runtime.h"
-#include "Definitions.h"
+#include "Global.h"
 #include "Builtin.h"
-#include "Object.h"
 
 #include "../Common/Log.h"
 
@@ -22,75 +20,11 @@
 
 // DATA ============================================================================================
 
-nh_webidl_Runtime NH_WEBIDL_RUNTIME;
+nh_webidl_Global NH_WEBIDL_GLOBAL;
 
-// INIT ============================================================================================
+// FUNCTIONS =======================================================================================
 
-NH_API_RESULT nh_webidl_initRuntime()
-{
-    NH_WEBIDL_RUNTIME.Specifications = nh_core_initArray(sizeof(nh_webidl_Specification), 32);
-
-    for (int i = 0; i < NH_WEBIDL_FRAGMENT_NAMES_PP_COUNT; ++i) 
-    {
-        char specificationName_p[255] = {'\0'};
-        strcpy(specificationName_p, NH_WEBIDL_FRAGMENT_NAMES_PP[i]);
-        char *fragmentName_p = strstr(specificationName_p, "_");
-        if (!fragmentName_p) {return NH_API_ERROR_BAD_STATE;}
-        *fragmentName_p = '\0';
-        fragmentName_p = fragmentName_p + 1;
-         
-        nh_webidl_FragmentParseResult ParseResult = nh_webidl_parse(NH_WEBIDL_FRAGMENT_NAMES_PP[i], NH_WEBIDL_FRAGMENTS_PP[i]);
-        nh_webidl_load(specificationName_p, fragmentName_p, ParseResult);
-    }
-
-    return NH_API_SUCCESS;
-}
-
-// SPECIFICATION ===================================================================================
-
-nh_webidl_Specification *nh_webidl_getSpecification(
-    char *specification_p)
-{
-    nh_webidl_Specification *Specification_p = NULL;
-
-    for (int i = 0; i < NH_WEBIDL_RUNTIME.Specifications.length; ++i) {
-        Specification_p = &((nh_webidl_Specification*)NH_WEBIDL_RUNTIME.Specifications.p)[i];
-        if (!strcmp(Specification_p->name_p, specification_p)) {break;}
-        Specification_p = NULL;
-    }
-
-    if (!Specification_p) {
-        Specification_p = (nh_webidl_Specification*)nh_core_incrementArray(&NH_WEBIDL_RUNTIME.Specifications);
-        NH_CORE_CHECK_MEM_2(NULL, Specification_p)
-        Specification_p->Fragments = nh_core_initArray(sizeof(nh_webidl_Fragment), 64);
-        strcpy(Specification_p->name_p, specification_p);
-    }
-
-    return Specification_p;
-}
-
-// FRAGMENT ========================================================================================
-
-nh_webidl_Fragment *nh_webidl_getFragment(
-    char *specificationName_p, char *fragmentName_p)
-{
-    nh_webidl_Specification *Specification_p = nh_webidl_getSpecification(specificationName_p);
-
-    NH_CORE_CHECK_NULL_2(NULL, fragmentName_p)
-    NH_CORE_CHECK_NULL_2(NULL, Specification_p)
-
-    nh_webidl_Fragment *Fragment_p = NULL;
-    for (int i = 0; i < Specification_p->Fragments.length; ++i) 
-    {
-        Fragment_p = &((nh_webidl_Fragment*)Specification_p->Fragments.p)[i];
-        if (!strcmp(Fragment_p->name_p, fragmentName_p)) {break;}
-        Fragment_p = NULL;
-    }
-
-    return Fragment_p;
-}
-
-NH_API_RESULT nh_webidl_load(
+static NH_API_RESULT nh_webidl_load(
     char *specification_p, char *fragmentName_p, nh_webidl_FragmentParseResult ParseResult)
 {
     NH_CORE_CHECK_NULL(specification_p)
@@ -111,7 +45,65 @@ NH_API_RESULT nh_webidl_load(
     return NH_API_SUCCESS;
 }
 
-// GET =============================================================================================
+NH_API_RESULT nh_webidl_createGlobal()
+{
+    NH_WEBIDL_GLOBAL.Specifications = nh_core_initArray(sizeof(nh_webidl_Specification), 32);
+
+    for (int i = 0; i < NH_WEBIDL_FRAGMENT_NAMES_PP_COUNT; ++i) 
+    {
+        char specificationName_p[255] = {'\0'};
+        strcpy(specificationName_p, NH_WEBIDL_FRAGMENT_NAMES_PP[i]);
+        char *fragmentName_p = strstr(specificationName_p, "_");
+        if (!fragmentName_p) {return NH_API_ERROR_BAD_STATE;}
+        *fragmentName_p = '\0';
+        fragmentName_p = fragmentName_p + 1;
+         
+        nh_webidl_FragmentParseResult ParseResult = nh_webidl_parse(NH_WEBIDL_FRAGMENT_NAMES_PP[i], NH_WEBIDL_FRAGMENTS_PP[i]);
+        nh_webidl_load(specificationName_p, fragmentName_p, ParseResult);
+    }
+
+    return NH_API_SUCCESS;
+}
+
+nh_webidl_Specification *nh_webidl_getSpecification(
+    char *specification_p)
+{
+    nh_webidl_Specification *Specification_p = NULL;
+
+    for (int i = 0; i < NH_WEBIDL_GLOBAL.Specifications.length; ++i) {
+        Specification_p = &((nh_webidl_Specification*)NH_WEBIDL_GLOBAL.Specifications.p)[i];
+        if (!strcmp(Specification_p->name_p, specification_p)) {break;}
+        Specification_p = NULL;
+    }
+
+    if (!Specification_p) {
+        Specification_p = (nh_webidl_Specification*)nh_core_incrementArray(&NH_WEBIDL_GLOBAL.Specifications);
+        NH_CORE_CHECK_MEM_2(NULL, Specification_p)
+        Specification_p->Fragments = nh_core_initArray(sizeof(nh_webidl_Fragment), 64);
+        strcpy(Specification_p->name_p, specification_p);
+    }
+
+    return Specification_p;
+}
+
+nh_webidl_Fragment *nh_webidl_getFragment(
+    char *specificationName_p, char *fragmentName_p)
+{
+    nh_webidl_Specification *Specification_p = nh_webidl_getSpecification(specificationName_p);
+
+    NH_CORE_CHECK_NULL_2(NULL, fragmentName_p)
+    NH_CORE_CHECK_NULL_2(NULL, Specification_p)
+
+    nh_webidl_Fragment *Fragment_p = NULL;
+    for (int i = 0; i < Specification_p->Fragments.length; ++i) 
+    {
+        Fragment_p = &((nh_webidl_Fragment*)Specification_p->Fragments.p)[i];
+        if (!strcmp(Fragment_p->name_p, fragmentName_p)) {break;}
+        Fragment_p = NULL;
+    }
+
+    return Fragment_p;
+}
 
 nh_webidl_Interface *nh_webidl_getInterface(
     char *specification_p, char *interface_p)
@@ -136,9 +128,9 @@ nh_core_List nh_webidl_getCompositeInterfaces( // TODO naive
 {
     nh_core_List Interfaces = nh_core_initList(8);
 
-    for (int j = 0; j < NH_WEBIDL_RUNTIME.Specifications.length; ++j)
+    for (int j = 0; j < NH_WEBIDL_GLOBAL.Specifications.length; ++j)
     {
-        nh_webidl_Specification *Specification_p = &((nh_webidl_Specification*)NH_WEBIDL_RUNTIME.Specifications.p)[j];
+        nh_webidl_Specification *Specification_p = &((nh_webidl_Specification*)NH_WEBIDL_GLOBAL.Specifications.p)[j];
     
         if (Specification_p) {
             for (int i = 0; i < Specification_p->Fragments.length; ++i) {

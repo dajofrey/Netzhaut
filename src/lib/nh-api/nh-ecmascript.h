@@ -12,7 +12,6 @@
 // INCLUDES ========================================================================================
 
 #include "nh-core.h"
-#include "nh-webidl.h"
 
 // STRUCTS =========================================================================================
 
@@ -40,10 +39,6 @@ nh_api_Script *nh_api_parseScript(
 
 NH_API_RESULT nh_api_evaluateScript(
     nh_api_Script *Script_p
-);
-
-NH_API_RESULT nh_api_installHostGlobals(
-    nh_api_Realm *Realm_p, nh_api_HostGlobals HostGlobals 
 );
 
 #endif // NH_API_NH_ECMASCRIPT_H

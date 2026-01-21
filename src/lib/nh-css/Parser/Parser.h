@@ -13,7 +13,7 @@
 
 #include "../Common/Includes.h"
 
-extern nh_webidl_Object *NH_CSS_DEFAULT_STYLE_SHEET_P;
+extern void *NH_CSS_DEFAULT_STYLE_SHEET_P;
 
 typedef struct nh_css_ComponentValueData {
     nh_core_Array Tokens;
@@ -25,12 +25,12 @@ typedef struct nh_css_DeclarationData {
     nh_core_Array Declarations; 
 } nh_css_DeclarationData;
 
-nh_webidl_Object *nh_css_parseStyleSheetFromUTF8( 
-    char *data_p, size_t length, nh_webidl_Object *Document_p
+void *nh_css_parseStyleSheetFromUTF8( 
+    char *data_p, size_t length, void *Document_p
 ); 
 
-nh_webidl_Object *nh_css_parseStyleSheetFromUTF32(
-    nh_encoding_UTF32String *String_p, nh_webidl_Object *Document_p
+void *nh_css_parseStyleSheetFromUTF32(
+    nh_encoding_UTF32String *String_p, void *Document_p
 );
 
 nh_css_ComponentValueData nh_css_parseComponentValuesFromUTF8Codepoints(

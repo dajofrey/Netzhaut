@@ -8,8 +8,9 @@
 
 // INCLUDES ========================================================================================
 
-#include "Definitions.h"
+#include "Interface.h"
 #include "Builtin.h"
+#include "Global.h"
 
 #include "../../nh-core/System/Memory.h"
 
@@ -174,4 +175,3 @@ nh_webidl_Interface *nh_webidl_getInterfaceFromFragment(
 
     return Interface_p;
 }
-

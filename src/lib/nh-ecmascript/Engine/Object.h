@@ -50,6 +50,12 @@ typedef enum NH_ECMASCRIPT_SLOT_E {
     NH_ECMASCRIPT_SLOT_COUNT,
 } NH_ECMASCRIPT_SLOT_E;
 
+typedef enum NH_ECMASCRIPT_ATTR_E {
+    NH_ECMASCRIPT_ATTR_WRITABLE = 1,
+    NH_ECMASCRIPT_ATTR_ENUMERABLE = 2,
+    NH_ECMASCRIPT_ATTR_CONFIGURABLE = 4,
+} NH_ECMASCRIPT_ATTR_E;
+
 typedef struct nh_ecmascript_Object {
     nh_ecmascript_Shape *Shape_p;
     nh_ecmascript_ObjectMethods *Methods_p; // Handle [[Get]], [[Set]], etc.
@@ -75,6 +81,21 @@ nh_ecmascript_Object *nh_ecmascript_createBuiltinFunction(
     void *steps_p, 
     nh_ecmascript_Realm *Realm_p,
     nh_ecmascript_Object *Prototype_p
+);
+
+void nh_ecmascript_defineDataProperty(
+    nh_ecmascript_Object *O_p,
+    const char *key_p,
+    nh_ecmascript_Value value,
+    uint8_t attributes
+);
+
+void nh_ecmascript_defineAccessorProperty(
+    nh_ecmascript_Object *O_p,
+    const char *key_p,
+    nh_ecmascript_Object *Getter_p, // Can be NULL
+    nh_ecmascript_Object *Setter_p, // Can be NULL
+    uint8_t attributes
 );
 
 #endif

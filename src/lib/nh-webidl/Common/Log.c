@@ -10,7 +10,7 @@
 
 #include "Log.h"
 
-#include "../Runtime/Definitions.h"
+#include "../Utils/Interface.h"
 #include "../../nh-core/Util/Debug.h"
 
 #include <string.h>

@@ -10,13 +10,14 @@
 
 #include "Object.h"
 #include "Realm.h"
+#include "PropertyDescriptor.h"
 
 #include "../../nh-core/System/Memory.h"
 
 #include <string.h>
 #include <stdlib.h>
 
-// LIFECYCLE FUNCTIONS ====================================================================
+// FUNCTIONS =======================================================================================
 
 /**
  * https://tc39.es/ecma262/#sec-ordinaryobjectcreate
@@ -51,35 +52,22 @@ nh_ecmascript_Object *nh_ecmascript_ordinaryFunctionCreate(
     nh_ecmascript_Object *prototype,
     nh_ecmascript_ASTNode *sourceCode, // Or bytecode
     nh_ecmascript_Environment *env,
-    nh_ecmascript_Realm *realm)
+    nh_ecmascript_Realm *Realm_p)
 {
-    // 1. Create the base object
-    // If prototype is NULL, the spec says use %Function.prototype%
-//    nh_ecmascript_Object *proto = prototype ? prototype : realm->intrinsics.functionPrototype;
-//    nh_ecmascript_Object *F = nh_ecmascript_ordinaryObjectCreate(proto, NULL, 4);
-//
-//    // 2. Set Internal Slots specific to JS functions
-//    F->type = NH_ECMASCRIPT_OBJECT_FUNCTION_ORDINARY;
-////    F->ecmascriptCode = sourceCode;
-//
-//    nh_ecmascript_InternalSlot *realmSlot = (nh_ecmascript_InternalSlot*)nh_core_allocate(sizeof(nh_ecmascript_InternalSlot));
-//    realmSlot->type = NH_ECMASCRIPT_INTERNAL_SLOT_CURRENT_REALM;
-//    realmSlot->p = realm;
-//    nh_core_appendToList(&F->InternalSlots, realmSlot);
-//
-//    nh_ecmascript_InternalSlot *envSlot = (nh_ecmascript_InternalSlot*)nh_core_allocate(sizeof(nh_ecmascript_InternalSlot));
-//    envSlot->type = NH_ECMASCRIPT_INTERNAL_SLOT_ENVIRONMENT;
-//    envSlot->p = realm;
-//    nh_core_appendToList(&F->InternalSlots, envSlot);
+    nh_ecmascript_Object *F_p = malloc(sizeof(nh_ecmascript_Object));
+    if (!F_p) return NULL;
 
-    // 3. Ordinary functions are always extensible
-//    F->extensible = true;
+    F_p->Methods_p = &NH_ECMASCRIPT_METHODS_FUNCTION;
+    F_p->Shape_p = Realm_p->EmptyObjectShape_p;
 
-    // 4. Note: length and name are usually set by the caller (the parser/interpreter)
-    // based on the function declaration.
+    // Initialize the Slots
+    F_p->Slots[NH_ECMASCRIPT_SLOT_PROTOTYPE]       = nh_ecmascript_makeObject(prototype);
+    F_p->Slots[NH_ECMASCRIPT_SLOT_EXTENSIBLE]      = nh_ecmascript_makeBool(true);
+    F_p->Slots[NH_ECMASCRIPT_SLOT_ECMASCRIPT_CODE] = nh_ecmascript_makeInternalPointer(sourceCode);
+    F_p->Slots[NH_ECMASCRIPT_SLOT_CONSTRUCT]       = nh_ecmascript_makeUndefined();
+    F_p->Slots[NH_ECMASCRIPT_SLOT_ENVIRONMENT]     = nh_ecmascript_makeInternalPointer(env);
 
-//    return F;
-return NULL;
+    return F_p;
 }
 
 /**
@@ -112,62 +100,55 @@ nh_ecmascript_Object *nh_ecmascript_createBuiltinFunction(
     return F_p;
 }
 
-// PROPERTY FUNCTIONS =============================================================================
+void nh_ecmascript_defineDataProperty(
+    nh_ecmascript_Object *O_p,
+    const char *key_p,
+    nh_ecmascript_Value value,
+    uint8_t attributes)
+{
+    // 1. Create the Property Descriptor (Spec 6.2.4)
+    // We assume a Data Property here (Value + Writable/Enumerable/Configurable)
+    nh_ecmascript_PropertyDescriptor desc = {0};
+    desc.Value = value;
+    
+    desc.flags.hasValue        = true;
+    desc.flags.hasWritable     = true;
+    desc.flags.hasEnumerable   = true;
+    desc.flags.hasConfigurable = true;
 
-//static nh_ecmascript_Property* nh_ecmascript_newProperty(
-//    bool isAccessor)
-//{
-//    nh_ecmascript_Property *prop = (nh_ecmascript_Property*)nh_core_allocate(sizeof(nh_ecmascript_Property));
-//    if (!prop) return NULL;
-//
-//    prop->isAccessor = isAccessor;
-//    prop->enumerable = false;   // Spec default
-//    prop->configurable = false; // Spec default
-//
-//    if (isAccessor) {
-//        prop->accessor.get = NULL;
-//        prop->accessor.set = NULL;
-//    } else {
-//        prop->data.value = nh_ecmascript_makeUndefined();
-//        prop->data.writable = false; // Spec default
-//    }
-//
-//    return prop;
-//}
-//
-//void nh_ecmascript_createDataProperty(
-//    nh_ecmascript_Object *Obj_p,
-//    const char *Key,
-//    nh_ecmascript_Value Value,
-//    bool Writable,
-//    bool Enumerable,
-//    bool Configurable)
-//{
-//    nh_ecmascript_Property *NewProp_p = nh_ecmascript_newProperty(false);
-//
-//    NewProp_p->data.value = Value;
-//    NewProp_p->data.writable = Writable;
-//    NewProp_p->enumerable = Enumerable;
-//    NewProp_p->configurable = Configurable;
-//
-//    // Assuming your HashMap key is the string property name
-//    nh_core_addToHashMap(Obj_p->Properties, Key, NewProp_p);
-//}
-//
-//void nh_ecmascript_createAccessorProperty(
-//    nh_ecmascript_Object *Obj_p,
-//    const char *Key,
-//    nh_ecmascript_Object *GetterObj_p, // Can be NULL
-//    nh_ecmascript_Object *SetterObj_p, // Can be NULL
-//    bool Enumerable,
-//    bool Configurable)
-//{
-//    nh_ecmascript_Property *NewProp_p = nh_ecmascript_newProperty(true);
-//
-//    NewProp_p->accessor.get = GetterObj_p;
-//    NewProp_p->accessor.set = SetterObj_p;
-//    NewProp_p->enumerable   = Enumerable;
-//    NewProp_p->configurable = Configurable;
-//
-//    nh_core_addToHashMap(Obj_p->Properties, Key, NewProp_p);
-//}
+    // Attributes bitmask mapping (usually: 1=Writable, 2=Enumerable, 4=Configurable)
+    desc.flags.writable     = (attributes & NH_ECMASCRIPT_ATTR_WRITABLE);
+    desc.flags.enumerable   = (attributes & NH_ECMASCRIPT_ATTR_ENUMERABLE);
+    desc.flags.configurable = (attributes & NH_ECMASCRIPT_ATTR_CONFIGURABLE);
+
+    // 2. Dispatch to the object's internal [[DefineOwnProperty]]
+    // This will trigger Shape transitions and storage allocation
+    O_p->Methods_p->defineOwnProperty(O_p, key_p, &desc);
+}
+
+void nh_ecmascript_defineAccessorProperty(
+    nh_ecmascript_Object *O_p,
+    const char *key_p,
+    nh_ecmascript_Object *Getter_p, // Can be NULL
+    nh_ecmascript_Object *Setter_p, // Can be NULL
+    uint8_t attributes)
+{
+    // 1. Create the Property Descriptor (Spec 6.2.4)
+    nh_ecmascript_PropertyDescriptor desc = {0};
+    
+    // An Accessor Descriptor has [[Get]] and [[Set]], but NO [[Value]] or [[Writable]]
+    desc.flags.hasGet          = true;
+    desc.flags.hasSet          = true;
+    desc.flags.hasEnumerable   = true;
+    desc.flags.hasConfigurable = true;
+
+    desc.Get = Getter_p;
+    desc.Set = Setter_p;
+
+    // Attributes bitmask mapping
+    desc.flags.enumerable   = (attributes & NH_ECMASCRIPT_ATTR_ENUMERABLE);
+    desc.flags.configurable = (attributes & NH_ECMASCRIPT_ATTR_CONFIGURABLE);
+
+    // 2. Dispatch to the object's internal [[DefineOwnProperty]]
+    O_p->Methods_p->defineOwnProperty(O_p, key_p, &desc);
+}

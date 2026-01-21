@@ -23,13 +23,6 @@ typedef struct nh_api_DocumentContext nh_api_DocumentContext;
 
 // FUNCTIONS =======================================================================================
 
-nh_api_HostGlobals nh_api_getHTMLGlobals(
-);
-
-NH_API_RESULT nh_api_freeHTMLGlobals(
-    nh_api_HostGlobals *Globals_p
-);
-
 nh_api_DocumentContext *nh_api_createDocumentContext(
     bool browsingContext
 );

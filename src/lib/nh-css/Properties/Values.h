@@ -1,8 +1,6 @@
 #ifndef NH_CSS_VALUES_H
 #define NH_CSS_VALUES_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -14,8 +12,6 @@
 #include "../Main/SourceTree.h"
 #include "../Parser/Parser.h"
 #include "../Common/Includes.h"
-
-#endif
 
 /** @addtogroup lib_nh-css_enums
  *  @{
@@ -94,12 +90,12 @@
 
     typedef struct nh_css_Number {
         nh_css_ValueCommon Common;
-        NH_WEBIDL_DOUBLE value;
+        double value;
     } nh_css_Number;
 
     typedef struct nh_css_Value {
         nh_css_ValueCommon Common;
-        NH_WEBIDL_DOUBLE number;
+        double number;
         nh_encoding_UTF8String String; 
     } nh_css_Value;
 
@@ -122,12 +118,12 @@
     );
 
     NH_API_RESULT nh_css_setSpecifiedValues(
-        nh_css_LogContext *LogContext_p, nh_webidl_Object *Element_p, nh_webidl_Object *AuthorStyleSheets_p, 
+        nh_css_LogContext *LogContext_p, void *Element_p, void *AuthorStyleSheets_p, 
         nh_core_List UserStyleSheets
     );
 
     NH_API_RESULT nh_css_freeSpecifiedValues(
-        nh_webidl_Object *Node_p
+        void *Node_p
     );
 
     bool nh_css_isStringValue(

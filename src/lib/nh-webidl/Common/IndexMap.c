@@ -10,8 +10,8 @@
 
 #include "IndexMap.h"
 
-#include "../Runtime/Builtin.h"
-#include "../Runtime/Parser.h"
+#include "../Utils/Builtin.h"
+#include "../Utils/Parser.h"
 
 #include "../../nh-core/System/Memory.h"
 

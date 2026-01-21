@@ -31,11 +31,11 @@ typedef struct nh_css_Candidate {
     bool direct;
     NH_CSS_DECLARATION_ORIGIN origin;
     nh_css_Declaration *Declaration_p;
-    nh_webidl_Object *CSSStyleRule_p;
+    void *CSSStyleRule_p;
 } nh_css_Candidate;
 
 nh_css_Filter nh_css_filter(
-    nh_webidl_Object *Element_p, nh_webidl_Object *AuthorStyleSheets_p, nh_core_List UserStyleSheets
+    void *Element_p, void *AuthorStyleSheets_p, nh_core_List UserStyleSheets
 );
 
 #endif // NH_CSS_PROPERTIES_FILTER_H

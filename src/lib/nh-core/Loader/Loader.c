@@ -116,6 +116,7 @@ static NH_API_RESULT nh_core_loadDependencies(
         case NH_MODULE_WEBIDL : 
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_CORE, 0))
             NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ENCODING, 0))
+            NH_CORE_CHECK(NH_LOADER.load_f(NH_MODULE_ECMASCRIPT, 0))
             break;
 
         case NH_MODULE_ECMASCRIPT : 
@@ -331,6 +332,9 @@ static bool nh_core_isUnloadAllowed(
             return true;
 
         case NH_MODULE_ECMASCRIPT : 
+            if (NH_LOADER.Modules_p[NH_MODULE_WEBIDL].loaded == true) {
+                return false;    
+            }
             return true;
 
         case NH_MODULE_CSS :

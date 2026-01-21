@@ -21,22 +21,11 @@
 
 // FUNCTIONS =======================================================================================
 
-nh_api_HostGlobals nh_api_getHostGlobals()
+NH_API_RESULT nh_api_installInterfaces(
+    nh_api_Realm *Realm_p)
 {
-    typedef nh_api_HostGlobals (*nh_api_getHostGlobals_f)(); 
+    typedef NH_API_RESULT (*nh_api_installInterfaces_f)(nh_api_Realm *Realm_p); 
     nh_core_Loader *Loader_p = nh_api_getLoader();
-    nh_api_getHostGlobals_f getHostGlobals_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WEBIDL, 0, "nh_webidl_getHostGlobals");
-    nh_api_HostGlobals HostGlobals;
-    memset(&HostGlobals, 0, sizeof(nh_api_HostGlobals));
-    return getHostGlobals_f ? getHostGlobals_f() : HostGlobals;
-}
-
-nh_api_HostGlobals nh_api_getHostGlobalsForHTML()
-{
-    typedef nh_api_HostGlobals (*nh_html_getHostGlobalsForHTML_f)();
-    nh_core_Loader *Loader_p = nh_api_getLoader();
-    nh_html_getHostGlobalsForHTML_f getHostGlobalsForHTML_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WEBIDL, 0, "nh_webidl_getHostGlobalsForHTML");
-    nh_api_HostGlobals HostGlobals;
-    memset(&HostGlobals, 0, sizeof(nh_api_HostGlobals));
-    return getHostGlobalsForHTML_f ? getHostGlobalsForHTML_f() : HostGlobals;
+    nh_api_installInterfaces_f installInterfaces_f = !Loader_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WEBIDL, 0, "nh_api_installInterfaces");
+    return installInterfaces_f ? installInterfaces_f(Realm_p) : NH_API_ERROR_BAD_STATE;
 }

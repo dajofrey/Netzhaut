@@ -1,7 +1,5 @@
-#ifndef NH_WEBIDL_DEFINITIONS_H
-#define NH_WEBIDL_DEFINITIONS_H
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef NH_WEBIDL_INTERFACE_H
+#define NH_WEBIDL_INTERFACE_H
 
 /**
  * Netzhaut - Web Browser Engine
@@ -11,19 +9,36 @@
 
 #include "../Common/Includes.h"
 
-#include "Runtime.h"
 #include "Parser.h"
-
-#endif
 
 /** @addtogroup lib_nh-webidl_structs
  *  @{
  */
 
+    typedef struct nh_webidl_Fragment nh_webidl_Fragment;
+
     typedef struct nh_webidl_InterfaceMember {
         const char *name_p;
         nh_webidl_ParseNode *Node_p;
     } nh_webidl_InterfaceMember;
+
+    typedef struct nh_webidl_Specification {
+        char name_p[255];
+        nh_core_Array Fragments;
+    } nh_webidl_Specification;
+    
+    typedef struct nh_webidl_InterfaceInheritance {
+        const char *interface_p;
+        const char *specification_p;
+    } nh_webidl_InterfaceInheritance;
+    
+    typedef struct nh_webidl_Interface {
+        bool partial;
+        char *name_p;
+        nh_core_Array Members;
+        nh_webidl_Specification *Specification_p;
+        nh_webidl_InterfaceInheritance *Inheritance_p;
+    } nh_webidl_Interface;
 
 /** @} */
 

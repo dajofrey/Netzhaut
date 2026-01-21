@@ -1,5 +1,5 @@
 /**
- * Netzhaut - Web Browser 
+ * Netzhaut - Web Browser Engine 
  * Copyright (C) 2022  Dajo Frey
  * Published under MIT.
  */
@@ -35,6 +35,7 @@ int main(
     nh_api_Runtime *Runtime_p = nh_api_startRuntime();
     nh_api_Agent *Agent_p = nh_api_createAgent(Runtime_p);
     nh_api_Realm *Realm_p = nh_api_initializeRealm(Agent_p);
+    nh_api_installInterfaces(Realm_p);
     nh_api_Script *Script_p = nh_api_parseScript(src_p, Realm_p, 0);
     nh_api_evaluateScript(Script_p);
 

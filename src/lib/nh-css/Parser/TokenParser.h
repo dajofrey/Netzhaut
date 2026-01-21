@@ -1,8 +1,6 @@
 #ifndef NH_CSS_TOKEN_PARSER_H
 #define NH_CSS_TOKEN_PARSER_H
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 /**
  * Netzhaut - Web Browser Engine
  * Copyright (C) 2022  Dajo Frey
@@ -11,8 +9,7 @@
 
 #include "Tokenizer.h"
 #include "../Common/Includes.h"
-
-#endif
+#include "../../nh-encoding/Encodings/UTF8.h"
 
 /** @addtogroup lib_nh-css_enums
  *  @{
@@ -90,8 +87,8 @@
     /**
      * @param Document_p Must be interface "Document" from specification "CSS".
      */
-    nh_webidl_Object *nh_css_parseStyleSheet(
-        nh_css_TokenParser *Parser_p, nh_webidl_Object *Document_p
+    void *nh_css_parseStyleSheet(
+        nh_css_TokenParser *Parser_p, void *Document_p
     );
 
     nh_core_Array nh_css_parseDeclarations(

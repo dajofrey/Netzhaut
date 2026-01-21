@@ -71,7 +71,16 @@ Displays an HTML file.
 ```bash
 ./nh-ecmascript <file-path> [config-options]
 ```  
-Runs a ECMAScript script.  
+Runs a ECMAScript script. 
+
+`file-path` File-path to ECMAScript file.  
+`config-options` If specified, passes custom config-options to Netzhaut.
+
+### nh-webidl
+```bash
+./nh-webidl <file-path> [config-options]
+```  
+Runs a ECMAScript script with WebIDL interfaces. 
 
 `file-path` File-path to ECMAScript file.  
 `config-options` If specified, passes custom config-options to Netzhaut.
