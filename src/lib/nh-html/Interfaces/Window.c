@@ -20,14 +20,14 @@
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_html_initializeDocument(
-    nh_webidl_Object *Document_p)
+    nh_ecmascript_Object *Document_p)
 {
     return NH_API_SUCCESS;
 }
 
-nh_webidl_Object *nh_html_createDocument()
+nh_ecmascript_Object *nh_html_createDocument()
 {
-    nh_webidl_Object *Document_p = nh_webidl_createCompositeObject("HTML", "Document");
+    nh_ecmascript_Object *Document_p = nh_webidl_createCompositeObject("HTML", "Document");
 
     // The node document of a document is that document itself. All nodes have a node document at all times. 
     nh_dom_setNodeDocument(NH_WEBIDL_GET_DOM_NODE(Document_p), Document_p);

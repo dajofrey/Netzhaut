@@ -35,26 +35,26 @@
  * https://html.spec.whatwg.org/multipage/semantics.html#update-a-style-block
  */
 NH_API_RESULT nh_html_updateAStyleBlock(
-    nh_webidl_Object *Object_p)
+    nh_ecmascript_Object *Object_p)
 {
     nh_core_List *Children_p = nh_dom_getNodeChildren(NH_WEBIDL_GET_DOM_NODE(Object_p));
     if (!Children_p || Children_p->size < 1) {return NH_API_SUCCESS;}
 
-    nh_webidl_Object *Text_p = NH_WEBIDL_GET_DOM_TEXT(Children_p->pp[0]);
+    nh_ecmascript_Object *Text_p = NH_WEBIDL_GET_DOM_TEXT(Children_p->pp[0]);
     if (!Text_p) {return NH_API_ERROR_BAD_STATE;}
 
-    nh_webidl_DOMString *String_p = nh_dom_getTextString(Text_p);
+    nh_encoding_UTF8String *String_p = nh_dom_getTextString(Text_p);
     NH_CORE_CHECK_NULL(String_p)
 
     // puts(String_p->p) to print the style content
 
-    nh_webidl_Object *Document_p = nh_dom_getNodeDocument(NH_WEBIDL_GET_DOM_NODE(Object_p));
+    nh_ecmascript_Object *Document_p = nh_dom_getNodeDocument(NH_WEBIDL_GET_DOM_NODE(Object_p));
     NH_CORE_CHECK_NULL(Document_p)
 
     puts("TODO updateAStyleBlock");
 
     nh_encoding_UTF32String String = nh_encoding_decodeUTF8(String_p->p, String_p->length, NULL);
-    nh_webidl_Object *StyleSheet_p = nh_css_parseStyleSheetFromUTF32(&String, nh_css_getDocument(Document_p));
+    nh_ecmascript_Object *StyleSheet_p = nh_css_parseStyleSheetFromUTF32(&String, nh_css_getDocument(Document_p));
     nh_encoding_freeUTF32(&String);
 
     return NH_API_SUCCESS;

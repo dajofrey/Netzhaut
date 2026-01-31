@@ -21,12 +21,12 @@
 //    } nh_webidl_Result;
 //
 //    typedef struct nh_webidl_NewObject {
-//        nh_webidl_Object *Exception_p;
-//        nh_webidl_Object *NewObject_p;
+//        nh_ecmascript_Object *Exception_p;
+//        nh_ecmascript_Object *NewObject_p;
 //    } nh_webidl_NewObject;
 //
 //    typedef struct nh_webidl_Boolean {
-//        nh_webidl_Object *Exception_p;
+//        nh_ecmascript_Object *Exception_p;
 //        bool boolean;
 //    } nh_webidl_Boolean;
 

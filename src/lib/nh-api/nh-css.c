@@ -55,7 +55,7 @@ nh_api_StyleSheet *nh_api_parseStyleSheet(
     char *data_p, size_t length)
 {
 return NULL;
-//    typedef nh_api_StyleSheet *(*nh_css_parseStyleSheetFromUTF8_f)(char *data_p, size_t length, nh_webidl_Object *Document_pi); 
+//    typedef nh_api_StyleSheet *(*nh_css_parseStyleSheetFromUTF8_f)(char *data_p, size_t length, nh_ecmascript_Object *Document_pi); 
 //    nh_core_Loader *Loader_p = nh_api_getLoader();
 //    nh_css_parseStyleSheetFromUTF8_f parseStyleSheet_f = !Loader_p || !data_p || length == 0 ? NULL : Loader_p->loadSymbol_f(NH_MODULE_CSS, 0, "nh_css_parseStyleSheetFromUTF8");
 //    return parseStyleSheet_f ? parseStyleSheet_f(data_p, length, NULL) : NULL;

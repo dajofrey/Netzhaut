@@ -18,16 +18,16 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_css_getDocument(
-        nh_webidl_Object *Object_p
+    nh_ecmascript_Object *nh_css_getDocument(
+        nh_ecmascript_Object *Object_p
     );
     
     nh_css_Layout *nh_css_getLayout(
-        nh_webidl_Object *Document_p
+        nh_ecmascript_Object *Document_p
     );
 
-    nh_webidl_Object *nh_css_getStyleSheetList(
-        nh_webidl_Object *Document_p
+    nh_ecmascript_Object *nh_css_getStyleSheetList(
+        nh_ecmascript_Object *Document_p
     );
 
 /** @} */

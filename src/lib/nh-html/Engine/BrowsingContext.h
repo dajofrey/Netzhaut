@@ -27,7 +27,7 @@ typedef enum NH_HTML_AGENT_CLUSTER_KEY {
 // STRUCTS =========================================================================================
 
 typedef struct nh_html_BrowsingContext {
-    nh_webidl_Object *WindowProxy_p;
+    nh_ecmascript_Object *WindowProxy_p;
     struct nh_html_BrowsingContext *OpenerBrowsingContext_p;
     bool disowned;
     bool isClosing;

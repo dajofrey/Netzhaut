@@ -30,7 +30,7 @@
     );
 
     NH_API_RESULT nh_css_parseRules(
-        nh_core_Array *Rules_p, nh_webidl_Object *StyleRules_p
+        nh_core_Array *Rules_p, nh_ecmascript_Object *StyleRules_p
     );
 
 /** @} */

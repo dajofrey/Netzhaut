@@ -22,21 +22,21 @@
 // FUNCTIONS =======================================================================================
 
 nh_css_SelectorParseNode *nh_css_getCSSStyleRuleSelectors(
-    nh_webidl_Object *CSSStyleRule_p)
+    nh_ecmascript_Object *CSSStyleRule_p)
 {
     return CSSStyleRule_p->internal_p;
 }
 
-nh_webidl_Object *nh_css_getStyleRuleDeclaration(
-    nh_webidl_Object *CSSStyleRule_p)
+nh_ecmascript_Object *nh_css_getStyleRuleDeclaration(
+    nh_ecmascript_Object *CSSStyleRule_p)
 {
     return CSSStyleRule_p->Attributes.pp[0];
 }
 
-nh_webidl_Object *nh_css_createStyleRule(
-    nh_css_SelectorParseNode *Selectors_p, nh_webidl_Object *StyleDeclaration_p)
+nh_ecmascript_Object *nh_css_createStyleRule(
+    nh_css_SelectorParseNode *Selectors_p, nh_ecmascript_Object *StyleDeclaration_p)
 {
-    nh_webidl_Object *CSSStyleRule_p = nh_webidl_createObject("CSS", "CSSStyleRule");
+    nh_ecmascript_Object *CSSStyleRule_p = nh_webidl_createObject("CSS", "CSSStyleRule");
     NH_CORE_CHECK_MEM_2(NULL, CSSStyleRule_p)
 
     CSSStyleRule_p->internal_p = Selectors_p;

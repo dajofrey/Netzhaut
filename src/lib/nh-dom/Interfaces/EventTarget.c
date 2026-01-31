@@ -24,7 +24,7 @@
 // INITIALIZE ======================================================================================
 
 NH_API_RESULT nh_dom_initializeEventTarget(
-    nh_webidl_Object *EventTarget_p)
+    nh_ecmascript_Object *EventTarget_p)
 {
     EventTarget_p->internal_p = nh_core_allocate(sizeof(nh_core_List));
     NH_CORE_CHECK_MEM(EventTarget_p->internal_p)

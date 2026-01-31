@@ -82,12 +82,12 @@ static NH_API_RESULT nh_css_insertOrDropCandidate(
 }
 
 static NH_API_RESULT nh_css_filterFromStyleSheet(
-    nh_css_Filter *Filter_p, nh_webidl_Object *Element_p, nh_webidl_Object *CSSStyleSheet_p)
+    nh_css_Filter *Filter_p, nh_ecmascript_Object *Element_p, nh_ecmascript_Object *CSSStyleSheet_p)
 {
     nh_core_List *Rules_p = nh_css_getRuleList(CSSStyleSheet_p)->internal_p;
 
     for (int i = 0; i < Rules_p->size; ++i) {
-        nh_webidl_Object *CSSStyleRule_p = NH_WEBIDL_GET_CSS_STYLE_RULE(Rules_p->pp[i]);
+        nh_ecmascript_Object *CSSStyleRule_p = NH_WEBIDL_GET_CSS_STYLE_RULE(Rules_p->pp[i]);
         if (CSSStyleRule_p && nh_css_matchSelectors(nh_css_getCSSStyleRuleSelectors(CSSStyleRule_p), Element_p)) {
             // Selector match successful, we found a rule that potentially applies to the element.
             nh_core_Array *Array_p = 
@@ -103,7 +103,7 @@ static NH_API_RESULT nh_css_filterFromStyleSheet(
 }
 
 static NH_API_RESULT nh_css_filterFromDefaultStyleSheet(
-    nh_css_Filter *Filter_p, nh_webidl_Object *Element_p)
+    nh_css_Filter *Filter_p, nh_ecmascript_Object *Element_p)
 {
     int oldLength = Filter_p->Candidates.length;
     nh_css_filterFromStyleSheet(Filter_p, Element_p, NH_CSS_DEFAULT_STYLE_SHEET_P);
@@ -118,7 +118,7 @@ static NH_API_RESULT nh_css_filterFromDefaultStyleSheet(
 }
 
 static NH_API_RESULT nh_css_filterFromAuthorStyleSheet(
-    nh_css_Filter *Filter_p, nh_webidl_Object *Element_p, nh_webidl_Object *StyleSheet_p)
+    nh_css_Filter *Filter_p, nh_ecmascript_Object *Element_p, nh_ecmascript_Object *StyleSheet_p)
 {
     int oldLength = Filter_p->Candidates.length;
     nh_css_filterFromStyleSheet(Filter_p, Element_p, StyleSheet_p);
@@ -133,7 +133,7 @@ static NH_API_RESULT nh_css_filterFromAuthorStyleSheet(
 }
 
 static NH_API_RESULT nh_css_filterFromStyleAttributes(
-    nh_css_Filter *Filter_p, nh_webidl_Object *Element_p)
+    nh_css_Filter *Filter_p, nh_ecmascript_Object *Element_p)
 {
     int oldLength = Filter_p->Candidates.length;
 
@@ -141,8 +141,8 @@ static NH_API_RESULT nh_css_filterFromStyleAttributes(
 
     for (int i = 0; i < Attributes_p->size; ++i) 
     {
-        nh_webidl_DOMString *LocalName_p = nh_dom_getAttrLocalName(Attributes_p->pp[i]);
-        nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attributes_p->pp[i]);
+        nh_encoding_UTF8String *LocalName_p = nh_dom_getAttrLocalName(Attributes_p->pp[i]);
+        nh_encoding_UTF8String *Value_p = nh_dom_getAttrValue(Attributes_p->pp[i]);
 
         if (!strcmp(LocalName_p->p, "style")) {
 // TODO free
@@ -169,7 +169,7 @@ static NH_API_RESULT nh_css_filterFromStyleAttributes(
  * Cascading will afterwards decide which filtered value to apply.
  */
 nh_css_Filter nh_css_filter(
-    nh_webidl_Object *Element_p, nh_webidl_Object *AuthorStyleSheets_p, nh_core_List UserStyleSheets)
+    nh_ecmascript_Object *Element_p, nh_ecmascript_Object *AuthorStyleSheets_p, nh_core_List UserStyleSheets)
 {
     nh_css_Filter Filter;
     Filter.Candidates = nh_core_initArray(sizeof(nh_css_Candidate), 255);

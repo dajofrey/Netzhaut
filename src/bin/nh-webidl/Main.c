@@ -38,6 +38,5 @@ int main(
     nh_api_installInterfaces(Realm_p);
     nh_api_Script *Script_p = nh_api_parseScript(src_p, Realm_p, 0);
     nh_api_evaluateScript(Script_p);
-
     nh_api_terminate();
 }

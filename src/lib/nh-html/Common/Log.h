@@ -10,7 +10,7 @@
 #include "Includes.h"
 
 NH_API_RESULT nh_html_logDocument(
-    char *logId_p, nh_webidl_Object *Document_p
+    char *logId_p, nh_ecmascript_Object *Document_p
 );
 
 #endif // NH_HTML_COMMON_LOG_H 

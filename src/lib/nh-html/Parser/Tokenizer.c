@@ -44,7 +44,7 @@ static void nh_html_decrementTokenizer(
 // INIT ============================================================================================
 
 nh_html_Tokenizer nh_html_initTokenizer(
-    void *Parser_p, nh_webidl_USVString InputStream)
+    void *Parser_p, nh_encoding_UTF8String InputStream)
 {
     nh_html_Tokenizer Tokenizer;
     Tokenizer.state           = NH_HTML_TOKENIZATION_STATE_DATA;
@@ -101,8 +101,8 @@ static nh_html_Attribute *nh_html_newAttribute(
     nh_html_Attribute *Attribute_p = (nh_html_Attribute*)nh_core_incrementArray(&Tokenizer_p->Token_p->StartOrEndTag.Attributes);
     NH_CORE_CHECK_MEM_2(NULL, Attribute_p)
 
-    Attribute_p->Name = nh_webidl_initDOMString(16);
-    Attribute_p->Value = nh_webidl_initDOMString(64);
+    Attribute_p->Name = nh_encoding_initUTF8(16);
+    Attribute_p->Value = nh_encoding_initUTF8(64);
 
     return Attribute_p;
 }
@@ -140,16 +140,16 @@ static nh_html_Token *nh_html_newToken(
 
         case NH_HTML_TOKEN_START_TAG :
         case NH_HTML_TOKEN_END_TAG :
-            Token_p->StartOrEndTag.TagName = nh_webidl_initDOMString(8);
+            Token_p->StartOrEndTag.TagName = nh_encoding_initUTF8(8);
             Token_p->StartOrEndTag.Attributes = nh_core_initArray(sizeof(nh_html_Attribute), 8);
             break;
 
         case NH_HTML_TOKEN_COMMENT :
-            Token_p->CommentOrCharacter.Data = nh_webidl_initDOMString(64);
+            Token_p->CommentOrCharacter.Data = nh_encoding_initUTF8(64);
             break;
 
         case NH_HTML_TOKEN_CHARACTER :
-            Token_p->CommentOrCharacter.Data = nh_webidl_initDOMString(2);
+            Token_p->CommentOrCharacter.Data = nh_encoding_initUTF8(2);
             break;
     }
 
@@ -200,7 +200,7 @@ static NH_API_RESULT nh_html_emitCharacterToken(
 {
     nh_html_Token *Token_p = nh_html_newToken(Tokenizer_p, NH_HTML_TOKEN_CHARACTER);
     NH_CORE_CHECK_MEM(Token_p)
-    nh_webidl_appendUnicodeToDOMString(&Token_p->CommentOrCharacter.Data, &codepoint, 1);
+    nh_encoding_appendUTF8(&Token_p->CommentOrCharacter.Data, &codepoint, 1);
     return nh_html_emit(Tokenizer_p);
 }
 
@@ -215,9 +215,9 @@ static NH_API_RESULT nh_html_emitEOFToken(
 static NH_API_RESULT nh_html_allocateDOCTYPEName(
     nh_html_Tokenizer *Tokenizer_p)
 {
-    Tokenizer_p->Token_p->DOCTYPE.Name_p = (nh_webidl_DOMString*)nh_core_allocate(sizeof(nh_webidl_DOMString));
+    Tokenizer_p->Token_p->DOCTYPE.Name_p = (nh_encoding_UTF8String*)nh_core_allocate(sizeof(nh_encoding_UTF8String));
     NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.Name_p)
-    *Tokenizer_p->Token_p->DOCTYPE.Name_p = nh_webidl_initDOMString(16);
+    *Tokenizer_p->Token_p->DOCTYPE.Name_p = nh_encoding_initUTF8(16);
 
     return NH_API_SUCCESS;
 }
@@ -225,9 +225,9 @@ static NH_API_RESULT nh_html_allocateDOCTYPEName(
 static NH_API_RESULT nh_html_allocateDOCTYPEPublicIdentifier(
     nh_html_Tokenizer *Tokenizer_p)
 {
-    Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = (nh_webidl_DOMString*)nh_core_allocate(sizeof(nh_webidl_DOMString));
+    Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = (nh_encoding_UTF8String*)nh_core_allocate(sizeof(nh_encoding_UTF8String));
     NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p)
-    *Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = nh_webidl_initDOMString(16);
+    *Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p = nh_encoding_initUTF8(16);
 
     return NH_API_SUCCESS;
 }
@@ -237,9 +237,9 @@ static NH_API_RESULT nh_html_allocateDOCTYPESystemIdentifier(
 {
     if (!Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p) 
     {
-        Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = (nh_webidl_DOMString*)nh_core_allocate(sizeof(nh_webidl_DOMString));
+        Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = (nh_encoding_UTF8String*)nh_core_allocate(sizeof(nh_encoding_UTF8String));
         NH_CORE_CHECK_MEM(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p)
-        *Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = nh_webidl_initDOMString(16);
+        *Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p = nh_encoding_initUTF8(16);
     }
 
     return NH_API_SUCCESS;
@@ -398,7 +398,7 @@ static NH_API_RESULT nh_html_consumeTagName(
 {
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         return NH_API_SUCCESS;
     }
 
@@ -418,7 +418,7 @@ static NH_API_RESULT nh_html_consumeTagName(
             NH_CORE_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
     }
 
     return NH_API_SUCCESS;
@@ -461,13 +461,13 @@ static NH_API_RESULT nh_html_consumeRCDATAEndTagName(
 {
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
@@ -543,13 +543,13 @@ static NH_API_RESULT nh_html_consumeRAWTEXTEndTagName(
 {
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
@@ -633,13 +633,13 @@ static NH_API_RESULT nh_html_consumeScriptDataEndTagName(
 {
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
@@ -831,13 +831,13 @@ static NH_API_RESULT nh_html_consumeScriptDataEscapedEndTagName(
 {
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &lower, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
 
     if (nh_encoding_isASCIILowerAlpha(Tokenizer_p->codepoint)) {
-        nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
+        nh_encoding_appendUTF8(&Tokenizer_p->Token_p->StartOrEndTag.TagName, &Tokenizer_p->codepoint, 1);
         nh_webidl_appendToUSVString(&Tokenizer_p->TemporaryBuffer, &Tokenizer_p->codepoint, 1);
         return NH_API_SUCCESS;
     }
@@ -904,13 +904,13 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeStart(
         case 0x2F :
         case 0x3E :
         {
-            nh_webidl_DOMString TemporaryBuffer = nh_webidl_encodeTextToDOMString(Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
+            nh_encoding_UTF8String TemporaryBuffer = nh_encoding_encodeUTF8(Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
             if (TemporaryBuffer.length > 0 && !strcmp(TemporaryBuffer.p, "script")) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_DOUBLE_ESCAPED;
             }
             else {Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_ESCAPED;}
             NH_CORE_CHECK(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
-            nh_webidl_freeDOMString(&TemporaryBuffer);
+            nh_encoding_freeUTF8(&TemporaryBuffer);
             break;
         }
         default :
@@ -1044,13 +1044,13 @@ static NH_API_RESULT nh_html_consumeScriptDataDoubleEscapeEnd(
         case 0x2F :
         case 0x3E :
         {
-            nh_webidl_DOMString TemporaryBuffer = nh_webidl_encodeTextToDOMString(Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
+            nh_encoding_UTF8String TemporaryBuffer = nh_encoding_encodeUTF8(Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
             if (TemporaryBuffer.length > 0 && !strcmp(TemporaryBuffer.p, "script")) {
                 Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_ESCAPED;
             }
             else {Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_SCRIPT_DATA_DOUBLE_ESCAPED;}
             NH_CORE_CHECK(nh_html_emitCharacterToken(Tokenizer_p, Tokenizer_p->codepoint))
-            nh_webidl_freeDOMString(&TemporaryBuffer);
+            nh_encoding_freeUTF8(&TemporaryBuffer);
             break;
         }
         default :
@@ -1079,7 +1079,7 @@ static NH_API_RESULT nh_html_consumeBeforeAttributeName(
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_EQUALS_SIGN_BEFORE_ATTRIBUTE_NAME))
             nh_html_Attribute *Attribute_p = nh_html_newAttribute(Tokenizer_p);
             NH_CORE_CHECK_MEM(Attribute_p)
-            nh_webidl_appendUnicodeToDOMString(&Attribute_p->Name, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Attribute_p->Name, &Tokenizer_p->codepoint, 1);
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_ATTRIBUTE_NAME;
             break;
         default :
@@ -1097,7 +1097,7 @@ static NH_API_RESULT nh_html_consumeAttributeName(
 {
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Name, &lower, 1);
+        nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Name, &lower, 1);
         return NH_API_SUCCESS;
     }
  
@@ -1117,14 +1117,14 @@ static NH_API_RESULT nh_html_consumeAttributeName(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Name, &replace, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Name, &replace, 1);
             break;
         case 0x22 :
         case 0x27 :
         case 0x3C :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_CHARACTER_IN_ATTRIBUTE_NAME))
         default :
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Name, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Name, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1204,10 +1204,10 @@ static NH_API_RESULT nh_html_consumeAttributeValueDoubleQuoted(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &replace, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &replace, 1);
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1229,10 +1229,10 @@ static NH_API_RESULT nh_html_consumeAttributeValueSingleQuoted(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &replace, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &replace, 1);
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1261,7 +1261,7 @@ static NH_API_RESULT nh_html_consumeAttributeValueUnquoted(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &replace, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &replace, 1);
             break;
         case 0x22 :
         case 0x27 :
@@ -1271,7 +1271,7 @@ static NH_API_RESULT nh_html_consumeAttributeValueUnquoted(
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_CHARACTER_IN_UNQUOTED_ATTRIBUTE_VALUE))
             // fallthrough
         default :
-            nh_webidl_appendUnicodeToDOMString(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&nh_html_getCurrentAttribute(Tokenizer_p)->Value, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1336,10 +1336,10 @@ static NH_API_RESULT nh_html_consumeBogusComment(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &replace, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &replace, 1);
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1376,17 +1376,17 @@ static NH_API_RESULT nh_html_consumeMarkupDeclarationOpen(
             exit(0);
         }
 
-        nh_webidl_DOMString Temporary = nh_webidl_initDOMString(7);
-        nh_webidl_appendUnicodeToDOMString(&Temporary, &Tokenizer_p->InputStream.p[Tokenizer_p->index], 7);
+        nh_encoding_UTF8String Temporary = nh_encoding_initUTF8(7);
+        nh_encoding_appendUTF8(&Temporary, &Tokenizer_p->InputStream.p[Tokenizer_p->index], 7);
 
         if (nh_encoding_isASCIICaseInsensitiveMatch(Temporary.p, "DOCTYPE")) {
             Tokenizer_p->index += 7;
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DOCTYPE;
-            nh_webidl_freeDOMString(&Temporary);
+            nh_encoding_freeUTF8(&Temporary);
             return NH_API_SUCCESS;
         }
 
-        nh_webidl_freeDOMString(&Temporary);
+        nh_encoding_freeUTF8(&Temporary);
     }
 
     NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_INCORRECTLY_OPENED_COMMENT))
@@ -1433,7 +1433,7 @@ static NH_API_RESULT nh_html_consumeCommentStartDash(
         default :
         {
             NH_ENCODING_UTF32 append = 0x2D;
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &append, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &append, 1);
             NH_CORE_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_COMMENT))
             break;
         }
@@ -1448,7 +1448,7 @@ static NH_API_RESULT nh_html_consumeComment(
     switch (Tokenizer_p->codepoint)
     {
         case 0x3C :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_COMMENT_LESS_THAN_SIGN;
             break;
         case 0x2D :
@@ -1457,10 +1457,10 @@ static NH_API_RESULT nh_html_consumeComment(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &replace, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &replace, 1);
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1473,11 +1473,11 @@ static NH_API_RESULT nh_html_consumeCommentLessThanSign(
     switch (Tokenizer_p->codepoint)
     {
         case 0x21 :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_COMMENT_LESS_THAN_SIGN_BANG;
             break;
         case 0x3C :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
             break;
         default :
             NH_CORE_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_COMMENT))
@@ -1547,7 +1547,7 @@ static NH_API_RESULT nh_html_consumeCommentEndDash(
         default :
         {
             NH_ENCODING_UTF32 append = 0x2D;
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &append, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &append, 1);
             NH_CORE_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_COMMENT))
             break;
         }
@@ -1569,12 +1569,12 @@ static NH_API_RESULT nh_html_consumeCommentEnd(
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_COMMENT_END_BANG;
             break;
         case 0x2D :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
             break;
         default :
         {
             NH_ENCODING_UTF32 append = 0x2D;
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &append, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &append, 1);
             NH_CORE_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_COMMENT))
             break;
         }
@@ -1589,10 +1589,10 @@ static NH_API_RESULT nh_html_consumeCommentEndBang(
     switch (Tokenizer_p->codepoint)
     {
         case 0x2D :
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &Tokenizer_p->codepoint, 1);
             NH_ENCODING_UTF32 exclamation = 0x21;
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &exclamation, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &exclamation, 1);
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_COMMENT_END_DASH;
             break;
         case 0x3E :
@@ -1603,9 +1603,9 @@ static NH_API_RESULT nh_html_consumeCommentEndBang(
         default :
         {
             NH_ENCODING_UTF32 minus = 0x2D, exclamation = 0x21;
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &minus, 1);
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &minus, 1);
-            nh_webidl_appendUnicodeToDOMString(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &exclamation, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &minus, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &minus, 1);
+            nh_encoding_appendUTF8(&Tokenizer_p->Token_p->CommentOrCharacter.Data, &exclamation, 1);
             NH_CORE_CHECK(nh_html_reconsume(Tokenizer_p, NH_HTML_TOKENIZATION_STATE_COMMENT))
             break;
         }
@@ -1645,7 +1645,7 @@ static NH_API_RESULT nh_html_consumeBeforeDOCTYPEName(
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
         NH_CORE_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, false))
         NH_CORE_CHECK(nh_html_allocateDOCTYPEName(Tokenizer_p))
-        nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &lower, 1);
+        nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.Name_p, &lower, 1);
         Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DOCTYPE_NAME;
         return NH_API_SUCCESS;
     }
@@ -1662,7 +1662,7 @@ static NH_API_RESULT nh_html_consumeBeforeDOCTYPEName(
             NH_CORE_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, false))
             NH_CORE_CHECK(nh_html_allocateDOCTYPEName(Tokenizer_p))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &replace, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.Name_p, &replace, 1);
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DOCTYPE_NAME;
             break;
         case 0x3E :
@@ -1674,7 +1674,7 @@ static NH_API_RESULT nh_html_consumeBeforeDOCTYPEName(
         default :
             NH_CORE_CHECK(nh_html_newDOCTYPEToken(Tokenizer_p, false))
             NH_CORE_CHECK(nh_html_allocateDOCTYPEName(Tokenizer_p))
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.Name_p, &Tokenizer_p->codepoint, 1);
             Tokenizer_p->state = NH_HTML_TOKENIZATION_STATE_DOCTYPE_NAME;
             break;
     }
@@ -1687,7 +1687,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEName(
 {
     if (nh_encoding_isASCIIUpperAlpha(Tokenizer_p->codepoint)) {
         NH_ENCODING_UTF32 lower = Tokenizer_p->codepoint + 0x20;
-        nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &lower, 1);
+        nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.Name_p, &lower, 1);
         return NH_API_SUCCESS;
     }
 
@@ -1706,10 +1706,10 @@ static NH_API_RESULT nh_html_consumeDOCTYPEName(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &replace, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.Name_p, &replace, 1);
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.Name_p, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.Name_p, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1733,13 +1733,13 @@ static NH_API_RESULT nh_html_consumeAfterDOCTYPEName(
         default :
             if (Tokenizer_p->InputStream.length - (Tokenizer_p->index + 1) > 5) 
             {
-                nh_webidl_DOMString Temporary = nh_webidl_initDOMString(6);
-                nh_webidl_appendUnicodeToDOMString(&Temporary, &Tokenizer_p->InputStream.p[Tokenizer_p->index], 6);
+                nh_encoding_UTF8String Temporary = nh_encoding_initUTF8(6);
+                nh_encoding_appendUTF8(&Temporary, &Tokenizer_p->InputStream.p[Tokenizer_p->index], 6);
 
                 bool isPublic = nh_encoding_isASCIICaseInsensitiveMatch(Temporary.p, "PUBLIC");
                 bool isSystem = nh_encoding_isASCIICaseInsensitiveMatch(Temporary.p, "SYSTEM");
 
-                nh_webidl_freeDOMString(&Temporary);
+                nh_encoding_freeUTF8(&Temporary);
  
                 if (isPublic) {
                     Tokenizer_p->index += 6;
@@ -1843,7 +1843,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierDoubleQuoted(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &replace, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &replace, 1);
             break;
         case 0x3E :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_PUBLIC_IDENTIFIER))
@@ -1852,7 +1852,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierDoubleQuoted(
             NH_CORE_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -1870,7 +1870,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierSingleQuoted(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &replace, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &replace, 1);
             break;
         case 0x3E :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_PUBLIC_IDENTIFIER))
@@ -1879,7 +1879,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPEPublicIdentifierSingleQuoted(
             NH_CORE_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.PublicIdentifier_p, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -2035,7 +2035,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierDoubleQuoted(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &replace, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &replace, 1);
             break;
         case 0x3E :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_SYSTEM_IDENTIFIER))
@@ -2044,7 +2044,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierDoubleQuoted(
             NH_CORE_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -2062,7 +2062,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierSingleQuoted(
         case 0x00 :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_UNEXPECTED_NULL_CHARACTER))
             NH_ENCODING_UTF32 replace = 0xFFFD;
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &replace, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &replace, 1);
             break;
         case 0x3E :
             NH_CORE_CHECK(nh_html_newTokenizerError(Tokenizer_p, NH_HTML_PARSE_ERROR_ABRUPT_DOCTYPE_SYSTEM_IDENTIFIER))
@@ -2071,7 +2071,7 @@ static NH_API_RESULT nh_html_consumeDOCTYPESystemIdentifierSingleQuoted(
             NH_CORE_CHECK(nh_html_emit(Tokenizer_p))
             break;
         default :
-            nh_webidl_appendUnicodeToDOMString(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &Tokenizer_p->codepoint, 1);
+            nh_encoding_appendUTF8(Tokenizer_p->Token_p->DOCTYPE.SystemIdentifier_p, &Tokenizer_p->codepoint, 1);
             break;
     }
 
@@ -2182,7 +2182,7 @@ static NH_API_RESULT nh_html_flushCharacterReference(
     ||  Tokenizer_p->returnState == NH_HTML_TOKENIZATION_STATE_ATTRIBUTE_VALUE_SINGLE_QUOTED
     ||  Tokenizer_p->returnState == NH_HTML_TOKENIZATION_STATE_ATTRIBUTE_VALUE_UNQUOTED) 
     {
-        nh_webidl_appendUnicodeToDOMString(&((nh_html_Attribute*)Tokenizer_p->Token_p->StartOrEndTag.Attributes.p)[Tokenizer_p->Token_p->StartOrEndTag.Attributes.length - 1].Value, Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
+        nh_encoding_appendUTF8(&((nh_html_Attribute*)Tokenizer_p->Token_p->StartOrEndTag.Attributes.p)[Tokenizer_p->Token_p->StartOrEndTag.Attributes.length - 1].Value, Tokenizer_p->TemporaryBuffer.p, Tokenizer_p->TemporaryBuffer.length);
     }
     else {
         for (int i = 0; i < Tokenizer_p->TemporaryBuffer.length; ++i) {

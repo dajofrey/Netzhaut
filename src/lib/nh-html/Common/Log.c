@@ -29,7 +29,7 @@
 #define MAX_MESSAGE 4095
 
 static NH_API_RESULT nh_html_logDocumentRecursively(
-    char *node_p, nh_webidl_Object *Object_p, bool lastChild, int depth, bool *branch_p, 
+    char *node_p, nh_ecmascript_Object *Object_p, bool lastChild, int depth, bool *branch_p, 
     char *indent_p)
 {
     nh_core_String Message = nh_core_initString(255);
@@ -43,13 +43,13 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
     }
     indent_p[depth * 2 - 1] = '-';
 
-    nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Object_p);
+    nh_ecmascript_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Object_p);
 
     if (Element_p) {
         nh_core_List *Attributes_p = nh_dom_getAttrList(nh_dom_getNamedNodeMap(Element_p));
         for (int i = 0; i < Attributes_p->size; ++i) {
-            nh_webidl_DOMString *LocalName_p = nh_dom_getAttrLocalName(Attributes_p->pp[i]);
-            nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attributes_p->pp[i]);
+            nh_encoding_UTF8String *LocalName_p = nh_dom_getAttrLocalName(Attributes_p->pp[i]);
+            nh_encoding_UTF8String *Value_p = nh_dom_getAttrValue(Attributes_p->pp[i]);
             nh_core_appendToString(&Attributes, LocalName_p->p, LocalName_p->length);
             nh_core_appendToString(&Attributes, "=\"", 2);
             nh_core_appendToString(&Attributes, Value_p->p, Value_p->length);
@@ -64,7 +64,7 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
         nh_core_appendFormatToString(&Message, "%s%s (%s) %s", indent_p, tag_p, Object_p->Interface_p->name_p, Attributes.p);
     }
     else if (!Element_p && !strcmp(Object_p->Interface_p->name_p, "Text")) {
-        nh_webidl_DOMString *DOMString_p = nh_dom_getTextString(((nh_webidl_Object*)Object_p));
+        nh_encoding_UTF8String *DOMString_p = nh_dom_getTextString(((nh_ecmascript_Object*)Object_p));
         nh_encoding_UTF32String String = nh_encoding_decodeUTF8(DOMString_p->p, DOMString_p->length, NULL);
         nh_encoding_UTF32String NewString = nh_encoding_replaceNonCharactersExpressively(&String);
         nh_encoding_UTF8String ReplaceString = nh_encoding_encodeUTF8(NewString.p, NewString.length);
@@ -89,7 +89,7 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
 
     memset(indent_p, 0, MAX_INDENT);
     
-    nh_webidl_Object *NodeList_p = nh_webidl_getAttribute(Object_p, "childNodes");
+    nh_ecmascript_Object *NodeList_p = nh_webidl_getAttribute(Object_p, "childNodes");
     NH_CORE_CHECK_NULL(NodeList_p)
     NH_WEBIDL_UNSIGNED_LONG length = NH_WEBIDL_GET_DOM_NODEListLength(NodeList_p);
 
@@ -104,7 +104,7 @@ static NH_API_RESULT nh_html_logDocumentRecursively(
 }
 
 NH_API_RESULT nh_html_logDocument(
-    char *logId_p, nh_webidl_Object *Document_p)
+    char *logId_p, nh_ecmascript_Object *Document_p)
 {
     char node_p[255] = {0};
     sprintf(node_p, "nh-html:Parser:%s:DOMTree", logId_p);

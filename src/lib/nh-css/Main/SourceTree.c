@@ -41,19 +41,19 @@
  * For example, handles "disc" list marker.
  */
 static nh_encoding_UTF32String nh_css_getMarkerString(
-    nh_webidl_Object *StyleSheetList_p, nh_css_Value *ListStyleType_p)
+    nh_ecmascript_Object *StyleSheetList_p, nh_css_Value *ListStyleType_p)
 {
     nh_encoding_UTF32String MarkerString = nh_encoding_initUTF32(16);
     nh_core_List *StyleSheets_p = nh_css_getStyleSheetListData(StyleSheetList_p);
 
     // First, find the default rule.
-    nh_webidl_Object *CounterStyleRule_p =
+    nh_ecmascript_Object *CounterStyleRule_p =
         nh_css_findCounterStyleRule(NH_CSS_DEFAULT_STYLE_SHEET_P, ListStyleType_p->String.p);
 
     // Replace default if necessary.
     for (int i = 0; i < StyleSheets_p->size; ++i) {
-        nh_webidl_Object *StyleSheet_p = StyleSheets_p->pp[i];
-        nh_webidl_Object *Replace_p =
+        nh_ecmascript_Object *StyleSheet_p = StyleSheets_p->pp[i];
+        nh_ecmascript_Object *Replace_p =
             nh_css_findCounterStyleRule(StyleSheet_p, ListStyleType_p->String.p);
         if (Replace_p) {
             CounterStyleRule_p = Replace_p;
@@ -71,10 +71,10 @@ static nh_encoding_UTF32String nh_css_getMarkerString(
  * Handles <li> elements.
  */
 static NH_API_RESULT nh_css_handleListItem(
-    nh_css_LogContext LogContext, nh_webidl_Object *Object_p, nh_webidl_Object *StyleSheetList_p, 
+    nh_css_LogContext LogContext, nh_ecmascript_Object *Object_p, nh_ecmascript_Object *StyleSheetList_p, 
     nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
 {
-    nh_webidl_Object *Node_p = NH_WEBIDL_GET_DOM_NODE(Object_p);
+    nh_ecmascript_Object *Node_p = NH_WEBIDL_GET_DOM_NODE(Object_p);
     nh_css_Value *ListStyleType_p = ((nh_core_List*)nh_dom_getComputedPropertyValues(Node_p))->pp[NH_CSS_PROPERTY_LIST_STYLE_TYPE];
 
     if (ListStyleType_p->Common.type == NH_CSS_VALUE_KEYWORD) 
@@ -102,7 +102,7 @@ static NH_API_RESULT nh_css_handleListItem(
 // SOURCE NODE =====================================================================================
 
 static bool nh_css_displayNode(
-    nh_webidl_Object *Node_p)
+    nh_ecmascript_Object *Node_p)
 {
     nh_core_List *Values_p = nh_dom_getComputedPropertyValues(Node_p);
     if (Values_p->size && !strcmp(((nh_css_Value*)Values_p->pp[NH_CSS_PROPERTY_DISPLAY])->String.p, "none")) {
@@ -116,7 +116,7 @@ static bool nh_css_displayNode(
 }
 
 static nh_css_LogContext nh_css_updateLogContext(
-    nh_css_LogContext Previous, nh_webidl_Object *Element_p, int depth)
+    nh_css_LogContext Previous, nh_ecmascript_Object *Element_p, int depth)
 {
     *Previous.nr_p += 1;
 
@@ -133,11 +133,11 @@ static nh_css_LogContext nh_css_updateLogContext(
 }
 
 static NH_API_RESULT nh_css_createSourceNode(
-    nh_css_LogContext LogContext, nh_webidl_Object *Object_p, nh_webidl_Object *StyleSheetList_p, 
+    nh_css_LogContext LogContext, nh_ecmascript_Object *Object_p, nh_ecmascript_Object *StyleSheetList_p, 
     bool updateAll, nh_css_Source **Source_pp, nh_css_Source *Parent_p, int depth)
 {
-    nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Object_p);
-    nh_webidl_Object *Node_p = NH_WEBIDL_GET_DOM_NODE(Object_p);
+    nh_ecmascript_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Object_p);
+    nh_ecmascript_Object *Node_p = NH_WEBIDL_GET_DOM_NODE(Object_p);
     NH_CORE_CHECK_NULL(Node_p)
 
     bool modified = false;
@@ -158,7 +158,7 @@ static NH_API_RESULT nh_css_createSourceNode(
     {
         bool emptyText = true;
 
-        nh_webidl_DOMString *String_p = nh_dom_getTextString((nh_webidl_Object*)Object_p);
+        nh_encoding_UTF8String *String_p = nh_dom_getTextString((nh_ecmascript_Object*)Object_p);
         NH_CORE_CHECK_NULL(String_p)
 
         nh_encoding_UTF32String Decoded = nh_encoding_decodeUTF8(String_p->p, String_p->length, NULL);
@@ -224,7 +224,7 @@ static nh_css_LogContext nh_css_initLogContext(
 }
 
 NH_API_RESULT nh_css_createSourceTree(
-    nh_webidl_Object *HTMLElement_p, nh_webidl_Object *StyleSheetList_p, bool updateAll,
+    nh_ecmascript_Object *HTMLElement_p, nh_ecmascript_Object *StyleSheetList_p, bool updateAll,
     void *Canvas_p, nh_css_SourceTree *Result_p)
 {
     NH_CORE_CHECK_NULL(Result_p)

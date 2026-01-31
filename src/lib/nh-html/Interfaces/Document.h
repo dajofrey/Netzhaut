@@ -19,7 +19,7 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_html_createDocument(
+    nh_ecmascript_Object *nh_html_createDocument(
         nh_html_DocumentContext *Context_p
     );
 

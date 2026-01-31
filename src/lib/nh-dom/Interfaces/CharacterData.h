@@ -17,11 +17,11 @@
  *  @{
  */
     NH_API_RESULT nh_dom_appendToCharacterData(
-        nh_webidl_Object *CharacterData_p, nh_webidl_DOMString DOMString 
+        nh_ecmascript_Object *CharacterData_p, nh_encoding_UTF8String DOMString 
     );
 
-    nh_webidl_DOMString *nh_dom_getCharacterDataString(
-        nh_webidl_Object *CharacterData_p
+    nh_encoding_UTF8String *nh_dom_getCharacterDataString(
+        nh_ecmascript_Object *CharacterData_p
     );
 
 /** @} */

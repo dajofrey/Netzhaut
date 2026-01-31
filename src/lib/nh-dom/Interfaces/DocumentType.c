@@ -30,37 +30,37 @@
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_dom_initializeDocumentType(
-    nh_webidl_Object *DocumentType_p)
+    nh_ecmascript_Object *DocumentType_p)
 {
-    NAME = nh_core_allocate(sizeof(nh_webidl_DOMString));
+    NAME = nh_core_allocate(sizeof(nh_encoding_UTF8String));
     NH_CORE_CHECK_MEM(NAME)
-    *((nh_webidl_DOMString*)NAME) = nh_webidl_initDOMString(32);
+    *((nh_encoding_UTF8String*)NAME) = nh_encoding_initUTF8(32);
 
-    PUBLIC_ID = nh_core_allocate(sizeof(nh_webidl_DOMString));
+    PUBLIC_ID = nh_core_allocate(sizeof(nh_encoding_UTF8String));
     NH_CORE_CHECK_MEM(PUBLIC_ID)
-    *((nh_webidl_DOMString*)PUBLIC_ID) = nh_webidl_initDOMString(32);
+    *((nh_encoding_UTF8String*)PUBLIC_ID) = nh_encoding_initUTF8(32);
 
-    SYSTEM_ID = nh_core_allocate(sizeof(nh_webidl_DOMString));
+    SYSTEM_ID = nh_core_allocate(sizeof(nh_encoding_UTF8String));
     NH_CORE_CHECK_MEM(SYSTEM_ID)
-    *((nh_webidl_DOMString*)SYSTEM_ID) = nh_webidl_initDOMString(32);
+    *((nh_encoding_UTF8String*)SYSTEM_ID) = nh_encoding_initUTF8(32);
 
     return NH_API_SUCCESS;
 }
 
-nh_webidl_Object *nh_dom_createDocumentType(
-    nh_webidl_DOMString *Name_p, nh_webidl_DOMString *PublicId_p, nh_webidl_DOMString *SystemId_p)
+nh_ecmascript_Object *nh_dom_createDocumentType(
+    nh_encoding_UTF8String *Name_p, nh_encoding_UTF8String *PublicId_p, nh_encoding_UTF8String *SystemId_p)
 {
-    nh_webidl_Object *DocumentType_p = nh_webidl_createObject("DOM", "DocumentType");
+    nh_ecmascript_Object *DocumentType_p = nh_webidl_createObject("DOM", "DocumentType");
     NH_CORE_CHECK_MEM_2(NULL, DocumentType_p)
 
     if (Name_p != NULL) {
-        nh_webidl_appendToDOMString(NAME, Name_p->p, Name_p->length);
+        nh_core_appendToString(NAME, Name_p->p, Name_p->length);
     }
     if (PublicId_p != NULL) {
-        nh_webidl_appendToDOMString(PUBLIC_ID, PublicId_p->p, PublicId_p->length);
+        nh_core_appendToString(PUBLIC_ID, PublicId_p->p, PublicId_p->length);
     }
     if (SystemId_p != NULL) {
-        nh_webidl_appendToDOMString(SYSTEM_ID, SystemId_p->p, SystemId_p->length);
+        nh_core_appendToString(SYSTEM_ID, SystemId_p->p, SystemId_p->length);
     }
 
     return DocumentType_p;

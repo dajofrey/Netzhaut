@@ -37,10 +37,10 @@ NH_API_RESULT nh_html_newParseError(
 
 // PRE-PROCESS =====================================================================================
 
-static nh_webidl_USVString nh_html_normalizeNewlines(
-    nh_webidl_USVString Codepoints)
+static nh_encoding_UTF8String nh_html_normalizeNewlines(
+    nh_encoding_UTF8String Codepoints)
 {
-    nh_webidl_USVString Normalized = nh_webidl_initUSVString(Codepoints.length);
+    nh_encoding_UTF8String Normalized = nh_webidl_initUSVString(Codepoints.length);
     NH_ENCODING_UTF32 lf = 0x0A;
 
     unsigned long index = 0;
@@ -87,7 +87,7 @@ static NH_API_RESULT nh_html_checkInputStream(
 // PARSER ==========================================================================================
 
 static nh_html_Parser nh_html_initParser(
-    nh_webidl_Object *Document_p)
+    nh_ecmascript_Object *Document_p)
 {
     nh_html_Parser Parser;
 
@@ -113,14 +113,14 @@ static nh_html_Parser nh_html_initParser(
 }
 
 NH_API_RESULT nh_html_parseDocument(
-    char *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p)
+    char *logId_p, nh_encoding_UTF32String InputStream, nh_ecmascript_Object *Document_p)
 {
     NH_CORE_CHECK_NULL(Document_p)
 
     nh_html_Parser Parser = nh_html_initParser(Document_p);
 
     NH_CORE_CHECK(nh_html_checkInputStream(&Parser, InputStream))
-    nh_webidl_USVString NormalizedInputStream = nh_html_normalizeNewlines(InputStream);
+    nh_encoding_UTF8String NormalizedInputStream = nh_html_normalizeNewlines(InputStream);
 
     nh_html_Tokenizer Tokenizer = nh_html_initTokenizer(&Parser, NormalizedInputStream);
     Parser.Tokenizer_p = &Tokenizer;

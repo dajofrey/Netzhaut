@@ -18,7 +18,7 @@
  */
 
     NH_API_RESULT nh_html_initializeHTMLImageElement(
-        nh_webidl_Object *Image_p
+        nh_ecmascript_Object *Image_p
     );
 
     void nh_html_updateImageData(

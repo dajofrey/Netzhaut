@@ -16,27 +16,27 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-    nh_webidl_Object *nh_dom_createNodeList(
+    nh_ecmascript_Object *nh_dom_createNodeList(
     );
 
     NH_API_RESULT nh_dom_appendToNodeList(
-        nh_webidl_Object *NodeList_p, nh_webidl_Object *Node_p
+        nh_ecmascript_Object *NodeList_p, nh_ecmascript_Object *Node_p
     );
 
     NH_API_RESULT nh_dom_insertIntoNodeList(
-        nh_webidl_Object *NodeList_p, nh_webidl_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index
+        nh_ecmascript_Object *NodeList_p, nh_ecmascript_Object *Child_p, NH_WEBIDL_UNSIGNED_LONG index
     );
 
-    nh_webidl_Object *nh_dom_getFromNodeList(
-        nh_webidl_Object *NodeList_p, NH_WEBIDL_UNSIGNED_LONG index
+    nh_ecmascript_Object *nh_dom_getFromNodeList(
+        nh_ecmascript_Object *NodeList_p, NH_WEBIDL_UNSIGNED_LONG index
     );
     
     NH_WEBIDL_UNSIGNED_LONG NH_WEBIDL_GET_DOM_NODEListLength(
-        nh_webidl_Object *NodeList_p
+        nh_ecmascript_Object *NodeList_p
     );
 
     nh_core_List *NH_WEBIDL_GET_DOM_NODEList(
-        nh_webidl_Object *NodeList_p
+        nh_ecmascript_Object *NodeList_p
     );
 
 /** @} */

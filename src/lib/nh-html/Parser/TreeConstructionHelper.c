@@ -32,13 +32,13 @@
 // FUNCTIONS =======================================================================================
 
 // https://html.spec.whatwg.org/multipage/parsing.html#create-an-element-for-the-token
-nh_webidl_Object *nh_html_createElementForToken(
-    nh_html_Token *Token_p, nh_webidl_DOMString *Namespace_p, nh_webidl_Object *IntendedParent_p)
+nh_ecmascript_Object *nh_html_createElementForToken(
+    nh_html_Token *Token_p, nh_encoding_UTF8String *Namespace_p, nh_ecmascript_Object *IntendedParent_p)
 {
-    nh_webidl_Object *Document_p = nh_dom_getNodeDocument(NH_WEBIDL_GET_DOM_NODE(IntendedParent_p));
-    nh_webidl_DOMString *LocalName_p = &Token_p->StartOrEndTag.TagName;
+    nh_ecmascript_Object *Document_p = nh_dom_getNodeDocument(NH_WEBIDL_GET_DOM_NODE(IntendedParent_p));
+    nh_encoding_UTF8String *LocalName_p = &Token_p->StartOrEndTag.TagName;
 
-    nh_webidl_DOMString *Is_p = NULL;
+    nh_encoding_UTF8String *Is_p = NULL;
 
     for (int i = 0; i < Token_p->StartOrEndTag.Attributes.length; ++i) {
         nh_html_Attribute *Attribute_p = &((nh_html_Attribute*)Token_p->StartOrEndTag.Attributes.p)[i];
@@ -58,7 +58,7 @@ nh_webidl_Object *nh_html_createElementForToken(
         // TODO
     }
 
-    nh_webidl_Object *Object_p = nh_dom_createElement(
+    nh_ecmascript_Object *Object_p = nh_dom_createElement(
         Document_p, LocalName_p, Namespace_p, NULL, Is_p, false, Interface_p 
     );
     if (Object_p == NULL) {return NULL;}
@@ -68,7 +68,7 @@ nh_webidl_Object *nh_html_createElementForToken(
 
     for (int i = 0; i < Token_p->StartOrEndTag.Attributes.length; ++i) {
         nh_html_Attribute *Attribute_p = &((nh_html_Attribute*)Token_p->StartOrEndTag.Attributes.p)[i];
-        nh_webidl_Object *Attr_p = nh_dom_createAttr(
+        nh_ecmascript_Object *Attr_p = nh_dom_createAttr(
             Document_p, &Attribute_p->Name, &NH_WEBIDL_HTML_NAMESPACE, NULL, NH_WEBIDL_GET_DOM_ELEMENT(Object_p), &Attribute_p->Value
         );
         nh_dom_appendAttr(NH_WEBIDL_GET_DOM_ELEMENT(Object_p), Attr_p);
@@ -87,7 +87,7 @@ nh_webidl_Object *nh_html_createElementForToken(
 
 // https://html.spec.whatwg.org/multipage/parsing.html#appropriate-place-for-inserting-a-node
 NH_WEBIDL_UNSIGNED_LONG nh_html_getAppropriatePlaceForInsertingNode(
-    nh_html_Parser *Parser_p, nh_webidl_Object **Target_pp)
+    nh_html_Parser *Parser_p, nh_ecmascript_Object **Target_pp)
 {
     if (*Target_pp == NULL) {*Target_pp = nh_html_getCurrentNode(Parser_p);}
 
@@ -110,29 +110,29 @@ NH_WEBIDL_UNSIGNED_LONG nh_html_getAppropriatePlaceForInsertingNode(
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-comment
 NH_API_RESULT nh_html_insertCommentAtPosition(
-    nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, NH_WEBIDL_UNSIGNED_LONG position)
+    nh_html_Parser *Parser_p, nh_ecmascript_Object *Target_p, NH_WEBIDL_UNSIGNED_LONG position)
 {
-    nh_webidl_Object *Comment_p = nh_dom_createComment(Parser_p->Token_p->CommentOrCharacter.Data);
+    nh_ecmascript_Object *Comment_p = nh_dom_createComment(Parser_p->Token_p->CommentOrCharacter.Data);
     NH_CORE_CHECK_MEM(Comment_p)
-    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(NH_WEBIDL_GET_DOM_NODE(Target_p), (nh_webidl_Object*)Comment_p, position))
+    NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(NH_WEBIDL_GET_DOM_NODE(Target_p), (nh_ecmascript_Object*)Comment_p, position))
 
     return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_html_insertComment(
-    nh_html_Parser *Parser_p, nh_webidl_Object *Node_p)
+    nh_html_Parser *Parser_p, nh_ecmascript_Object *Node_p)
 {
     return nh_html_insertCommentAtPosition(Parser_p, Node_p, nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Node_p));
 }
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-foreign-element
-nh_webidl_Object *nh_html_insertForeignElement(
-    nh_html_Parser *Parser_p, nh_html_Token *Token_p, nh_webidl_DOMString *Namespace_p)
+nh_ecmascript_Object *nh_html_insertForeignElement(
+    nh_html_Parser *Parser_p, nh_html_Token *Token_p, nh_encoding_UTF8String *Namespace_p)
 {
-    nh_webidl_Object *Target_p = NULL;
+    nh_ecmascript_Object *Target_p = NULL;
     NH_WEBIDL_UNSIGNED_LONG adjustedInsertionLocation = nh_html_getAppropriatePlaceForInsertingNode(Parser_p, &Target_p);
 
-    nh_webidl_Object *Element_p = nh_html_createElementForToken(Token_p, Namespace_p, Target_p);
+    nh_ecmascript_Object *Element_p = nh_html_createElementForToken(Token_p, Namespace_p, Target_p);
     nh_dom_insertIntoNode(NH_WEBIDL_GET_DOM_NODE(Target_p), Element_p, adjustedInsertionLocation);
 
     nh_core_pushStack(&Parser_p->OpenElements, Element_p);
@@ -140,7 +140,7 @@ nh_webidl_Object *nh_html_insertForeignElement(
     return Element_p;
 }
 
-nh_webidl_Object *nh_html_insertHTMLElement(
+nh_ecmascript_Object *nh_html_insertHTMLElement(
     nh_html_Parser *Parser_p, nh_html_Token *Token_p)
 {
     return nh_html_insertForeignElement(Parser_p, Token_p, &NH_WEBIDL_HTML_NAMESPACE);
@@ -148,7 +148,7 @@ nh_webidl_Object *nh_html_insertHTMLElement(
 
 // https://html.spec.whatwg.org/multipage/parsing.html#insert-a-character
 NH_API_RESULT nh_html_insertCharacter(
-    nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, nh_webidl_DOMString *Data_p)
+    nh_html_Parser *Parser_p, nh_ecmascript_Object *Target_p, nh_encoding_UTF8String *Data_p)
 {
     if (!Data_p) {Data_p = &Parser_p->Token_p->CommentOrCharacter.Data;}
 
@@ -160,7 +160,7 @@ NH_API_RESULT nh_html_insertCharacter(
     } 
 
     if (adjustedInsertionLocation > 0) {
-        nh_webidl_Object *Sibling_p = nh_dom_getFromNodeList(nh_webidl_getAttribute(Target_p, "childNodes"), adjustedInsertionLocation - 1);
+        nh_ecmascript_Object *Sibling_p = nh_dom_getFromNodeList(nh_webidl_getAttribute(Target_p, "childNodes"), adjustedInsertionLocation - 1);
         if (!strcmp(Sibling_p->Interface_p->name_p, "Text")) {
             // Append to text node.
             NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToText(Sibling_p, *Data_p))
@@ -169,10 +169,10 @@ NH_API_RESULT nh_html_insertCharacter(
     }
 
     // Create new text node.
-    nh_webidl_Object *TargetNode_p = NH_WEBIDL_GET_DOM_NODE(Target_p);
+    nh_ecmascript_Object *TargetNode_p = NH_WEBIDL_GET_DOM_NODE(Target_p);
     NH_CORE_CHECK_NULL(TargetNode_p)
 
-    nh_webidl_Object *Text_p = nh_dom_createText(*Data_p, nh_dom_getNodeDocument(TargetNode_p)); 
+    nh_ecmascript_Object *Text_p = nh_dom_createText(*Data_p, nh_dom_getNodeDocument(TargetNode_p)); 
     NH_CORE_CHECK_MEM(Text_p)
 
     NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_insertIntoNode(TargetNode_p, Text_p, adjustedInsertionLocation))
@@ -214,7 +214,7 @@ nh_html_Token *nh_html_getEmptyStartTagToken(
 
 // https://html.spec.whatwg.org/multipage/parsing.html#push-onto-the-list-of-active-formatting-elements
 NH_API_RESULT nh_html_pushActiveFormattingElement(
-    nh_html_Parser *Parser_p, nh_webidl_Object *Element_p)
+    nh_html_Parser *Parser_p, nh_ecmascript_Object *Element_p)
 {
     // TODO
 
@@ -240,7 +240,7 @@ NH_API_RESULT nh_html_reconstructActiveFormattingElements(
     }
 
     int index = Parser_p->ActiveFormattingElements.size - 1;
-    nh_webidl_Object *Entry_p = Parser_p->ActiveFormattingElements.pp[index];
+    nh_ecmascript_Object *Entry_p = Parser_p->ActiveFormattingElements.pp[index];
 
     if (Entry_p == NULL) { // marker
         return NH_API_SUCCESS;
@@ -265,7 +265,7 @@ NH_API_RESULT nh_html_reconstructActiveFormattingElements(
 
     RECONSTRUCT_CREATE: {
         nh_html_Token *Token_p = nh_html_getToken(NH_WEBIDL_GET_HTML_ELEMENT(Entry_p)); 
-        nh_webidl_Object *NewElement_p = nh_html_insertHTMLElement(Parser_p, Token_p);
+        nh_ecmascript_Object *NewElement_p = nh_html_insertHTMLElement(Parser_p, Token_p);
         NH_CORE_CHECK_NULL(NewElement_p)
       
         Parser_p->ActiveFormattingElements.pp[index] = NewElement_p;
@@ -295,17 +295,17 @@ NH_API_RESULT nh_html_generateImpliedEndTags(
         "rtc",
     };
 
-    nh_webidl_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
+    nh_ecmascript_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
 
     while (CurrentNode_p)
     {
-        nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(CurrentNode_p));
+        nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(CurrentNode_p));
         bool pop = false;
 
         for (int i = 0; i < sizeof(elements_pp)/sizeof(elements_pp[i]); ++i) {
             if (!strcmp(LocalName_p->p, elements_pp[i])) {
                 if (exclude_p == NULL || strcmp(elements_pp[i], exclude_p)) {
-                    nh_webidl_Object *O_p = nh_html_popCurrentNode(Parser_p);
+                    nh_ecmascript_Object *O_p = nh_html_popCurrentNode(Parser_p);
                     pop = true;
                     break;
                 }
@@ -345,11 +345,11 @@ NH_API_RESULT nh_html_generateAllImpliedEndTags(
         "tr",
     };
 
-    nh_webidl_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
+    nh_ecmascript_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
 
     while (CurrentNode_p)
     {
-        nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(CurrentNode_p));
+        nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(CurrentNode_p));
         bool pop = false;
 
         for (int i = 0; i < sizeof(elements_pp)/sizeof(elements_pp[i]); ++i) {
@@ -371,13 +371,13 @@ NH_API_RESULT nh_html_generateAllImpliedEndTags(
 // STACK OF OPEN ELEMENTS ==========================================================================
 // https://html.spec.whatwg.org/multipage/parsing.html#the-stack-of-open-elements
 
-nh_webidl_Object *nh_html_getCurrentNode(
+nh_ecmascript_Object *nh_html_getCurrentNode(
     nh_html_Parser *Parser_p)
 {
     return nh_core_peekStack(&Parser_p->OpenElements);
 }
 
-nh_webidl_Object *nh_html_getAdjustedCurrentNode(
+nh_ecmascript_Object *nh_html_getAdjustedCurrentNode(
     nh_html_Parser *Parser_p)
 {
     // TODO
@@ -386,17 +386,17 @@ nh_webidl_Object *nh_html_getAdjustedCurrentNode(
 }
 
 NH_API_RESULT nh_html_pushOpenElement(
-    nh_html_Parser *Parser_p, nh_webidl_Object *Object_p)
+    nh_html_Parser *Parser_p, nh_ecmascript_Object *Object_p)
 {
     nh_core_pushStack(&Parser_p->OpenElements, Object_p);
     return NH_API_SUCCESS;
 }
 
-nh_webidl_Object *nh_html_popCurrentNode(
+nh_ecmascript_Object *nh_html_popCurrentNode(
     nh_html_Parser *Parser_p)
 {
-    nh_webidl_Object *Object_p = nh_core_popStack(&Parser_p->OpenElements);
-    nh_webidl_DOMString *TagName_p = nh_dom_getTagName(NH_WEBIDL_GET_DOM_ELEMENT(Object_p));
+    nh_ecmascript_Object *Object_p = nh_core_popStack(&Parser_p->OpenElements);
+    nh_encoding_UTF8String *TagName_p = nh_dom_getTagName(NH_WEBIDL_GET_DOM_ELEMENT(Object_p));
 
     if (!strcmp(TagName_p->p, "STYLE")) {
         // ... must run the update a style block algorithm whenever ...
@@ -409,12 +409,12 @@ nh_webidl_Object *nh_html_popCurrentNode(
 
 // https://html.spec.whatwg.org/multipage/parsing.html#special
 bool nh_html_inSpecialCategory(
-    nh_webidl_Object *Node_p)
+    nh_ecmascript_Object *Node_p)
 {
-    nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Node_p);
+    nh_ecmascript_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Node_p);
     if (!Element_p) {return false;}
 
-    nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(Element_p);
+    nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(Element_p);
     int tag = nh_html_getTagIndex(LocalName_p->p);
 
     if (!strcmp(Node_p->Interface_p->Specification_p->name_p, "HTML"))
@@ -517,8 +517,8 @@ static bool nh_html_hasElementInSpecificScope(
 {
     for (int i = Parser_p->OpenElements.size - 1; i >= 0; --i)
     {
-        nh_webidl_Object *Node_p = nh_core_getFromList(&Parser_p->OpenElements, i);
-        nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
+        nh_ecmascript_Object *Node_p = nh_core_getFromList(&Parser_p->OpenElements, i);
+        nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
 
         if (!strcmp(LocalName_p->p, target_p)) {return true;}
 

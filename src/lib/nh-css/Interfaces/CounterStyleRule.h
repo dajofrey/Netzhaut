@@ -17,12 +17,12 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_css_createCounterStyleRule(
+    nh_ecmascript_Object *nh_css_createCounterStyleRule(
         nh_core_Array Declaration
     );
 
     nh_encoding_UTF32String nh_css_calculateMarkerString(
-        nh_webidl_Object *CounterStyleRule_p
+        nh_ecmascript_Object *CounterStyleRule_p
     );
 
 /** @} */

@@ -212,7 +212,7 @@ static NH_API_RESULT nh_html_processInitial(
                 NH_CORE_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
             }
 
-            nh_webidl_Object *DocumentType_p = nh_dom_createDocumentType(
+            nh_ecmascript_Object *DocumentType_p = nh_dom_createDocumentType(
                 Parser_p->Token_p->DOCTYPE.Name_p, Parser_p->Token_p->DOCTYPE.PublicIdentifier_p, 
                 Parser_p->Token_p->DOCTYPE.SystemIdentifier_p
             );
@@ -272,7 +272,7 @@ static NH_API_RESULT nh_html_processBeforeHTML(
         {
             if (Parser_p->Token_p->StartOrEndTag.tag == NH_HTML_TAG_HTML) 
             {
-                nh_webidl_Object *HTMLHtmlElement_p = nh_html_createElementForToken(Parser_p->Token_p, &NH_WEBIDL_HTML_NAMESPACE, Parser_p->Document_p);
+                nh_ecmascript_Object *HTMLHtmlElement_p = nh_html_createElementForToken(Parser_p->Token_p, &NH_WEBIDL_HTML_NAMESPACE, Parser_p->Document_p);
                 NH_CORE_CHECK_MEM(HTMLHtmlElement_p)
                 NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToNode(NH_WEBIDL_GET_DOM_NODE(Parser_p->Document_p), HTMLHtmlElement_p))
                 NH_CORE_CHECK(nh_html_pushOpenElement(Parser_p, HTMLHtmlElement_p))
@@ -295,7 +295,7 @@ static NH_API_RESULT nh_html_processBeforeHTML(
         }
         default : BEFORE_HTML_DEFAULT :
         {
-            nh_webidl_Object *HTMLHtmlElement_p = nh_html_createElementForToken(nh_html_getEmptyStartTagToken(NH_HTML_TAG_HTML), &NH_WEBIDL_HTML_NAMESPACE, Parser_p->Document_p);
+            nh_ecmascript_Object *HTMLHtmlElement_p = nh_html_createElementForToken(nh_html_getEmptyStartTagToken(NH_HTML_TAG_HTML), &NH_WEBIDL_HTML_NAMESPACE, Parser_p->Document_p);
             NH_CORE_CHECK_MEM(HTMLHtmlElement_p)
             NH_CORE_CHECK_2(NH_API_ERROR_BAD_STATE, nh_dom_appendToNode(NH_WEBIDL_GET_DOM_NODE(Parser_p->Document_p), HTMLHtmlElement_p))
             NH_CORE_CHECK(nh_html_pushOpenElement(Parser_p, HTMLHtmlElement_p))
@@ -726,7 +726,7 @@ static NH_API_RESULT nh_html_closeElement(
         // parse error
     }
 
-    nh_webidl_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
+    nh_ecmascript_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
     while (Pop_p != NULL && strcmp(nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Pop_p))->p, tagName_p)) {
         Pop_p = nh_html_popCurrentNode(Parser_p);
     }
@@ -766,10 +766,10 @@ static bool nh_html_hasOtherOpenElements(
 
     for (int i = 0; i < Parser_p->OpenElements.size; ++i) 
     {
-        nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Parser_p->OpenElements.pp[i]);
+        nh_ecmascript_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(Parser_p->OpenElements.pp[i]);
         if (!Element_p) {continue;}
 
-        nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(Element_p);
+        nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(Element_p);
 
         bool match = false;
         for (int j = 0; j < sizeof(elements_pp)/sizeof(elements_pp[0]); ++j) {
@@ -787,8 +787,8 @@ static bool nh_html_hasOpenElement(
 {
     for (int i = Parser_p->OpenElements.size - 1; i >= 0; --i)
     {
-        nh_webidl_Object *Node_p = nh_core_getFromList(&Parser_p->OpenElements, i);
-        nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
+        nh_ecmascript_Object *Node_p = nh_core_getFromList(&Parser_p->OpenElements, i);
+        nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
         if (!strcmp(LocalName_p->p, target_p)) {return true;}
     }
 
@@ -836,7 +836,7 @@ static NH_API_RESULT nh_html_processInBody(
                 NH_CORE_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
 
                 for (int i = 0; i < Parser_p->OpenElements.size; ++i) {
-                    nh_webidl_Object *Element_p = Parser_p->OpenElements.pp[i];
+                    nh_ecmascript_Object *Element_p = Parser_p->OpenElements.pp[i];
                     if (!strcmp(Element_p->Interface_p->name_p, "HTMLTemplateElement")) {
                         return NH_API_SUCCESS;
                     }
@@ -919,8 +919,8 @@ static NH_API_RESULT nh_html_processInBody(
                     NH_CORE_CHECK(nh_html_closePElement(Parser_p))
                 }
 
-                nh_webidl_Object *Current_p = nh_html_getCurrentNode(Parser_p);
-                nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Current_p));
+                nh_ecmascript_Object *Current_p = nh_html_getCurrentNode(Parser_p);
+                nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Current_p));
 
                 if (!strcmp(LocalName_p->p, "h1")
                 ||  !strcmp(LocalName_p->p, "h2")
@@ -956,7 +956,7 @@ static NH_API_RESULT nh_html_processInBody(
                     if (nh_html_hasElementInButtonScope(Parser_p, "p")) {
                         NH_CORE_CHECK(nh_html_closePElement(Parser_p))
                     }
-                    nh_webidl_Object *Form_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
+                    nh_ecmascript_Object *Form_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
                     if (!nh_html_hasOpenElement(Parser_p, "template")) {
                         Parser_p->FormElement_p = Form_p;
                     }
@@ -966,7 +966,7 @@ static NH_API_RESULT nh_html_processInBody(
             case NH_HTML_TAG_LI :
             {
                 Parser_p->framesetOk = false;
-                nh_webidl_Object *Node_p = nh_html_getCurrentNode(Parser_p);
+                nh_ecmascript_Object *Node_p = nh_html_getCurrentNode(Parser_p);
 
                 while (1)
                 {
@@ -974,7 +974,7 @@ static NH_API_RESULT nh_html_processInBody(
                         NH_CORE_CHECK(nh_html_closeElement(Parser_p, "li"))
                         break;
                     }
-                    nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
+                    nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
                     if (nh_html_inSpecialCategory(Node_p) && strcmp(LocalName_p->p, "address") && strcmp(LocalName_p->p, "div") && strcmp(LocalName_p->p, "p")) {
                         break;
                     }
@@ -993,7 +993,7 @@ static NH_API_RESULT nh_html_processInBody(
             case NH_HTML_TAG_DT :
             {
                 Parser_p->framesetOk = false;
-                nh_webidl_Object *Node_p = nh_html_getCurrentNode(Parser_p);
+                nh_ecmascript_Object *Node_p = nh_html_getCurrentNode(Parser_p);
 
                 while (1)
                 {
@@ -1005,7 +1005,7 @@ static NH_API_RESULT nh_html_processInBody(
                         NH_CORE_CHECK(nh_html_closeElement(Parser_p, "dt"))
                         break;
                     }
-                    nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
+                    nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p));
                     if (nh_html_inSpecialCategory(Node_p) && strcmp(LocalName_p->p, "address") && strcmp(LocalName_p->p, "div") && strcmp(LocalName_p->p, "p")) {
                         break;
                     }
@@ -1034,7 +1034,7 @@ static NH_API_RESULT nh_html_processInBody(
                 if (nh_html_hasElementInScope(Parser_p, "button")) {
                     NH_CORE_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
                     NH_CORE_CHECK(nh_html_generateImpliedEndTags(Parser_p, NULL))
-                    nh_webidl_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
+                    nh_ecmascript_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
                     while (Pop_p != NULL && strcmp(nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Pop_p))->p, "button")) {
                         Pop_p = nh_html_popCurrentNode(Parser_p);
                     }
@@ -1048,7 +1048,7 @@ static NH_API_RESULT nh_html_processInBody(
             {
                 // TODO
                 NH_CORE_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
-                nh_webidl_Object *Element_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
+                nh_ecmascript_Object *Element_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
                 NH_CORE_CHECK_NULL(Element_p)
                 NH_CORE_CHECK(nh_html_pushActiveFormattingElement(Parser_p, Element_p))
                 break;
@@ -1067,7 +1067,7 @@ static NH_API_RESULT nh_html_processInBody(
             case NH_HTML_TAG_U      :
             {
                 NH_CORE_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
-                nh_webidl_Object *Element_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
+                nh_ecmascript_Object *Element_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
                 NH_CORE_CHECK_NULL(Element_p)
                 NH_CORE_CHECK(nh_html_pushActiveFormattingElement(Parser_p, Element_p))
                 break;
@@ -1079,7 +1079,7 @@ static NH_API_RESULT nh_html_processInBody(
                     NH_CORE_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
                     // TODO
                 }
-                nh_webidl_Object *Element_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
+                nh_ecmascript_Object *Element_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
                 NH_CORE_CHECK_NULL(Element_p)
                 NH_CORE_CHECK(nh_html_pushActiveFormattingElement(Parser_p, Element_p))
                 break;
@@ -1108,7 +1108,7 @@ static NH_API_RESULT nh_html_processInBody(
             {
                 NH_CORE_CHECK(nh_html_reconstructActiveFormattingElements(Parser_p))
 
-                nh_webidl_Object *Image_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
+                nh_ecmascript_Object *Image_p = nh_html_insertHTMLElement(Parser_p, Parser_p->Token_p);
                 NH_CORE_CHECK_NULL(Image_p)
 
                 NH_CORE_CHECK_NULL(nh_html_popCurrentNode(Parser_p))
@@ -1261,9 +1261,9 @@ static NH_API_RESULT nh_html_processInBody(
                 if (!strcmp(Parser_p->Token_p->StartOrEndTag.TagName.p, "image")) 
                 {
                     // parse error
-                    nh_webidl_freeDOMString(&Parser_p->Token_p->StartOrEndTag.TagName);
-                    Parser_p->Token_p->StartOrEndTag.TagName = nh_webidl_initDOMString(3);
-                    nh_webidl_appendToDOMString(&Parser_p->Token_p->StartOrEndTag.TagName, "img", 3);
+                    nh_encoding_freeUTF8(&Parser_p->Token_p->StartOrEndTag.TagName);
+                    Parser_p->Token_p->StartOrEndTag.TagName = nh_encoding_initUTF8(3);
+                    nh_core_appendToString(&Parser_p->Token_p->StartOrEndTag.TagName, "img", 3);
                     Parser_p->Token_p->StartOrEndTag.tag = NH_HTML_TAG_IMG;
                     return nh_html_reprocessToken(Parser_p, Parser_p->insertionMode);
                 }
@@ -1344,7 +1344,7 @@ static NH_API_RESULT nh_html_processInBody(
                     NH_CORE_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
                 }
 
-                nh_webidl_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
+                nh_ecmascript_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
                 while (Pop_p != NULL && strcmp(nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Pop_p))->p, Parser_p->Token_p->StartOrEndTag.TagName.p)) {
                     Pop_p = nh_html_popCurrentNode(Parser_p);
                 }
@@ -1399,7 +1399,7 @@ static NH_API_RESULT nh_html_processInBody(
                 if (strcmp(nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(nh_html_getCurrentNode(Parser_p)))->p, Parser_p->Token_p->StartOrEndTag.TagName.p)) {
                     NH_CORE_CHECK(nh_html_newTreeConstructionError(Parser_p, NH_HTML_PARSE_ERROR_PLACEHOLDER))
                 }
-                nh_webidl_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
+                nh_ecmascript_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
                 while (Pop_p != NULL && strcmp(nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Pop_p))->p, Parser_p->Token_p->StartOrEndTag.TagName.p)) {
                     Pop_p = nh_html_popCurrentNode(Parser_p);
                 }
@@ -1439,7 +1439,7 @@ static NH_API_RESULT nh_html_processInBody(
             }
             default :
             {
-//                nh_webidl_Object *Node_p = nh_html_getCurrentNode(Parser_p); 
+//                nh_ecmascript_Object *Node_p = nh_html_getCurrentNode(Parser_p); 
 //
 //                if (!strcmp(nh_dom_getLocalName(NH_WEBIDL_GET_DOM_ELEMENT(Node_p))->p, Parser_p->Token_p->StartOrEndTag.TagName.p)) i
 //                {
@@ -1658,7 +1658,7 @@ static NH_API_RESULT nh_html_reprocessToken(
 NH_API_RESULT nh_html_dispatchTreeConstruction(
     nh_html_Parser *Parser_p)
 {
-    nh_webidl_Object *AdjustedCurrentNode_p = nh_html_getAdjustedCurrentNode(Parser_p);
+    nh_ecmascript_Object *AdjustedCurrentNode_p = nh_html_getAdjustedCurrentNode(Parser_p);
 
     if (Parser_p->Token_p->type == NH_HTML_TOKEN_START_TAG || Parser_p->Token_p->type == NH_HTML_TOKEN_END_TAG) {
         Parser_p->Token_p->StartOrEndTag.tag = nh_html_getTagIndex(Parser_p->Token_p->StartOrEndTag.TagName.p);

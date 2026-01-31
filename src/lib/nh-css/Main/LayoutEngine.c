@@ -73,13 +73,13 @@ static nh_css_Canvas *nh_css_getCanvas(
     return Canvas_p;
 }
 
-static nh_webidl_Object *nh_css_getHTMLElement(
-    nh_webidl_Object *DocumentObject_p)
+static nh_ecmascript_Object *nh_css_getHTMLElement(
+    nh_ecmascript_Object *DocumentObject_p)
 {
     nh_core_List *Children_p = nh_dom_getNodeChildren(NH_WEBIDL_GET_DOM_NODE(DocumentObject_p));
 
     for (int i = 0; i < Children_p->size; ++i) {
-        nh_webidl_Object *Child_p = Children_p->pp[i];
+        nh_ecmascript_Object *Child_p = Children_p->pp[i];
         if (!strcmp(Child_p->Interface_p->name_p, "HTMLHtmlElement")) {
             return Child_p;
         }
@@ -100,10 +100,10 @@ static NH_API_RESULT nh_css_initializeLayout(
 static NH_API_RESULT nh_css_updateLayout(
     nh_css_LayoutEngine *LayoutEngine_p, bool *idle_p)
 {
-    nh_webidl_Object *DocumentObject_p = LayoutEngine_p->DocumentContext_p->Document_p;
+    nh_ecmascript_Object *DocumentObject_p = LayoutEngine_p->DocumentContext_p->Document_p;
     if (!DocumentObject_p) {return NH_API_SUCCESS;}
 
-    nh_webidl_Object *Document_p = nh_css_getDocument(DocumentObject_p);
+    nh_ecmascript_Object *Document_p = nh_css_getDocument(DocumentObject_p);
     NH_CORE_CHECK_MEM(Document_p)
 
     nh_css_Layout *Layout_p = nh_css_getLayout(Document_p);

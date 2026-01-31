@@ -17,8 +17,8 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_dom_createDocumentType(
-        nh_webidl_DOMString *Name_p, nh_webidl_DOMString *PublicId_p, nh_webidl_DOMString *SystemId_p
+    nh_ecmascript_Object *nh_dom_createDocumentType(
+        nh_encoding_UTF8String *Name_p, nh_encoding_UTF8String *PublicId_p, nh_encoding_UTF8String *SystemId_p
     );
 
 /** @} */

@@ -12,7 +12,7 @@
 
 // 7.4.1.2
 typedef struct nh_html_DocumentState {
-    nh_webidl_Object *Document_p;
+    nh_ecmascript_Object *Document_p;
     nh_html_PolicyContainer *PolicyContainer_p;
     NH_HTML_REFERRER_POLICY_E requestReferrerPolicy;
     nh_html_Origin *InitiatorOrigin_p;

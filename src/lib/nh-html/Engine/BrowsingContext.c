@@ -29,8 +29,8 @@ static void nh_html_initBrowsingContext(
 }
 
 NH_API_RESULT nh_html_createNewBrowsingContextAndDocument(
-    nh_webidl_Object *Creator_p, nh_webidl_Object *Embedder_p, nh_html_BrowsingContextGroup *Group_p, 
-    nh_html_BrowsingContext **Context_pp, nh_webidl_Object **Document_pp)
+    nh_ecmascript_Object *Creator_p, nh_ecmascript_Object *Embedder_p, nh_html_BrowsingContextGroup *Group_p, 
+    nh_html_BrowsingContext **Context_pp, nh_ecmascript_Object **Document_pp)
 {
     // let browsing context be a new browsing context
     nh_html_BrowsingContext *BrowsingContext_p = nh_core_allocate(sizeof(nh_html_BrowsingContext));
@@ -78,7 +78,7 @@ static nh_html_BrowsingContextGroup nh_html_initBrowsingContextGroup()
 // https://html.spec.whatwg.org/#creating-a-new-browsing-context-group-and-document
 NH_API_RESULT nh_html_createNewBrowsingContextGroupAndDocument(
     nh_html_UserAgent *UserAgent_p, nh_html_BrowsingContextGroup **BrowsingContextGroup_pp,
-    nh_webidl_Object **Document_pp)
+    nh_ecmascript_Object **Document_pp)
 {
     nh_html_BrowsingContextGroup *Group_p = nh_core_allocate(sizeof(nh_html_BrowsingContextGroup));
     NH_CORE_CHECK_MEM_2(NULL, Group_p)
@@ -98,7 +98,7 @@ NH_API_RESULT nh_html_createNewBrowsingContextGroupAndDocument(
 
 // https://html.spec.whatwg.org/#creating-a-new-top-level-browsing-context
 NH_API_RESULT nh_html_createNewTopLevelBrowsingContextAndDocument(
-    nh_html_UserAgent *UserAgent_p, nh_core_List **BrowsingContexts_pp, nh_webidl_Object **Document_pp)
+    nh_html_UserAgent *UserAgent_p, nh_core_List **BrowsingContexts_pp, nh_ecmascript_Object **Document_pp)
 {
     nh_html_BrowsingContextGroup *BrowsingContextGroup_p = NULL;
     NH_CORE_CHECK(nh_html_createNewBrowsingContextGroupAndDocument(UserAgent_p, &BrowsingContextGroup_p, Document_pp))

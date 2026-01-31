@@ -21,17 +21,17 @@
 // INITIALIZE ======================================================================================
 
 NH_API_RESULT nh_html_initializeDocument(
-    nh_webidl_Object *Document_p)
+    nh_ecmascript_Object *Document_p)
 {
     return NH_API_SUCCESS;
 }
 
 // API =============================================================================================
 
-nh_webidl_Object *nh_html_createDocument(
+nh_ecmascript_Object *nh_html_createDocument(
     nh_html_DocumentContext *Context_p)
 {
-    nh_webidl_Object *Document_p = nh_webidl_createCompositeObject("HTML", "Document");
+    nh_ecmascript_Object *Document_p = nh_webidl_createCompositeObject("HTML", "Document");
     NH_CORE_CHECK_MEM_2(NULL, Document_p)
 
     // The node document of a document is that document itself. 

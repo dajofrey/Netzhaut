@@ -65,7 +65,7 @@ static NH_API_RESULT nh_css_stringifyToken(
 }
 
 NH_API_RESULT nh_css_logTokens(
-    nh_webidl_Object *CSSStyleSheet_p, nh_core_Array *Tokens_p)
+    nh_ecmascript_Object *CSSStyleSheet_p, nh_core_Array *Tokens_p)
 {
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char node_p[255] = {'\0'};
@@ -135,7 +135,7 @@ static NH_API_RESULT nh_css_logComponentValue(
 }
 
 NH_API_RESULT nh_css_logRules(
-    nh_webidl_Object *CSSStyleSheet_p, nh_core_Array *Rules_p)
+    nh_ecmascript_Object *CSSStyleSheet_p, nh_core_Array *Rules_p)
 {
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
@@ -207,7 +207,7 @@ static NH_API_RESULT nh_css_logSelectorParseNode(
 }
 
 static NH_API_RESULT nh_css_logStyleRule(
-    char *node_p, char *message_p, char *indent_p, nh_webidl_Object *CSSStyleRule_p)
+    char *node_p, char *message_p, char *indent_p, nh_ecmascript_Object *CSSStyleRule_p)
 {
     char token_p[NH_CSS_MAX_TOKEN] = {'\0'};
     nh_core_Array *Declarations_p = nh_css_getStyleDeclarationData(nh_css_getStyleRuleDeclaration(CSSStyleRule_p));
@@ -233,7 +233,7 @@ static NH_API_RESULT nh_css_logStyleRule(
 }
 
 NH_API_RESULT nh_css_logObjects(
-    nh_webidl_Object *CSSStyleSheet_p, nh_core_List *Rules_p)
+    nh_ecmascript_Object *CSSStyleSheet_p, nh_core_List *Rules_p)
 {
     char message_p[NH_CSS_MAX_MESSAGE] = {'\0'};
     char indent_p[NH_CSS_MAX_INDENT] = {'\0'};
@@ -243,7 +243,7 @@ NH_API_RESULT nh_css_logObjects(
 
     for (int i = 0; i < Rules_p->size; ++i)
     {
-        nh_webidl_Object *Rule_p = Rules_p->pp[i];
+        nh_ecmascript_Object *Rule_p = Rules_p->pp[i];
 
         if (i > 0) {nh_core_log(node_p, NULL, " ");}
 

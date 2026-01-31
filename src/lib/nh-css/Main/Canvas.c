@@ -65,7 +65,7 @@ nh_css_Canvas *nh_css_addCanvas(
 // COMPUTE =========================================================================================
 
 NH_API_RESULT nh_css_computeCanvas(
-    nh_css_Canvas *Canvas_p, nh_webidl_Object *HTMLElement_p, nh_webidl_Object *StyleSheets_p)
+    nh_css_Canvas *Canvas_p, nh_ecmascript_Object *HTMLElement_p, nh_ecmascript_Object *StyleSheets_p)
 {
     Canvas_p->_float = false;
     Canvas_p->Floats = nh_core_initList(8);

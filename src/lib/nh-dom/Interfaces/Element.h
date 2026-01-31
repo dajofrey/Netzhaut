@@ -17,46 +17,46 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_dom_createElement(
-        nh_webidl_Object *Document_p, nh_webidl_DOMString *LocalName_p, nh_webidl_DOMString *Namespace_p, 
-        nh_webidl_DOMString *NamespacePrefix_p, nh_webidl_DOMString *Is_p, bool synchronousCustomElements, 
+    nh_ecmascript_Object *nh_dom_createElement(
+        nh_ecmascript_Object *Document_p, nh_encoding_UTF8String *LocalName_p, nh_encoding_UTF8String *Namespace_p, 
+        nh_encoding_UTF8String *NamespacePrefix_p, nh_encoding_UTF8String *Is_p, bool synchronousCustomElements, 
         nh_webidl_Interface *Interface_p
     );
 
-    nh_webidl_DOMString *nh_dom_getLocalName(
-        nh_webidl_Object *DOMElement_p
+    nh_encoding_UTF8String *nh_dom_getLocalName(
+        nh_ecmascript_Object *DOMElement_p
     );
 
-    nh_webidl_DOMString *nh_dom_getNamespaceURI(
-        nh_webidl_Object *Element_p
+    nh_encoding_UTF8String *nh_dom_getNamespaceURI(
+        nh_ecmascript_Object *Element_p
     );
 
-    nh_webidl_DOMString *nh_dom_getTagName(
-        nh_webidl_Object *Element_p
+    nh_encoding_UTF8String *nh_dom_getTagName(
+        nh_ecmascript_Object *Element_p
     );
 
-    nh_webidl_Object *nh_dom_getNamedNodeMap(
-        nh_webidl_Object *Element_p
+    nh_ecmascript_Object *nh_dom_getNamedNodeMap(
+        nh_ecmascript_Object *Element_p
     );
 
-    nh_webidl_Object *nh_dom_getAttrByNamespaceAndLocalName(
-        nh_webidl_Object *Element_p, nh_webidl_DOMString *Namespace_p, nh_webidl_DOMString *LocalName_p
+    nh_ecmascript_Object *nh_dom_getAttrByNamespaceAndLocalName(
+        nh_ecmascript_Object *Element_p, nh_encoding_UTF8String *Namespace_p, nh_encoding_UTF8String *LocalName_p
     );
     
-    nh_webidl_Object *nh_dom_getAttrByLocalName(
-        nh_webidl_Object *DOMElement_p, char *localName_p
+    nh_ecmascript_Object *nh_dom_getAttrByLocalName(
+        nh_ecmascript_Object *DOMElement_p, char *localName_p
     );
 
     NH_API_RESULT nh_dom_replaceAttr(
-        nh_webidl_Object *Element_p, nh_webidl_Object *OldAttr_p, nh_webidl_Object *NewAttr_p
+        nh_ecmascript_Object *Element_p, nh_ecmascript_Object *OldAttr_p, nh_ecmascript_Object *NewAttr_p
     );
     
     NH_API_RESULT nh_dom_appendAttr(
-        nh_webidl_Object *Element_p, nh_webidl_Object *Attr_p
+        nh_ecmascript_Object *Element_p, nh_ecmascript_Object *Attr_p
     );
     
-    nh_webidl_Object *nh_dom_setAttr(
-        nh_webidl_Object *Element_p, nh_webidl_Object *Attr_p
+    nh_ecmascript_Object *nh_dom_setAttr(
+        nh_ecmascript_Object *Element_p, nh_ecmascript_Object *Attr_p
     );
 
 /** @} */

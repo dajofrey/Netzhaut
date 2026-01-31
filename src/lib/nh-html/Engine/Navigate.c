@@ -35,7 +35,7 @@ typedef struct nh_html_SourceSnapshotParams {
 } nh_html_SourceSnapshotParams;
 
 nh_html_SourceSnapshotParams nh_html_snapshotSourceSnapshotParams(
-    nh_webidl_Object *Document_p)
+    nh_ecmascript_Object *Document_p)
 {
     nh_html_SourceSnapshotParams SourceSnapshotParams;
     SourceSnapshotParams.hasTransientActivation = ...;
@@ -43,7 +43,7 @@ nh_html_SourceSnapshotParams nh_html_snapshotSourceSnapshotParams(
 }
 
 NH_API_RESULT *nh_html_navigate(
-    nh_html_Navigable *Navigable_p, nh_url_URL URL, nh_webidl_Object *SourceDocument_p, void *DocumentResource_p)
+    nh_html_Navigable *Navigable_p, nh_url_URL URL, nh_ecmascript_Object *SourceDocument_p, void *DocumentResource_p)
 {
     char *cspNavigationType_p = "other";
     nh_html_SourceSnapshotParams SourceSnapshotParams = nh_html_snapshotSourceSnapshotParams;

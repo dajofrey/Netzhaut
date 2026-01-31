@@ -41,7 +41,7 @@ typedef struct nh_html_ImageRequest {
 } nh_html_ImageRequest;
 
 typedef struct nh_html_Image {
-    nh_webidl_Object *dimensionAttributeSource_p;
+    nh_ecmascript_Object *dimensionAttributeSource_p;
     nh_html_ImageRequest CurrentRequest;
     nh_html_ImageRequest *PendingRequest_p;
 } nh_html_Image;
@@ -61,7 +61,7 @@ static nh_html_ImageRequest nh_html_initImageRequest()
 }
 
 NH_API_RESULT nh_html_initializeHTMLImageElement(
-    nh_webidl_Object *Image_p)
+    nh_ecmascript_Object *Image_p)
 {
     Image_p->internal_p = nh_core_allocate(sizeof(nh_html_Image));
     NH_CORE_CHECK_NULL(Image_p->internal_p)
@@ -82,11 +82,11 @@ void nh_html_updateImageData(
     char *selectedSource_p = NULL;
     int selectedPixelDensity = -1;
 
-    nh_webidl_Object *Attr_p = nh_dom_getAttrByLocalName(
-        NH_WEBIDL_GET_DOM_ELEMENT((nh_webidl_Object*)Image_p), "src"
+    nh_ecmascript_Object *Attr_p = nh_dom_getAttrByLocalName(
+        NH_WEBIDL_GET_DOM_ELEMENT((nh_ecmascript_Object*)Image_p), "src"
     );
 
-    nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attr_p);
+    nh_encoding_UTF8String *Value_p = nh_dom_getAttrValue(Attr_p);
 
     selectedSource_p = Value_p->p;
     selectedPixelDensity = 1;

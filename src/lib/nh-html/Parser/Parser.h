@@ -126,9 +126,9 @@
         nh_Stack OpenElements;
         nh_Stack TemplateInsertionModes;
         nh_core_List ActiveFormattingElements;
-        nh_webidl_Object *Document_p;
-        nh_webidl_Object *HeadElement_p;
-        nh_webidl_Object *FormElement_p;
+        void *Document_p;
+        void *HeadElement_p;
+        void *FormElement_p;
         nh_core_Array Errors;
         nh_html_Token *Token_p;
         nh_html_Tokenizer *Tokenizer_p;
@@ -140,8 +140,8 @@
  *  @{
  */
 
-    typedef nh_webidl_Object *(*nh_html_parseDocument_f)(
-        char *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p
+    typedef void *(*nh_html_parseDocument_f)(
+        char *logId_p, nh_encoding_UTF32String InputStream, void *Document_p
     );
 
 /** @} */
@@ -155,7 +155,7 @@
     );
 
     NH_API_RESULT nh_html_parseDocument(
-        char *logId_p, nh_encoding_UTF32String InputStream, nh_webidl_Object *Document_p
+        char *logId_p, nh_encoding_UTF32String InputStream, void *Document_p
     );
 
 /** @} */

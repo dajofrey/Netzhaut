@@ -23,11 +23,11 @@
 void nh_html_setToken(
     void *HTMLElement_p, nh_html_Token *Token_p)
 {
-    ((nh_webidl_Object*)HTMLElement_p)->internal_p = Token_p;
+    ((nh_ecmascript_Object*)HTMLElement_p)->internal_p = Token_p;
 }
 
 nh_html_Token *nh_html_getToken(
     void *HTMLElement_p)
 {
-    return ((nh_webidl_Object*)HTMLElement_p)->internal_p;
+    return ((nh_ecmascript_Object*)HTMLElement_p)->internal_p;
 }

@@ -9,7 +9,7 @@
 
 #include "../Common/Includes.h"
 
-#include "../../nh-webidl/Runtime/String.h"
+#include "../../nh-encoding/Encodings/UTF8.h"
 #include "../../nh-core/Util/ArrayList.h"
 
 // ENUMS ===========================================================================================
@@ -110,20 +110,20 @@ typedef enum NH_HTML_TOKEN {
 
 typedef struct nh_html_DOCTYPEToken {
     NH_HTML_TOKEN type;
-    nh_webidl_DOMString *Name_p;
-    nh_webidl_DOMString *PublicIdentifier_p;
-    nh_webidl_DOMString *SystemIdentifier_p;
+    nh_encoding_UTF8String *Name_p;
+    nh_encoding_UTF8String *PublicIdentifier_p;
+    nh_encoding_UTF8String *SystemIdentifier_p;
     bool forceQuirks;
 } nh_html_DOCTYPEToken;
 
 typedef struct nh_html_Attribute {
-    nh_webidl_DOMString Name;
-    nh_webidl_DOMString Value;
+    nh_encoding_UTF8String Name;
+    nh_encoding_UTF8String Value;
 } nh_html_Attribute;
 
 typedef struct nh_html_StartOrEndTagToken {
     NH_HTML_TOKEN type;
-    nh_webidl_DOMString TagName;
+    nh_encoding_UTF8String TagName;
     bool selfClosing;
     nh_core_Array Attributes;
     int tag;
@@ -131,7 +131,7 @@ typedef struct nh_html_StartOrEndTagToken {
 
 typedef struct nh_html_CommentOrCharacterToken {
     NH_HTML_TOKEN type;
-    nh_webidl_DOMString Data;
+    nh_encoding_UTF8String Data;
 } nh_html_CommentOrCharacterToken;
 
 typedef union nh_html_Token {
@@ -144,20 +144,20 @@ typedef union nh_html_Token {
 typedef struct nh_html_Tokenizer {
     NH_HTML_TOKENIZATION_STATE state;
     NH_HTML_TOKENIZATION_STATE returnState;
-    nh_webidl_USVString InputStream;
+    nh_encoding_UTF8String InputStream;
     nh_core_ArrayList Tokens;
     nh_core_List Emits;
     unsigned long index;
     NH_ENCODING_UTF32 codepoint;
     nh_html_Token *Token_p;
-    nh_webidl_USVString TemporaryBuffer;    
+    nh_encoding_UTF8String TemporaryBuffer;    
     void *Parser_p;
 } nh_html_Tokenizer;
 
 // FUNCTIONS =======================================================================================
 
 nh_html_Tokenizer nh_html_initTokenizer(
-    void *Parser_p, nh_webidl_USVString InputStream
+    void *Parser_p, nh_encoding_UTF8String InputStream
 );
 
 NH_API_RESULT nh_html_consumeNext(

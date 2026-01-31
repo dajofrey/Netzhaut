@@ -16,11 +16,11 @@
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_appendToRuleList(
-    nh_webidl_Object *RuleList_p, nh_webidl_Object *Object_p
+    nh_ecmascript_Object *RuleList_p, nh_ecmascript_Object *Object_p
 );
 
 nh_core_List *nh_css_getRuleListData(
-    nh_webidl_Object *RuleList_p
+    nh_ecmascript_Object *RuleList_p
 );
 
 #endif // NH_CSS_INTERFACES_RULE_LIST_H

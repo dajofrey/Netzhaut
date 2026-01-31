@@ -35,7 +35,7 @@ typedef struct nh_css_Rule {
 // INITIALIZE ======================================================================================
 
 NH_API_RESULT nh_css_initializeCSSRule(
-    nh_webidl_Object *CSSRule_p)
+    nh_ecmascript_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
 
@@ -47,78 +47,78 @@ NH_CSS_DIAGNOSTIC_END(NH_API_SUCCESS)
 
 // API =============================================================================================
 
-nh_webidl_Object *nh_css_getCSSRule(
-    nh_webidl_Object *Object_p)
+nh_ecmascript_Object *nh_css_getCSSRule(
+    nh_ecmascript_Object *Object_p)
 {
 NH_CSS_BEGIN()
-NH_CSS_END((nh_webidl_Object*)nh_webidl_getObject(Object_p, "CSS", "CSSRule"))
+NH_CSS_END((nh_ecmascript_Object*)nh_webidl_getObject(Object_p, "CSS", "CSSRule"))
 }
 
 void nh_css_setCSSRuleType(
-    nh_webidl_Object *CSSRule_p, NH_CSS_RULE type)
+    nh_ecmascript_Object *CSSRule_p, NH_CSS_RULE type)
 {
 NH_CSS_BEGIN()
 
-    ((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->type = type;
+    ((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->type = type;
 
 NH_CSS_SILENT_END()
 }
 
 void nh_css_setCSSRuleName(
-    nh_webidl_Object *CSSRule_p, nh_encoding_UTF32String *Name_p)
+    nh_ecmascript_Object *CSSRule_p, nh_encoding_UTF32String *Name_p)
 {
 NH_CSS_BEGIN()
 
-    ((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Name_p = Name_p;
+    ((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->Name_p = Name_p;
 
 NH_CSS_SILENT_END()
 }
 
 void nh_css_setCSSRulePrelude(
-    nh_webidl_Object *CSSRule_p, nh_core_Array Prelude)
+    nh_ecmascript_Object *CSSRule_p, nh_core_Array Prelude)
 {
 NH_CSS_BEGIN()
 
-    ((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Prelude = Prelude;
+    ((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->Prelude = Prelude;
 
 NH_CSS_SILENT_END()
 }
 
 void nh_css_setCSSRuleBlock(
-    nh_webidl_Object *CSSRule_p, nh_css_SimpleBlock Block)
+    nh_ecmascript_Object *CSSRule_p, nh_css_SimpleBlock Block)
 {
 NH_CSS_BEGIN()
 
-    ((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Block = Block;
+    ((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->Block = Block;
 
 NH_CSS_SILENT_END()
 }
 
 NH_CSS_RULE nh_css_getCSSRuleType(
-    nh_webidl_Object *CSSRule_p)
+    nh_ecmascript_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
-NH_CSS_END(((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->type)
+NH_CSS_END(((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->type)
 }
 
 nh_encoding_UTF32String *nh_css_getCSSRuleName(
-    nh_webidl_Object *CSSRule_p)
+    nh_ecmascript_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
-NH_CSS_END(((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Name_p)
+NH_CSS_END(((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->Name_p)
 }
 
 nh_core_Array *nh_css_getCSSRulePrelude(
-    nh_webidl_Object *CSSRule_p)
+    nh_ecmascript_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
-NH_CSS_END(&((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Prelude)
+NH_CSS_END(&((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->Prelude)
 }
 
 nh_css_SimpleBlock *nh_css_getCSSRuleBlock(
-    nh_webidl_Object *CSSRule_p)
+    nh_ecmascript_Object *CSSRule_p)
 {
 NH_CSS_BEGIN()
-NH_CSS_END(&((nh_css_Rule*)((nh_webidl_Object*)CSSRule_p)->internal_p)->Block)
+NH_CSS_END(&((nh_css_Rule*)((nh_ecmascript_Object*)CSSRule_p)->internal_p)->Block)
 }
 

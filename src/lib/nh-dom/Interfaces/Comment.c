@@ -24,19 +24,19 @@
 // INITIALIZE ======================================================================================
 
 NH_API_RESULT nh_dom_initializeComment(
-    nh_webidl_Object *Node_p)
+    nh_ecmascript_Object *Node_p)
 {
     return NH_API_SUCCESS;
 }
 
 // INTERNAL ========================================================================================
 
-nh_webidl_Object *nh_dom_createComment(
-    nh_webidl_DOMString DOMString)
+nh_ecmascript_Object *nh_dom_createComment(
+    nh_encoding_UTF8String DOMString)
 {
-    nh_webidl_Object *Comment_p = nh_webidl_createObject("DOM", "Comment");
+    nh_ecmascript_Object *Comment_p = nh_webidl_createObject("DOM", "Comment");
     NH_CORE_CHECK_MEM_2(NULL, Comment_p)
-    NH_CORE_CHECK_2(NULL, nh_dom_appendToCharacterData((nh_webidl_Object*)Comment_p->Parent_p, DOMString))
-    return (nh_webidl_Object*)Comment_p;
+    NH_CORE_CHECK_2(NULL, nh_dom_appendToCharacterData((nh_ecmascript_Object*)Comment_p->Parent_p, DOMString))
+    return (nh_ecmascript_Object*)Comment_p;
 }
 

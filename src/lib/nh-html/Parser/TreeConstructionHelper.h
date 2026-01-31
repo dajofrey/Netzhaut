@@ -18,32 +18,32 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_html_createElementForToken(
-        nh_html_Token *Token_p, nh_webidl_DOMString *Namespace_p, nh_webidl_Object *IntendedParent_p
+    nh_ecmascript_Object *nh_html_createElementForToken(
+        nh_html_Token *Token_p, nh_encoding_UTF8String *Namespace_p, nh_ecmascript_Object *IntendedParent_p
     );
     
     NH_WEBIDL_UNSIGNED_LONG nh_html_getAppropriatePlaceForInsertingNode(
-        nh_html_Parser *Parser_p, nh_webidl_Object **Target_pp
+        nh_html_Parser *Parser_p, nh_ecmascript_Object **Target_pp
     );
     
     NH_API_RESULT nh_html_insertCommentAtPosition(
-        nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, NH_WEBIDL_UNSIGNED_LONG position
+        nh_html_Parser *Parser_p, nh_ecmascript_Object *Target_p, NH_WEBIDL_UNSIGNED_LONG position
     );
     
     NH_API_RESULT nh_html_insertComment(
-        nh_html_Parser *Parser_p, nh_webidl_Object *Node_p
+        nh_html_Parser *Parser_p, nh_ecmascript_Object *Node_p
     );
     
-    nh_webidl_Object *nh_html_insertForeignElement(
-        nh_html_Parser *Parser_p, nh_html_Token *Token_p, nh_webidl_DOMString *Namespace_p
+    nh_ecmascript_Object *nh_html_insertForeignElement(
+        nh_html_Parser *Parser_p, nh_html_Token *Token_p, nh_encoding_UTF8String *Namespace_p
     );
     
-    nh_webidl_Object *nh_html_insertHTMLElement(
+    nh_ecmascript_Object *nh_html_insertHTMLElement(
         nh_html_Parser *Parser_p, nh_html_Token *Token_p
     );
     
     NH_API_RESULT nh_html_insertCharacter(
-        nh_html_Parser *Parser_p, nh_webidl_Object *Target_p, nh_webidl_DOMString *Data_p
+        nh_html_Parser *Parser_p, nh_ecmascript_Object *Target_p, nh_encoding_UTF8String *Data_p
     );
     
     NH_API_RESULT nh_html_parseRAWTEXTOrRCDATA(
@@ -57,7 +57,7 @@
 // ACTIVE FORMATTING ELEMENTS
 
     NH_API_RESULT nh_html_pushActiveFormattingElement(
-        nh_html_Parser *Parser_p, nh_webidl_Object *Element_p
+        nh_html_Parser *Parser_p, nh_ecmascript_Object *Element_p
     );
 
     NH_API_RESULT nh_html_insertMarker(
@@ -80,24 +80,24 @@
 
 // STACK OF OPEN ELEMENTS
 
-    nh_webidl_Object *nh_html_getCurrentNode(
+    nh_ecmascript_Object *nh_html_getCurrentNode(
         nh_html_Parser *Parser_p
     );
 
-    nh_webidl_Object *nh_html_getAdjustedCurrentNode(
+    nh_ecmascript_Object *nh_html_getAdjustedCurrentNode(
         nh_html_Parser *Parser_p
     );
 
     NH_API_RESULT nh_html_pushOpenElement(
-        nh_html_Parser *Parser_p, nh_webidl_Object *Object_p
+        nh_html_Parser *Parser_p, nh_ecmascript_Object *Object_p
     );
 
-    nh_webidl_Object *nh_html_popCurrentNode(
+    nh_ecmascript_Object *nh_html_popCurrentNode(
         nh_html_Parser *Parser_p
     );
 
     bool nh_html_inSpecialCategory(
-        nh_webidl_Object *Node_p
+        nh_ecmascript_Object *Node_p
     );
 
     bool nh_html_hasElementInScope(

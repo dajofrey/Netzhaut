@@ -61,7 +61,7 @@ nh_html_DocumentContext *nh_html_createDocumentContext(
 nh_html_Traversable *nh_html_createNewTopLevelTraversable(
     nh_html_UserAgent *UserAgent_p, nh_html_BrowsingContext *Opener_p, nh_encoding_UTF8 TargetName)
 {
-    nh_webidl_Object *Document_p = NULL;
+    nh_ecmascript_Object *Document_p = NULL;
     if (Opener_p == NULL) {
         nh_html_createNewTopLevelBrowsingContextAndDocument(&Document_p);
     } else {

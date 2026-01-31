@@ -17,29 +17,29 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_dom_createAttr(
-        nh_webidl_Object *Document_p, nh_webidl_DOMString *LocalName_p, nh_webidl_DOMString *Namespace_p, 
-        nh_webidl_DOMString *NamespacePrefix_p, nh_webidl_Object *OwnerElement_p, nh_webidl_DOMString *Value_p
+    nh_ecmascript_Object *nh_dom_createAttr(
+        nh_ecmascript_Object *Document_p, nh_encoding_UTF8String *LocalName_p, nh_encoding_UTF8String *Namespace_p, 
+        nh_encoding_UTF8String *NamespacePrefix_p, nh_ecmascript_Object *OwnerElement_p, nh_encoding_UTF8String *Value_p
     );
 
-    nh_webidl_DOMString *nh_dom_getAttrNamespace(
-        nh_webidl_Object *Attr_p
+    nh_encoding_UTF8String *nh_dom_getAttrNamespace(
+        nh_ecmascript_Object *Attr_p
     );
     
-    nh_webidl_DOMString *nh_dom_getAttrLocalName(
-        nh_webidl_Object *Attr_p
+    nh_encoding_UTF8String *nh_dom_getAttrLocalName(
+        nh_ecmascript_Object *Attr_p
     );
 
     void nh_dom_setAttrElement(
-        nh_webidl_Object *Attr_p, nh_webidl_Object *Element_p
+        nh_ecmascript_Object *Attr_p, nh_ecmascript_Object *Element_p
     );
 
-    nh_webidl_Object *nh_dom_getAttrElement(
-        nh_webidl_Object *Attr_p
+    nh_ecmascript_Object *nh_dom_getAttrElement(
+        nh_ecmascript_Object *Attr_p
     );
 
-    nh_webidl_DOMString *nh_dom_getAttrValue(
-        nh_webidl_Object *Attr_p
+    nh_encoding_UTF8String *nh_dom_getAttrValue(
+        nh_ecmascript_Object *Attr_p
     );
 
 /** @} */

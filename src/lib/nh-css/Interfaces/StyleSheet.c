@@ -30,7 +30,7 @@
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_initializeCSSStyleSheet(
-    nh_webidl_Object *StyleSheet_p)
+    nh_ecmascript_Object *StyleSheet_p)
 {
     StyleSheet_p->internal_p = nh_core_allocate(sizeof(nh_core_Array));
     NH_CORE_CHECK_MEM(StyleSheet_p->internal_p)
@@ -41,16 +41,16 @@ NH_API_RESULT nh_css_initializeCSSStyleSheet(
     return NH_API_SUCCESS;
 }
 
-nh_webidl_Object *nh_css_getRuleList(
-    nh_webidl_Object *CSSStyleSheet_p)
+nh_ecmascript_Object *nh_css_getRuleList(
+    nh_ecmascript_Object *CSSStyleSheet_p)
 {
     return CSSStyleSheet_p->Attributes.pp[1];
 }
 
 void nh_css_setStyleSheetTokens(
-    nh_webidl_Object *StyleSheet_p, nh_core_Array Tokens)
+    nh_ecmascript_Object *StyleSheet_p, nh_core_Array Tokens)
 {
-    *((nh_core_Array*)((nh_webidl_Object*)StyleSheet_p)->internal_p) = Tokens;
+    *((nh_core_Array*)((nh_ecmascript_Object*)StyleSheet_p)->internal_p) = Tokens;
     return;
 }
 
@@ -75,19 +75,19 @@ static bool nh_css_compareCounterStyleRuleName(
     return match;
 }
 
-nh_webidl_Object *nh_css_findCounterStyleRule(
-    nh_webidl_Object *StyleSheet_p, char *name_p)
+nh_ecmascript_Object *nh_css_findCounterStyleRule(
+    nh_ecmascript_Object *StyleSheet_p, char *name_p)
 {
     NH_ENCODING_UTF32 tmp_p[] = {99, 111, 117, 110, 116, 101, 114, 45, 115, 116, 121, 108, 101, 0}; // counter-style
     nh_encoding_UTF32String Name = nh_encoding_initUTF32(14);
     nh_encoding_appendUTF32(&Name, tmp_p, 14);
 
-    nh_webidl_Object *RuleList_p = ((nh_webidl_Object*)StyleSheet_p)->Attributes.pp[1];
+    nh_ecmascript_Object *RuleList_p = ((nh_ecmascript_Object*)StyleSheet_p)->Attributes.pp[1];
     nh_core_List *List_p = nh_css_getRuleListData(RuleList_p);
 
-    nh_webidl_Object *Object_p = NULL;
+    nh_ecmascript_Object *Object_p = NULL;
     for (int i = 0; i < List_p->size; ++i) {
-        nh_webidl_Object *Rule_p = NH_WEBIDL_GET_CSS_RULE(List_p->pp[i]);
+        nh_ecmascript_Object *Rule_p = NH_WEBIDL_GET_CSS_RULE(List_p->pp[i]);
         nh_css_Rule *RuleData_p = nh_css_getRuleData(Rule_p);
         if (RuleData_p && RuleData_p->Name_p && nh_encoding_compareUTF32(RuleData_p->Name_p->p, Name.p)) {
             if (nh_css_compareCounterStyleRuleName(&RuleData_p->Prelude, name_p)) {

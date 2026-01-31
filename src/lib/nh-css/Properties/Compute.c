@@ -32,7 +32,7 @@
 
 typedef struct nh_css_ComputeVariables {
     NH_CSS_PROPERTY property;
-    nh_webidl_Object *Node_p;
+    nh_ecmascript_Object *Node_p;
     nh_core_Array *SpecifiedValues_p;
     nh_core_List *ComputedValues_p;
     nh_css_Value **ComputedValue_pp;
@@ -131,7 +131,7 @@ static NH_API_RESULT nh_css_computeLength(
                 *Variables_p->ComputedValue_pp = NewValue_p;
             }
             else {
-                nh_webidl_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
+                nh_ecmascript_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
                 NH_CORE_CHECK_NULL(Parent_p)
                 nh_core_List *ParentValues_p = nh_dom_getComputedPropertyValues(NH_WEBIDL_GET_DOM_NODE(Parent_p));
                 NH_CORE_CHECK_NULL(ParentValues_p)
@@ -438,7 +438,7 @@ static NH_API_RESULT nh_css_computeFontWeight(
     {
         if (!strcmp(Variables_p->SpecifiedValue_p->String.p, "bolder")) 
         {
-            nh_webidl_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
+            nh_ecmascript_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
             NH_CORE_CHECK_NULL(Parent_p)
             nh_core_List *ParentValues_p = nh_dom_getComputedPropertyValues(NH_WEBIDL_GET_DOM_NODE(Parent_p));
             NH_CORE_CHECK_NULL(ParentValues_p)
@@ -464,7 +464,7 @@ static NH_API_RESULT nh_css_computeFontWeight(
         }
         else if (!strcmp(Variables_p->SpecifiedValue_p->String.p, "lighter")) 
         {
-            nh_webidl_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
+            nh_ecmascript_Object *Parent_p = nh_dom_getParentNode(Variables_p->Node_p);
             NH_CORE_CHECK_NULL(Parent_p)
             nh_core_List *ParentValues_p = nh_dom_getComputedPropertyValues(Variables_p->Node_p);
             NH_CORE_CHECK_NULL(ParentValues_p)
@@ -1076,7 +1076,7 @@ static NH_API_RESULT nh_css_computeSize(
 // BLOCKIFY ========================================================================================
 
 static NH_API_RESULT nh_css_blockify(
-    nh_webidl_Object *Node_p, nh_core_List *ComputedValues_p)
+    nh_ecmascript_Object *Node_p, nh_core_List *ComputedValues_p)
 {
     nh_css_Value *Display_p = ComputedValues_p->pp[NH_CSS_PROPERTY_DISPLAY];
 
@@ -1096,7 +1096,7 @@ static NH_API_RESULT nh_css_blockify(
 }
 
 static NH_API_RESULT nh_css_blockifyNode(
-    nh_webidl_Object *Node_p, nh_core_List *ComputedValues_p)
+    nh_ecmascript_Object *Node_p, nh_core_List *ComputedValues_p)
 {
     nh_css_Value *Float_p = ComputedValues_p->pp[NH_CSS_PROPERTY_FLOAT];
 
@@ -1277,7 +1277,7 @@ static NH_API_RESULT nh_css_computeSpecifiedValue(
 }
 
 NH_API_RESULT nh_css_computeSpecifiedValues(
-    nh_css_LogContext *LogContext_p, nh_webidl_Object *Node_p)
+    nh_css_LogContext *LogContext_p, nh_ecmascript_Object *Node_p)
 {
     nh_core_List ComputedValues = nh_core_initList(NH_CSS_PROPERTY_COUNT);
     for (int i = 0; i < NH_CSS_PROPERTY_COUNT; ++i) {
@@ -1435,7 +1435,7 @@ NH_API_RESULT nh_css_computeSpecifiedValues(
 // FREE ============================================================================================
 
 NH_API_RESULT nh_css_freeComputedValues(
-    nh_webidl_Object *Node_p)
+    nh_ecmascript_Object *Node_p)
 {
     nh_core_List *ComputedValues_p = nh_dom_getComputedPropertyValues(Node_p);
     NH_CORE_CHECK_NULL(ComputedValues_p)

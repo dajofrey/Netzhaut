@@ -19,7 +19,7 @@
  */
 
     NH_API_RESULT nh_html_updateAStyleBlock(
-        nh_webidl_Object *Object_p
+        nh_ecmascript_Object *Object_p
     );
 
     nh_url_URL *nh_html_parseURL(

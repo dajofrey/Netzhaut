@@ -16,8 +16,8 @@
 /** @addtogroup lib_nh-dom_functions
  *  @{
  */
-    nh_webidl_Object *nh_dom_createComment(
-        nh_webidl_DOMString DOMString
+    nh_ecmascript_Object *nh_dom_createComment(
+        nh_encoding_UTF8String DOMString
     );
     
 /** @} */

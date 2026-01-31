@@ -14,15 +14,15 @@
 #include "../Properties/Values.h"
 
 NH_API_RESULT nh_css_logTokens(
-    nh_webidl_Object *CSSStyleSheet_p, nh_core_Array *Tokens_p
+    nh_ecmascript_Object *CSSStyleSheet_p, nh_core_Array *Tokens_p
 );
 
 NH_API_RESULT nh_css_logRules(
-    nh_webidl_Object *CSSStyleSheet_p, nh_core_Array *Rules_p
+    nh_ecmascript_Object *CSSStyleSheet_p, nh_core_Array *Rules_p
 );
 
 NH_API_RESULT nh_css_logObjects(
-    nh_webidl_Object *CSSStyleSheet_p, nh_core_List *StyleRules_p
+    nh_ecmascript_Object *CSSStyleSheet_p, nh_core_List *StyleRules_p
 );
 
 NH_API_RESULT nh_css_logFilter(

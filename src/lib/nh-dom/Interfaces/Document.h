@@ -17,9 +17,9 @@
  *  @{
  */
 
-    extern nh_webidl_DOMString NH_DOM_DOCUMENT_MODE_NO_QUIRKS;
-    extern nh_webidl_DOMString NH_DOM_DOCUMENT_MODE_QUIRKS;
-    extern nh_webidl_DOMString NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS;
+    extern nh_encoding_UTF8String NH_DOM_DOCUMENT_MODE_NO_QUIRKS;
+    extern nh_encoding_UTF8String NH_DOM_DOCUMENT_MODE_QUIRKS;
+    extern nh_encoding_UTF8String NH_DOM_DOCUMENT_MODE_LIMITED_QUIRKS;
 
 /** @} */
 
@@ -34,11 +34,11 @@
     );
 
     NH_API_RESULT nh_dom_setDocumentMode(
-        nh_webidl_Object *Document_p, nh_webidl_DOMString *Mode_p
+        nh_ecmascript_Object *Document_p, nh_encoding_UTF8String *Mode_p
     );
 
     NH_API_RESULT nh_dom_setDocumentType(
-        nh_webidl_Object *Document_p, nh_webidl_Object *DocumentType_p
+        nh_ecmascript_Object *Document_p, nh_ecmascript_Object *DocumentType_p
     );
 
 /** @} */

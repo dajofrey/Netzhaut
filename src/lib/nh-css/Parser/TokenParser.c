@@ -382,10 +382,10 @@ static nh_core_Array nh_css_consumeDeclarations(
     return Declarations;
 }
 
-nh_webidl_Object *nh_css_parseStyleSheet(
-    nh_css_TokenParser *Parser_p, nh_webidl_Object *Document_p)
+nh_ecmascript_Object *nh_css_parseStyleSheet(
+    nh_css_TokenParser *Parser_p, nh_ecmascript_Object *Document_p)
 {
-    nh_webidl_Object *CSSStyleSheet_p = nh_webidl_createObject("CSS", "CSSStyleSheet");
+    nh_ecmascript_Object *CSSStyleSheet_p = nh_webidl_createObject("CSS", "CSSStyleSheet");
     NH_CORE_CHECK_NULL_2(NULL, CSSStyleSheet_p)
 
     nh_core_Array Rules = nh_css_consumeRules(Parser_p, true);
@@ -397,7 +397,7 @@ nh_webidl_Object *nh_css_parseStyleSheet(
     NH_CORE_CHECK_2(NULL, nh_css_logObjects(CSSStyleSheet_p, nh_css_getRuleListData(nh_css_getRuleList(CSSStyleSheet_p))))
 
     if (Document_p) {
-        nh_webidl_Object *StyleSheetList_p = nh_css_getStyleSheetList(Document_p);
+        nh_ecmascript_Object *StyleSheetList_p = nh_css_getStyleSheetList(Document_p);
         nh_css_appendToStyleSheetList(StyleSheetList_p, CSSStyleSheet_p);
     }
 

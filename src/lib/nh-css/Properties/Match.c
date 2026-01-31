@@ -34,7 +34,7 @@
 // FUNCTIONS =======================================================================================
 
 static bool nh_css_matchTypeSelector(
-    nh_css_SelectorParseNode *TypeSelector_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *TypeSelector_p, nh_ecmascript_Object *DOMElement_p)
 {
     bool match = false;
 
@@ -46,7 +46,7 @@ static bool nh_css_matchTypeSelector(
         {
             nh_css_Token *IdentTok_p = ((nh_css_SelectorParseNode*)WqName_p->Children.pp[0])->Token_p;
             nh_encoding_UTF8String Identifier = nh_encoding_encodeUTF8(IdentTok_p->Other.Value.p, IdentTok_p->Other.Value.length);
-            nh_webidl_DOMString *LocalName_p = nh_dom_getLocalName(DOMElement_p);
+            nh_encoding_UTF8String *LocalName_p = nh_dom_getLocalName(DOMElement_p);
             if (!strcmp(LocalName_p->p, Identifier.p)) {match = true;}
             nh_encoding_freeUTF8(&Identifier);
         }
@@ -70,16 +70,16 @@ static bool nh_css_matchTypeSelector(
 }
 
 static bool nh_css_matchIdSelector(
-    nh_css_SelectorParseNode *IdSelector_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *IdSelector_p, nh_ecmascript_Object *DOMElement_p)
 {
     bool match = false;
 
     nh_css_Token *HashTok_p = ((nh_css_SelectorParseNode*)IdSelector_p->Children.pp[0])->Token_p;
     nh_encoding_UTF8String Identifier = nh_encoding_encodeUTF8(HashTok_p->Hash.Value.p, HashTok_p->Hash.Value.length);
 
-    nh_webidl_Object *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "id");
+    nh_ecmascript_Object *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "id");
     if (Attr_p) {
-        nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attr_p);
+        nh_encoding_UTF8String *Value_p = nh_dom_getAttrValue(Attr_p);
         if (!strcmp(Value_p->p, Identifier.p)) {
             match = true;
         }
@@ -91,16 +91,16 @@ static bool nh_css_matchIdSelector(
 }
 
 static bool nh_css_matchClassSelector(
-    nh_css_SelectorParseNode *ClassSelector_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *ClassSelector_p, nh_ecmascript_Object *DOMElement_p)
 {
     bool match = false;
 
     nh_css_Token *IdentTok_p = ((nh_css_SelectorParseNode*)ClassSelector_p->Children.pp[1])->Token_p;
     nh_encoding_UTF8String Identifier = nh_encoding_encodeUTF8(IdentTok_p->Other.Value.p, IdentTok_p->Other.Value.length);
 
-    nh_webidl_Object *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "class");
+    nh_ecmascript_Object *Attr_p = nh_dom_getAttrByLocalName(DOMElement_p, "class");
     if (Attr_p) {
-        nh_webidl_DOMString *Value_p = nh_dom_getAttrValue(Attr_p);
+        nh_encoding_UTF8String *Value_p = nh_dom_getAttrValue(Attr_p);
         if (!strcmp(Value_p->p, Identifier.p)) {
             match = true;
         }
@@ -112,7 +112,7 @@ static bool nh_css_matchClassSelector(
 }
 
 static bool nh_css_matchSubclassSelector(
-    nh_css_SelectorParseNode *SubclassSelector_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *SubclassSelector_p, nh_ecmascript_Object *DOMElement_p)
 {
     bool match = false;
 
@@ -130,7 +130,7 @@ static bool nh_css_matchSubclassSelector(
 }
 
 static bool nh_css_matchCompoundSelector(
-    nh_css_SelectorParseNode *CompoundSelector_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *CompoundSelector_p, nh_ecmascript_Object *DOMElement_p)
 {
     bool match = false;
 
@@ -161,7 +161,7 @@ static bool nh_css_matchCompoundSelector(
 }
 
 static bool nh_css_matchComplexSelector(
-    nh_css_SelectorParseNode *ComplexSelector_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *ComplexSelector_p, nh_ecmascript_Object *DOMElement_p)
 {
 // TODO
 
@@ -172,7 +172,7 @@ static bool nh_css_matchComplexSelector(
 }
 
 static bool nh_css_matchComplexSelectorList(
-    nh_css_SelectorParseNode *ComplexSelectorList_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *ComplexSelectorList_p, nh_ecmascript_Object *DOMElement_p)
 {
     for (int i = 0; i < ComplexSelectorList_p->Children.size; ++i) 
     {
@@ -185,7 +185,7 @@ static bool nh_css_matchComplexSelectorList(
 }
 
 bool nh_css_matchSelectors(
-    nh_css_SelectorParseNode *Selectors_p, nh_webidl_Object *DOMElement_p)
+    nh_css_SelectorParseNode *Selectors_p, nh_ecmascript_Object *DOMElement_p)
 {
     if (Selectors_p->type != NH_CSS_SELECTOR_PARSE_NODE_SELECTOR_LIST) {return false;}
     if (Selectors_p->Children.size != 1) {return false;}

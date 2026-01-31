@@ -11,7 +11,7 @@
 #include "../Common/Includes.h"
 
 bool nh_css_matchSelectors(
-    nh_css_SelectorParseNode *Selectors_p, nh_webidl_Object *Object_p
+    nh_css_SelectorParseNode *Selectors_p, nh_ecmascript_Object *Object_p
 );
 
 #endif // NH_CSS_PROPERTIES_SELECTOR_H

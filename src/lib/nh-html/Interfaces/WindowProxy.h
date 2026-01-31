@@ -17,12 +17,12 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_html_createWindowProxy(
-        nh_webidl_Object *Window_p
+    nh_ecmascript_Object *nh_html_createWindowProxy(
+        nh_ecmascript_Object *Window_p
     );
     
     NH_API_RESULT nh_html_setWindowProxyWindow(
-        nh_webidl_Object *WindowProxy_p, nh_webidl_Object *Window_p
+        nh_ecmascript_Object *WindowProxy_p, nh_ecmascript_Object *Window_p
     );
 
 /** @} */

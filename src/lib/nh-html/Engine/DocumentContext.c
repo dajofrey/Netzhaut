@@ -69,12 +69,12 @@ NH_API_RESULT nh_html_loadBytes(
     {
         nh_encoding_UTF32String String = nh_encoding_decodeUTF8(bytes_p, size, NULL);
 
-        nh_webidl_Object *Document_p = nh_html_createDocument(Context_p);
+        nh_ecmascript_Object *Document_p = nh_html_createDocument(Context_p);
         NH_CORE_CHECK_NULL(Document_p)
 
         if (Context_p->LayoutEngine_p) 
         {
-            nh_webidl_Object *Object_p = nh_webidl_getObject(Document_p, "CSS", "Document");
+            nh_ecmascript_Object *Object_p = nh_webidl_getObject(Document_p, "CSS", "Document");
             NH_CORE_CHECK_NULL(Object_p)
             Object_p->internal_p = nh_core_allocate(sizeof(nh_css_Layout));
             NH_CORE_CHECK_MEM(Object_p->internal_p)

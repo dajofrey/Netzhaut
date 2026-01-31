@@ -38,11 +38,11 @@ typedef struct nh_html_AdoptionAgencyBookmark {
 } nh_html_AdoptionAgencyBookmark;
 
 static void nh_html_runAdoptionAgencyAlgorithmInnerLoop(
-    nh_html_Parser *Parser_p, nh_webidl_Object *FormattingElement_p, nh_webidl_Object *FurthestBlock_p, 
+    nh_html_Parser *Parser_p, nh_ecmascript_Object *FormattingElement_p, nh_ecmascript_Object *FurthestBlock_p, 
     nh_html_AdoptionAgencyBookmark *Bookmark_p)
 {
-    nh_webidl_Object *Node_p = FurthestBlock_p;
-    nh_webidl_Object *LastNode_p = Node_p;
+    nh_ecmascript_Object *Node_p = FurthestBlock_p;
+    nh_ecmascript_Object *LastNode_p = Node_p;
 
     int innerLoopCounter = 0;
 
@@ -56,7 +56,7 @@ static void nh_html_runAdoptionAgencyAlgorithmInnerLoop(
 }
 
 static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
-    nh_html_Parser *Parser_p, nh_webidl_DOMString *Subject_p)
+    nh_html_Parser *Parser_p, nh_encoding_UTF8String *Subject_p)
 {
     int counter = 0;
 
@@ -65,12 +65,12 @@ static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
         if (counter >= 8) {break;}
         counter++;
     
-        nh_webidl_Object *FormattingElement_p = NULL;
+        nh_ecmascript_Object *FormattingElement_p = NULL;
         for (int i = Parser_p->ActiveFormattingElements.size - 1; i >= 0; --i) 
         {
             FormattingElement_p = Parser_p->ActiveFormattingElements.pp[i];
             if (!FormattingElement_p) {break;} // check marker
-            nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(FormattingElement_p);
+            nh_ecmascript_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(FormattingElement_p);
             if (Element_p && !strcmp(nh_dom_getLocalName(Element_p)->p, Subject_p->p)) {
                 break;
             }
@@ -97,9 +97,9 @@ static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
             // parse error
         }
     
-        nh_webidl_Object *FurthestBlock_p = NULL;
+        nh_ecmascript_Object *FurthestBlock_p = NULL;
         for (unsigned long i = nh_core_getListIndex(&Parser_p->OpenElements, FormattingElement_p) + 1; i < Parser_p->OpenElements.size; ++i) {
-            nh_webidl_Object *Tmp_p = Parser_p->OpenElements.pp[i];       
+            nh_ecmascript_Object *Tmp_p = Parser_p->OpenElements.pp[i];       
             if (nh_html_inSpecialCategory(Tmp_p)) {
                 FurthestBlock_p = Tmp_p;
             }
@@ -107,7 +107,7 @@ static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
     
         if (!FurthestBlock_p) {
             for (unsigned long i = nh_core_getListIndex(&Parser_p->OpenElements, FormattingElement_p) - 1; i >= 0; ++i) {
-                nh_webidl_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
+                nh_ecmascript_Object *Pop_p = nh_html_popCurrentNode(Parser_p);
                 if (Pop_p == FormattingElement_p) {
                     break;
                 }
@@ -116,7 +116,7 @@ static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
             break;
         }
     
-        nh_webidl_Object *CommonAncestor_p = Parser_p->OpenElements.pp[nh_core_getListIndex(&Parser_p->OpenElements, FurthestBlock_p) - 1]; 
+        nh_ecmascript_Object *CommonAncestor_p = Parser_p->OpenElements.pp[nh_core_getListIndex(&Parser_p->OpenElements, FurthestBlock_p) - 1]; 
     
         nh_html_AdoptionAgencyBookmark Bookmark;
         Bookmark.left = 0;
@@ -124,7 +124,7 @@ static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
         bool countRight = true;
         for (int i = Parser_p->ActiveFormattingElements.size - 1; i >= 0; --i) 
         {
-            nh_webidl_Object *Tmp_p = Parser_p->ActiveFormattingElements.pp[i];
+            nh_ecmascript_Object *Tmp_p = Parser_p->ActiveFormattingElements.pp[i];
             if (Tmp_p == FormattingElement_p) {countRight = false;}
             else if (countRight) {Bookmark.right++;}
             else {Bookmark.left++;}
@@ -143,9 +143,9 @@ static void nh_html_runAdoptionAgencyAlgorithmOuterLoop(
 void nh_html_runAdoptionAgencyAlgorithm(
     nh_html_Parser *Parser_p, nh_html_Token *Token_p)
 {
-    nh_webidl_DOMString *Subject_p = &Token_p->StartOrEndTag.TagName;
-    nh_webidl_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
-    nh_webidl_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(CurrentNode_p);
+    nh_encoding_UTF8String *Subject_p = &Token_p->StartOrEndTag.TagName;
+    nh_ecmascript_Object *CurrentNode_p = nh_html_getCurrentNode(Parser_p);
+    nh_ecmascript_Object *Element_p = NH_WEBIDL_GET_DOM_ELEMENT(CurrentNode_p);
 
 
     if (!strcmp(Subject_p->p, "b")) {inB = true;}

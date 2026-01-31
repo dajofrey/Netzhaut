@@ -20,7 +20,7 @@
 // FUNCTIONS =======================================================================================
 
 NH_API_RESULT nh_css_initializeStyleSheetList(
-    nh_webidl_Object *StyleSheetList_p)
+    nh_ecmascript_Object *StyleSheetList_p)
 {
     StyleSheetList_p->internal_p = nh_core_allocate(sizeof(nh_core_List));
     NH_CORE_CHECK_MEM(StyleSheetList_p->internal_p)
@@ -31,16 +31,16 @@ NH_API_RESULT nh_css_initializeStyleSheetList(
 }
 
 NH_API_RESULT nh_css_appendToStyleSheetList(
-    nh_webidl_Object *StyleSheetList_p, nh_webidl_Object *StyleSheet_p)
+    nh_ecmascript_Object *StyleSheetList_p, nh_ecmascript_Object *StyleSheet_p)
 {
-    nh_core_appendToList(((nh_webidl_Object*)StyleSheetList_p)->internal_p, StyleSheet_p);
+    nh_core_appendToList(((nh_ecmascript_Object*)StyleSheetList_p)->internal_p, StyleSheet_p);
 
     return NH_API_SUCCESS;
 }
 
 nh_core_List *nh_css_getStyleSheetListData(
-    nh_webidl_Object *StyleSheetList_p)
+    nh_ecmascript_Object *StyleSheetList_p)
 {
-    return ((nh_webidl_Object*)StyleSheetList_p)->internal_p;
+    return ((nh_ecmascript_Object*)StyleSheetList_p)->internal_p;
 }
 

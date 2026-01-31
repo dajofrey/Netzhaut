@@ -17,16 +17,16 @@
  *  @{
  */
 
-    nh_webidl_Object *nh_dom_createText(
-        nh_webidl_DOMString Data, nh_webidl_Object *NodeDocument_p
+    nh_ecmascript_Object *nh_dom_createText(
+        nh_encoding_UTF8String Data, nh_ecmascript_Object *NodeDocument_p
     );
 
     NH_API_RESULT nh_dom_appendToText(
-        nh_webidl_Object *Text_p, nh_webidl_DOMString DOMString
+        nh_ecmascript_Object *Text_p, nh_encoding_UTF8String DOMString
     );
 
-    nh_webidl_DOMString *nh_dom_getTextString(
-        nh_webidl_Object *Text_p
+    nh_encoding_UTF8String *nh_dom_getTextString(
+        nh_ecmascript_Object *Text_p
     );
 
 /** @} */

@@ -19,7 +19,7 @@
 
     typedef struct nh_html_DocumentContext {
         nh_core_List Documents;
-        nh_webidl_Object *Document_p;
+        nh_ecmascript_Object *Document_p;
         bool scripting;
         bool browsingContext;
         nh_api_LayoutEngine *LayoutEngine_p;
