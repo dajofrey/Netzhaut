@@ -53,7 +53,7 @@ bin-nh-ecmascript: $(BIN_NH_ECMASCRIPT)
 bin-nh-webidl: $(BIN_NH_WEBIDL)
 
 build_termoskanne:
-	(cd external/Termoskanne && make -f build/automation/Makefile lib NETZHAUT_PATH=$(CURDIR))
+	(cd external/Termoskanne && make -f build/automation/macos.mk lib NETZHAUT_PATH=$(CURDIR))
 create_bin_dir:
 	mkdir -p bin
 
@@ -102,6 +102,6 @@ clean:
 	rm -f $(OBJ_FILES_NH_WSI) $(BIN_NH_WSI)
 	rm -f $(OBJ_FILES_NH_WEBIDL) $(BIN_NH_WEBIDL)
 	rm -rf bin 
-	(cd external/Termoskanne && make -f build/automation/Makefile clean)
+	(cd external/Termoskanne && make -f build/automation/macos.mk clean)
 
 .PHONY: all clean create_bin_dir build_termoskanne
