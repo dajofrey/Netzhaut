@@ -419,10 +419,10 @@ void *nh_core_executeWorkloadCommand(
     void *handle_p, int type, void *p, int byteSize)
 {
     nh_core_Workload *Workload_p = nh_core_getWorkload(handle_p);
-    NH_CORE_CHECK_NULL(Workload_p)
+    NH_CORE_CHECK_NULL_2(NULL, Workload_p)
 
     nh_core_WorkloadCommand *Command_p = (nh_core_WorkloadCommand*)nh_core_advanceRingBuffer(&Workload_p->Commands);
-    NH_CORE_CHECK_NULL(Command_p)
+    NH_CORE_CHECK_NULL_2(NULL, Command_p)
 
     Command_p->done = false;
     Command_p->dummy = false;
@@ -445,7 +445,7 @@ void *nh_core_executeWorkloadCommand(
             nh_core_Workload *PreviousWorkload_p = nh_core_getThread()->CurrentWorkload_p;
             NH_API_RESULT result = nh_core_runWorkload(Workload_p, NULL);
             nh_core_getThread()->CurrentWorkload_p = PreviousWorkload_p;
-            NH_CORE_CHECK(result)
+            NH_CORE_CHECK_2(NULL, result)
         }
     }
 

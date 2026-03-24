@@ -1,48 +1,18 @@
-UNAME_S := $(shell uname -s)
-
-ifeq ($(UNAME_S),Darwin)
-    OS := macOS
-endif
-ifeq ($(UNAME_S),Linux)
-    OS := Linux
-endif
-
-ifeq ($(OS),macOS)
-    INSTALL_NAME_FLAG = -Wl,-install_name,@rpath/$@
-else
-    INSTALL_NAME_FLAG =
-endif
+INSTALL_NAME_FLAG =
 
 # Define the compiler and compile flags
 CC = gcc
 CFLAGS = -g -fPIC -std=gnu99 -Wl,-rpath,$(CURDIR)/lib -Werror=implicit-function-declaration
-ifeq ($(OS),macOS)
-    CFLAGS += -Wl,-undefined,dynamic_lookup
-    OBJC_FLAGS = -fobjc-arc -fmodules -framework Cocoa -framework QuartzCore -fsanitize=address,undefined,alignment
-    OBJC = clang
-endif
 
 # Define the linker and linker flags
 LINKER = gcc
 LINKER_FLAGS_NH_API = -ldl
 LINKER_FLAGS_NH_CORE = -v -lm -ldl
-ifeq ($(OS),macOS)
-    LINKER_FLAGS_NH_GFX = -L/opt/homebrew/lib -lfreetype -lharfbuzz -Lexternal/freetype-gl -lfreetype-gl -framework OpenGL
-    LINKER_FLAGS_FREETYPE_GL = -L/opt/homebrew/lib -lfreetype -lharfbuzz
-    LINKER_FLAGS_NH_NETWORK = -L/opt/homebrew/lib -lssl
-else
-    LINKER_FLAGS_NH_GFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
-    LINKER_FLAGS_FREETYPE_GL = -L/usr/include/freetype2 -lfreetype -lharfbuzz
-    LINKER_FLAGS_NH_NETWORK = -lssl
-endif
-ifeq ($(OS),Linux)
-    LINKER_FLAGS_NH_WSI += -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
-    LINKER_FLAGS_NH_GFX += -lX11 -lXrender -lXext
-endif
-ifeq ($(OS),macOS)
-    LINKER_FLAGS_NH_WSI += -framework Cocoa -framework QuartzCore
-    LINKER_FLAGS_NH_GFX += -framework Cocoa -framework QuartzCore
-endif
+LINKER_FLAGS_NH_GFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
+LINKER_FLAGS_FREETYPE_GL = -L/usr/include/freetype2 -lfreetype -lharfbuzz
+LINKER_FLAGS_NH_NETWORK = -lssl
+LINKER_FLAGS_NH_WSI += -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
+LINKER_FLAGS_NH_GFX += -lX11 -lXrender -lXext
 
 # Define the source file directory for each library
 SRC_DIR_NH_API = src/lib/nh-api
@@ -124,20 +94,9 @@ SRC_FILES_NH_WSI = \
     Common/Terminate.c \
     Common/Config.c \
     Common/About.c \
-
-ifeq ($(OS),Linux)
-    SRC_FILES_NH_WSI += \
-        Platforms/X11/Init.c \
-        Platforms/X11/Window.c \
-        Platforms/X11/WindowSettings.c
-endif
-
-ifeq ($(OS),macOS)
-    SRC_FILES_NH_WSI += \
-        Platforms/Cocoa/Init.m \
-        Platforms/Cocoa/Window.m \
-        Platforms/Cocoa/WindowSettings.m
-endif
+    Platforms/X11/Init.c \
+    Platforms/X11/Window.c \
+    Platforms/X11/WindowSettings.c
 
 SRC_FILES_NH_HTML = \
 #    Parser/Parser.c \
@@ -273,25 +232,16 @@ SRC_FILES_NH_GFX = \
     Common/Config.c \
     Common/About.c \
     Common/IndexMap.c \
-
-ifeq ($(OS),Linux)
-    SRC_FILES_NH_GFX += \
-        OpenGL/ContextX11.c \
-        Vulkan/Host.c \
-        Vulkan/GPU.c \
-        Vulkan/Driver.c \
-        Vulkan/Helper.c \
-        Vulkan/Texture.c \
-        Vulkan/Render.c \
-        Vulkan/Surface.c \
-        Vulkan/Vulkan.c \
-        Vulkan/Viewport.c
-endif
-
-ifeq ($(OS),macOS)
-    SRC_FILES_NH_GFX += \
-        OpenGL/ContextCocoa.m
-endif
+    OpenGL/ContextX11.c \
+    Vulkan/Host.c \
+    Vulkan/GPU.c \
+    Vulkan/Driver.c \
+    Vulkan/Helper.c \
+    Vulkan/Texture.c \
+    Vulkan/Render.c \
+    Vulkan/Surface.c \
+    Vulkan/Vulkan.c \
+    Vulkan/Viewport.c
 
 SRC_FILES_NH_RENDERER = \
 #    Main/Renderer.c \
@@ -421,11 +371,7 @@ LIB_VOLK = external/volk/libvolk.a
 LIB_FREETYPE_GL = external/freetype-gl/libfreetype-gl.so
 
 # Keep this as default (first) target. 
-ifeq ($(OS),macOS)
-    all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_HTML) $(LIB_NH_DOM) $(LIB_NH_NETWORK) $(LIB_NH_WEBIDL) $(LIB_NH_ECMASCRIPT) $(LIB_NH_ENCODING) $(LIB_FREETYPE_GL) $(LIB_NH_GFX) $(LIB_NH_RENDERER) $(LIB_NH_URL) $(LIB_NH_CSS) $(LIB_NH_MONITOR)
-else
-    all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_HTML) $(LIB_NH_DOM) $(LIB_NH_NETWORK) $(LIB_NH_WEBIDL) $(LIB_NH_ECMASCRIPT) $(LIB_NH_ENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NH_GFX) $(LIB_NH_RENDERER) $(LIB_NH_URL) $(LIB_NH_CSS) $(LIB_NH_MONITOR)
-endif
+all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_HTML) $(LIB_NH_DOM) $(LIB_NH_NETWORK) $(LIB_NH_WEBIDL) $(LIB_NH_ECMASCRIPT) $(LIB_NH_ENCODING) $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NH_GFX) $(LIB_NH_RENDERER) $(LIB_NH_URL) $(LIB_NH_CSS) $(LIB_NH_MONITOR)
 
 # Build targets for each library
 lib-nh-api: $(LIB_NH_API)
@@ -437,11 +383,7 @@ lib-nh-network: $(LIB_NH_NETWORK)
 lib-nh-webidl: $(LIB_NH_WEBIDL)
 lib-nh-ecmascript: $(LIB_NH_ECMASCRIPT)
 lib-nh-encoding: $(LIB_NH_ENCODING)
-ifeq ($(OS),macOS)
-    lib-nh-gfx: $(LIB_FREETYPE_GL) $(LIB_NH_GFX)
-else
-    lib-nh-gfx: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NH_GFX)
-endif
+lib-nh-gfx: $(LIB_VOLK) $(LIB_FREETYPE_GL) $(LIB_NH_GFX)
 lib-nh-renderer: $(LIB_NH_RENDERER)
 lib-nh-css: $(LIB_NH_CSS)
 lib-nh-url: $(LIB_NH_URL)
@@ -459,27 +401,14 @@ $(OBJ_FILES_NH_CSS): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DIN
 $(OBJ_FILES_NH_API): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
 $(OBJ_FILES_NH_RENDERER): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_NH_WSI): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -DINCLUDE_VOLK -DVK_VERSION_1_2
-ifeq ($(OS),macOS)
-    $(OBJ_FILES_NH_GFX): CFLAGS += -Iexternal -I/opt/homebrew/include/freetype2 -I/opt/homebrew/include/harfbuzz
-else
-    $(OBJ_FILES_NH_GFX): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -I/usr/include/freetype2 -I/usr/include/harfbuzz -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-endif
+$(OBJ_FILES_NH_GFX): CFLAGS += -Iexternal -Iexternal/Vulkan-Headers/include -I/usr/include/freetype2 -I/usr/include/harfbuzz -DINCLUDE_VOLK -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 $(OBJ_FILES_NH_RENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-$(OBJ_FILES_VOLK): CFLAGS += -ldl -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface -DVOLK_VULKAN_H_PATH=\"../Vulkan-Headers/include/vulkan/vulkan.h\"
-ifeq ($(OS),macOS)
-    $(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/opt/homebrew/include/freetype2 -I/opt/homebrew/include/harfbuzz
-else
-    $(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/usr/include/freetype2 -I/usr/include/harfbuzz
-endif
+$(OBJ_FILES_VOLK): CFLAGS += -ldl -Iexternal/Vulkan-Headers/include -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface -DVOLK_VULKAN_H_PATH=\"../Vulkan-Headers/include/vulkan/vulkan.h\"
+$(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/usr/include/freetype2 -I/usr/include/harfbuzz
 $(OBJ_FILES_NH_MONITOR): CFLAGS += -Isrc/lib
 
-ifeq ($(OS),Linux)
-    LINKER_FLAGS_NH_API += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-endif
-
-ifeq ($(OS),Linux)
-    $(OBJ_FILES_NH_WSI): CFLAGS += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
-endif
+LINKER_FLAGS_NH_API += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
+$(OBJ_FILES_NH_WSI): CFLAGS += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 
 # Rule to compile source files into object files
 %.o: $(SRC_DIR_NH_API)/%.c
@@ -520,11 +449,7 @@ endif
 %.o: $(SRC_DIR_NH_WSI)/%.m
 	$(OBJC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
-ifeq ($(OS),macOS)
-    INSTALL_NAME = -Wl,-install_name,@rpath/$(1)
-else
-    INSTALL_NAME =
-endif
+INSTALL_NAME =
 
 # Rule to link object files into the shared libraries
 $(LIB_NH_API): create_lib_dir $(OBJ_FILES_NH_API)

@@ -12,7 +12,6 @@
 #include "../../Common/Includes.h"
 
 #ifdef __unix__
-    #include <wayland-server.h>
     #include <X11/Xlib.h>
     #include <X11/Xatom.h>
     #include <X11/extensions/Xrender.h>
