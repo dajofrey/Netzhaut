@@ -10,7 +10,7 @@
 #include "Config.h"
 
 NH_API_RESULT nh_core_parseRawConfig(
-    nh_core_RawConfig *Result_p, char *data_p, int length, nh_core_RawConfig *GlobalConfig_p
+    nh_core_RawConfig *Result_p, char *data_p, int length
 );
 
 NH_API_RESULT nh_core_freeRawConfig(

@@ -26,7 +26,6 @@
 typedef struct nh_ConfigParser {
     nh_ConfigToken *Token_p;
     nh_core_RawConfig *Config_p;
-    nh_core_RawConfig *GlobalConfig_p;
 } nh_ConfigParser;
 
 static NH_API_RESULT nh_core_parseRawConfigValues(
@@ -80,30 +79,11 @@ static NH_API_RESULT nh_core_parseConfigSetting(
     for (c = 0; c < strlen(string_p) && string_p[c] != '.'; ++c);
     if (c == strlen(string_p)) {return NH_API_ERROR_BAD_STATE;}
 
-    string_p[c] = 0;
-    int module = nh_core_getModuleIndex(string_p);
-    string_p[c] = '.';
-
-    Setting_p->module = module;
     Setting_p->name_p = malloc(sizeof(char)*(strlen(string_p)+1));
     NH_CORE_CHECK_MEM(Setting_p->name_p)
     memset(Setting_p->name_p, 0, sizeof(char)*(strlen(string_p)+1));
  
-    if (module >= 0) {
-        strcpy(Setting_p->name_p, string_p+c+1);
-    } else {
-        strcpy(Setting_p->name_p, string_p);
-    }
-
-    if (Parser_p->GlobalConfig_p) {
-        for (int i = 0; i < Parser_p->GlobalConfig_p->Settings.size; ++i) {
-            nh_core_RawConfigSetting *DefaultSetting_p = Parser_p->GlobalConfig_p->Settings.pp[i];
-            if (!DefaultSetting_p->Default_p && DefaultSetting_p->module == Setting_p->module && !strcmp(DefaultSetting_p->name_p, Setting_p->name_p)) {
-                Setting_p->Default_p = DefaultSetting_p;
-                break;
-            }
-        }
-    }
+    strcpy(Setting_p->name_p, string_p);
 
     ++(Parser_p->Token_p);
     if (Parser_p->Token_p->type != NH_CONFIG_TOKEN_COLON) {return NH_API_ERROR_BAD_STATE;}
@@ -136,7 +116,7 @@ static NH_API_RESULT nh_core_parseConfigToken(
 }
 
 NH_API_RESULT nh_core_parseRawConfig(
-    nh_core_RawConfig *Result_p, char *data_p, int length, nh_core_RawConfig *GlobalConfig_p)
+    nh_core_RawConfig *Result_p, char *data_p, int length)
 {
     nh_ConfigTokenizer Tokenizer;
     nh_core_tokenizeConfig(&Tokenizer, data_p, length);
@@ -144,7 +124,6 @@ NH_API_RESULT nh_core_parseRawConfig(
     nh_ConfigParser Parser;
     Parser.Token_p = Tokenizer.Tokens_p;
     Parser.Config_p = Result_p;
-    Parser.GlobalConfig_p = GlobalConfig_p;
 
     while (Parser.Token_p->type != NH_CONFIG_TOKEN_EOF) {
         NH_CORE_CHECK(nh_core_parseConfigToken(&Parser))

@@ -19,11 +19,11 @@
 // DATA ============================================================================================
 
 static const char *NAMES_PP[] = {
-    "api",
-    "viewport.width",
-    "viewport.height",
-    "viewport.x",
-    "viewport.y",
+    "nh-gfx.api",
+    "nh-gfx.viewport.width",
+    "nh-gfx.viewport.height",
+    "nh-gfx.viewport.x",
+    "nh-gfx.viewport.y",
 };
 
 static size_t NAMES_PP_COUNT = sizeof(NAMES_PP) / sizeof(NAMES_PP[0]);
@@ -33,7 +33,7 @@ static size_t NAMES_PP_COUNT = sizeof(NAMES_PP) / sizeof(NAMES_PP[0]);
 static NH_API_RESULT nh_gfx_getSetting(
     nh_gfx_Config *Config_p, char *namespace_p, int index)
 {
-    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, NH_MODULE_GFX, NAMES_PP[index]);
+    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, NAMES_PP[index]);
     NH_CORE_CHECK_NULL(Setting_p)
 
     switch (index) {

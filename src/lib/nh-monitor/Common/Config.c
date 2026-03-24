@@ -21,7 +21,7 @@
 static NH_API_RESULT nh_monitor_getSetting(
     nh_monitor_Config *Config_p, char *namespace_p, int option, const char *option_p)
 {
-    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, NH_MODULE_MONITOR, option_p);
+    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, option_p);
     NH_CORE_CHECK_NULL(Setting_p)
 
     switch (option) {
@@ -52,10 +52,10 @@ nh_monitor_Config nh_monitor_getConfig()
     memset(&Config, 0, sizeof(nh_monitor_Config));
 
     static const char *optionNames_pp[] = {
-        "client_port",
-        "server_port",
-        "block",
-        "reset",
+        "nh-monitor.client_port",
+        "nh-monitor.server_port",
+        "nh-monitor.block",
+        "nh-monitor.reset",
     };
     static size_t options = sizeof(optionNames_pp) / sizeof(optionNames_pp[0]);
 

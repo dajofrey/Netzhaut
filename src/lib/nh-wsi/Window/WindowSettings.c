@@ -149,7 +149,7 @@ NH_API_RESULT nh_wsi_toggleWindowSize(
     // Update config.
     nh_wsi_WindowConfig Config = nh_wsi_getWindowConfig(Window_p);
 
-    nh_core_overwriteGlobalConfigSetting(Window_p->namespace_p, NH_MODULE_WSI, nh_wsi_getSettingName(NH_WSI_SETTING_WINDOW_STATE), Config.state_p[NH_WSI_WINDOW_STATE_MAXIMIZED] ? "none" : "maximized");
+    nh_core_overwriteGlobalConfigSetting(Window_p->namespace_p, nh_wsi_getSettingName(NH_WSI_SETTING_WINDOW_STATE), Config.state_p[NH_WSI_WINDOW_STATE_MAXIMIZED] ? "none" : "maximized");
 
     // Update window.
     NH_CORE_CHECK(nh_wsi_setWindowState(Window_p))

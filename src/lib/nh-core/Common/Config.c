@@ -23,7 +23,7 @@
 static NH_API_RESULT nh_core_getSetting(
     nh_core_Config *Config_p, int option, const char *option_p)
 {
-    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, NH_MODULE_CORE, option_p);
+    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(NULL, option_p);
 
     NH_CORE_CHECK_NULL(Setting_p)
 
@@ -51,9 +51,9 @@ static nh_core_Config nh_core_getStaticConfig()
     memset(&Config, 0, sizeof(nh_core_Config)); 
 
     static const char *options_pp[] = {
-        "loader.unload",
-        "debug.monitor_on",
-        "debug.dump_on",
+        "nh-core.loader.unload",
+        "nh-core.debug.monitor_on",
+        "nh-core.debug.dump_on",
     };
 
     int options = sizeof(options_pp)/sizeof(options_pp[0]);

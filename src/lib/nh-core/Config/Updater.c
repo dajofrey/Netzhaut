@@ -142,12 +142,12 @@ static NH_SIGNAL nh_core_runConfigWorkloadCommand(
         case NH_CONFIG_UPDATER_COMMAND_LOAD_CONFIG :
         {
             nh_core_RawConfig Config = nh_core_initRawConfig();
-            nh_core_parseRawConfig(&Config, Command_p->p, Command_p->length, NULL);
+            nh_core_parseRawConfig(&Config, Command_p->p, Command_p->length);
             if (Config.Settings.size <= 0) {break;}
             for (int i = 0; i < Config.Settings.size; ++i) {
                 nh_core_RawConfigSetting *Setting_p = Config.Settings.pp[i];
                 nh_core_overwriteGlobalConfigSetting(
-                    NULL, Setting_p->module, Setting_p->name_p, Setting_p->Values.pp[0]);
+                    NULL, Setting_p->name_p, Setting_p->Values.pp[0]);
             }
             break;
         }

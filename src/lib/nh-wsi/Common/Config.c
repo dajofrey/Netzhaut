@@ -21,16 +21,16 @@
 // NAMES ===========================================================================================
 
 const char *NH_WSI_SETTING_NAMES_PP[] = {
-    "window.title",
-    "window.width",
-    "window.height",
-    "window.x",
-    "window.y",
-    "window.decorated",
-    "window.resizable",
-    "window.action",
-    "window.state",
-    "window.type",
+    "nh-wsi.window.title",
+    "nh-wsi.window.width",
+    "nh-wsi.window.height",
+    "nh-wsi.window.x",
+    "nh-wsi.window.y",
+    "nh-wsi.window.decorated",
+    "nh-wsi.window.resizable",
+    "nh-wsi.window.action",
+    "nh-wsi.window.state",
+    "nh-wsi.window.type",
 };
 
 size_t NH_WSI_SETTING_NAMES_PP_COUNT = 
@@ -47,7 +47,7 @@ const char *nh_wsi_getSettingName(
 static NH_API_RESULT nh_wsi_getWindowSetting(
     nh_wsi_WindowConfig *Config_p, char *namespace_p, int index)
 {
-    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(strlen(namespace_p) == 0 ? NULL : namespace_p, NH_MODULE_WSI, NH_WSI_SETTING_NAMES_PP[index]);
+    nh_core_List *Setting_p = nh_core_getGlobalConfigSetting(strlen(namespace_p) == 0 ? NULL : namespace_p, NH_WSI_SETTING_NAMES_PP[index]);
     NH_CORE_CHECK_NULL(Setting_p)
 
     switch (index) {

@@ -36,6 +36,10 @@ void *nh_core_getFromHashMap(
     nh_core_HashMap *Map_p, char *key_p
 );
 
+int nh_core_removeFromHashMap(
+    nh_core_HashMap *Map_p, char *key_p
+);
+
 unsigned int nh_core_getHashMapLength(
     nh_core_HashMap *Map_p
 );

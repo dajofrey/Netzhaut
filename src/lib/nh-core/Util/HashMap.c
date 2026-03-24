@@ -59,6 +59,12 @@ unsigned int nh_core_getHashMapLength(
     return hashmap_length(*Map_p);
 }
 
+int nh_core_removeFromHashMap(
+    nh_core_HashMap *Map_p, char *key_p)
+{
+    return hashmap_remove(*Map_p, key_p);
+}
+
 void *nh_core_getValueFromHashMapUsingIndex(
     nh_core_HashMap *Map_p, unsigned int index)
 {
