@@ -56,6 +56,7 @@ static bool nh_core_isTokenBegin(
     if (nh_core_isASCIIAlpha(codepoint) || nh_core_isASCIINumber(codepoint) || nh_core_isBracket(codepoint) 
     || codepoint == ',' 
     || codepoint == '"' 
+    || codepoint == '\''
     || codepoint == ':' 
     || codepoint == ';') 
 
@@ -91,8 +92,37 @@ static char *nh_core_tokenizeString(
     string_p[stringLength] = 0;
 
     Token_p->string_p = string_p;
-
     *bytes_p = '"';
+
+    return &bytes_p[1];
+}
+
+static char *nh_core_tokenizeString2(
+    nh_ConfigToken *Token_p, char *bytes_p)
+{
+    char *string_p = malloc(1);
+    unsigned int stringLength = 0;
+
+    char *stringBegin_p = bytes_p;
+
+    bool escape = false;
+    while (*bytes_p && (*bytes_p != '\'' || escape)) {
+        escape = escape ? false : *bytes_p == 0x5C;
+        if (!escape && *bytes_p != '\n') {
+            string_p = realloc(string_p, stringLength + 1);
+            string_p[stringLength++] = *bytes_p;
+        }
+        bytes_p++;
+    }
+    if (!*bytes_p) {return NULL;}
+
+    *bytes_p = 0;
+
+    string_p = realloc(string_p, stringLength + 1);
+    string_p[stringLength] = 0;
+
+    Token_p->string_p = string_p;
+    *bytes_p = '\'';
 
     return &bytes_p[1];
 }
@@ -126,6 +156,10 @@ static char *nh_core_getConfigToken(
         case ',' : Token_p->type = NH_CONFIG_TOKEN_COMMA; break;
         case ':' : Token_p->type = NH_CONFIG_TOKEN_COLON; break;
         case ';' : Token_p->type = NH_CONFIG_TOKEN_SEMICOLON; break;
+        case '\'' :
+            Token_p->type = NH_CONFIG_TOKEN_STRING;
+            return nh_core_tokenizeString2(Token_p, &bytes_p[1]);
+            break;
         case '"' :
             Token_p->type = NH_CONFIG_TOKEN_STRING;
             return nh_core_tokenizeString(Token_p, &bytes_p[1]);
