@@ -18,7 +18,7 @@
 #include "../nh-core/Util/Time.h"
 #include "../nh-encoding/Encodings/UTF32.h"
 
-#include "../../../external/Termoskanne/src/lib/tk-api/tk-core.h"
+#include "../../../external/Monoco/src/lib/tk-api/tk-core.h"
 
 #include <stddef.h>
 #include <unistd.h>
@@ -235,7 +235,7 @@ static NH_API_RESULT nh_monitor_updatePeerMonitor(
 }
  
 static TK_CORE_RESULT nh_monitor_updateMonitor(
-    tk_core_Program *Program_p)
+    tk_api_Program *Program_p)
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
 
@@ -330,7 +330,7 @@ static nh_monitor_MonitorNode *nh_monitor_getCurrentMonitorNode(
 }
 
 static void nh_monitor_moveCursorVertically(
-    tk_core_Program *Program_p, nh_monitor_MonitorNode *Current_p, int key) 
+    tk_api_Program *Program_p, nh_monitor_MonitorNode *Current_p, int key) 
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
 
@@ -426,7 +426,7 @@ static void nh_monitor_changeFocus(
 }
 
 static TK_CORE_RESULT nh_monitor_handleMonitorInput(
-    tk_core_Program *Program_p, nh_api_WSIEvent Event)
+    tk_api_Program *Program_p, nh_api_WSIEvent Event)
 {
     if (Event.type != NH_API_WSI_EVENT_KEYBOARD) {
         return NH_API_SUCCESS;
@@ -546,10 +546,10 @@ static TK_CORE_RESULT nh_monitor_handleMonitorInput(
 // DRAW ============================================================================================
 
 static void nh_monitor_setNextGlyph(
-    tk_core_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
+    tk_api_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
 {
-    tk_core_Glyph Glyph;
-    memset(&Glyph, 0, sizeof(tk_core_Glyph));
+    tk_api_Glyph Glyph;
+    memset(&Glyph, 0, sizeof(tk_api_Glyph));
     Glyph.codepoint = codepoint;
  
     (*Glyphs_pp)[0] = Glyph;
@@ -559,10 +559,10 @@ static void nh_monitor_setNextGlyph(
 }
 
 static void nh_monitor_setNextReverseGlyph(
-    tk_core_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
+    tk_api_Glyph **Glyphs_pp, NH_ENCODING_UTF32 codepoint)
 {
-    tk_core_Glyph Glyph;
-    memset(&Glyph, 0, sizeof(tk_core_Glyph));
+    tk_api_Glyph Glyph;
+    memset(&Glyph, 0, sizeof(tk_api_Glyph));
     Glyph.Attributes.reverse = true;
     Glyph.codepoint = codepoint;
  
@@ -573,7 +573,7 @@ static void nh_monitor_setNextReverseGlyph(
 }
 
 static NH_API_RESULT nh_monitor_drawSelected(
-    nh_monitor_Monitor *Monitor_p, tk_core_Glyph **Glyphs_pp, int row, int cols, int rows)
+    nh_monitor_Monitor *Monitor_p, tk_api_Glyph **Glyphs_pp, int row, int cols, int rows)
 {
     nh_core_List SelectedNodes = nh_monitor_getSelectedMonitorNodes(Monitor_p);
     if (SelectedNodes.size <= 0) {return NH_API_SUCCESS;}
@@ -619,7 +619,7 @@ static NH_API_RESULT nh_monitor_drawSelected(
 }
 
 static TK_CORE_RESULT nh_monitor_drawMonitorRow(
-    tk_core_Program *Program_p, tk_core_Glyph *Glyphs_p, int width, int height, int row)
+    tk_api_Program *Program_p, tk_api_Glyph *Glyphs_p, int width, int height, int row)
 {
     nh_monitor_Monitor *Monitor_p = Program_p->handle_p;
     Monitor_p->height = height;
@@ -629,7 +629,7 @@ static TK_CORE_RESULT nh_monitor_drawMonitorRow(
     nh_monitor_getPreviewNodes(
         Monitor_p->Peer.state == 3 ? &(Monitor_p->Peer.Root) : &(Monitor_p->Root), &Nodes);
 
-    tk_core_Glyph *Tmp_p = Glyphs_p;
+    tk_api_Glyph *Tmp_p = Glyphs_p;
     for (int i = 0; i < width; ++i) {
         nh_monitor_setNextGlyph(&Glyphs_p, ' ');
     }
@@ -819,10 +819,10 @@ static void nh_monitor_destroyMonitor(
 
 void *nh_monitor_createMonitorInterface()
 {
-    tk_core_Interface *Monitor_p = (tk_core_Interface*)nh_core_allocate(sizeof(tk_core_Interface));
+    tk_api_Interface *Monitor_p = (tk_api_Interface*)nh_core_allocate(sizeof(tk_api_Interface));
     NH_CORE_CHECK_MEM_2(NULL, Monitor_p)
 
-    memset(Monitor_p, 0, sizeof(tk_core_Interface));
+    memset(Monitor_p, 0, sizeof(tk_api_Interface));
 
     Monitor_p->Callbacks.init_f = nh_monitor_initMonitor;
     Monitor_p->Callbacks.draw_f = nh_monitor_drawMonitorRow;

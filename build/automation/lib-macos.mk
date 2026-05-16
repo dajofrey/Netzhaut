@@ -381,8 +381,8 @@ lib-nh-monitor: $(LIB_NH_MONITOR)
 
 create_lib_dir:
 	mkdir -p lib
-download_termoskanne: 
-	git submodule update --init --checkout --force external/Termoskanne/
+download_monoco: 
+	git submodule update --init --checkout --force external/Monoco/
 
 # Custom compiler flags
 $(OBJ_FILES_NH_CORE): CFLAGS += -lexternal
@@ -465,7 +465,7 @@ $(LIB_NH_CSS): create_lib_dir $(OBJ_FILES_NH_CSS)
 	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-css.dylib) $(OBJ_FILES_NH_CSS) $(LINKER_FLAGS_NH_CSS)
 $(LIB_NH_URL): create_lib_dir $(OBJ_FILES_NH_URL)
 	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-url.dylib) $(OBJ_FILES_NH_URL) $(LINKER_FLAGS_NH_URL)
-$(LIB_NH_MONITOR): create_lib_dir download_termoskanne $(OBJ_FILES_NH_MONITOR)
+$(LIB_NH_MONITOR): create_lib_dir download_monoco $(OBJ_FILES_NH_MONITOR)
 	$(LINKER) $(CFLAGS) -shared -o $@ $(call INSTALL_NAME,libnh-monitor.dylib) $(OBJ_FILES_NH_MONITOR) $(LINKER_FLAGS_NH_MONITOR)
 $(LIB_VOLK): $(OBJ_FILES_VOLK)
 	ar rcs $@ $^ 
@@ -493,4 +493,4 @@ clean:
 	rm -f $(LIB_FREETYPE_GL)
 	rm -rf lib
 
-.PHONY: all clean create_lib_dir download_termoskanne
+.PHONY: all clean create_lib_dir download_monoco

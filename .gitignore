@@ -3,3 +3,4 @@
 /include/
 test*
 *.pdf
+*.DS_Store

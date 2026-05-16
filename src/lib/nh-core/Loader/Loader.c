@@ -211,7 +211,13 @@ static NH_API_RESULT nh_core_callExternalInitializer(
 
     initialize_f initializer_f = nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p);
     if (initializer_f != NULL) {initializer_f();}
-
+    else {
+        // call default initializer
+        sprintf(name_p, "initialize");
+        initialize_f initializer_f = nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p);
+        if (initializer_f != NULL) {initializer_f();}
+    }
+    
     return NH_API_SUCCESS;
 }
 
