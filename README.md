@@ -4,6 +4,16 @@ Netzhaut is a multi-purpose open-source **Web-Browser-Engine** written from scra
 A web-browser-engine is software which runs web-content on client machines. 
 Popular examples are Chromium (Chrome, Google), Gecko (Firefox, Google) and WebKit (Safari, Apple).
 
+Static libraries:
+
+make -f build/automation/lib-ios.mk
+Xcode app (builds libs automatically, then links the app):
+
+./build/ios/run-simulator.sh
+# or open build/ios/Netzhaut.xcodeproj in Xcode and run NetzhautApp
+The app (src/ios/NetzhautApp/) uses UIApplicationMain, initializes Netzhaut in AppDelegate, creates a window via nh_api_createWindow, and drives the engine with a CADisplayLink.
+
+
 ## Contents
   
  - [Build](#Build)

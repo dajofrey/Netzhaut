@@ -20,6 +20,14 @@
 #include "../Common/Macros.h"
 #include "../Common/Config.h"
 
+#if defined(NH_PLATFORM_MACOS)
+    #include "../Metal/Surface.h"
+    #include "../Metal/Render.h"
+#elif defined(NH_PLATFORM_IOS)
+    #include "../Metal/SurfaceIOS.h"
+    #include "../Metal/Render.h"
+#endif
+
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
 #include "../../nh-core/System/Thread.h"
@@ -117,8 +125,11 @@ static void *nh_gfx_initSurface(
             break;
 
         case NH_GFX_API_METAL :
-#if defined(__APPLE__)
-//            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, (nh_api_Window*)Surface_p->Window_p))
+#if defined(NH_PLATFORM_MACOS)
+            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, Surface_p->Window_p))
+            break;
+#elif defined(NH_PLATFORM_IOS)
+            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalIOSSurface(&Surface_p->Metal, Surface_p->Window_p))
             break;
 #else
             return NULL;
@@ -143,13 +154,20 @@ void nh_gfx_freeSurface(
  
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_GFX_API_VULKAN :
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
             nh_gfx_destroyVulkanSurface(&Surface_p->Vulkan, true);
 #endif
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_GFX_API_OPENGL :
             nh_gfx_destroyOpenGLSurface(&Surface_p->OpenGL, (nh_api_Window*)Surface_p->Window_p);
+            break;
+        case NH_GFX_API_METAL :
+#if defined(NH_PLATFORM_MACOS)
+            nh_gfx_destroyMetalSurface(&Surface_p->Metal);
+#elif defined(NH_PLATFORM_IOS)
+            nh_gfx_destroyMetalIOSSurface(&Surface_p->Metal);
+#endif
             break;
     }
 
@@ -165,10 +183,15 @@ void nh_gfx_updateSurface(
 
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_GFX_API_VULKAN :
             break;
-        case NH_GFX_API_OPENGL : 
+        case NH_GFX_API_OPENGL :
             nh_gfx_updateOpenGLSurface(&Surface_p->OpenGL, (nh_api_Window*)Surface_p->Window_p);
+            break;
+        case NH_GFX_API_METAL :
+#if defined(NH_PLATFORM_IOS)
+            nh_gfx_updateMetalIOSSurface(&Surface_p->Metal, Surface_p->Window_p);
+#endif
             break;
     }
 
@@ -229,9 +252,9 @@ static NH_API_RESULT nh_gfx_prepareRendering(
 
     switch (Surface_p->api)
     {
-        case NH_GFX_API_VULKAN : 
+        case NH_GFX_API_VULKAN :
 #if defined(_WIN32) || defined (WIN32) || defined(__unix__)
-            result = nh_gfx_prepareVulkanRendering(&Surface_p->Vulkan); 
+            result = nh_gfx_prepareVulkanRendering(&Surface_p->Vulkan);
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
@@ -239,6 +262,13 @@ static NH_API_RESULT nh_gfx_prepareRendering(
         case NH_GFX_API_OPENGL :
             result = NH_API_SUCCESS;
             break;
+        case NH_GFX_API_METAL :
+#if defined(NH_PLATFORM_MACOS) || defined(NH_PLATFORM_IOS)
+            result = NH_API_SUCCESS;
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
     }
 
     if (result == NH_API_VULKAN_ERROR_OUT_OF_DATE_KHR) {
@@ -268,8 +298,8 @@ static NH_API_RESULT nh_gfx_render(
             break;
 
         case NH_GFX_API_METAL :
-#if defined(__APPLE__)
-//            NH_CORE_CHECK(nh_gfx_renderMetal(Surface_p, &SortedViewports))
+#if defined(NH_PLATFORM_MACOS) || defined(NH_PLATFORM_IOS)
+            NH_CORE_CHECK(nh_gfx_renderMetal(Surface_p, &SortedViewports))
             break;
 #else
             return NH_API_ERROR_BAD_STATE;

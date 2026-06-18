@@ -15,6 +15,8 @@ static void handleInput(nh_api_Window *Window_p, nh_api_WSIEvent Event)
     (void)application;
     (void)launchOptions;
 
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
     if (nh_api_initialize(NULL, NULL, 0) != NH_API_SUCCESS) {
         return NO;
     }
@@ -29,6 +31,8 @@ static void handleInput(nh_api_Window *Window_p, nh_api_WSIEvent Event)
 
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(tick:)];
     [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+
+    [self.window makeKeyAndVisible];
 
     return YES;
 }
@@ -50,6 +54,20 @@ static void handleInput(nh_api_Window *Window_p, nh_api_WSIEvent Event)
     [self.displayLink invalidate];
     self.displayLink = nil;
     nh_api_terminate();
+}
+
+- (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options
+{
+    (void)application;
+    (void)connectingSceneSession;
+    (void)options;
+    return [[UISceneConfiguration alloc] initWithName:@"Default Configuration" sessionRole:connectingSceneSession.role];
+}
+
+- (void)application:(UIApplication *)application didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions
+{
+    (void)application;
+    (void)sceneSessions;
 }
 
 @end

@@ -18,6 +18,10 @@
 
 #include "../OpenGL/OpenGL.h"
 
+#if defined(NH_PLATFORM_MACOS) || defined(NH_PLATFORM_IOS)
+    #include "../Metal/Metal.h"
+#endif
+
 #include "../Fonts/FontManager.h"
 #include "../Base/Surface.h"
 
@@ -37,8 +41,7 @@ NH_API_RESULT nh_gfx_initialize()
     nh_gfx_initVulkan();
 #endif
     nh_gfx_initOpenGL();
-#ifdef __APPLE__
-//    #include "../Metal/Metal.h"
-//    nh_gfx_initMetal();
+#if defined(NH_PLATFORM_MACOS) || defined(NH_PLATFORM_IOS)
+    nh_gfx_initMetal();
 #endif
 }

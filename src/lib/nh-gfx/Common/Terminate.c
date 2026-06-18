@@ -17,6 +17,9 @@
 #if defined(__unix__)
     #include "../Vulkan/Vulkan.h"
 #endif
+#if defined(NH_PLATFORM_MACOS) || defined(NH_PLATFORM_IOS)
+    #include "../Metal/Metal.h"
+#endif
 
 #include <stdlib.h>
 #include <string.h>
@@ -32,6 +35,9 @@ NH_API_RESULT nh_gfx_terminate()
 
 //    nh_gfx_terminateVulkan();
     nh_gfx_terminateOpenGL();
+#if defined(NH_PLATFORM_MACOS) || defined(NH_PLATFORM_IOS)
+    nh_gfx_terminateMetal();
+#endif
 
     return NH_API_SUCCESS;
 }
