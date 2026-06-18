@@ -1,4 +1,5 @@
 #import "Metal.h"
+#import "Device.h"
 
 #include <stdlib.h>
 

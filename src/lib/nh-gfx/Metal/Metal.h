@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+typedef struct nh_gfx_MetalDevice nh_gfx_MetalDevice;
+
 // Global Metal context
 typedef struct nh_gfx_Metal {
     nh_gfx_MetalDevice *Device_p;

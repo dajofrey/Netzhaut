@@ -36,11 +36,9 @@ typedef struct nh_gfx_Surface {
     nh_gfx_VulkanSurface Vulkan;
 #endif
 #if defined(NH_PLATFORM_MACOS)
-    #include "../Metal/Surface.h"
-    nh_gfx_MetalSurface Metal;
+    void *Metal_p;
 #elif defined(NH_PLATFORM_IOS)
-    #include "../Metal/SurfaceIOS.h"
-    nh_gfx_MetalIOSSurface Metal;
+    void *Metal_p;
 #endif
     nh_core_List Viewports;
     struct {

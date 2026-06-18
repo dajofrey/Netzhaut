@@ -126,10 +126,10 @@ static void *nh_gfx_initSurface(
 
         case NH_GFX_API_METAL :
 #if defined(NH_PLATFORM_MACOS)
-            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalSurface(&Surface_p->Metal, Surface_p->Window_p))
+            Surface_p->Metal_p = nh_gfx_createMetalSurface(Surface_p->Window_p);
             break;
 #elif defined(NH_PLATFORM_IOS)
-            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalIOSSurface(&Surface_p->Metal, Surface_p->Window_p))
+            Surface_p->Metal_p = nh_gfx_createMetalIOSSurface(Surface_p->Window_p);
             break;
 #else
             return NULL;
@@ -164,9 +164,9 @@ void nh_gfx_freeSurface(
             break;
         case NH_GFX_API_METAL :
 #if defined(NH_PLATFORM_MACOS)
-            nh_gfx_destroyMetalSurface(&Surface_p->Metal);
+            nh_gfx_destroyMetalSurface(Surface_p->Metal_p);
 #elif defined(NH_PLATFORM_IOS)
-            nh_gfx_destroyMetalIOSSurface(&Surface_p->Metal);
+            nh_gfx_destroyMetalIOSSurface(Surface_p->Metal_p);
 #endif
             break;
     }
@@ -190,7 +190,7 @@ void nh_gfx_updateSurface(
             break;
         case NH_GFX_API_METAL :
 #if defined(NH_PLATFORM_IOS)
-            nh_gfx_updateMetalIOSSurface(&Surface_p->Metal, Surface_p->Window_p);
+            nh_gfx_updateMetalIOSSurface(Surface_p->Metal_p, Surface_p->Window_p);
 #endif
             break;
     }
