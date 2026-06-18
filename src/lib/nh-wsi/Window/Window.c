@@ -25,21 +25,19 @@
 
 // FUNCTIONS =======================================================================================
 
-/**
- * Related resources:
- * - https://unix.stackexchange.com/questions/202891/how-to-know-whether-wayland-or-x11-is-being-used
- */
 static NH_WSI_TYPE_E nh_wsi_getType()
 {
     NH_WSI_TYPE_E type = -1;
 
-    #if defined(__unix__)
-        type = NH_WSI_TYPE_X11;
-    #elif defined(_WIN32) || defined (WIN32)
-        type = NH_WSI_TYPE_WIN32;
-    #elif defined(__APPLE__)
-        type = NH_WSI_TYPE_COCOA;
-    #endif
+#if defined(NH_PLATFORM_UNIX)
+    type = NH_WSI_TYPE_X11;
+#elif defined(_WIN32) || defined(WIN32)
+    type = NH_WSI_TYPE_WIN32;
+#elif defined(NH_PLATFORM_IOS)
+    type = NH_WSI_TYPE_IOS;
+#elif defined(NH_PLATFORM_MACOS)
+    type = NH_WSI_TYPE_COCOA;
+#endif
 
     return type;
 }
@@ -69,13 +67,17 @@ nh_wsi_Window *nh_wsi_createWindow(
 
     switch (Window_p->type)
     {
-#if defined(__unix__)
-        case NH_WSI_TYPE_X11 : 
+#if defined(NH_PLATFORM_UNIX)
+        case NH_WSI_TYPE_X11 :
             NH_CORE_CHECK_2(NULL, nh_wsi_createX11Window(&Window_p->X11, nh_wsi_getWindowConfig(Window_p), Requirements_p))
             break;
-#elif defined(__APPLE__)
-        case NH_WSI_TYPE_COCOA : 
+#elif defined(NH_PLATFORM_MACOS)
+        case NH_WSI_TYPE_COCOA :
             NH_CORE_CHECK_2(NULL, nh_wsi_createCocoaWindow(Window_p, nh_wsi_getWindowConfig(Window_p), Requirements_p))
+            break;
+#elif defined(NH_PLATFORM_IOS)
+        case NH_WSI_TYPE_IOS :
+            NH_CORE_CHECK_2(NULL, nh_wsi_createIOSWindow(Window_p, nh_wsi_getWindowConfig(Window_p), Requirements_p))
             break;
 #endif
         default : return NULL;
@@ -98,10 +100,12 @@ NH_API_RESULT nh_wsi_destroyWindow(
 
     switch (Window_p->type)
     {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
         case NH_WSI_TYPE_X11   : NH_CORE_CHECK(nh_wsi_destroyX11Window(&Window_p->X11)) break;
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
         case NH_WSI_TYPE_COCOA : NH_CORE_CHECK(nh_wsi_destroyCocoaWindow(&Window_p->Cocoa)) break;
+#elif defined(NH_PLATFORM_IOS)
+        case NH_WSI_TYPE_IOS   : NH_CORE_CHECK(nh_wsi_destroyIOSWindow(&Window_p->IOS)) break;
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -124,10 +128,12 @@ NH_API_RESULT nh_wsi_moveWindow(
 {
     switch (Window_p->type)
     {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
         case NH_WSI_TYPE_X11   : return nh_wsi_moveX11Window(&Window_p->X11);
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
         case NH_WSI_TYPE_COCOA : return nh_wsi_moveCocoaWindow(&Window_p->Cocoa);
+#elif defined(NH_PLATFORM_IOS)
+        case NH_WSI_TYPE_IOS   : return nh_wsi_moveIOSWindow(&Window_p->IOS);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -138,10 +144,12 @@ NH_API_RESULT nh_wsi_getWindowSize(
 {
     switch (Window_p->type)
     {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
         case NH_WSI_TYPE_X11   : return nh_wsi_getX11WindowSize(&Window_p->X11, x_p, y_p);
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
         case NH_WSI_TYPE_COCOA : return nh_wsi_getCocoaWindowSize(&Window_p->Cocoa, x_p, y_p);
+#elif defined(NH_PLATFORM_IOS)
+        case NH_WSI_TYPE_IOS   : return nh_wsi_getIOSWindowSize(&Window_p->IOS, x_p, y_p);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }

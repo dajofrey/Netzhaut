@@ -30,10 +30,12 @@
     #include "glx/glx.h"
 #endif
 
-#if defined(__APPLE__)
+#include "../../nh-core/Common/Platform.h"
+
+#if defined(NH_PLATFORM_MACOS)
     #define GL_SILENCE_DEPRECATION
     #include <OpenGL/gl3.h>
-    #include <OpenGL/CGLCurrent.h>  // For managing OpenGL contexts
+    #include <OpenGL/CGLCurrent.h>
     #include <OpenGL/OpenGL.h>
 #endif
 

@@ -13,11 +13,14 @@
 
 #include <stdalign.h>
 #include "../Common/Includes.h"
+#include "../../nh-core/Common/Platform.h"
 
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     #include "../Platforms/X11/Window.h"
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
     #include "../Platforms/Cocoa/Window.h"
+#elif defined(NH_PLATFORM_IOS)
+    #include "../Platforms/IOS/Window.h"
 #endif
 
 #include "../../nh-gfx/Base/SurfaceRequirements.h"
@@ -109,6 +112,7 @@ typedef enum NH_WSI_TYPE_E {
     NH_WSI_TYPE_WAYLAND, 
     NH_WSI_TYPE_WIN32, 
     NH_WSI_TYPE_COCOA,
+    NH_WSI_TYPE_IOS,
 } NH_WSI_TYPE_E; 
 
 // STRUCTS =====================================================================================
@@ -118,10 +122,12 @@ typedef struct NH_ALIGN_16 nh_wsi_Window {
     NH_WSI_TYPE_E type;
     void *surface_p;
     nh_api_windowCallback_f callback_f;
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     nh_wsi_X11Window X11;
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
     nh_wsi_CocoaWindow Cocoa;
+#elif defined(NH_PLATFORM_IOS)
+    nh_wsi_IOSWindow IOS;
 #endif
     nh_core_RingBuffer Events;
     NH_WSI_CURSOR_E cursor;

@@ -11,9 +11,13 @@
 #include "WindowSettings.h"
 #include "Window.h"
 
-#if defined(__APPLE__)
+#include "../../nh-core/Common/Platform.h"
+
+#if defined(NH_PLATFORM_MACOS)
     #include "../Platforms/Cocoa/WindowSettings.h"
-#elif defined(__unix__)
+#elif defined(NH_PLATFORM_IOS)
+    #include "../Platforms/IOS/WindowSettings.h"
+#elif defined(NH_PLATFORM_UNIX)
     #include "../Platforms/X11/WindowSettings.h"
 #endif
 
@@ -44,12 +48,15 @@ static NH_API_RESULT nh_wsi_setWindowDecorated(
 
     switch (Window_p->type)
     {
-        #if defined(__unix__)
+        #if defined(NH_PLATFORM_UNIX)
             case NH_WSI_TYPE_X11 : 
                 return nh_wsi_setX11WindowDecorated(&Window_p->X11, Config.decorated);
-        #elif defined(__APPLE__)
+        #elif defined(NH_PLATFORM_MACOS)
             case NH_WSI_TYPE_COCOA : 
                 return nh_wsi_setCocoaWindowDecorated(&Window_p->Cocoa, Config.decorated);
+        #elif defined(NH_PLATFORM_IOS)
+            case NH_WSI_TYPE_IOS :
+                return nh_wsi_setIOSWindowDecorated(&Window_p->IOS, Config.decorated);
         #endif
     }
 
@@ -63,12 +70,15 @@ static NH_API_RESULT nh_wsi_setWindowState(
 
     switch (Window_p->type)
     {
-        #if defined(__unix__)
+        #if defined(NH_PLATFORM_UNIX)
             case NH_WSI_TYPE_X11 : 
                 return nh_wsi_setX11WindowState(&Window_p->X11, Config.state_p);
-        #elif defined(__APPLE__)
+        #elif defined(NH_PLATFORM_MACOS)
             case NH_WSI_TYPE_COCOA : 
                 return nh_wsi_setCocoaWindowState(&Window_p->Cocoa, Config.state_p);
+        #elif defined(NH_PLATFORM_IOS)
+            case NH_WSI_TYPE_IOS :
+                return nh_wsi_setIOSWindowState(&Window_p->IOS, Config.state_p);
         #endif
     }
 
@@ -82,12 +92,15 @@ static NH_API_RESULT nh_wsi_setWindowType(
 
     switch (Window_p->type)
     {
-        #if defined(__unix__)
+        #if defined(NH_PLATFORM_UNIX)
             case NH_WSI_TYPE_X11 : 
                 return nh_wsi_setX11WindowType(&Window_p->X11, Config.type);
-        #elif defined(__APPLE__)
+        #elif defined(NH_PLATFORM_MACOS)
             case NH_WSI_TYPE_COCOA : 
                 return nh_wsi_setCocoaWindowType(&Window_p->Cocoa, Config.type);
+        #elif defined(NH_PLATFORM_IOS)
+            case NH_WSI_TYPE_IOS :
+                return nh_wsi_setIOSWindowType(&Window_p->IOS, Config.type);
         #endif
     }
 
@@ -101,12 +114,15 @@ static NH_API_RESULT nh_wsi_setWindowTitle(
 
     switch (Window_p->type)
     {
-        #if defined(__unix__)
+        #if defined(NH_PLATFORM_UNIX)
             case NH_WSI_TYPE_X11 : 
                 return nh_wsi_setX11WindowTitle(&Window_p->X11, Config.title_p);
-        #elif defined(__APPLE__)
+        #elif defined(NH_PLATFORM_MACOS)
             case NH_WSI_TYPE_COCOA : 
                 return nh_wsi_setCocoaWindowTitle(&Window_p->Cocoa, Config.title_p);
+        #elif defined(NH_PLATFORM_IOS)
+            case NH_WSI_TYPE_IOS :
+                return nh_wsi_setIOSWindowTitle(&Window_p->IOS, Config.title_p);
         #endif
     }
 
@@ -121,11 +137,14 @@ NH_API_RESULT nh_wsi_setMouseCursor(
 
     switch (Window_p->type)
     {
-        #if defined(__unix__)
+        #if defined(NH_PLATFORM_UNIX)
             case NH_WSI_TYPE_X11 : NH_CORE_CHECK(nh_wsi_setX11MouseCursor(&Window_p->X11, type)) break;
-        #elif defined(__APPLE__)
+        #elif defined(NH_PLATFORM_MACOS)
             case NH_WSI_TYPE_COCOA : 
                 return nh_wsi_setCocoaWindowMouseCursor(&Window_p->Cocoa, type);
+        #elif defined(NH_PLATFORM_IOS)
+            case NH_WSI_TYPE_IOS :
+                return nh_wsi_setIOSWindowMouseCursor(&Window_p->IOS, type);
         #endif
     }
 

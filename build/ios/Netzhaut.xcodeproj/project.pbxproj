@@ -1,0 +1,339 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* main.m */; };
+		A10000000000000000000002 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* AppDelegate.m */; };
+		A10000000000000000000003 /* nh-api.c in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* nh-api.c */; };
+		A10000000000000000000004 /* nh-core.c in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* nh-core.c */; };
+		A10000000000000000000005 /* nh-wsi.c in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* nh-wsi.c */; };
+		A10000000000000000000006 /* libnh-core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* libnh-core.a */; };
+		A10000000000000000000007 /* libnh-encoding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* libnh-encoding.a */; };
+		A10000000000000000000008 /* libnh-wsi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* libnh-wsi.a */; };
+		A10000000000000000000009 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* UIKit.framework */; };
+		A1000000000000000000000A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* QuartzCore.framework */; };
+		A1000000000000000000000B /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* Metal.framework */; };
+		A1000000000000000000000C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* CoreFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A20000000000000000000002 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A20000000000000000000003 /* nh-api.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nh-api.c; sourceTree = "<group>"; };
+		A20000000000000000000004 /* nh-core.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nh-core.c; sourceTree = "<group>"; };
+		A20000000000000000000005 /* nh-wsi.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nh-wsi.c; sourceTree = "<group>"; };
+		A20000000000000000000006 /* libnh-core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnh-core.a; path = lib/libnh-core.a; sourceTree = "<group>"; };
+		A20000000000000000000007 /* libnh-encoding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnh-encoding.a; path = lib/libnh-encoding.a; sourceTree = "<group>"; };
+		A20000000000000000000008 /* libnh-wsi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnh-wsi.a; path = lib/libnh-wsi.a; sourceTree = "<group>"; };
+		A20000000000000000000009 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A2000000000000000000000A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A2000000000000000000000B /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		A2000000000000000000000C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		A2000000000000000000000D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A2000000000000000000000E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A30000000000000000000001 /* NetzhautApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetzhautApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000006 /* libnh-core.a in Frameworks */,
+				A10000000000000000000007 /* libnh-encoding.a in Frameworks */,
+				A10000000000000000000008 /* libnh-wsi.a in Frameworks */,
+				A10000000000000000000009 /* UIKit.framework in Frameworks */,
+				A1000000000000000000000A /* QuartzCore.framework in Frameworks */,
+				A1000000000000000000000B /* Metal.framework in Frameworks */,
+				A1000000000000000000000C /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A50000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A50000000000000000000002 /* NetzhautApp */,
+				A50000000000000000000006 /* nh-api */,
+				A50000000000000000000003 /* Libraries */,
+				A50000000000000000000004 /* Frameworks */,
+				A50000000000000000000005 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A50000000000000000000002 /* NetzhautApp */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000D /* AppDelegate.h */,
+				A20000000000000000000002 /* AppDelegate.m */,
+				A20000000000000000000001 /* main.m */,
+				A2000000000000000000000E /* Info.plist */,
+			);
+			name = NetzhautApp;
+			path = ../../src/bin/nh-ios/NetzhautApp;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000003 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000006 /* libnh-core.a */,
+				A20000000000000000000007 /* libnh-encoding.a */,
+				A20000000000000000000008 /* libnh-wsi.a */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000004 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000009 /* UIKit.framework */,
+				A2000000000000000000000A /* QuartzCore.framework */,
+				A2000000000000000000000B /* Metal.framework */,
+				A2000000000000000000000C /* CoreFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000005 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000000000000000000001 /* NetzhautApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000006 /* nh-api */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000003 /* nh-api.c */,
+				A20000000000000000000004 /* nh-core.c */,
+				A20000000000000000000005 /* nh-wsi.c */,
+			);
+			name = nh-api;
+			path = ../../src/lib/nh-api;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000000000000000000001 /* NetzhautApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000003 /* Build configuration list for PBXNativeTarget "NetzhautApp" */;
+			buildPhases = (
+				A70000000000000000000001 /* Build Netzhaut Libraries */,
+				A40000000000000000000002 /* Sources */,
+				A40000000000000000000001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NetzhautApp;
+			productName = NetzhautApp;
+			productReference = A30000000000000000000001 /* NetzhautApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A80000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A60000000000000000000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A90000000000000000000001 /* Build configuration list for PBXProject "Netzhaut" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A50000000000000000000001;
+			productRefGroup = A50000000000000000000005 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000000000000000000001 /* NetzhautApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A70000000000000000000001 /* Build Netzhaut Libraries */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Netzhaut Libraries";
+			outputPaths = (
+				"$(SRCROOT)/lib/libnh-core.a",
+				"$(SRCROOT)/lib/libnh-encoding.a",
+				"$(SRCROOT)/lib/libnh-wsi.a",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${SRCROOT}/../..\" && make -f build/automation/lib-ios.mk IOS_SDK=iphonesimulator\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A40000000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* main.m in Sources */,
+				A10000000000000000000002 /* AppDelegate.m in Sources */,
+				A10000000000000000000003 /* nh-api.c in Sources */,
+				A10000000000000000000004 /* nh-core.c in Sources */,
+				A10000000000000000000005 /* nh-wsi.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AA0000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"NH_STATIC_LINK=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../src/lib",
+					"$(SRCROOT)/../../external",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/lib",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"NH_STATIC_LINK=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../src/lib",
+					"$(SRCROOT)/../../external",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/lib",
+				);
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA0000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"NH_STATIC_LINK=1",
+				);
+				INFOPLIST_FILE = ../../src/bin/nh-ios/NetzhautApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.netzhaut.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"NH_STATIC_LINK=1",
+				);
+				INFOPLIST_FILE = ../../src/bin/nh-ios/NetzhautApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.netzhaut.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A90000000000000000000001 /* Build configuration list for PBXProject "Netzhaut" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000001 /* Debug */,
+				AA0000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90000000000000000000003 /* Build configuration list for PBXNativeTarget "NetzhautApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000003 /* Debug */,
+				AA0000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A80000000000000000000001 /* Project object */;
+}

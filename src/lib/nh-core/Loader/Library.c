@@ -15,6 +15,7 @@
 #include "Repository.h"
 
 #include "../System/Thread.h"
+#include "../Common/Platform.h"
 
 #if defined(__linux__)
     #include <link.h>
@@ -31,6 +32,10 @@
 #include <sys/stat.h>
 
 // FUNCTIONS =======================================================================================
+
+#if defined(NH_STATIC_LINK)
+#define NH_STATIC_LIB_HANDLE ((void*)(intptr_t)1)
+#endif
 
 static bool nh_fileExists(
     char *filename_p)
@@ -107,6 +112,11 @@ static void *nh_core_getLibraryHandle(
 void *nh_core_loadLibrary(
     NH_MODULE_E type, char *path_p)
 {
+#if defined(NH_STATIC_LINK)
+    (void)type;
+    (void)path_p;
+    return NH_STATIC_LIB_HANDLE;
+#else
     void *lib_p = NULL;
     char libPath_p[255] = {0};
 
@@ -134,6 +144,7 @@ void *nh_core_loadLibrary(
 //    }
 
     return lib_p;
+#endif
 }
 
 void *nh_core_loadExternalLibrary(
@@ -179,9 +190,14 @@ void *nh_core_loadSymbolFromLibrary(
 #if defined(__unix__) || defined(__APPLE__)
 
     char *error_p = NULL;
-    dlerror(); // clear any existing error
+    dlerror();
 
+#if defined(NH_STATIC_LINK)
+    (void)lib_p;
+    void *function_p = dlsym(RTLD_DEFAULT, name_p);
+#else
     void *function_p = dlsym(lib_p, name_p);
+#endif
     if ((error_p = dlerror()) != NULL) {return NULL;}
 
 #endif

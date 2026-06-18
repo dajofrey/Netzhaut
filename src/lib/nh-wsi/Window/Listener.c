@@ -11,10 +11,12 @@
 #include "Listener.h"
 #include "Window.h"
 
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     #include "../Platforms/X11/Window.h"
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
     #include "../Platforms/Cocoa/Window.h"
+#elif defined(NH_PLATFORM_IOS)
+    #include "../Platforms/IOS/Window.h"
 #endif
 
 #include "../../nh-core/System/Thread.h"
@@ -47,10 +49,12 @@ static NH_API_RESULT nh_wsi_getInput(
     nh_wsi_Window *Window_p, bool *idle_p)
 {
     switch (Window_p->type) {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
         case NH_WSI_TYPE_X11   : return nh_wsi_getX11Input(Window_p, idle_p);
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
         case NH_WSI_TYPE_COCOA : return nh_wsi_getCocoaInput(Window_p, idle_p);
+#elif defined(NH_PLATFORM_IOS)
+        case NH_WSI_TYPE_IOS   : return nh_wsi_getIOSInput(Window_p, idle_p);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -148,10 +152,12 @@ NH_API_RESULT nh_wsi_setClipboard(
     if (NH_WSI_LISTENER.Windows.count > 0 && selfOwned) {
         nh_wsi_Window *Window_p = nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, 0);
         switch (Window_p->type) {
-            #if defined(__unix__)
+            #if defined(NH_PLATFORM_UNIX)
                 case NH_WSI_TYPE_X11 : NH_CORE_CHECK(nh_wsi_setX11ClipboardOwner(&Window_p->X11)) break;
-            #elif defined(__APPLE__)
+            #elif defined(NH_PLATFORM_MACOS)
                 case NH_WSI_TYPE_COCOA : NH_CORE_CHECK(nh_wsi_setCocoaClipboardOwner(&Window_p->Cocoa)) break;
+            #elif defined(NH_PLATFORM_IOS)
+                case NH_WSI_TYPE_IOS : NH_CORE_CHECK(nh_wsi_setIOSClipboardOwner(&Window_p->IOS)) break;
             #endif
         }
     }
@@ -171,10 +177,12 @@ char *nh_wsi_getClipboard()
     for (int i = 0; i < NH_WSI_LISTENER.Windows.count; ++i) {
         nh_wsi_Window *Window_p = nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, 0);
         switch (Window_p->type) {
-            #if defined(__unix__)
+            #if defined(NH_PLATFORM_UNIX)
                 case NH_WSI_TYPE_X11 : selfOwned = nh_wsi_isX11ClipboardOwner(&Window_p->X11); break; 
-            #elif defined(__APPLE__)
+            #elif defined(NH_PLATFORM_MACOS)
                 case NH_WSI_TYPE_COCOA : selfOwned = nh_wsi_isCocoaClipboardOwner(&Window_p->Cocoa); break;
+            #elif defined(NH_PLATFORM_IOS)
+                case NH_WSI_TYPE_IOS : selfOwned = nh_wsi_isIOSClipboardOwner(&Window_p->IOS); break;
             #endif
         }
     } 
@@ -186,10 +194,12 @@ char *nh_wsi_getClipboard()
     nh_wsi_Window *Window_p = nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, 0);
     NH_WSI_LISTENER.Clipboard.updated = false;
     switch (Window_p->type) {
-        #if defined(__unix__)
+        #if defined(NH_PLATFORM_UNIX)
             case NH_WSI_TYPE_X11 : NH_CORE_CHECK_2(NULL, nh_wsi_requestX11ClipboardConversion(&Window_p->X11)) break;
-        #elif defined(__APPLE__)
+        #elif defined(NH_PLATFORM_MACOS)
             case NH_WSI_TYPE_COCOA : NH_CORE_CHECK_2(NULL, nh_wsi_requestCocoaClipboardConversion(&Window_p->Cocoa)) break;
+        #elif defined(NH_PLATFORM_IOS)
+            case NH_WSI_TYPE_IOS : NH_CORE_CHECK_2(NULL, nh_wsi_requestIOSClipboardConversion(&Window_p->IOS)) break;
         #endif
     }
 

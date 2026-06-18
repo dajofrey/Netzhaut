@@ -46,7 +46,7 @@ bool nh_core_popGlobalConfigMark(
 static void nh_core_markNamespace(
     char *namespace_p)
 {
-    nh_core_addToHashMap(&MARK, namespace_p, 1);
+    nh_core_addToHashMap(&MARK, namespace_p, (void*)(intptr_t)1);
 }
 
 nh_core_List *nh_core_getGlobalConfigSetting(

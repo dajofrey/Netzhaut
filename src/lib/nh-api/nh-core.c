@@ -15,6 +15,7 @@
 #include "../nh-core/Util/File.h"
 #include "../nh-core/Config/Updater.h"
 #include "../nh-core/Common/Terminate.h"
+#include "../nh-core/Common/Platform.h"
 
 #include <unistd.h>
 #include <dlfcn.h>
@@ -22,6 +23,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if defined(NH_PLATFORM_MACOS)
+    #include <mach-o/dyld.h>
+#endif
 
 // DATA ============================================================================================
 
@@ -40,6 +45,97 @@ typedef void (*nh_core_dump_f)(
 typedef void (*nh_api_setLogCallback_f)(
     void *Logger_p, nh_api_logCallback_f logCallback_f
 );
+
+#if defined(NH_STATIC_LINK)
+
+extern nh_core_Loader *nh_core_initialize(char *path_p, char *settings_p, unsigned int length);
+extern NH_API_RESULT nh_core_terminate(nh_core_Loader *Loader_p);
+extern int nh_core_run(void);
+extern bool nh_core_keepRunning(void);
+extern nh_core_Workload *nh_core_getWorkload(void *handle_p);
+extern char *nh_core_getFileData(const char *path_p, long *size_p);
+extern NH_API_RESULT nh_core_writeBytesToFile(char *filePath_p, char *bytes_p);
+extern NH_API_RESULT nh_core_registerConfig(char *absolutePath_p, int length);
+extern NH_API_RESULT nh_core_loadConfig(char *data_p, int length);
+
+NH_API_RESULT nh_api_initialize(
+    char *path_p, char *config_p, int length)
+{
+    if (LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
+
+    LOADER_P = nh_core_initialize(path_p, config_p, length);
+    return LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
+}
+
+NH_API_RESULT nh_api_terminate()
+{
+    if (LOADER_P == NULL) {return NH_API_ERROR_BAD_STATE;}
+
+    nh_core_terminate(LOADER_P);
+    LOADER_P = NULL;
+
+    return NH_API_SUCCESS;
+}
+
+int nh_api_run()
+{
+    return nh_core_run();
+}
+
+bool nh_api_keepRunning()
+{
+    return nh_core_keepRunning();
+}
+
+void nh_api_setLogCallback(
+    nh_api_logCallback_f logCallback_f)
+{
+    (void)logCallback_f;
+}
+
+nh_api_Workload *nh_api_getWorkload(
+    void *args_p)
+{
+    return (nh_api_Workload*)nh_core_getWorkload(args_p);
+}
+
+char *nh_api_getFileData(
+    const char* path_p, long *size_p)
+{
+    return nh_core_getFileData(path_p, size_p);
+}
+
+NH_API_RESULT nh_api_writeBytesToFile(
+    char *filePath_p, char *bytes_p)
+{
+    return nh_core_writeBytesToFile(filePath_p, bytes_p);
+}
+
+NH_API_RESULT nh_api_registerConfig(
+    char *absolutePath_p, int length)
+{
+    return nh_core_registerConfig(absolutePath_p, length);
+}
+
+NH_API_RESULT nh_api_loadConfig(
+    char *data_p, int length)
+{
+    return nh_core_loadConfig(data_p, length);
+}
+
+void *nh_api_getLoader()
+{
+    return LOADER_P;
+}
+
+void *nh_api_dump(
+    char *node_p)
+{
+    (void)node_p;
+    return NULL;
+}
+
+#else
 
 // FUNCTIONS =======================================================================================
 
@@ -75,7 +171,7 @@ static NH_API_RESULT nh_api_getExeDir(
     if (readlink("/proc/self/exe", buffer_p, 1024) == -1 
     &&  readlink("/proc/curproc/file", buffer_p, 1024) == -1
     &&  readlink("/proc/self/path/a.out", buffer_p, 1024) == -1) {return NH_API_ERROR_BAD_STATE;}
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
     if (_NSGetExecutablePath(buffer_p, &size) != 0) {
         return NH_API_ERROR_BAD_STATE;
     }
@@ -94,7 +190,7 @@ static void *nh_api_loadCoreFunction(
 {
 #if defined(__unix__) || defined(__APPLE__)
     char *error_p;
-    dlerror(); // clear any existing error
+    dlerror();
 
     void *function_p = dlsym(CORE_P, functionName_p); 
     if ((error_p = dlerror()) != NULL) {
@@ -113,7 +209,7 @@ NH_API_RESULT nh_api_initialize(
 
 #if defined(__unix__)
     CORE_P = nh_api_openCoreLibrary("libnh-core.so");
-#elif defined(__APPLE__)
+#elif defined(NH_PLATFORM_MACOS)
     CORE_P = nh_api_openCoreLibrary("libnh-core.dylib");
 #endif
 
@@ -212,3 +308,5 @@ void *nh_api_dump(
     if (dump_f) {dump_f(node_p);}
     return NULL;
 }
+
+#endif

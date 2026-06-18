@@ -11,6 +11,7 @@
 #include "Process.h"
 
 #include "../../nh-ecmascript/Engine/Agent.h"
+#include "../Common/Platform.h"
 
 #include <signal.h>
 #include <stdio.h>
@@ -78,6 +79,9 @@ static nh_Fork *nh_core_getAvailableFork()
 nh_Fork *nh_core_fork()
 {
     if (init == false) {return NULL;}
+#if defined(NH_PLATFORM_IOS)
+    return NULL;
+#else
     nh_Fork *Fork_p = nh_core_getAvailableFork();
     if (Fork_p == NULL) {return NULL;}
 
@@ -97,6 +101,7 @@ nh_Fork *nh_core_fork()
     nh_closeChannelWriteAccess(&Fork_p->IPC.Out);
 
     return Fork_p;
+#endif
 }
 
 static NH_API_RESULT nh_unregisterFork(
