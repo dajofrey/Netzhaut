@@ -216,6 +216,11 @@ SRC_FILES_NH_GFX = \
     OpenGL/Render.c \
     OpenGL/OpenGL.c \
     OpenGL/ContextCocoa.m \
+    Metal/Device.m \
+    Metal/Metal.c \
+    Metal/Render.m \
+    Metal/Surface.m \
+    Metal/Viewport.m \
     Fonts/FontManager.c \
     Fonts/FontFamily.c \
     Fonts/FontStyle.c \

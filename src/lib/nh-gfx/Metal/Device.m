@@ -1,5 +1,8 @@
 #import "Device.h"
 #import "DeviceImpl.h"
+
+#include "../../nh-core/System/Memory.h"
+
 #include <stdlib.h>
 
 nh_gfx_MetalDevice *nh_gfx_createMetalDevice()

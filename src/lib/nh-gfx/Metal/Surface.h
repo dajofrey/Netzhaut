@@ -7,9 +7,7 @@
 extern "C" {
 #endif
 
-typedef struct nh_gfx_MetalSurface nh_gfx_MetalSurface;
-
-void *nh_gfx_createMetalSurface(void *view);
+void *nh_gfx_createMetalSurface(nh_api_Window *Window_p);
 void nh_gfx_destroyMetalSurface(void *surface);
 
 #ifdef __cplusplus

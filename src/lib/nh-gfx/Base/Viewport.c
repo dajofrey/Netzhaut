@@ -15,7 +15,7 @@
 #endif
 
 #if defined(__APPLE__)
-//    #include "../Metal/Viewport.h"
+    #include "../Metal/Viewport.h"
 #endif
 
 #include "../OpenGL/Viewport.h"
@@ -97,7 +97,7 @@ nh_gfx_Viewport *nh_gfx_createViewport(
 
         case NH_GFX_API_METAL :
 #if defined(__APPLE__)
-//            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalViewport(Viewport_p))
+            NH_CORE_CHECK_2(NULL, nh_gfx_createMetalViewport(Viewport_p))
             break;
 #else
             return NULL;
@@ -126,7 +126,7 @@ void nh_gfx_destroyViewport(
 
         case NH_GFX_API_METAL :
 #if defined(__APPLE__)
-//            nh_gfx_destroyMetalViewport(Viewport_p);
+            nh_gfx_destroyMetalViewport(Viewport_p);
             break;
 #endif
     }
@@ -165,6 +165,11 @@ NH_API_RESULT nh_gfx_beginRecording(
         case NH_GFX_API_OPENGL : 
             imageCount = 1; 
             break;
+        case NH_GFX_API_METAL :
+#if defined(__APPLE__)
+            imageCount = 1;
+            break;
+#endif
         default : return NH_API_ERROR_BAD_STATE;
     }
 
@@ -191,6 +196,11 @@ NH_API_RESULT nh_gfx_beginRecording(
             case NH_GFX_API_OPENGL : 
                 Viewport_p->OpenGL.CommandBuffer_p = &Viewport_p->OpenGL.CommandBuffers_p[bufferIndex];
                 break;
+            case NH_GFX_API_METAL :
+#if defined(__APPLE__)
+                // Metal uses a single command buffer per viewport
+                break;
+#endif
         }
 
         Viewport_p->Sync.newestBuffers_p[i] = bufferIndex;
@@ -208,6 +218,11 @@ NH_API_RESULT nh_gfx_beginRecording(
         case NH_GFX_API_OPENGL : 
             NH_CORE_CHECK(nh_gfx_beginOpenGLRecording(Viewport_p))
             break;
+        case NH_GFX_API_METAL :
+#if defined(__APPLE__)
+            NH_CORE_CHECK(nh_gfx_beginMetalRecording(Viewport_p))
+            break;
+#endif
     }
 
     return NH_API_SUCCESS;
@@ -228,6 +243,11 @@ NH_API_RESULT nh_gfx_endRecording(
         case NH_GFX_API_OPENGL : 
             NH_CORE_CHECK(nh_gfx_endOpenGLRecording(Viewport_p))
             break;
+        case NH_GFX_API_METAL :
+#if defined(__APPLE__)
+            NH_CORE_CHECK(nh_gfx_endMetalRecording(Viewport_p))
+            break;
+#endif
         default : return NH_API_ERROR_BAD_STATE;
     }
 

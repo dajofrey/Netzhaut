@@ -1,19 +1,23 @@
-#import "Surface.h"
-#import "SurfaceImpl.h"
+#include "Surface.h"
+#include "SurfaceImpl.h"
+
+#include "../../nh-wsi/Window/Window.h"
+
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CAMetalLayer.h>
+
 #include <stdlib.h>
 
 void *nh_gfx_createMetalSurface(
-    nh_wsi_Window *Window_p)
+    nh_api_Window *Window_p)
 {
     nh_gfx_MetalSurface *Surface_p = malloc(sizeof(nh_gfx_MetalSurface));
 
-    NSWindow *nsWindow = (__bridge NSWindow*)Window_p->Handle;
-    NH_API_CHECK_NULL(nsWindow)
+    NSWindow *nsWindow = (__bridge NSWindow*)((nh_wsi_Window*)Window_p)->surface_p;
+    if (!nsWindow) {return NULL;}
 
     NSView *contentView = [nsWindow contentView];
-    NH_API_CHECK_NULL(contentView)
+    if (!contentView) {return NULL;}
 
     CAMetalLayer *layer = [CAMetalLayer layer];
     layer.pixelFormat = MTLPixelFormatBGRA8Unorm;

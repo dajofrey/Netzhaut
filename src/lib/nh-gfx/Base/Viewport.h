@@ -10,6 +10,11 @@
 #endif
 
 #include "../OpenGL/Viewport.h"
+
+#if defined(__APPLE__)
+    #include "../Metal/Viewport.h"
+#endif
+
 #include "../Common/Includes.h"
 
 // ENUM ============================================================================================
@@ -36,8 +41,7 @@ typedef struct nh_gfx_Viewport {
 #endif
     nh_gfx_OpenGLViewport OpenGL;
 #if defined(__APPLE__)
-//    #include "../Metal/Viewport.h"
-//    nh_gfx_MetalViewport Metal;
+    nh_gfx_MetalViewport *Metal_p;
 #endif
     struct {
         nh_api_PixelSize Size;
