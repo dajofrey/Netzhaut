@@ -96,32 +96,37 @@ NH_API_RESULT nh_gfx_beginMetalRecording(
     if (!Viewport_p->Metal_p->renderEncoder) {
         return NH_API_ERROR_BAD_STATE;
     }
- 
-    // Calculate dimensions exactly as OpenGL does
+
+    int surfaceHeight = metalSurface->layer.drawableSize.height;
+    
+    // 2. Calculate the OpenGL (bottom-left) coordinates
     int innerX = Viewport_p->Settings.Position.x + Viewport_p->Settings.borderWidth;
-    int innerY = Viewport_p->Settings.Position.y + Viewport_p->Settings.borderWidth;
+    int glInnerY = Viewport_p->Settings.Position.y + Viewport_p->Settings.borderWidth;
     int innerW = Viewport_p->Settings.Size.width - (Viewport_p->Settings.borderWidth * 2);
     int innerH = Viewport_p->Settings.Size.height - (Viewport_p->Settings.borderWidth * 2);
-
-    // Guard against negative dimensions to prevent Metal validation crashes
+    
+    // Guard against negative dimensions
     if (innerW < 0) innerW = 0;
     if (innerH < 0) innerH = 0;
-
-    // 2. Set Viewport (Equivalent to the first glViewport)
+    
+    // 3. Convert to Metal (top-left) coordinates
+    // Formula: Surface Height - OpenGL Y - Viewport Height
+    int metalInnerY = surfaceHeight - glInnerY - innerH;
+    
+    // 4. Set Viewport
     MTLViewport viewport;
     viewport.originX = innerX;
-    viewport.originY = innerY;
+    viewport.originY = metalInnerY; // <-- Use the flipped Y
     viewport.width   = innerW;
     viewport.height  = innerH;
     viewport.znear   = 0.0;
     viewport.zfar    = 1.0;
     [Viewport_p->Metal_p->renderEncoder setViewport:viewport];
-
-    // 3. Set Scissor Rect (Equivalent to the inner glScissor call)
-    // Note: MTLScissorRect uses NSUInteger, so we must clamp to 0.
+    
+    // 5. Set Scissor Rect
     MTLScissorRect scissor;
     scissor.x      = MAX(0, innerX);
-    scissor.y      = MAX(0, innerY);
+    scissor.y      = MAX(0, metalInnerY); // <-- Use the flipped Y
     scissor.width  = innerW;
     scissor.height = innerH;
     [Viewport_p->Metal_p->renderEncoder setScissorRect:scissor];
@@ -141,14 +146,23 @@ NH_API_RESULT nh_gfx_endMetalRecording(
     }
 
     if (Viewport_p->Metal_p->renderEncoder) {
-        // NOTE: Your OpenGL code sets glColorMask(0,0,0,1) and clears the alpha channel.
-        // To replicate this in Metal, you need to draw a fullscreen quad with a pipeline
-        // state configured with `colorAttachment[0].writeMask = MTLColorWriteMaskAlpha` 
-        // right here before ending the encoding.
-        
         [Viewport_p->Metal_p->renderEncoder endEncoding];
         Viewport_p->Metal_p->renderEncoder = nil;
     }
+
+    nh_gfx_MetalSurface *metalSurface = (nh_gfx_MetalSurface *)Viewport_p->Surface_p->Metal_p;
+
+    // We must present the drawable before we commit the command buffer
+    if (metalSurface->currentDrawable) {
+        [Viewport_p->Metal_p->commandBuffer presentDrawable:metalSurface->currentDrawable];
+    }
+
+    // Commit the commands to the GPU
+    [Viewport_p->Metal_p->commandBuffer commit];
+    
+    // Clear the drawable cache so the NEXT frame requests a fresh one
+    metalSurface->currentDrawable = nil;
+    Viewport_p->Metal_p->commandBuffer = nil;
 
     return NH_API_SUCCESS;
 }
