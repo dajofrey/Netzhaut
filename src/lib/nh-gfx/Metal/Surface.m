@@ -16,20 +16,27 @@ void *nh_gfx_createMetalSurface(
     nh_gfx_MetalSurface *Surface_p = malloc(sizeof(nh_gfx_MetalSurface));
 
     NSWindow *nsWindow = (__bridge NSWindow*)((nh_wsi_Window*)Window_p)->Cocoa.Handle;
-    if (!nsWindow) {return NULL;}
+    if (!nsWindow) { return NULL; }
 
     NSView *contentView = [nsWindow contentView];
-    if (!contentView) {return NULL;}
+    if (!contentView) { return NULL; }
 
     CAMetalLayer *layer = [CAMetalLayer layer];
     layer.device = NH_METAL.Device_p->device;
     layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     layer.framebufferOnly = YES;
+    
     if ([layer respondsToSelector:@selector(setMaximumDrawableCount:)]) {
-        [layer setMaximumDrawableCount:3]; // Triple buffering, like Vulkan default
+        [layer setMaximumDrawableCount:3]; // Triple buffering
     }
-    layer.drawableSize = contentView.bounds.size;
-    layer.contentsScale = [contentView window].backingScaleFactor;
+
+    // --- FIX APPLIED HERE ---
+    CGFloat scaleFactor = nsWindow.backingScaleFactor;
+    CGSize logicalSize = contentView.bounds.size;
+    
+    layer.contentsScale = scaleFactor;
+    layer.drawableSize = CGSizeMake(logicalSize.width * scaleFactor, logicalSize.height * scaleFactor);
+    // ------------------------
 
     [contentView setWantsLayer:YES];
     [contentView setLayer:layer];
