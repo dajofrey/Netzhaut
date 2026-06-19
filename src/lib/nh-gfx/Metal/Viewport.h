@@ -10,6 +10,7 @@ extern "C" {
 
 typedef struct nh_gfx_MetalViewport nh_gfx_MetalViewport;
 typedef struct nh_gfx_Viewport nh_gfx_Viewport;
+typedef struct nh_gfx_Surface nh_gfx_Surface;
 
 NH_API_RESULT nh_gfx_createMetalViewport(
     nh_gfx_Viewport *Viewport_p

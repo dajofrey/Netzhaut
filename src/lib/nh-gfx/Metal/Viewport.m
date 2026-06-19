@@ -2,6 +2,8 @@
 #import "ViewportImpl.h"
 #import "DeviceImpl.h"
 #import "Metal.h"
+#include "SurfaceImpl.h"
+
 #import "../Base/Viewport.h"
 
 #include "../../nh-core/System/Memory.h"
@@ -23,8 +25,7 @@ NH_API_RESULT nh_gfx_createMetalViewport(
         return NH_API_ERROR_BAD_STATE;
     }
 
-    Viewport_p->Metal_p->commandBuffer = [NH_METAL.Device_p->commandQueue commandBuffer];
-    // Initialization of renderEncoder and passDescriptor should be nil initially
+    Viewport_p->Metal_p->commandBuffer = nil; 
     Viewport_p->Metal_p->renderEncoder = nil;
     Viewport_p->Metal_p->renderPassDescriptor = nil;
 
@@ -58,25 +59,43 @@ NH_API_RESULT nh_gfx_beginMetalRecording(
         return NH_API_ERROR_BAD_STATE;
     }
 
-    // Create a new command buffer for this frame
+    // Create a new command buffer for this specific frame
     Viewport_p->Metal_p->commandBuffer = [NH_METAL.Device_p->commandQueue commandBuffer];
 
-    // Ensure we have a render pass descriptor. In a real engine context, this is usually 
-    // provided by your swapchain, offscreen texture pool, or an MTKView.
+    nh_gfx_MetalSurface *metalSurface = (nh_gfx_MetalSurface *)Viewport_p->Surface_p->Metal_p;
+    
+    // CHECKLIST #2: Fetch the drawable ONCE per frame and cache it. 
+    // If multiple viewports are drawn, the first one fetches it; the rest reuse it.
+    if (!metalSurface->currentDrawable) {
+        metalSurface->currentDrawable = [(__bridge CAMetalLayer *)metalSurface->layer nextDrawable];
+    }
+
+    id<CAMetalDrawable> drawable = metalSurface->currentDrawable;
+    if (!drawable) {
+        return NH_API_ERROR_BAD_STATE; // Drop the frame if the OS refuses to provide a drawable
+    }
+
     MTLRenderPassDescriptor *passDescriptor = Viewport_p->Metal_p->renderPassDescriptor;
     if (!passDescriptor) {
         passDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
+        Viewport_p->Metal_p->renderPassDescriptor = passDescriptor;
     }
 
-    // 1. Clear the viewport base (Equivalent to the first OpenGL glClearColor/glClear)
-    // Metal load actions apply to the entire attachment. We use BorderColor as the baseline.
+    // CHECKLIST #2: Explicitly bind the destination texture so Metal knows where to draw
+    passDescriptor.colorAttachments[0].texture = drawable.texture;
+
+    // Set clear colors
     passDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(
         Viewport_p->Settings.BorderColor.r,
         Viewport_p->Settings.BorderColor.g,
         Viewport_p->Settings.BorderColor.b,
         Viewport_p->Settings.BorderColor.a
     );
-    passDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
+    
+    // Pro-Tip: If you have multiple viewports drawing on top of each other, 
+    // only the FIRST viewport should use MTLLoadActionClear. Subsequent viewports 
+    // should use MTLLoadActionLoad, otherwise they will erase the previous viewports.
+    passDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear; 
     passDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
 
     // Create the render command encoder
@@ -84,7 +103,7 @@ NH_API_RESULT nh_gfx_beginMetalRecording(
     if (!Viewport_p->Metal_p->renderEncoder) {
         return NH_API_ERROR_BAD_STATE;
     }
-
+ 
     // Calculate dimensions exactly as OpenGL does
     int innerX = Viewport_p->Settings.Position.x + Viewport_p->Settings.borderWidth;
     int innerY = Viewport_p->Settings.Position.y + Viewport_p->Settings.borderWidth;
@@ -137,11 +156,6 @@ NH_API_RESULT nh_gfx_endMetalRecording(
         [Viewport_p->Metal_p->renderEncoder endEncoding];
         Viewport_p->Metal_p->renderEncoder = nil;
     }
-
-    // Typically, you would present a drawable here if drawing to screen:
-    // [Viewport_p->Metal_p->commandBuffer presentDrawable:currentDrawable];
-
-    [Viewport_p->Metal_p->commandBuffer commit];
 
     return NH_API_SUCCESS;
 }

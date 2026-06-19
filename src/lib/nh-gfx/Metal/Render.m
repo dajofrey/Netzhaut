@@ -49,14 +49,11 @@ NH_API_RESULT nh_gfx_renderMetal(
         return NH_API_ERROR_BAD_STATE;
     }
 
-    // 1. Acquire the current drawable from the CAMetalLayer attached to the Surface.
-    // (This assumes you store the CAMetalLayer reference in Surface_p->Metal.Layer_p)
-    id<CAMetalDrawable> currentDrawable = nil;
-    if (((nh_gfx_MetalSurface*)Surface_p->Metal_p)->layer) {
-        currentDrawable = [(__bridge CAMetalLayer *)((nh_gfx_MetalSurface*)Surface_p->Metal_p)->layer nextDrawable];
-    }
+    nh_gfx_MetalSurface *metalSurface = (nh_gfx_MetalSurface *)Surface_p->Metal_p;
+    
+    // Retrieve the drawable that was cached by beginMetalRecording
+    id<CAMetalDrawable> currentDrawable = metalSurface->currentDrawable;
 
-    // 2. Iterate through viewports to commit their encoded command buffers
     for (int i = 0; i < SortedViewports_p->size; ++i) {
         nh_gfx_Viewport *Viewport_p = SortedViewports_p->pp[i];
         
@@ -64,18 +61,20 @@ NH_API_RESULT nh_gfx_renderMetal(
             continue;
         }
 
-        // 3. If this is the final viewport rendering to the surface, and we have a valid 
-        // screen drawable, schedule it for presentation.
+        // If this is the final viewport, schedule the presentation of the drawable
         if (i == SortedViewports_p->size - 1 && currentDrawable) {
             [Viewport_p->Metal_p->commandBuffer presentDrawable:currentDrawable];
         }
 
-        // 4. Execute the command buffer (Equivalent to nh_gfx_executeOpenGLCommandBuffer)
+        // Submit the command buffer to the GPU hardware
         [Viewport_p->Metal_p->commandBuffer commit];
 
-        // 5. Free/Release the command buffer for this frame (Equivalent to nh_gfx_freeOpenGLCommandBuffer)
+        // Release our reference so a new one can be created next frame
         Viewport_p->Metal_p->commandBuffer = nil;
     }
+
+    // CRITICAL: Reset the cache so the next frame grabs a fresh drawable
+    metalSurface->currentDrawable = nil;
 
     return NH_API_SUCCESS;
 }
