@@ -1,5 +1,7 @@
 #include "Surface.h"
 #include "SurfaceImpl.h"
+#include "DeviceImpl.h"
+#include "Metal.h"
 
 #include "../../nh-wsi/Window/Window.h"
 
@@ -20,6 +22,7 @@ void *nh_gfx_createMetalSurface(
     if (!contentView) {return NULL;}
 
     CAMetalLayer *layer = [CAMetalLayer layer];
+    layer.device = NH_METAL.Device_p->device;
     layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     layer.framebufferOnly = YES;
     if ([layer respondsToSelector:@selector(setMaximumDrawableCount:)]) {
