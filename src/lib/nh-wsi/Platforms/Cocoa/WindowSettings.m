@@ -46,24 +46,24 @@ NH_API_RESULT nh_wsi_setCocoaWindowTitle(
 NH_API_RESULT nh_wsi_setCocoaWindowDecorated(
     nh_wsi_CocoaWindow *Window_p, bool decorated)
 {
-    @autoreleasepool {
-        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
-        if (!window) {
-            return NH_API_ERROR_BAD_STATE;
-        }
-
-        NSWindowStyleMask styleMask = window.styleMask;
-        if (decorated) {
-            styleMask |= NSWindowStyleMaskTitled | 
-                        NSWindowStyleMaskClosable | 
-                        NSWindowStyleMaskMiniaturizable;
-        } else {
-            styleMask &= ~(NSWindowStyleMaskTitled | 
-                          NSWindowStyleMaskClosable | 
-                          NSWindowStyleMaskMiniaturizable);
-        }
-        [window setStyleMask:styleMask];
-    }
+//    @autoreleasepool {
+//        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
+//        if (!window) {
+//            return NH_API_ERROR_BAD_STATE;
+//        }
+//
+//        NSWindowStyleMask styleMask = window.styleMask;
+//        if (decorated) {
+//            styleMask |= NSWindowStyleMaskTitled | 
+//                        NSWindowStyleMaskClosable | 
+//                        NSWindowStyleMaskMiniaturizable;
+//        } else {
+//            styleMask &= ~(NSWindowStyleMaskTitled | 
+//                          NSWindowStyleMaskClosable | 
+//                          NSWindowStyleMaskMiniaturizable);
+//        }
+//        [window setStyleMask:styleMask];
+//    }
     return NH_API_SUCCESS;
 }
 

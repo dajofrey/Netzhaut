@@ -1,0 +1,161 @@
+diff --git a/src/lib/nh-wsi/Platforms/Cocoa/Window.m b/src/lib/nh-wsi/Platforms/Cocoa/Window.m
+index 8f81c71..d1d47b1 100644
+--- a/src/lib/nh-wsi/Platforms/Cocoa/Window.m
++++ b/src/lib/nh-wsi/Platforms/Cocoa/Window.m
+@@ -171,11 +171,18 @@ - (instancetype)initWithWindow:(nh_wsi_Window *)window
+                                defer:flag];
+     if (self != nil) {
+         Window_p = window;
+-        self.backgroundColor = [NSColor whiteColor];
++        self.opaque = NO; 
++self.backgroundColor = [NSColor clearColor];
++        self.hasShadow = YES;
+     }
+     return self;
+ }
+ 
++// ADD THIS METHOD: This tells the OS to stop trying to force an opaque background
++- (BOOL)isOpaque {
++    return NO;
++}
++
+ - (void)mouseDown:(NSEvent *)event
+ {
+     NSPoint winPoint   = [event locationInWindow];
+@@ -400,59 +407,65 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
+     nh_wsi_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
+ {
+     @autoreleasepool {
+-        // Create window delegate
+         CustomWindowDelegate *delegate = [[CustomWindowDelegate alloc] initWithWindow:(nh_wsi_Window*)Window_p];
+         
+-        // Convert coordinates from bottom-left to top-left origin
+         NSRect screenRect = [[NSScreen mainScreen] frame];
+         NSRect contentRect = NSMakeRect(Config.Position.x,
+                                       screenRect.size.height - Config.Position.y - Config.Size.height,
+                                       Config.Size.width,
+                                       Config.Size.height);
+         
+-        // Set window style
++        // 1. Style Mask: Use Titled + FullSizeContentView to draw under the titlebar area
+         NSWindowStyleMask styleMask = NSWindowStyleMaskTitled |
+-                                    NSWindowStyleMaskClosable |
+-                                    NSWindowStyleMaskMiniaturizable;
++                                      NSWindowStyleMaskClosable |
++                                      NSWindowStyleMaskMiniaturizable |
++                                      NSWindowStyleMaskFullSizeContentView;
+         
+         if (Config.resizable) {
+             styleMask |= NSWindowStyleMaskResizable;
+         }
+         
+-        // Create window
+         CustomWindow *window = [[CustomWindow alloc] initWithWindow:(nh_wsi_Window*)Window_p
+-                                              contentRect:contentRect
+-                                              styleMask:styleMask
+-                                              backing:NSBackingStoreBuffered
+-                                              defer:NO];
++                                                    contentRect:contentRect
++                                                      styleMask:styleMask
++                                                        backing:NSBackingStoreBuffered
++                                                          defer:NO];
+         
+         if (!window) {
+             return NH_API_ERROR_BAD_STATE;
+         }
+         
+-        [window setDelegate:delegate];
+-        [window setTitle:[NSString stringWithUTF8String:Config.title_p]];
+-        [window setAcceptsMouseMovedEvents:YES];
++        // 2. Window Transparency & Visuals
++        window.opaque = NO;
++        window.backgroundColor = [NSColor clearColor];
++        window.titlebarAppearsTransparent = YES;
++        window.titleVisibility = NSWindowTitleHidden;
+         
+-        // Replace default contentView with custom one
+-        CustomView *view = [[CustomView alloc] initWithFrame:contentRect];
++        // 3. View Setup (The container that provides the shape)
++        CustomView *view = [[CustomView alloc] initWithFrame:[window.contentView bounds]];
+         view.Window_p = Window_p;
+-        [window setContentView:view];
++        view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+         
+-        // Make sure it gets keyboard focus
++        // Ensure layer backing for clipping
++        view.wantsLayer = YES;
++        view.layer.cornerRadius = 10.0;
++        view.layer.masksToBounds = YES;
++        
++        [window setContentView:view];
++        [window setDelegate:delegate];
++        [window setTitle:[NSString stringWithUTF8String:Config.title_p]];
++        [window setAcceptsMouseMovedEvents:YES];
+         [window makeFirstResponder:view];
+-
+-//        // Create metal layer for rendering
+-//        CAMetalLayer *layer = [CAMetalLayer layer];
+-//        [window.contentView setWantsLayer:YES];
+-//        [window.contentView setLayer:layer];
+         
++// Hide the traffic light buttons
++[[window standardWindowButton:NSWindowCloseButton] setHidden:YES];
++[[window standardWindowButton:NSWindowMiniaturizeButton] setHidden:YES];
++[[window standardWindowButton:NSWindowZoomButton] setHidden:YES];
++
+         // Store references
+         Window_p->Cocoa.Handle = (__bridge_retained void*)window;
+         Window_p->Cocoa.Delegate = (__bridge_retained void*)delegate;
+-//        Window_p->Cocoa.Layer = (__bridge_retained void*)layer;
+         
+-        // Show window
+         [window makeKeyAndOrderFront:nil];
+     }
+     
+diff --git a/src/lib/nh-wsi/Platforms/Cocoa/WindowSettings.m b/src/lib/nh-wsi/Platforms/Cocoa/WindowSettings.m
+index 1d9dcb4..b34579f 100644
+--- a/src/lib/nh-wsi/Platforms/Cocoa/WindowSettings.m
++++ b/src/lib/nh-wsi/Platforms/Cocoa/WindowSettings.m
+@@ -46,24 +46,24 @@ NH_API_RESULT nh_wsi_setCocoaWindowTitle(
+ NH_API_RESULT nh_wsi_setCocoaWindowDecorated(
+     nh_wsi_CocoaWindow *Window_p, bool decorated)
+ {
+-    @autoreleasepool {
+-        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
+-        if (!window) {
+-            return NH_API_ERROR_BAD_STATE;
+-        }
+-
+-        NSWindowStyleMask styleMask = window.styleMask;
+-        if (decorated) {
+-            styleMask |= NSWindowStyleMaskTitled | 
+-                        NSWindowStyleMaskClosable | 
+-                        NSWindowStyleMaskMiniaturizable;
+-        } else {
+-            styleMask &= ~(NSWindowStyleMaskTitled | 
+-                          NSWindowStyleMaskClosable | 
+-                          NSWindowStyleMaskMiniaturizable);
+-        }
+-        [window setStyleMask:styleMask];
+-    }
++//    @autoreleasepool {
++//        CustomWindow *window = (__bridge CustomWindow*)Window_p->Handle;
++//        if (!window) {
++//            return NH_API_ERROR_BAD_STATE;
++//        }
++//
++//        NSWindowStyleMask styleMask = window.styleMask;
++//        if (decorated) {
++//            styleMask |= NSWindowStyleMaskTitled | 
++//                        NSWindowStyleMaskClosable | 
++//                        NSWindowStyleMaskMiniaturizable;
++//        } else {
++//            styleMask &= ~(NSWindowStyleMaskTitled | 
++//                          NSWindowStyleMaskClosable | 
++//                          NSWindowStyleMaskMiniaturizable);
++//        }
++//        [window setStyleMask:styleMask];
++//    }
+     return NH_API_SUCCESS;
+ }
+ 

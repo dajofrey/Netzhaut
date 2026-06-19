@@ -171,9 +171,16 @@
                                defer:flag];
     if (self != nil) {
         Window_p = window;
-        self.backgroundColor = [NSColor whiteColor];
+        self.opaque = NO; 
+self.backgroundColor = [NSColor clearColor];
+        self.hasShadow = YES;
     }
     return self;
+}
+
+// ADD THIS METHOD: This tells the OS to stop trying to force an opaque background
+- (BOOL)isOpaque {
+    return NO;
 }
 
 - (void)mouseDown:(NSEvent *)event
@@ -400,59 +407,65 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
     nh_wsi_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
 {
     @autoreleasepool {
-        // Create window delegate
         CustomWindowDelegate *delegate = [[CustomWindowDelegate alloc] initWithWindow:(nh_wsi_Window*)Window_p];
         
-        // Convert coordinates from bottom-left to top-left origin
         NSRect screenRect = [[NSScreen mainScreen] frame];
         NSRect contentRect = NSMakeRect(Config.Position.x,
                                       screenRect.size.height - Config.Position.y - Config.Size.height,
                                       Config.Size.width,
                                       Config.Size.height);
         
-        // Set window style
+        // 1. Style Mask: Use Titled + FullSizeContentView to draw under the titlebar area
         NSWindowStyleMask styleMask = NSWindowStyleMaskTitled |
-                                    NSWindowStyleMaskClosable |
-                                    NSWindowStyleMaskMiniaturizable;
+                                      NSWindowStyleMaskClosable |
+                                      NSWindowStyleMaskMiniaturizable |
+                                      NSWindowStyleMaskFullSizeContentView;
         
         if (Config.resizable) {
             styleMask |= NSWindowStyleMaskResizable;
         }
         
-        // Create window
         CustomWindow *window = [[CustomWindow alloc] initWithWindow:(nh_wsi_Window*)Window_p
-                                              contentRect:contentRect
-                                              styleMask:styleMask
-                                              backing:NSBackingStoreBuffered
-                                              defer:NO];
+                                                    contentRect:contentRect
+                                                      styleMask:styleMask
+                                                        backing:NSBackingStoreBuffered
+                                                          defer:NO];
         
         if (!window) {
             return NH_API_ERROR_BAD_STATE;
         }
         
+        // 2. Window Transparency & Visuals
+        window.opaque = NO;
+        window.backgroundColor = [NSColor clearColor];
+        window.titlebarAppearsTransparent = YES;
+        window.titleVisibility = NSWindowTitleHidden;
+        
+        // 3. View Setup (The container that provides the shape)
+        CustomView *view = [[CustomView alloc] initWithFrame:[window.contentView bounds]];
+        view.Window_p = Window_p;
+        view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        
+        // Ensure layer backing for clipping
+        view.wantsLayer = YES;
+        view.layer.cornerRadius = 10.0;
+        view.layer.masksToBounds = YES;
+        
+        [window setContentView:view];
         [window setDelegate:delegate];
         [window setTitle:[NSString stringWithUTF8String:Config.title_p]];
         [window setAcceptsMouseMovedEvents:YES];
-        
-        // Replace default contentView with custom one
-        CustomView *view = [[CustomView alloc] initWithFrame:contentRect];
-        view.Window_p = Window_p;
-        [window setContentView:view];
-        
-        // Make sure it gets keyboard focus
         [window makeFirstResponder:view];
-
-//        // Create metal layer for rendering
-//        CAMetalLayer *layer = [CAMetalLayer layer];
-//        [window.contentView setWantsLayer:YES];
-//        [window.contentView setLayer:layer];
         
+// Hide the traffic light buttons
+[[window standardWindowButton:NSWindowCloseButton] setHidden:YES];
+[[window standardWindowButton:NSWindowMiniaturizeButton] setHidden:YES];
+[[window standardWindowButton:NSWindowZoomButton] setHidden:YES];
+
         // Store references
         Window_p->Cocoa.Handle = (__bridge_retained void*)window;
         Window_p->Cocoa.Delegate = (__bridge_retained void*)delegate;
-//        Window_p->Cocoa.Layer = (__bridge_retained void*)layer;
         
-        // Show window
         [window makeKeyAndOrderFront:nil];
     }
     
