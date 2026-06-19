@@ -27,7 +27,6 @@ NH_API_RESULT nh_gfx_createMetalViewport(
 
     Viewport_p->Metal_p->commandBuffer = nil; 
     Viewport_p->Metal_p->renderEncoder = nil;
-    Viewport_p->Metal_p->renderPassDescriptor = nil;
 
     return NH_API_SUCCESS;
 }
@@ -42,9 +41,6 @@ void nh_gfx_destroyMetalViewport(
         }
         if (Viewport_p->Metal_p->commandBuffer) {
             Viewport_p->Metal_p->commandBuffer = nil;
-        }
-        if (Viewport_p->Metal_p->renderPassDescriptor) {
-            Viewport_p->Metal_p->renderPassDescriptor = nil;
         }
         
         nh_core_free(Viewport_p->Metal_p);
@@ -75,11 +71,8 @@ NH_API_RESULT nh_gfx_beginMetalRecording(
         return NH_API_ERROR_BAD_STATE; // Drop the frame if the OS refuses to provide a drawable
     }
 
-    MTLRenderPassDescriptor *passDescriptor = Viewport_p->Metal_p->renderPassDescriptor;
-    if (!passDescriptor) {
-        passDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
-        Viewport_p->Metal_p->renderPassDescriptor = passDescriptor;
-    }
+    // Delete the caching logic and just create it fresh:
+    MTLRenderPassDescriptor *passDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
 
     // CHECKLIST #2: Explicitly bind the destination texture so Metal knows where to draw
     passDescriptor.colorAttachments[0].texture = drawable.texture;
