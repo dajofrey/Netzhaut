@@ -13,7 +13,7 @@ void *nh_gfx_createMetalSurface(
 {
     nh_gfx_MetalSurface *Surface_p = malloc(sizeof(nh_gfx_MetalSurface));
 
-    NSWindow *nsWindow = (__bridge NSWindow*)((nh_wsi_Window*)Window_p)->surface_p;
+    NSWindow *nsWindow = (__bridge NSWindow*)((nh_wsi_Window*)Window_p)->Cocoa.Handle;
     if (!nsWindow) {return NULL;}
 
     NSView *contentView = [nsWindow contentView];
