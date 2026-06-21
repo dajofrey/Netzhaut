@@ -24,14 +24,6 @@ NH_API_RESULT nh_wsi_setIOSWindowState(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_wsi_setIOSWindowType(
-    nh_wsi_IOSWindow *Window_p, NH_WSI_WINDOW_TYPE_E type)
-{
-    (void)Window_p;
-    (void)type;
-    return NH_API_SUCCESS;
-}
-
 NH_API_RESULT nh_wsi_setIOSWindowMouseCursor(
     nh_wsi_IOSWindow *Window_p, NH_WSI_CURSOR_E cursor)
 {
