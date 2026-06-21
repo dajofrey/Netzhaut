@@ -124,7 +124,7 @@ NH_API_RESULT nh_gfx_updateOpenGLSurface(
 #endif
         case NH_WSI_TYPE_IOS :
 #if defined(NH_PLATFORM_IOS)
-            nh_gfx_updateOpenGLIOSContext(Surface_p);
+            nh_gfx_updateOpenGLIOSContext(Surface_p, Window_p);
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
