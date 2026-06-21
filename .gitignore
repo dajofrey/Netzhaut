@@ -6,3 +6,4 @@ test*
 *.DS_Store
 *.o
 *.a
+/external/ios/

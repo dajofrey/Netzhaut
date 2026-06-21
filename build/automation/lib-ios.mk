@@ -1,8 +1,8 @@
 # Netzhaut iOS static libraries (simulator + device)
 #
 # Usage:
+#   make -f build/automation/lib-ios.mk deps
 #   make -f build/automation/lib-ios.mk
-#   make -f build/automation/lib-ios.mk IOS_SDK=iphonesimulator
 #   make -f build/automation/lib-ios.mk IOS_SDK=iphoneos
 
 ROOT_DIR := $(abspath $(CURDIR))
@@ -21,6 +21,11 @@ IOS_SDK_PATH := $(shell xcrun --sdk $(IOS_SDK) --show-sdk-path)
 IOS_CC := xcrun --sdk $(IOS_SDK) clang
 IOS_TARGET := $(IOS_ARCH)-apple-$(IOS_TARGET_SUFFIX)$(IOS_MIN_VERSION)
 
+# --- External Dependencies ---
+EXT_IOS_DIR := $(ROOT_DIR)/external/ios
+FREETYPE_DIR := $(EXT_IOS_DIR)/freetype
+HARFBUZZ_DIR := $(EXT_IOS_DIR)/harfbuzz
+
 # --- C FLAGS ---
 CFLAGS = -g -std=gnu99 -DNH_STATIC_LINK
 CFLAGS += -isysroot $(IOS_SDK_PATH) -mios-version-min=$(IOS_MIN_VERSION)
@@ -28,18 +33,21 @@ CFLAGS += -I$(ROOT_DIR)/src/lib -I$(ROOT_DIR)/external
 CFLAGS += -target $(IOS_TARGET)
 CFLAGS += -F$(IOS_SDK_PATH)/System/Library/Frameworks 
 
+# Typography Includes (FreeType & HarfBuzz)
+CFLAGS += -I$(FREETYPE_DIR)/include
+CFLAGS += -I$(HARFBUZZ_DIR)/include/harfbuzz
+
 # OpenGL ES specifics for iOS
-# Silences deprecation warnings since OpenGL is deprecated on iOS 12+
 CFLAGS += -DGL_SILENCE_DEPRECATION
-# Explicitly map the OpenGLES framework headers so cross-platform #include <gl.h> or <gl3.h> resolves correctly
 CFLAGS += -I$(IOS_SDK_PATH)/System/Library/Frameworks/OpenGLES.framework/Headers
 
 # --- OBJC FLAGS ---
 OBJC_FLAGS = -fobjc-arc -fmodules
 OBJC_FLAGS += -isysroot $(IOS_SDK_PATH) -mios-version-min=$(IOS_MIN_VERSION)
 OBJC_FLAGS += -target $(IOS_TARGET)
-# Expose iOS frameworks specifically for Objective-C compilation
 OBJC_FLAGS += -F$(IOS_SDK_PATH)/System/Library/Frameworks
+OBJC_FLAGS += -I$(FREETYPE_DIR)/include
+OBJC_FLAGS += -I$(HARFBUZZ_DIR)/include/harfbuzz
 
 AR = xcrun ar
 LIB_DIR = $(ROOT_DIR)/build/ios/lib
@@ -167,6 +175,10 @@ LIB_NH_GFX = $(LIB_DIR)/libnh-gfx.a
 
 all: $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX)
 
+# --- Dependency Builder ---
+deps:
+	@scripts/build-ios-deps.sh $(IOS_SDK)
+
 $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
 
@@ -203,4 +215,7 @@ $(LIB_NH_GFX): $(LIB_DIR) $(OBJ_FILES_NH_GFX)
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR)
 
-.PHONY: all clean
+clean-deps:
+	rm -rf $(EXT_IOS_DIR)
+
+.PHONY: all clean deps clean-deps
