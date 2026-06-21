@@ -163,9 +163,6 @@ static NH_API_RESULT nh_core_loadDependencies(
 static NH_API_RESULT nh_core_load(
     NH_MODULE_E type, char *path_p)
 {
-#if defined(NH_STATIC_LINK)
-    return 0;
-#else
     if (nh_core_getModule(type)) {return NH_API_SUCCESS;}
     NH_CORE_CHECK(nh_core_loadDependencies(type, path_p))
 
@@ -185,7 +182,6 @@ static NH_API_RESULT nh_core_load(
 //    NH_CORE_CHECK(nh_core_logModules())
 
     return NH_API_SUCCESS;
-#endif
 }
 
 // EXTERNAL MODULES ================================================================================
@@ -270,15 +266,6 @@ static NH_API_RESULT nh_core_loadExternal(
 static void *nh_core_loadExternalSymbol(
     char *module_p, const char *name_p)
 {   
-#if defined(NH_STATIC_LINK)
-    // Bypasses file loading entirely. Searches the global scope of the 
-    // currently executing binary for the symbol name.
-    #if defined(__APPLE__) || defined(__unix__)
-        return dlsym(RTLD_DEFAULT, name_p);
-    #else
-        return NULL; 
-    #endif
-#else
     nh_core_ExternalModule *Module_p = nh_core_getExternalModule(module_p);
     if (Module_p == NULL) {
         return NULL;
@@ -288,15 +275,11 @@ static void *nh_core_loadExternalSymbol(
     }
 
     return nh_core_loadSymbolFromLibrary(Module_p->Data.lib_p, name_p);
-#endif
 }
 
 NH_API_RESULT nh_core_addExternalModule(
     const char *name_p, const char *path_p, const char **dependencies_pp, size_t dependencies)
 {
-#if defined(NH_STATIC_LINK)
-    return 0;
-#else
     nh_core_ExternalModule *Module_p = (nh_core_ExternalModule*)nh_core_incrementArray(&NH_LOADER.ExternalModules);
     NH_CORE_CHECK_NULL(Module_p)
 
@@ -312,7 +295,6 @@ NH_API_RESULT nh_core_addExternalModule(
     } 
 
     return NH_API_SUCCESS;
-#endif
 }
 
 // UNLOAD LIBRARY ==================================================================================
@@ -437,15 +419,6 @@ void *nh_core_loadExistingSymbol(
 void *nh_core_loadSymbol(
     NH_MODULE_E type, int major, const char *name_p)
 {
-#if defined(NH_STATIC_LINK)
-    // Bypasses file loading entirely. Searches the global scope of the 
-    // currently executing binary for the symbol name.
-    #if defined(__APPLE__) || defined(__unix__)
-        return dlsym(RTLD_DEFAULT, name_p);
-    #else
-        return NULL; 
-    #endif
-#else
     nh_Module *Module_p = nh_core_getModule(type);
     if (Module_p == NULL) {
         if (nh_core_load(type, 0) == NH_API_SUCCESS) {
@@ -456,7 +429,6 @@ void *nh_core_loadSymbol(
     if (Module_p == NULL) {return NULL;}
 
     return nh_core_loadSymbolFromLibrary(Module_p->lib_p, name_p);
-#endif
 }
 
 void *nh_core_loadSymbolUsingModuleName(

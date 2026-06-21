@@ -51,6 +51,9 @@ typedef void (*nh_api_setLogCallback_f)(
 static void *nh_api_openCoreLibrary(
     char *path_p)
 {
+#if defined(NH_STATIC_LINK)
+    path_p = NULL;
+#endif
 #if defined(__unix__) || defined(__APPLE__)
     char *error_p;
     dlerror();

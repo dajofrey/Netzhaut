@@ -33,10 +33,6 @@
 
 // FUNCTIONS =======================================================================================
 
-#if defined(NH_STATIC_LINK)
-#define NH_STATIC_LIB_HANDLE ((void*)(intptr_t)1)
-#endif
-
 static bool nh_fileExists(
     char *filename_p)
 {
@@ -113,37 +109,40 @@ void *nh_core_loadLibrary(
     NH_MODULE_E type, char *path_p)
 {
 #if defined(NH_STATIC_LINK)
-    (void)type;
-    (void)path_p;
-    return NH_STATIC_LIB_HANDLE;
-#else
-    void *lib_p = NULL;
-    char libPath_p[255] = {0};
-
-    if (path_p) {
-#if defined(__APPLE__)
-        sprintf(libPath_p, "%s/lib%s.dylib", path_p, NH_MODULE_NAMES_PP[type]);
-        lib_p = nh_core_getLibraryHandle(libPath_p);
-#elif defined(__unix__)
-        sprintf(libPath_p, "%s/lib%s.so", path_p, NH_MODULE_NAMES_PP[type]);
-        lib_p = nh_core_getLibraryHandle(libPath_p);
-#endif
-    } else {
-#if defined(__APPLE__)
-        sprintf(libPath_p, "lib%s.dylib", NH_MODULE_NAMES_PP[type]);
-        lib_p = nh_core_getLibraryHandle(libPath_p);
-#elif defined(__unix__)
-        sprintf(libPath_p, "lib%s.so", NH_MODULE_NAMES_PP[type]);
-        lib_p = nh_core_getLibraryHandle(libPath_p);
-#endif
+    void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
+    if (!handle) {
+        printf("dlopen failed: %s\n", dlerror());
+        return NULL;
     }
-
-//    if (lib_p == NULL && NH_LOADER.install) {
-//        if (nh_installLibrary(type) != NH_API_SUCCESS) {return NULL;}
-//        return nh_core_loadLibrary(type, NULL);
-//    }
-
-    return lib_p;
+    return handle;
+#else
+        void *lib_p = NULL;
+        char libPath_p[255] = {0};
+    
+        if (path_p) {
+    #if defined(__APPLE__)
+            sprintf(libPath_p, "%s/lib%s.dylib", path_p, NH_MODULE_NAMES_PP[type]);
+            lib_p = nh_core_getLibraryHandle(libPath_p);
+    #elif defined(__unix__)
+            sprintf(libPath_p, "%s/lib%s.so", path_p, NH_MODULE_NAMES_PP[type]);
+            lib_p = nh_core_getLibraryHandle(libPath_p);
+    #endif
+        } else {
+    #if defined(__APPLE__)
+            sprintf(libPath_p, "lib%s.dylib", NH_MODULE_NAMES_PP[type]);
+            lib_p = nh_core_getLibraryHandle(libPath_p);
+    #elif defined(__unix__)
+            sprintf(libPath_p, "lib%s.so", NH_MODULE_NAMES_PP[type]);
+            lib_p = nh_core_getLibraryHandle(libPath_p);
+    #endif
+        }
+    
+    //    if (lib_p == NULL && NH_LOADER.install) {
+    //        if (nh_installLibrary(type) != NH_API_SUCCESS) {return NULL;}
+    //        return nh_core_loadLibrary(type, NULL);
+    //    }
+    
+        return lib_p;
 #endif
 }
 
@@ -152,33 +151,42 @@ void *nh_core_loadExternalLibrary(
 {
     void *lib_p = NULL;
 
-#if defined(__unix__)
-    const char *ext_p = "so";
-#elif defined(__APPLE__)
-    const char *ext_p = "dylib";
-#endif
-
-#if defined(__unix__) || defined(__APPLE__)
-
-    if (!path_p) {
-        char libPath_p[255];
-        sprintf(libPath_p, "lib%s.%s", name_p, ext_p);
-        lib_p = nh_core_getLibraryHandle(libPath_p);
+#if defined(NH_STATIC_LINK)
+    void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
+    if (!handle) {
+        printf("dlopen failed: %s\n", dlerror());
+        return NULL;
+    }
+    return handle;
+#else
+    #if defined(__unix__)
+        const char *ext_p = "so";
+    #elif defined(__APPLE__)
+        const char *ext_p = "dylib";
+    #endif
+    
+    #if defined(__unix__) || defined(__APPLE__)
+    
+        if (!path_p) {
+            char libPath_p[255];
+            sprintf(libPath_p, "lib%s.%s", name_p, ext_p);
+            lib_p = nh_core_getLibraryHandle(libPath_p);
+            return lib_p;
+        }
+    
+        char path2_p[255];
+        strcpy(path2_p, path_p);
+    
+        char *p = strtok(path2_p, ":");
+        while (p != NULL && !lib_p) {
+            char libPath_p[255];
+            sprintf(libPath_p, "%s/lib%s.%s", p, name_p, ext_p);
+            lib_p = nh_core_getLibraryHandle(libPath_p);
+     	p = strtok(NULL, ":");
+        }
         return lib_p;
-    }
-
-    char path2_p[255];
-    strcpy(path2_p, path_p);
-
-    char *p = strtok(path2_p, ":");
-    while (p != NULL && !lib_p) {
-        char libPath_p[255];
-        sprintf(libPath_p, "%s/lib%s.%s", p, name_p, ext_p);
-        lib_p = nh_core_getLibraryHandle(libPath_p);
- 	p = strtok(NULL, ":");
-    }
-    return lib_p;
-
+    
+    #endif
 #endif
 
     return NULL;
@@ -191,13 +199,7 @@ void *nh_core_loadSymbolFromLibrary(
 
     char *error_p = NULL;
     dlerror();
-
-#if defined(NH_STATIC_LINK)
-    (void)lib_p;
-    void *function_p = dlsym(RTLD_DEFAULT, name_p);
-#else
     void *function_p = dlsym(lib_p, name_p);
-#endif
     if ((error_p = dlerror()) != NULL) {return NULL;}
 
 #endif
@@ -208,13 +210,14 @@ void *nh_core_loadSymbolFromLibrary(
 NH_API_RESULT nh_unloadLibrary(
     void *lib_p)
 {
+#if defined(NH_STATIC_LINK)
+    return 0;
+#else 
 #if defined(__unix__) || defined(__APPLE__)
-
     if (dlclose(lib_p)) {
         return NH_API_ERROR_BAD_STATE;
     }
-
 #endif
-
-    return NH_API_SUCCESS;
+#endif
+    return 0;
 }
