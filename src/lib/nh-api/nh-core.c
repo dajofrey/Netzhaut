@@ -121,7 +121,7 @@ NH_API_RESULT nh_api_initialize(
 
 #if defined(__unix__)
     CORE_P = nh_api_openCoreLibrary("libnh-core.so");
-#elif defined(NH_PLATFORM_MACOS)
+#elif defined(__APPLE__)
     CORE_P = nh_api_openCoreLibrary("libnh-core.dylib");
 #endif
 
