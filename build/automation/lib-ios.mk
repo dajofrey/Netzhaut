@@ -53,10 +53,19 @@ AR = xcrun ar
 LIB_DIR = $(ROOT_DIR)/build/ios/lib
 OBJ_DIR = $(ROOT_DIR)/build/ios/obj
 
+SRC_DIR_NH_API = src/lib/nh-api
 SRC_DIR_NH_CORE = src/lib/nh-core
 SRC_DIR_NH_WSI = src/lib/nh-wsi
 SRC_DIR_NH_ENCODING = src/lib/nh-encoding
 SRC_DIR_NH_GFX = src/lib/nh-gfx
+
+# List of source files for each library
+SRC_FILES_NH_API = \
+    nh-api.c \
+    nh-core.c \
+    nh-wsi.c \
+    nh-gfx.c \
+    nh-encoding.c
 
 SRC_FILES_NH_CORE = \
     Loader/Library.c \
@@ -159,6 +168,7 @@ SRC_FILES_NH_GFX = \
     Common/IndexMap.c
 
 # --- Object File Path Corrections ---
+OBJ_FILES_NH_API = $(patsubst %.c,$(OBJ_DIR)/nh-api/%.o,$(SRC_FILES_NH_API))
 OBJ_FILES_NH_CORE = $(patsubst %.c,$(OBJ_DIR)/nh-core/%.o,$(SRC_FILES_NH_CORE))
 OBJ_FILES_NH_ENCODING = $(patsubst %.c,$(OBJ_DIR)/nh-encoding/%.o,$(SRC_FILES_NH_ENCODING))
 
@@ -168,12 +178,13 @@ OBJ_FILES_NH_WSI = $(patsubst %.c,$(OBJ_DIR)/nh-wsi/%.o,$(filter %.c,$(SRC_FILES
 OBJ_FILES_NH_GFX = $(patsubst %.c,$(OBJ_DIR)/nh-gfx/%.o,$(filter %.c,$(SRC_FILES_NH_GFX))) \
                    $(patsubst %.m,$(OBJ_DIR)/nh-gfx/%.o,$(filter %.m,$(SRC_FILES_NH_GFX)))
 
+LIB_NH_API = $(LIB_DIR)/libnh-api.a
 LIB_NH_CORE = $(LIB_DIR)/libnh-core.a
 LIB_NH_WSI = $(LIB_DIR)/libnh-wsi.a
 LIB_NH_ENCODING = $(LIB_DIR)/libnh-encoding.a
 LIB_NH_GFX = $(LIB_DIR)/libnh-gfx.a
 
-all: $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX)
+all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX)
 
 # --- Dependency Builder ---
 deps:
@@ -183,6 +194,9 @@ $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
 
 # --- Compilation Rules ---
+$(OBJ_DIR)/nh-api/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_API)/%.c
+	@mkdir -p $(dir $@)
+	$(IOS_CC) $(CFLAGS) -c $< -o $@
 $(OBJ_DIR)/nh-core/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_CORE)/%.c
 	@mkdir -p $(dir $@)
 	$(IOS_CC) $(CFLAGS) -c $< -o $@
@@ -203,6 +217,8 @@ $(OBJ_DIR)/nh-gfx/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_GFX)/%.m
 	$(IOS_CC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
 # --- Archiving Rules ---
+$(LIB_NH_API): $(LIB_DIR) $(OBJ_FILES_NH_API)
+	$(AR) rcs $@ $(OBJ_FILES_NH_API)
 $(LIB_NH_CORE): $(LIB_DIR) $(OBJ_FILES_NH_CORE)
 	$(AR) rcs $@ $(OBJ_FILES_NH_CORE)
 $(LIB_NH_WSI): $(LIB_DIR) $(OBJ_FILES_NH_WSI)
