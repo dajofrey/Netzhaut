@@ -167,6 +167,16 @@ SRC_FILES_NH_GFX = \
     Common/About.c \
     Common/IndexMap.c
 
+# --- Freetype-GL ---
+SRC_FILES_FTGL = \
+    external/freetype-gl/texture-atlas.c \
+    external/freetype-gl/texture-font.c \
+    external/freetype-gl/vector.c \
+    external/freetype-gl/utf8-utils.c \
+    external/freetype-gl/distance-field.c \
+    external/freetype-gl/edtaa3func.c \
+    external/freetype-gl/platform.c
+
 # --- Object File Path Corrections ---
 OBJ_FILES_NH_API = $(patsubst %.c,$(OBJ_DIR)/nh-api/%.o,$(SRC_FILES_NH_API))
 OBJ_FILES_NH_CORE = $(patsubst %.c,$(OBJ_DIR)/nh-core/%.o,$(SRC_FILES_NH_CORE))
@@ -177,6 +187,8 @@ OBJ_FILES_NH_WSI = $(patsubst %.c,$(OBJ_DIR)/nh-wsi/%.o,$(filter %.c,$(SRC_FILES
                    $(patsubst %.m,$(OBJ_DIR)/nh-wsi/%.o,$(filter %.m,$(SRC_FILES_NH_WSI)))
 OBJ_FILES_NH_GFX = $(patsubst %.c,$(OBJ_DIR)/nh-gfx/%.o,$(filter %.c,$(SRC_FILES_NH_GFX))) \
                    $(patsubst %.m,$(OBJ_DIR)/nh-gfx/%.o,$(filter %.m,$(SRC_FILES_NH_GFX)))
+
+OBJ_FILES_FTGL = $(patsubst external/freetype-gl/%.c,$(OBJ_DIR)/freetype-gl/%.o,$(SRC_FILES_FTGL))
 
 LIB_NH_API = $(LIB_DIR)/libnh-api.a
 LIB_NH_CORE = $(LIB_DIR)/libnh-core.a
@@ -216,6 +228,10 @@ $(OBJ_DIR)/nh-gfx/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_GFX)/%.m
 	@mkdir -p $(dir $@)
 	$(IOS_CC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
+$(OBJ_DIR)/freetype-gl/%.o: $(ROOT_DIR)/external/freetype-gl/%.c
+	@mkdir -p $(dir $@)
+	$(IOS_CC) $(CFLAGS) -c $< -o $@
+
 # --- Archiving Rules ---
 $(LIB_NH_API): $(LIB_DIR) $(OBJ_FILES_NH_API)
 	$(AR) rcs $@ $(OBJ_FILES_NH_API)
@@ -225,8 +241,8 @@ $(LIB_NH_WSI): $(LIB_DIR) $(OBJ_FILES_NH_WSI)
 	$(AR) rcs $@ $(OBJ_FILES_NH_WSI)
 $(LIB_NH_ENCODING): $(LIB_DIR) $(OBJ_FILES_NH_ENCODING)
 	$(AR) rcs $@ $(OBJ_FILES_NH_ENCODING)
-$(LIB_NH_GFX): $(LIB_DIR) $(OBJ_FILES_NH_GFX)
-	$(AR) rcs $@ $(OBJ_FILES_NH_GFX)
+$(LIB_NH_GFX): $(LIB_DIR) $(OBJ_FILES_NH_GFX) $(OBJ_FILES_FTGL)
+	$(AR) rcs $@ $(OBJ_FILES_NH_GFX) $(OBJ_FILES_FTGL)
 
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR)
