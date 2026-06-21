@@ -93,7 +93,6 @@ SRC_FILES_NH_WSI = \
     Window/Event.c \
     Window/Listener.c \
     Common/Log.c \
-    Common/Result.c \
     Common/Initialize.c \
     Common/Terminate.c \
     Common/Config.c \
@@ -199,7 +198,6 @@ SRC_FILES_NH_ENCODING = \
     Base/String.c \
     Encodings/UTF8.c \
     Encodings/UTF32.c \
-    Common/Result.c \
     Common/IndexMap.c \
     Common/Initialize.c \
     Common/Terminate.c \

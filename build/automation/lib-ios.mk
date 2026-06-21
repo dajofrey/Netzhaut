@@ -114,7 +114,6 @@ SRC_FILES_NH_WSI = \
     Platforms/IOS/Window.m \
     Platforms/IOS/WindowSettings.m \
     Common/Log.c \
-    Common/Result.c \
     Common/Initialize.c \
     Common/Terminate.c \
     Common/Config.c \
@@ -127,7 +126,6 @@ SRC_FILES_NH_ENCODING = \
     Base/String.c \
     Encodings/UTF8.c \
     Encodings/UTF32.c \
-    Common/Result.c \
     Common/IndexMap.c \
     Common/Initialize.c \
     Common/Terminate.c \

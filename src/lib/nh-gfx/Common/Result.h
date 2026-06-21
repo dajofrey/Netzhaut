@@ -15,12 +15,6 @@
 
 /** @{ */
 
-    extern const char *NH_API_RESULTS_PP[];
-    extern unsigned int NH_API_RESULTS_PP_COUNT;
-
-/** @} */
-/** @{ */
-
     NH_API_RESULT nh_vk_getResult(
         int result
     );
