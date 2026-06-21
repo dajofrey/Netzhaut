@@ -7,8 +7,8 @@ typedef struct nh_gfx_MetalIOSSurface {
     void *layer;
 } nh_gfx_MetalIOSSurface;
 
-NH_API_RESULT nh_gfx_createMetalIOSSurface(
-    nh_gfx_MetalIOSSurface *Surface_p, nh_wsi_Window *Window_p);
+nh_gfx_MetalIOSSurface *nh_gfx_createMetalIOSSurface(
+    nh_wsi_Window *Window_p);
 
 NH_API_RESULT nh_gfx_updateMetalIOSSurface(
     nh_gfx_MetalIOSSurface *Surface_p, nh_wsi_Window *Window_p);

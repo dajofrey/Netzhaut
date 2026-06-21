@@ -1,5 +1,6 @@
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES3/gl.h>
+#import <OpenGLES/EAGLDrawable.h>
 
 // Matches the extern declaration in Render.c
 int nh_gfx_makeOpenGLContextCurrentIOS(

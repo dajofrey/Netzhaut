@@ -19,11 +19,13 @@ static void nh_gfx_configureMetalLayer(CAMetalLayer *layer, UIView *view)
     );
 }
 
-NH_API_RESULT nh_gfx_createMetalIOSSurface(
-    nh_gfx_MetalIOSSurface *Surface_p, nh_wsi_Window *Window_p)
+nh_gfx_MetalIOSSurface *nh_gfx_createMetalIOSSurface(
+    nh_wsi_Window *Window_p)
 {
+    nh_gfx_MetalIOSSurface *Surface_p = malloc(sizeof(nh_gfx_MetalIOSSurface));
+
     if (!Surface_p || !Window_p || !Window_p->IOS.Layer) {
-        return NH_API_ERROR_BAD_STATE;
+        return Surface_p;
     }
 
     CAMetalLayer *layer = (__bridge CAMetalLayer*)Window_p->IOS.Layer;
@@ -33,7 +35,7 @@ NH_API_RESULT nh_gfx_createMetalIOSSurface(
     nh_gfx_configureMetalLayer(layer, view);
     Surface_p->layer = Window_p->IOS.Layer;
 
-    return NH_API_SUCCESS;
+    return Surface_p;
 }
 
 NH_API_RESULT nh_gfx_updateMetalIOSSurface(

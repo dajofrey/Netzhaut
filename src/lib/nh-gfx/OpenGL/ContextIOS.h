@@ -29,7 +29,7 @@ NH_API_RESULT nh_gfx_destroyOpenGLIOSContext(
 );
 
 void nh_gfx_updateOpenGLIOSContext(
-    nh_gfx_OpenGLSurface *Surface_p
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p
 );
 
 #endif

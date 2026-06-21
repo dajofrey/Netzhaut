@@ -63,7 +63,7 @@ NH_API_RESULT nh_gfx_beginMetalRecording(
     // CHECKLIST #2: Fetch the drawable ONCE per frame and cache it. 
     // If multiple viewports are drawn, the first one fetches it; the rest reuse it.
     if (!metalSurface->currentDrawable) {
-        metalSurface->currentDrawable = [(__bridge CAMetalLayer *)metalSurface->layer nextDrawable];
+        metalSurface->currentDrawable = [metalSurface->layer nextDrawable];
     }
 
     id<CAMetalDrawable> drawable = metalSurface->currentDrawable;
