@@ -117,12 +117,6 @@ static void *nh_api_loadCoreFunction(
 NH_API_RESULT nh_api_initialize(
     char *path_p, char *config_p, int length)
 {
-#if defined(NH_STATIC_LINK)
-    nh_core_initialize_f initialize_f = nh_api_loadCoreFunction("nh_core_initialize");
-    LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
-
-    return LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
-#else
     if (CORE_P != NULL || LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
 
 #if defined(__unix__)
@@ -140,7 +134,6 @@ NH_API_RESULT nh_api_initialize(
     LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
 
     return LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
-#endif
 }
  
 NH_API_RESULT nh_api_terminate()
