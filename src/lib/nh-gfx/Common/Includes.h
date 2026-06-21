@@ -10,6 +10,7 @@
 #include "../../nh-api/nh-gfx.h"
 #include "../../nh-encoding/Encodings/UTF32.h"
 #include "../../nh-core/Util/Debug.h"
+#include "../../nh-core/Common/Platform.h"
 
 #ifndef VOLK_VULKAN_H_PATH
     #define VOLK_VULKAN_H_PATH "Vulkan-Headers/include/vulkan/vulkan.h"
@@ -30,13 +31,15 @@
     #include "glx/glx.h"
 #endif
 
-#include "../../nh-core/Common/Platform.h"
-
 #if defined(NH_PLATFORM_MACOS)
     #define GL_SILENCE_DEPRECATION
     #include <OpenGL/gl3.h>
     #include <OpenGL/CGLCurrent.h>
     #include <OpenGL/OpenGL.h>
+#endif
+
+#if defined(NH_PLATFORM_IOS) && defined(TARGET_OS_IPHONE)
+    #include <OpenGLES/ES3/gl.h>
 #endif
 
 #endif // NH_GFX_COMMON_INCLUDES_H

@@ -21,14 +21,25 @@ IOS_SDK_PATH := $(shell xcrun --sdk $(IOS_SDK) --show-sdk-path)
 IOS_CC := xcrun --sdk $(IOS_SDK) clang
 IOS_TARGET := $(IOS_ARCH)-apple-$(IOS_TARGET_SUFFIX)$(IOS_MIN_VERSION)
 
+# --- C FLAGS ---
 CFLAGS = -g -std=gnu99 -DNH_STATIC_LINK
 CFLAGS += -isysroot $(IOS_SDK_PATH) -mios-version-min=$(IOS_MIN_VERSION)
 CFLAGS += -I$(ROOT_DIR)/src/lib -I$(ROOT_DIR)/external
 CFLAGS += -target $(IOS_TARGET)
+CFLAGS += -F$(IOS_SDK_PATH)/System/Library/Frameworks 
 
+# OpenGL ES specifics for iOS
+# Silences deprecation warnings since OpenGL is deprecated on iOS 12+
+CFLAGS += -DGL_SILENCE_DEPRECATION
+# Explicitly map the OpenGLES framework headers so cross-platform #include <gl.h> or <gl3.h> resolves correctly
+CFLAGS += -I$(IOS_SDK_PATH)/System/Library/Frameworks/OpenGLES.framework/Headers
+
+# --- OBJC FLAGS ---
 OBJC_FLAGS = -fobjc-arc -fmodules
 OBJC_FLAGS += -isysroot $(IOS_SDK_PATH) -mios-version-min=$(IOS_MIN_VERSION)
 OBJC_FLAGS += -target $(IOS_TARGET)
+# Expose iOS frameworks specifically for Objective-C compilation
+OBJC_FLAGS += -F$(IOS_SDK_PATH)/System/Library/Frameworks
 
 AR = xcrun ar
 LIB_DIR = $(ROOT_DIR)/build/ios/lib
@@ -37,6 +48,7 @@ OBJ_DIR = $(ROOT_DIR)/build/ios/obj
 SRC_DIR_NH_CORE = src/lib/nh-core
 SRC_DIR_NH_WSI = src/lib/nh-wsi
 SRC_DIR_NH_ENCODING = src/lib/nh-encoding
+SRC_DIR_NH_GFX = src/lib/nh-gfx
 
 SRC_FILES_NH_CORE = \
     Loader/Library.c \
@@ -76,22 +88,20 @@ SRC_FILES_NH_CORE = \
     Common/Config.c \
     External/c_hashmap/hashmap.c
 
-SRC_FILES_NH_WSI_C = \
+SRC_FILES_NH_WSI = \
     Window/Window.c \
     Window/WindowSettings.c \
     Window/Event.c \
     Window/Listener.c \
+    Platforms/IOS/Init.m \
+    Platforms/IOS/Window.m \
+    Platforms/IOS/WindowSettings.m \
     Common/Log.c \
     Common/Result.c \
     Common/Initialize.c \
     Common/Terminate.c \
     Common/Config.c \
     Common/About.c
-
-SRC_FILES_NH_WSI_M = \
-    Platforms/IOS/Init.m \
-    Platforms/IOS/Window.m \
-    Platforms/IOS/WindowSettings.m
 
 SRC_FILES_NH_ENCODING = \
     Base/Encodings.c \
@@ -107,44 +117,88 @@ SRC_FILES_NH_ENCODING = \
     Common/Log.c \
     Common/About.c
 
+SRC_FILES_NH_GFX = \
+    OpenGL/Surface.c \
+    OpenGL/CommandBuffer.c \
+    OpenGL/Data.c \
+    OpenGL/API.c \
+    OpenGL/Commands.c \
+    OpenGL/Viewport.c \
+    OpenGL/Render.c \
+    OpenGL/OpenGL.c \
+    OpenGL/ContextIOS.m \
+    OpenGL/RenderIOS.m \
+    Metal/Device.m \
+    Metal/Metal.c \
+    Metal/Render.m \
+    Metal/SurfaceIOS.m \
+    Metal/Viewport.m \
+    Fonts/FontManager.c \
+    Fonts/FontFamily.c \
+    Fonts/FontStyle.c \
+    Fonts/HarfBuzz.c \
+    Fonts/Text.c \
+    Base/Texture.c \
+    Base/Surface.c \
+    Base/SurfaceRequirements.c \
+    Base/Viewport.c \
+    Common/Result.c \
+    Common/Initialize.c \
+    Common/Terminate.c \
+    Common/Log.c \
+    Common/Config.c \
+    Common/About.c \
+    Common/IndexMap.c
+
+# --- Object File Path Corrections ---
 OBJ_FILES_NH_CORE = $(patsubst %.c,$(OBJ_DIR)/nh-core/%.o,$(SRC_FILES_NH_CORE))
-OBJ_FILES_NH_WSI = $(patsubst %.c,$(OBJ_DIR)/nh-wsi/%.o,$(SRC_FILES_NH_WSI_C))
-OBJ_FILES_NH_WSI += $(patsubst %.m,$(OBJ_DIR)/nh-wsi/%.o,$(SRC_FILES_NH_WSI_M))
 OBJ_FILES_NH_ENCODING = $(patsubst %.c,$(OBJ_DIR)/nh-encoding/%.o,$(SRC_FILES_NH_ENCODING))
+
+# Properly filter and route both .c and .m files to the build directory
+OBJ_FILES_NH_WSI = $(patsubst %.c,$(OBJ_DIR)/nh-wsi/%.o,$(filter %.c,$(SRC_FILES_NH_WSI))) \
+                   $(patsubst %.m,$(OBJ_DIR)/nh-wsi/%.o,$(filter %.m,$(SRC_FILES_NH_WSI)))
+OBJ_FILES_NH_GFX = $(patsubst %.c,$(OBJ_DIR)/nh-gfx/%.o,$(filter %.c,$(SRC_FILES_NH_GFX))) \
+                   $(patsubst %.m,$(OBJ_DIR)/nh-gfx/%.o,$(filter %.m,$(SRC_FILES_NH_GFX)))
 
 LIB_NH_CORE = $(LIB_DIR)/libnh-core.a
 LIB_NH_WSI = $(LIB_DIR)/libnh-wsi.a
 LIB_NH_ENCODING = $(LIB_DIR)/libnh-encoding.a
+LIB_NH_GFX = $(LIB_DIR)/libnh-gfx.a
 
-all: $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING)
+all: $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX)
 
 $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
 
+# --- Compilation Rules ---
 $(OBJ_DIR)/nh-core/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_CORE)/%.c
 	@mkdir -p $(dir $@)
 	$(IOS_CC) $(CFLAGS) -c $< -o $@
-
 $(OBJ_DIR)/nh-encoding/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_ENCODING)/%.c
 	@mkdir -p $(dir $@)
 	$(IOS_CC) $(CFLAGS) -c $< -o $@
-
 $(OBJ_DIR)/nh-wsi/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_WSI)/%.c
 	@mkdir -p $(dir $@)
 	$(IOS_CC) $(CFLAGS) -c $< -o $@
-
 $(OBJ_DIR)/nh-wsi/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_WSI)/%.m
 	@mkdir -p $(dir $@)
 	$(IOS_CC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
+$(OBJ_DIR)/nh-gfx/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_GFX)/%.c
+	@mkdir -p $(dir $@)
+	$(IOS_CC) $(CFLAGS) -c $< -o $@
+$(OBJ_DIR)/nh-gfx/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_GFX)/%.m
+	@mkdir -p $(dir $@)
+	$(IOS_CC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
+# --- Archiving Rules ---
 $(LIB_NH_CORE): $(LIB_DIR) $(OBJ_FILES_NH_CORE)
 	$(AR) rcs $@ $(OBJ_FILES_NH_CORE)
-
 $(LIB_NH_WSI): $(LIB_DIR) $(OBJ_FILES_NH_WSI)
 	$(AR) rcs $@ $(OBJ_FILES_NH_WSI)
-
 $(LIB_NH_ENCODING): $(LIB_DIR) $(OBJ_FILES_NH_ENCODING)
 	$(AR) rcs $@ $(OBJ_FILES_NH_ENCODING)
+$(LIB_NH_GFX): $(LIB_DIR) $(OBJ_FILES_NH_GFX)
+	$(AR) rcs $@ $(OBJ_FILES_NH_GFX)
 
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR)

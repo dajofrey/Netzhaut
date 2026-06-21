@@ -11,7 +11,6 @@
 
 #include "Surface.h"
 #include "../Base/Surface.h"
-
 #include "../Common/Includes.h"
 
 #endif

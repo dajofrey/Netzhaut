@@ -14,11 +14,6 @@
 #include "../Base/Viewport.h"
 #include "../../nh-core/System/Thread.h"
 
-#if defined(__APPLE__)
-    #define GL_SILENCE_DEPRECATION
-    #include <OpenGL/gl3.h>
-#endif
-
 #include <string.h>
 
 // FUNCTIONS =======================================================================================

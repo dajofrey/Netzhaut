@@ -9,8 +9,10 @@
 // INCLUDES =======================================================================================
 
 #include "Surface.h"
+
 #include "ContextX11.h"
 #include "ContextCocoa.h"
+#include "ContextIOS.h"
 
 #include "../Base/Surface.h"
 
@@ -45,8 +47,15 @@ NH_API_RESULT nh_gfx_createOpenGLSurface(
             return NH_API_ERROR_BAD_STATE;
 #endif
         case NH_WSI_TYPE_COCOA :
-#if defined(__APPLE__)
+#if defined(NH_PLATFORM_MACOS)
             NH_CORE_CHECK(nh_gfx_createOpenGLCocoaContext(Surface_p, (nh_wsi_Window*)Window_p))
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
+        case NH_WSI_TYPE_IOS :
+#if defined(NH_PLATFORM_IOS)
+            NH_CORE_CHECK(nh_gfx_createOpenGLIOSContext(Surface_p, (nh_wsi_Window*)Window_p))
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
@@ -80,8 +89,15 @@ NH_API_RESULT nh_gfx_destroyOpenGLSurface(
             return NH_API_ERROR_BAD_STATE;
 #endif
         case NH_WSI_TYPE_COCOA :
-#if defined(__APPLE__)
+#if defined(NH_PLATFORM_MACOS)
             nh_gfx_destroyOpenGLCocoaContext(Surface_p);
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
+        case NH_WSI_TYPE_IOS :
+#if defined(NH_PLATFORM_IOS)
+            nh_gfx_destroyOpenGLIOSContext(Surface_p);
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
@@ -100,8 +116,15 @@ NH_API_RESULT nh_gfx_updateOpenGLSurface(
         case NH_WSI_TYPE_X11 :
             break;
         case NH_WSI_TYPE_COCOA :
-#if defined(__APPLE__)
+#if defined(NH_PLATFORM_MACOS)
             nh_gfx_updateOpenGLCocoaContext(Surface_p);
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
+        case NH_WSI_TYPE_IOS :
+#if defined(NH_PLATFORM_IOS)
+            nh_gfx_updateOpenGLIOSContext(Surface_p);
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
@@ -110,4 +133,3 @@ NH_API_RESULT nh_gfx_updateOpenGLSurface(
 
     return NH_API_SUCCESS;
 }
-
