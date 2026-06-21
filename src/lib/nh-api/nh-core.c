@@ -46,97 +46,6 @@ typedef void (*nh_api_setLogCallback_f)(
     void *Logger_p, nh_api_logCallback_f logCallback_f
 );
 
-#if defined(NH_STATIC_LINK)
-
-extern nh_core_Loader *nh_core_initialize(char *path_p, char *settings_p, unsigned int length);
-extern NH_API_RESULT nh_core_terminate(nh_core_Loader *Loader_p);
-extern int nh_core_run(void);
-extern bool nh_core_keepRunning(void);
-extern nh_core_Workload *nh_core_getWorkload(void *handle_p);
-extern char *nh_core_getFileData(const char *path_p, long *size_p);
-extern NH_API_RESULT nh_core_writeBytesToFile(char *filePath_p, char *bytes_p);
-extern NH_API_RESULT nh_core_registerConfig(char *absolutePath_p, int length);
-extern NH_API_RESULT nh_core_loadConfig(char *data_p, int length);
-
-NH_API_RESULT nh_api_initialize(
-    char *path_p, char *config_p, int length)
-{
-    if (LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
-
-    LOADER_P = nh_core_initialize(path_p, config_p, length);
-    return LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
-}
-
-NH_API_RESULT nh_api_terminate()
-{
-    if (LOADER_P == NULL) {return NH_API_ERROR_BAD_STATE;}
-
-    nh_core_terminate(LOADER_P);
-    LOADER_P = NULL;
-
-    return NH_API_SUCCESS;
-}
-
-int nh_api_run()
-{
-    return nh_core_run();
-}
-
-bool nh_api_keepRunning()
-{
-    return nh_core_keepRunning();
-}
-
-void nh_api_setLogCallback(
-    nh_api_logCallback_f logCallback_f)
-{
-    (void)logCallback_f;
-}
-
-nh_api_Workload *nh_api_getWorkload(
-    void *args_p)
-{
-    return (nh_api_Workload*)nh_core_getWorkload(args_p);
-}
-
-char *nh_api_getFileData(
-    const char* path_p, long *size_p)
-{
-    return nh_core_getFileData(path_p, size_p);
-}
-
-NH_API_RESULT nh_api_writeBytesToFile(
-    char *filePath_p, char *bytes_p)
-{
-    return nh_core_writeBytesToFile(filePath_p, bytes_p);
-}
-
-NH_API_RESULT nh_api_registerConfig(
-    char *absolutePath_p, int length)
-{
-    return nh_core_registerConfig(absolutePath_p, length);
-}
-
-NH_API_RESULT nh_api_loadConfig(
-    char *data_p, int length)
-{
-    return nh_core_loadConfig(data_p, length);
-}
-
-void *nh_api_getLoader()
-{
-    return LOADER_P;
-}
-
-void *nh_api_dump(
-    char *node_p)
-{
-    (void)node_p;
-    return NULL;
-}
-
-#else
-
 // FUNCTIONS =======================================================================================
 
 static void *nh_api_openCoreLibrary(
@@ -205,6 +114,12 @@ static void *nh_api_loadCoreFunction(
 NH_API_RESULT nh_api_initialize(
     char *path_p, char *config_p, int length)
 {
+#if defined(NH_STATIC_LINK)
+    nh_core_initialize_f initialize_f = nh_api_loadCoreFunction("nh_core_initialize");
+    LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
+
+    return LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
+#else
     if (CORE_P != NULL || LOADER_P != NULL) {return NH_API_ERROR_BAD_STATE;}
 
 #if defined(__unix__)
@@ -222,6 +137,7 @@ NH_API_RESULT nh_api_initialize(
     LOADER_P = !initialize_f ? NULL : initialize_f(path_p, config_p, length);
 
     return LOADER_P ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
+#endif
 }
  
 NH_API_RESULT nh_api_terminate()
@@ -308,5 +224,3 @@ void *nh_api_dump(
     if (dump_f) {dump_f(node_p);}
     return NULL;
 }
-
-#endif
