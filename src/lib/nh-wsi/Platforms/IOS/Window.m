@@ -173,6 +173,7 @@ NH_API_RESULT nh_wsi_createIOSWindow(
 
     @autoreleasepool {
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
+        CGFloat screenScale = [[UIScreen mainScreen] scale]; // Get the Retina scaler
 
         UIWindow *window = [[UIWindow alloc] initWithFrame:screenBounds];
         if (!window) {
@@ -192,11 +193,24 @@ NH_API_RESULT nh_wsi_createIOSWindow(
         [window makeKeyAndVisible];
         [view becomeFirstResponder];
 
+        // Force a layout pass so UIKit calculates the safe area insets immediately
+        [view layoutIfNeeded];
+
         nh_wsi_configureIOSMetalLayer((CAMetalLayer*)view.layer, view);
 
         Window_p->IOS.Handle = (__bridge_retained void*)window;
         Window_p->IOS.ViewController = (__bridge_retained void*)viewController;
         Window_p->IOS.Layer = (__bridge void*)view.layer;
+
+        // retina scale
+        Window_p->scale = (float)screenScale;
+
+        // Extract safe area in points and convert to physical pixels
+        UIEdgeInsets insets = view.safeAreaInsets;
+        Window_p->safeAreaTop    = (int)(insets.top * screenScale);
+        Window_p->safeAreaBottom = (int)(insets.bottom * screenScale);
+        Window_p->safeAreaLeft   = (int)(insets.left * screenScale);
+        Window_p->safeAreaRight  = (int)(insets.right * screenScale);
     }
 
     return NH_API_SUCCESS;

@@ -131,6 +131,12 @@ typedef struct NH_ALIGN_16 nh_wsi_Window {
 #endif
     nh_core_RingBuffer Events;
     NH_WSI_CURSOR_E cursor;
+    float scale; 
+    // Pixel offsets for hardware cutouts and OS indicators
+    int safeAreaTop;
+    int safeAreaBottom;
+    int safeAreaLeft;
+    int safeAreaRight;
 } nh_wsi_Window;
 
 // FUNCTIONS ===================================================================================

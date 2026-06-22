@@ -51,6 +51,7 @@ nh_wsi_Window *nh_wsi_createWindow(
 
     Window_p->callback_f = NULL;
     Window_p->type = nh_wsi_getType();
+    Window_p->scale = 1.0f;
 
     if (namespace_p && strlen(namespace_p) > 0) {
         strcpy(Window_p->namespace_p, namespace_p);
