@@ -1,0 +1,10 @@
+diff a/src/lib/nh-wsi/Platforms/IOS/Window.m b/src/lib/nh-wsi/Platforms/IOS/Window.m	(rejected hunks)
+@@ -192,8 +179,6 @@ NH_API_RESULT nh_wsi_createIOSWindow(
+         [window makeKeyAndVisible];
+         [view becomeFirstResponder];
+ 
+-        nh_wsi_configureIOSMetalLayer((CAMetalLayer*)view.layer, view);
+-
+         Window_p->IOS.Handle = (__bridge_retained void*)window;
+         Window_p->IOS.ViewController = (__bridge_retained void*)viewController;
+         Window_p->IOS.Layer = (__bridge void*)view.layer;

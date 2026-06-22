@@ -24,14 +24,15 @@
 NH_API_RESULT nh_gfx_createOpenGLIOSContext(
     nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p)
 {
-    // Retrieve the UIView from the window system interface
-    UIView *view = (__bridge UIView *)Window_p->IOS.Handle;
-    if (!view) {
+    // Retrieve the UIView from the view controller
+    UIViewController *viewController = (__bridge UIViewController *)Window_p->IOS.ViewController;
+    if (!viewController || !viewController.view) {
         return NH_API_ERROR_BAD_STATE;
     }
 
+    UIView *view = viewController.view;
+
     // 1. Configure the CAEAGLLayer
-    // The view's backing layer MUST be a CAEAGLLayer. 
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)view.layer;
     eaglLayer.opaque = YES;
     eaglLayer.drawableProperties = @{
@@ -58,7 +59,7 @@ NH_API_RESULT nh_gfx_createOpenGLIOSContext(
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:eaglLayer];
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
 
-    // 4. Generate the Depth Buffer (Matching your macOS 24-bit depth setup)
+    // 4. Generate the Depth Buffer
     GLint width, height;
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
@@ -73,15 +74,16 @@ NH_API_RESULT nh_gfx_createOpenGLIOSContext(
         return NH_API_ERROR_BAD_STATE;
     }
 
-    // Save to the surface struct
+    // Save context pointers to the surface struct
     Surface_p->Context_p = (__bridge void *)context;
     Surface_p->OpenGLContext_p = (__bridge_retained void *)context;
     
-    // NOTE: You must store these GLuint handles in your nh_gfx_OpenGLSurface struct 
-    // so you can delete and reallocate them during resizing (device rotation).
-    // Surface_p->Framebuffer = framebuffer;
-    // Surface_p->ColorRenderbuffer = colorRenderbuffer;
-    // Surface_p->DepthRenderbuffer = depthRenderbuffer;
+    // UNCOMMENTED: You must store these GLuint handles so your engine can bind 
+    // Surface_p->Framebuffer instead of FBO 0 during the render pass.
+    // (Ensure these fields are declared in your nh_gfx_OpenGLSurface struct header)
+    Surface_p->framebuffer = framebuffer;
+    Surface_p->colorRenderbuffer = colorRenderbuffer;
+    Surface_p->depthRenderbuffer = depthRenderbuffer;
 
     return NH_API_SUCCESS;
 }
@@ -107,7 +109,10 @@ NH_API_RESULT nh_gfx_destroyOpenGLIOSContext(
             [EAGLContext setCurrentContext:nil];
         }
         
-        // Clean up FBOs here using glDeleteFramebuffers / glDeleteRenderbuffers
+        // Clean up explicit iOS buffers
+        if (Surface_p->framebuffer) glDeleteFramebuffers(1, &Surface_p->framebuffer);
+        if (Surface_p->colorRenderbuffer) glDeleteRenderbuffers(1, &Surface_p->colorRenderbuffer);
+        if (Surface_p->depthRenderbuffer) glDeleteRenderbuffers(1, &Surface_p->depthRenderbuffer);
         
         Surface_p->Context_p = NULL;
         Surface_p->OpenGLContext_p = NULL;

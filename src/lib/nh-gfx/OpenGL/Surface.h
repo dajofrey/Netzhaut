@@ -26,6 +26,7 @@ typedef struct nh_gfx_OpenGLSurface {
     void* OpenGLContext_p;
     void* PixelFormat_p;
 #endif
+    GLuint framebuffer, colorRenderbuffer, depthRenderbuffer;
     nh_gfx_OpenGLCommandBuffer *CommandBuffers_p;
     unsigned int bufferCount;         
     uint32_t currentBuffer;               

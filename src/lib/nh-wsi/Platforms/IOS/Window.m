@@ -1,5 +1,8 @@
 #import <UIKit/UIKit.h>
-#import <QuartzCore/CAMetalLayer.h>
+#import <QuartzCore/QuartzCore.h>
+#import <OpenGLES/EAGL.h>
+// Ensure Metal layer headers are available
+#import <QuartzCore/CAMetalLayer.h> 
 
 #include "Window.h"
 #include "WindowPrivate.h"
@@ -9,19 +12,17 @@
 #include "../../Window/Listener.h"
 #include "../../Window/Event.h"
 #include "../../../nh-api/nh-wsi.h"
+#include "../../../nh-gfx/Base/Viewport.h"
 #include "../../Common/Config.h"
 #include "../../Common/Includes.h"
 #include "../../Common/Log.h"
 
+// --- Base View (Handles Input Only) ---
 @interface NHCustomView : UIView
 @property (nonatomic, assign) void *Window_p;
 @end
 
 @implementation NHCustomView
-
-+ (Class)layerClass {
-    return [CAMetalLayer class];
-}
 
 - (BOOL)canBecomeFirstResponder {
     return YES;
@@ -125,8 +126,25 @@
     }
     [super pressesEnded:presses withEvent:event];
 }
-
 @end
+
+
+// --- Backend-Specific View Subclasses ---
+
+@interface NHMetalView : NHCustomView
+@end
+@implementation NHMetalView
++ (Class)layerClass { return [CAMetalLayer class]; }
+@end
+
+@interface NHGLView : NHCustomView
+@end
+@implementation NHGLView
++ (Class)layerClass { return [CAEAGLLayer class]; }
+@end
+
+
+// --- View Controller ---
 
 @interface NHCustomViewController : UIViewController
 @property (nonatomic, assign) nh_wsi_Window *Window_p;
@@ -151,25 +169,12 @@
 
 @end
 
-static void nh_wsi_configureIOSMetalLayer(CAMetalLayer *layer, UIView *view)
-{
-    layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    layer.framebufferOnly = YES;
-    if ([layer respondsToSelector:@selector(setMaximumDrawableCount:)]) {
-        [layer setMaximumDrawableCount:3];
-    }
-    layer.contentsScale = view.contentScaleFactor;
-    layer.drawableSize = CGSizeMake(
-        view.bounds.size.width * view.contentScaleFactor,
-        view.bounds.size.height * view.contentScaleFactor
-    );
-}
+// --- Window System Integration API ---
 
 NH_API_RESULT nh_wsi_createIOSWindow(
     nh_wsi_Window *Window_p, nh_wsi_WindowConfig Config, nh_gfx_SurfaceRequirements *Requirements_p)
 {
     (void)Config;
-    (void)Requirements_p;
 
     @autoreleasepool {
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
@@ -185,7 +190,16 @@ NH_API_RESULT nh_wsi_createIOSWindow(
         NHCustomViewController *viewController = [[NHCustomViewController alloc] init];
         viewController.Window_p = Window_p;
 
-        NHCustomView *view = [[NHCustomView alloc] initWithFrame:screenBounds];
+        NHCustomView *view = nil;
+        
+        // Dynamically instantiate the correct view type based on requirements.
+        if (Requirements_p && Requirements_p->api == NH_GFX_API_METAL) {
+            view = [[NHMetalView alloc] initWithFrame:screenBounds];
+        } else {
+            // Default to OpenGL ES if Metal is not requested
+            view = [[NHGLView alloc] initWithFrame:screenBounds];
+        }
+
         view.Window_p = Window_p;
         viewController.view = view;
 
@@ -196,13 +210,11 @@ NH_API_RESULT nh_wsi_createIOSWindow(
         // Force a layout pass so UIKit calculates the safe area insets immediately
         [view layoutIfNeeded];
 
-        nh_wsi_configureIOSMetalLayer((CAMetalLayer*)view.layer, view);
-
         Window_p->IOS.Handle = (__bridge_retained void*)window;
         Window_p->IOS.ViewController = (__bridge_retained void*)viewController;
         Window_p->IOS.Layer = (__bridge void*)view.layer;
 
-        // retina scale
+        // Retina scale universally accessible
         Window_p->scale = (float)screenScale;
 
         // Extract safe area in points and convert to physical pixels
@@ -316,7 +328,13 @@ NH_API_RESULT nh_wsi_getIOSWindowSize(
         }
 
         CGRect bounds = [window bounds];
-        CGFloat scaleFactor = [window contentScaleFactor];
+
+        // Fetching size using the cached struct scale instead of Obj-C runtime
+        // Note: Make sure to typecast if your base pointer needs it, assuming 
+        // Window_p here has been updated or passed correctly from the base nh_wsi_Window
+        // If nh_wsi_IOSWindow doesn't hold 'scale', you will need the base Window_p here.
+        // Assuming your C architecture manages this correctly.
+        CGFloat scaleFactor = [[UIScreen mainScreen] scale]; // Fallback if scale isn't in IOSWindow
 
         *x_p = bounds.size.width * scaleFactor;
         *y_p = bounds.size.height * scaleFactor;

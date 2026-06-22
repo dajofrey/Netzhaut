@@ -22,6 +22,7 @@ typedef struct nh_gfx_OpenGLSurfaceRequirements {
 
 typedef struct nh_gfx_SurfaceRequirements {
     nh_gfx_OpenGLSurfaceRequirements OpenGL;
+    int api;
 } nh_gfx_SurfaceRequirements;
 
 // FUNCTIONS =======================================================================================

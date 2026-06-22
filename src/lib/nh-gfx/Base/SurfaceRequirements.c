@@ -18,6 +18,7 @@
 
 #include "../OpenGL/Render.h"
 #include "../OpenGL/ContextX11.h"
+#include "../Common/Config.h"
 
 #include "../../nh-core/System/Memory.h"
 #include "../../nh-core/Util/List.h"
@@ -40,15 +41,19 @@ nh_gfx_SurfaceRequirements *nh_gfx_getSurfaceRequirements()
 NH_API_RESULT nh_gfx_createSurfaceRequirements()
 {
 #if defined(__unix__)
-    NH_CORE_CHECK(nh_gfx_createOpenGLX11ContextRequirements(&Requirements.OpenGL))
+    nh_gfx_createOpenGLX11ContextRequirements(&Requirements.OpenGL);
 #endif
+
+    nh_gfx_Config Config = nh_gfx_getConfig();
+    Requirements.api = Config.api;
+
     return NH_API_SUCCESS;
 }
 
 NH_API_RESULT nh_gfx_freeSurfaceRequirements()
 {
 #if defined(__unix__)
-    NH_CORE_CHECK(nh_gfx_freeOpenGLX11ContextRequirements(&Requirements.OpenGL))
+    nh_gfx_freeOpenGLX11ContextRequirements(&Requirements.OpenGL);
 #endif
     return NH_API_SUCCESS;
 }

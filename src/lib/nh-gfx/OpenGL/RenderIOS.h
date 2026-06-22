@@ -16,7 +16,9 @@ int nh_gfx_makeOpenGLContextCurrentIOS(
 );
 
 void nh_gfx_flushOpenGLDrawableIOS(
-    void* Context_p
+    void* Context_p, 
+    unsigned int Framebuffer,
+    unsigned int ColorRenderbuffer
 );
 
 #endif

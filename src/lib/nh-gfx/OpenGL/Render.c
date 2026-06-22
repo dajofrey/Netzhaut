@@ -51,6 +51,10 @@ NH_API_RESULT nh_gfx_renderOpenGL(
     #endif
 #endif
 
+// TARGET RESCUE: Force iOS to bind the layer-backed framebuffer before commands run
+#if defined(__APPLE__) && TARGET_OS_IPHONE
+    glBindFramebuffer(GL_FRAMEBUFFER, Surface_p->OpenGL.framebuffer);
+#endif
     for (int i = 0; i < SortedViewports_p->size; ++i) {
         nh_gfx_Viewport *Viewport_p = SortedViewports_p->pp[i];
         NH_CORE_CHECK(nh_gfx_executeOpenGLCommandBuffer(Viewport_p->OpenGL.CommandBuffer_p))
@@ -64,7 +68,7 @@ NH_API_RESULT nh_gfx_renderOpenGL(
     #if TARGET_OS_OSX
         CGLFlushDrawable(Surface_p->OpenGL.Context_p);
     #elif TARGET_OS_IPHONE
-        nh_gfx_flushOpenGLDrawableIOS(Surface_p->OpenGL.Context_p);
+        nh_gfx_flushOpenGLDrawableIOS(Surface_p->OpenGL.Context_p, Surface_p->OpenGL.framebuffer, Surface_p->OpenGL.colorRenderbuffer);
     #endif
 #endif
 
