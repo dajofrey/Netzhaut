@@ -29,7 +29,7 @@ SRC_DIR_NH_RENDERER = src/lib/nh-renderer
 SRC_DIR_NH_CSS = src/lib/nh-css
 SRC_DIR_NH_URL = src/lib/nh-url
 SRC_DIR_NH_MONITOR = src/lib/nh-monitor
-SRC_DIR_VOLK= external/volk
+SRC_DIR_VOLK = external/volk
 SRC_DIR_FREETYPE_GL= external/freetype-gl
 
 # List of source files for each library
@@ -89,14 +89,13 @@ SRC_FILES_NH_WSI = \
     Window/Event.c \
     Window/Listener.c \
     Common/Log.c \
-    Common/Result.c \
     Common/Initialize.c \
     Common/Terminate.c \
     Common/Config.c \
     Common/About.c \
     Platforms/X11/Init.c \
     Platforms/X11/Window.c \
-    Platforms/X11/WindowSettings.c
+    Platforms/X11/WindowSettings.c \
 
 SRC_FILES_NH_HTML = \
 #    Parser/Parser.c \
@@ -200,7 +199,6 @@ SRC_FILES_NH_ENCODING = \
     Base/String.c \
     Encodings/UTF8.c \
     Encodings/UTF32.c \
-    Common/Result.c \
     Common/IndexMap.c \
     Common/Initialize.c \
     Common/Terminate.c \
@@ -216,6 +214,16 @@ SRC_FILES_NH_GFX = \
     OpenGL/Viewport.c \
     OpenGL/Render.c \
     OpenGL/OpenGL.c \
+    OpenGL/ContextX11.c \
+    Vulkan/Host.c \
+    Vulkan/GPU.c \
+    Vulkan/Driver.c \
+    Vulkan/Helper.c \
+    Vulkan/Texture.c \
+    Vulkan/Render.c \
+    Vulkan/Surface.c \
+    Vulkan/Vulkan.c \
+    Vulkan/Viewport.c \
     Fonts/FontManager.c \
     Fonts/FontFamily.c \
     Fonts/FontStyle.c \
@@ -232,16 +240,6 @@ SRC_FILES_NH_GFX = \
     Common/Config.c \
     Common/About.c \
     Common/IndexMap.c \
-    OpenGL/ContextX11.c \
-    Vulkan/Host.c \
-    Vulkan/GPU.c \
-    Vulkan/Driver.c \
-    Vulkan/Helper.c \
-    Vulkan/Texture.c \
-    Vulkan/Render.c \
-    Vulkan/Surface.c \
-    Vulkan/Vulkan.c \
-    Vulkan/Viewport.c
 
 SRC_FILES_NH_RENDERER = \
 #    Main/Renderer.c \
@@ -259,6 +257,7 @@ SRC_FILES_NH_RENDERER = \
 #    Common/Initialize.c \
 #    Common/Terminate.c \
 #    Common/About.c \
+
 
 SRC_FILES_NH_CSS = \
 #    Parser/Tokenizer.c \
@@ -336,7 +335,6 @@ SRC_FILES_FREETYPE_GL = \
 OBJ_FILES_NH_API = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_API)/, $(SRC_FILES_NH_API)))
 OBJ_FILES_NH_CORE = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_CORE)/, $(SRC_FILES_NH_CORE)))
 OBJ_FILES_NH_WSI = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_WSI)/, $(SRC_FILES_NH_WSI)))
-OBJ_FILES_NH_WSI += $(patsubst %.m, %.o, $(addprefix $(SRC_DIR_NH_WSI)/, $(wildcard *.m)))
 OBJ_FILES_NH_HTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_HTML)/, $(SRC_FILES_NH_HTML)))
 OBJ_FILES_NH_DOM = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_DOM)/, $(SRC_FILES_NH_DOM)))
 OBJ_FILES_NH_NETWORK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_NETWORK)/, $(SRC_FILES_NH_NETWORK)))
@@ -344,7 +342,6 @@ OBJ_FILES_NH_WEBIDL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_WEBIDL)/, $(
 OBJ_FILES_NH_ECMASCRIPT = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_ECMASCRIPT)/, $(SRC_FILES_NH_ECMASCRIPT)))
 OBJ_FILES_NH_ENCODING = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_ENCODING)/, $(SRC_FILES_NH_ENCODING)))
 OBJ_FILES_NH_GFX = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_GFX)/, $(SRC_FILES_NH_GFX)))
-OBJ_FILES_NH_GFX += $(patsubst %.m, %.o, $(addprefix $(SRC_DIR_NH_GFX)/, $(wildcard *.m)))
 OBJ_FILES_NH_RENDERER = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_RENDERER)/, $(SRC_FILES_NH_RENDERER)))
 OBJ_FILES_NH_CSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_CSS)/, $(SRC_FILES_NH_CSS)))
 OBJ_FILES_NH_URL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_URL)/, $(SRC_FILES_NH_URL)))
@@ -444,10 +441,6 @@ $(OBJ_FILES_NH_WSI): CFLAGS += -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface
 	$(CC) $(CFLAGS) -c -o $@ $<
 %.o: $(SRC_DIR_FREETYPE_GL)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
-
-# Add rule for Objective-C files
-%.o: $(SRC_DIR_NH_WSI)/%.m
-	$(OBJC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
 INSTALL_NAME =
 
