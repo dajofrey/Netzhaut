@@ -31,21 +31,26 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint localPoint = [touch locationInView:self];
-    CGFloat scale = self.contentScaleFactor;
+    
+    // Use native hardware scale (e.g., 3.0 for Pro Max devices)
+    CGFloat nativeScale = [UIScreen mainScreen].nativeScale;
 
-    int px = (int)lround(localPoint.x * scale);
-    int py = (int)lround(localPoint.y * scale);
+    // Convert points to true hardware pixels
+    int px = (int)lround(localPoint.x * nativeScale);
+    int py = (int)lround(localPoint.y * nativeScale);
 
     nh_wsi_sendMouseEvent(self.Window_p, px, py, NH_API_TRIGGER_PRESS, NH_API_MOUSE_LEFT);
 }
 
+// Apply the exact same logic to touchesMoved and touchesEnded:
+
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint localPoint = [touch locationInView:self];
-    CGFloat scale = self.contentScaleFactor;
+    CGFloat nativeScale = [UIScreen mainScreen].nativeScale;
 
-    int px = (int)lround(localPoint.x * scale);
-    int py = (int)lround(localPoint.y * scale);
+    int px = (int)lround(localPoint.x * nativeScale);
+    int py = (int)lround(localPoint.y * nativeScale);
 
     nh_wsi_sendMouseEvent(self.Window_p, px, py, NH_API_TRIGGER_MOVE, NH_API_MOUSE_LEFT);
 }
@@ -53,10 +58,10 @@
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint localPoint = [touch locationInView:self];
-    CGFloat scale = self.contentScaleFactor;
+    CGFloat nativeScale = [UIScreen mainScreen].nativeScale;
 
-    int px = (int)lround(localPoint.x * scale);
-    int py = (int)lround(localPoint.y * scale);
+    int px = (int)lround(localPoint.x * nativeScale);
+    int py = (int)lround(localPoint.y * nativeScale);
 
     nh_wsi_sendMouseEvent(self.Window_p, px, py, NH_API_TRIGGER_RELEASE, NH_API_MOUSE_LEFT);
 }
@@ -199,6 +204,11 @@ NH_API_RESULT nh_wsi_createIOSWindow(
             // Default to OpenGL ES if Metal is not requested
             view = [[NHGLView alloc] initWithFrame:screenBounds];
         }
+
+        // Force the view and its backing CAMetalLayer/CAEAGLLayer to use physical pixels
+        CGFloat nativeScale = [[UIScreen mainScreen] nativeScale];
+        view.contentScaleFactor = nativeScale;
+        view.layer.contentsScale = nativeScale;
 
         view.Window_p = Window_p;
         viewController.view = view;
