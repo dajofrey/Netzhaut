@@ -18,8 +18,10 @@
 #include "../../Common/Log.h"
 
 // --- Base View (Handles Input Only) ---
+// --- Base View (Handles Input Only) ---
 @interface NHCustomView : UIView {
-    CGFloat _scrollAccumulatorY; // Tracks continuous scroll deltas
+    CGFloat _scrollAccumulatorX; // Tracks continuous horizontal scroll deltas
+    CGFloat _scrollAccumulatorY; // Tracks continuous vertical scroll deltas
 }
 @property (nonatomic, assign) void *Window_p;
 @end
@@ -54,11 +56,11 @@
 
     CGFloat nativeScale = [UIScreen mainScreen].nativeScale;
     
-    // 2. Accumulate the vertical movement in physical hardware pixels
+    // 2. Accumulate the movement in physical hardware pixels
+    _scrollAccumulatorX += translation.x * nativeScale;
     _scrollAccumulatorY += translation.y * nativeScale;
 
     // 3. Define how many physical pixels equal one desktop "scroll wheel tick"
-    // 40 pixels is a standard, comfortable threshold for web engines
     const CGFloat scrollThreshold = 40.0; 
 
     // 4. Get the current location of the scroll interaction
@@ -66,7 +68,24 @@
     int px = (int)lround(localPoint.x * nativeScale);
     int py = (int)lround(localPoint.y * nativeScale);
 
-    // 5. Drain the accumulator to fire discrete events
+    // 5a. Drain the X accumulator to fire discrete horizontal events
+    while (fabs(_scrollAccumulatorX) >= scrollThreshold) {
+        NH_API_TRIGGER_E trigger;
+
+        if (_scrollAccumulatorX > 0) {
+            // Dragging right moves content right -> Scrolling Left
+            trigger = NH_API_TRIGGER_RIGHT; 
+            _scrollAccumulatorX -= scrollThreshold;
+        } else {
+            // Dragging left moves content left -> Scrolling Right
+            trigger = NH_API_TRIGGER_LEFT;
+            _scrollAccumulatorX += scrollThreshold;
+        }
+
+        nh_wsi_sendMouseEvent(self.Window_p, px, py, trigger, NH_API_MOUSE_SCROLL);
+    }
+
+    // 5b. Drain the Y accumulator to fire discrete vertical events
     while (fabs(_scrollAccumulatorY) >= scrollThreshold) {
         NH_API_TRIGGER_E trigger;
 
@@ -80,13 +99,13 @@
             _scrollAccumulatorY += scrollThreshold;
         }
 
-        // Dispatch the event with your exact engine enums
         nh_wsi_sendMouseEvent(self.Window_p, px, py, trigger, NH_API_MOUSE_SCROLL);
     }
 
-    // 6. Reset the accumulator entirely when the user lifts their finger/trackpad
+    // 6. Reset both accumulators entirely when the user lifts their finger
     if (recognizer.state == UIGestureRecognizerStateEnded || 
         recognizer.state == UIGestureRecognizerStateCancelled) {
+        _scrollAccumulatorX = 0;
         _scrollAccumulatorY = 0;
     }
 }
