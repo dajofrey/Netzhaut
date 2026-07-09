@@ -18,14 +18,77 @@
 #include "../../Common/Log.h"
 
 // --- Base View (Handles Input Only) ---
-@interface NHCustomView : UIView
+@interface NHCustomView : UIView {
+    CGFloat _scrollAccumulatorY; // Tracks continuous scroll deltas
+}
 @property (nonatomic, assign) void *Window_p;
 @end
 
 @implementation NHCustomView
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        panRecognizer.cancelsTouchesInView = NO; 
+        
+        if (@available(iOS 13.4, *)) {
+            panRecognizer.allowedScrollTypesMask = UIScrollTypeMaskAll;
+        }
+        
+        [self addGestureRecognizer:panRecognizer];
+    }
+    return self;
+}
+
 - (BOOL)canBecomeFirstResponder {
     return YES;
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)recognizer {
+    if (!self.Window_p) return;
+
+    // 1. Get the movement delta for this frame and reset it immediately
+    CGPoint translation = [recognizer translationInView:self];
+    [recognizer setTranslation:CGPointZero inView:self];
+
+    CGFloat nativeScale = [UIScreen mainScreen].nativeScale;
+    
+    // 2. Accumulate the vertical movement in physical hardware pixels
+    _scrollAccumulatorY += translation.y * nativeScale;
+
+    // 3. Define how many physical pixels equal one desktop "scroll wheel tick"
+    // 40 pixels is a standard, comfortable threshold for web engines
+    const CGFloat scrollThreshold = 40.0; 
+
+    // 4. Get the current location of the scroll interaction
+    CGPoint localPoint = [recognizer locationInView:self];
+    int px = (int)lround(localPoint.x * nativeScale);
+    int py = (int)lround(localPoint.y * nativeScale);
+
+    // 5. Drain the accumulator to fire discrete events
+    while (fabs(_scrollAccumulatorY) >= scrollThreshold) {
+        NH_API_TRIGGER_E trigger;
+
+        if (_scrollAccumulatorY > 0) {
+            // Dragging down moves content down -> Scrolling Up
+            trigger = NH_API_TRIGGER_UP; 
+            _scrollAccumulatorY -= scrollThreshold;
+        } else {
+            // Dragging up moves content up -> Scrolling Down
+            trigger = NH_API_TRIGGER_DOWN;
+            _scrollAccumulatorY += scrollThreshold;
+        }
+
+        // Dispatch the event with your exact engine enums
+        nh_wsi_sendMouseEvent(self.Window_p, px, py, trigger, NH_API_MOUSE_SCROLL);
+    }
+
+    // 6. Reset the accumulator entirely when the user lifts their finger/trackpad
+    if (recognizer.state == UIGestureRecognizerStateEnded || 
+        recognizer.state == UIGestureRecognizerStateCancelled) {
+        _scrollAccumulatorY = 0;
+    }
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -67,7 +130,15 @@
 }
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [self touchesEnded:touches withEvent:event];
+    UITouch *touch = [touches anyObject];
+    CGPoint localPoint = [touch locationInView:self];
+    CGFloat nativeScale = [UIScreen mainScreen].nativeScale;
+
+    int px = (int)lround(localPoint.x * nativeScale);
+    int py = (int)lround(localPoint.y * nativeScale);
+
+    // Use a cancel trigger if NH_API supports it
+    nh_wsi_sendMouseEvent(self.Window_p, px, py, NH_API_TRIGGER_CANCEL, NH_API_MOUSE_LEFT);
 }
 
 - (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
