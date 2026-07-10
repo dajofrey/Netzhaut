@@ -265,4 +265,12 @@ NH_API_RESULT nh_api_moveWindow(
     nh_api_Window *Window_p
 );
 
+NH_API_RESULT nh_api_showKeyboard(
+    nh_api_Window *Window_p
+);
+
+NH_API_RESULT nh_api_hideKeyboard(
+    nh_api_Window *Window_p
+);
+
 #endif // NH_API_NH_WSI_H

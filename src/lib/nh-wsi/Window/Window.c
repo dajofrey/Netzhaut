@@ -155,3 +155,27 @@ NH_API_RESULT nh_wsi_getWindowSize(
         default                : return NH_API_ERROR_BAD_STATE;
     }
 }
+
+NH_API_RESULT nh_wsi_showKeyboard(
+    nh_wsi_Window *Window_p)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_IOS)
+        case NH_WSI_TYPE_IOS   : return nh_wsi_showIOSKeyboard(&Window_p->IOS);
+#endif
+        default                : return NH_API_ERROR_BAD_STATE;
+    }
+}
+
+NH_API_RESULT nh_wsi_hideKeyboard(
+    nh_wsi_Window *Window_p)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_IOS)
+        case NH_WSI_TYPE_IOS   : return nh_wsi_hideIOSKeyboard(&Window_p->IOS);
+#endif
+        default                : return NH_API_ERROR_BAD_STATE;
+    }
+}

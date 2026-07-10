@@ -45,3 +45,21 @@ NH_API_RESULT nh_api_moveWindow(
     nh_wsi_moveWindow_f moveWindow_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_moveWindow");
     return moveWindow_f ? moveWindow_f(Window_p) : NH_API_ERROR_BAD_STATE;
 }
+
+NH_API_RESULT nh_api_showKeyboard(
+    nh_api_Window *Window_p)
+{
+    typedef NH_API_RESULT (*nh_wsi_showKeyboard_f)(nh_api_Window *Window_p);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_showKeyboard_f showKeyboard_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_showKeyboard");
+    return showKeyboard_f ? showKeyboard_f(Window_p) : NH_API_ERROR_BAD_STATE;
+}
+
+NH_API_RESULT nh_api_hideKeyboard(
+    nh_api_Window *Window_p)
+{
+    typedef NH_API_RESULT (*nh_wsi_hideKeyboard_f)(nh_api_Window *Window_p);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_hideKeyboard_f hideKeyboard_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_hideKeyboard");
+    return hideKeyboard_f ? hideKeyboard_f(Window_p) : NH_API_ERROR_BAD_STATE;
+}

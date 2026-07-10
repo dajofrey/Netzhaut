@@ -66,4 +66,12 @@ NH_API_RESULT nh_wsi_getIOSWindowSize(
     nh_wsi_IOSWindow *Window_p, int *x_p, int *y_p
 );
 
+NH_API_RESULT nh_wsi_showIOSKeyboard(
+    nh_wsi_IOSWindow *Window_p
+);
+
+NH_API_RESULT nh_wsi_hideIOSKeyboard(
+    nh_wsi_IOSWindow *Window_p
+);
+
 #endif // NH_WSI_IOS_WINDOW_H

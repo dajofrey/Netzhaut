@@ -18,19 +18,24 @@
 #include "../../Common/Log.h"
 
 // --- Base View (Handles Input Only) ---
-// --- Base View (Handles Input Only) ---
-@interface NHCustomView : UIView {
+// Adopting UIKeyInput turns NHCustomView into a native text consumer
+@interface NHCustomView : UIView <UIKeyInput> {
     CGFloat _scrollAccumulatorX; // Tracks continuous horizontal scroll deltas
     CGFloat _scrollAccumulatorY; // Tracks continuous vertical scroll deltas
 }
 @property (nonatomic, assign) void *Window_p;
+
+- (void)showKeyboard;
+- (void)hideKeyboard;
 @end
+
 
 @implementation NHCustomView
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        // Setup Gesture Recognizers
         UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
         panRecognizer.cancelsTouchesInView = NO; 
         
@@ -43,8 +48,62 @@
     return self;
 }
 
+#pragma mark - First Responder & Keyboard Control
+
 - (BOOL)canBecomeFirstResponder {
     return YES;
+}
+
+- (void)showKeyboard {
+    // Since the view itself handles text input now, we make the view the first responder
+    if ([self canBecomeFirstResponder]) {
+        [self becomeFirstResponder];
+    }
+}
+
+- (void)hideKeyboard {
+    if ([self isFirstResponder]) {
+        [self resignFirstResponder];
+    }
+}
+
+#pragma mark - UIKeyInput Protocol Implementation
+
+- (BOOL)hasText {
+    // Always return YES so the backspace/delete key remains active
+    return YES;
+}
+
+// Catches text entry, autocomplete, and complex layout inputs
+- (void)insertText:(NSString *)text {
+    if (!self.Window_p) return;
+
+    for (NSUInteger i = 0; i < text.length; i++) {
+        NH_ENCODING_UTF32 codepoint = [text characterAtIndex:i];
+        
+        // Dispatch key triggers directly into your engine backend
+        nh_wsi_sendKeyboardEvent(self.Window_p, codepoint, 0, NH_API_TRIGGER_PRESS, 0);
+        nh_wsi_sendKeyboardEvent(self.Window_p, codepoint, 0, NH_API_TRIGGER_RELEASE, 0);
+    }
+}
+
+// Natively handles the software delete/backspace key
+- (void)deleteBackward {
+    if (!self.Window_p) return;
+
+    // Send ASCII 8 / Backspace
+    nh_wsi_sendKeyboardEvent(self.Window_p, 8, 0, NH_API_TRIGGER_PRESS, 0);
+    nh_wsi_sendKeyboardEvent(self.Window_p, 8, 0, NH_API_TRIGGER_RELEASE, 0);
+}
+
+#pragma mark - UITextInputTraits (Keyboard Configuration)
+
+- (UITextAutocorrectionType)autocorrectionType {
+    return UITextAutocorrectionTypeNo;
+}
+
+- (UITextAutocapitalizationType)autocapitalizationType {
+    return UITextAutocapitalizationTypeNone;
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)recognizer {
@@ -305,7 +364,7 @@ NH_API_RESULT nh_wsi_createIOSWindow(
 
         window.rootViewController = viewController;
         [window makeKeyAndVisible];
-        [view becomeFirstResponder];
+//        [view becomeFirstResponder];
 
         // Force a layout pass so UIKit calculates the safe area insets immediately
         [view layoutIfNeeded];
@@ -438,6 +497,47 @@ NH_API_RESULT nh_wsi_getIOSWindowSize(
 
         *x_p = bounds.size.width * scaleFactor;
         *y_p = bounds.size.height * scaleFactor;
+    }
+
+    return NH_API_SUCCESS;
+}
+
+// --- Software Keyboard Integration API ---
+
+NH_API_RESULT nh_wsi_showIOSKeyboard(
+    nh_wsi_IOSWindow *Window_p)
+{
+    if (!Window_p || !Window_p->ViewController) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+
+    @autoreleasepool {
+        NHCustomViewController *vc = (__bridge NHCustomViewController*)Window_p->ViewController;
+        NHCustomView *view = (NHCustomView *)vc.view;
+        
+        // Must happen on main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [view showKeyboard];
+        });
+    }
+
+    return NH_API_SUCCESS;
+}
+
+NH_API_RESULT nh_wsi_hideIOSKeyboard(
+    nh_wsi_IOSWindow *Window_p)
+{
+    if (!Window_p || !Window_p->ViewController) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+
+    @autoreleasepool {
+        NHCustomViewController *vc = (__bridge NHCustomViewController*)Window_p->ViewController;
+        NHCustomView *view = (NHCustomView *)vc.view;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [view hideKeyboard];
+        });
     }
 
     return NH_API_SUCCESS;

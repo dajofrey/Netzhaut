@@ -149,4 +149,12 @@ NH_API_RESULT nh_wsi_getWindowSize(
     nh_wsi_Window *Window_p, int *x_p, int *y_p
 );
 
+NH_API_RESULT nh_wsi_showKeyboard(
+    nh_wsi_Window *Window_p
+);
+
+NH_API_RESULT nh_wsi_hideKeyboard(
+    nh_wsi_Window *Window_p
+);
+
 #endif // NH_WSI_WINDOW_WINDOW_H 
