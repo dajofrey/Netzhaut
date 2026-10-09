@@ -35,6 +35,8 @@ static NH_WSI_TYPE_E nh_wsi_getType()
     type = NH_WSI_TYPE_WIN32;
 #elif defined(NH_PLATFORM_IOS)
     type = NH_WSI_TYPE_IOS;
+#elif defined(NH_PLATFORM_ANDROID)
+    type = NH_WSI_TYPE_ANDROID;
 #elif defined(NH_PLATFORM_MACOS)
     type = NH_WSI_TYPE_COCOA;
 #endif
@@ -80,6 +82,10 @@ nh_wsi_Window *nh_wsi_createWindow(
         case NH_WSI_TYPE_IOS :
             NH_CORE_CHECK_2(NULL, nh_wsi_createIOSWindow(Window_p, nh_wsi_getWindowConfig(Window_p), Requirements_p))
             break;
+#elif defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID :
+            NH_CORE_CHECK_2(NULL, nh_wsi_createAndroidWindow(Window_p, nh_wsi_getWindowConfig(Window_p), Requirements_p))
+            break;
 #endif
         default : return NULL;
     }
@@ -107,6 +113,8 @@ NH_API_RESULT nh_wsi_destroyWindow(
         case NH_WSI_TYPE_COCOA : NH_CORE_CHECK(nh_wsi_destroyCocoaWindow(&Window_p->Cocoa)) break;
 #elif defined(NH_PLATFORM_IOS)
         case NH_WSI_TYPE_IOS   : NH_CORE_CHECK(nh_wsi_destroyIOSWindow(&Window_p->IOS)) break;
+#elif defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : NH_CORE_CHECK(nh_wsi_destroyAndroidWindow(&Window_p->Android)) break;
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -135,6 +143,8 @@ NH_API_RESULT nh_wsi_moveWindow(
         case NH_WSI_TYPE_COCOA : return nh_wsi_moveCocoaWindow(&Window_p->Cocoa);
 #elif defined(NH_PLATFORM_IOS)
         case NH_WSI_TYPE_IOS   : return nh_wsi_moveIOSWindow(&Window_p->IOS);
+#elif defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_moveAndroidWindow(&Window_p->Android);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -151,6 +161,8 @@ NH_API_RESULT nh_wsi_getWindowSize(
         case NH_WSI_TYPE_COCOA : return nh_wsi_getCocoaWindowSize(&Window_p->Cocoa, x_p, y_p);
 #elif defined(NH_PLATFORM_IOS)
         case NH_WSI_TYPE_IOS   : return nh_wsi_getIOSWindowSize(&Window_p->IOS, x_p, y_p);
+#elif defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_getAndroidWindowSize(Window_p, x_p, y_p);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -163,6 +175,8 @@ NH_API_RESULT nh_wsi_showKeyboard(
     {
 #if defined(NH_PLATFORM_IOS)
         case NH_WSI_TYPE_IOS   : return nh_wsi_showIOSKeyboard(&Window_p->IOS);
+#elif defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_showAndroidKeyboard(&Window_p->Android);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -175,6 +189,8 @@ NH_API_RESULT nh_wsi_hideKeyboard(
     {
 #if defined(NH_PLATFORM_IOS)
         case NH_WSI_TYPE_IOS   : return nh_wsi_hideIOSKeyboard(&Window_p->IOS);
+#elif defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_hideAndroidKeyboard(&Window_p->Android);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }

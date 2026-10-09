@@ -24,7 +24,7 @@
     #define SOGL_IMPLEMENTATION_X11
 #endif
 
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     #define SOGL_MAJOR_VERSION 4
     #define SOGL_MINOR_VERSION 6
     #include "simple-opengl-loader-master/simple-opengl-loader.h"
@@ -40,6 +40,12 @@
 
 #if defined(NH_PLATFORM_IOS) && defined(TARGET_OS_IPHONE)
     #include <OpenGLES/ES3/gl.h>
+#endif
+
+#if defined(NH_PLATFORM_ANDROID)
+    #include <GLES3/gl3.h>
+    #include <EGL/egl.h>
+    #include <EGL/eglext.h>
 #endif
 
 #endif // NH_GFX_COMMON_INCLUDES_H

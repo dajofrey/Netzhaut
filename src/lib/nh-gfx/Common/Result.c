@@ -9,7 +9,7 @@
 // INCLUDES =========================================================================================
 
 #include "Result.h"
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Vulkan.h"
 #endif
 
@@ -18,7 +18,7 @@
 NH_API_RESULT nh_vk_getResult(
     int result)
 {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     switch (result)
     {
          case VK_SUCCESS                                            : return NH_API_SUCCESS;
@@ -66,4 +66,3 @@ NH_API_RESULT nh_vk_getResult(
 #endif
     return -1;
 }
-

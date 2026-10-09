@@ -11,7 +11,9 @@
     #include <TargetConditionals.h>
 #endif
 
-#if defined(__unix__) && !defined(__APPLE__)
+#if defined(__ANDROID__)
+    #define NH_PLATFORM_ANDROID 1
+#elif defined(__unix__) && !defined(__APPLE__)
     #define NH_PLATFORM_UNIX 1
 #elif defined(__APPLE__) && defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     #define NH_PLATFORM_IOS 1

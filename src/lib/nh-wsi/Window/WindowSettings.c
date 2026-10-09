@@ -19,6 +19,8 @@
     #include "../Platforms/IOS/WindowSettings.h"
 #elif defined(NH_PLATFORM_UNIX)
     #include "../Platforms/X11/WindowSettings.h"
+#elif defined(NH_PLATFORM_ANDROID)
+    #include "../Platforms/Android/Window.h"
 #endif
 
 #include "../../nh-core/System/Memory.h"
@@ -57,6 +59,9 @@ static NH_API_RESULT nh_wsi_setWindowDecorated(
         #elif defined(NH_PLATFORM_IOS)
             case NH_WSI_TYPE_IOS :
                 return nh_wsi_setIOSWindowDecorated(&Window_p->IOS, Config.decorated);
+        #elif defined(NH_PLATFORM_ANDROID)
+            case NH_WSI_TYPE_ANDROID :
+                return nh_wsi_setAndroidWindowDecorated(&Window_p->Android, Config.decorated);
         #endif
     }
 
@@ -79,6 +84,9 @@ static NH_API_RESULT nh_wsi_setWindowState(
         #elif defined(NH_PLATFORM_IOS)
             case NH_WSI_TYPE_IOS :
                 return nh_wsi_setIOSWindowState(&Window_p->IOS, Config.state_p);
+        #elif defined(NH_PLATFORM_ANDROID)
+            case NH_WSI_TYPE_ANDROID :
+                return nh_wsi_setAndroidWindowState(&Window_p->Android, Config.state_p);
         #endif
     }
 
@@ -101,6 +109,9 @@ static NH_API_RESULT nh_wsi_setWindowType(
         #elif defined(NH_PLATFORM_IOS)
             case NH_WSI_TYPE_IOS :
                 return nh_wsi_setIOSWindowType(&Window_p->IOS, Config.type);
+        #elif defined(NH_PLATFORM_ANDROID)
+            case NH_WSI_TYPE_ANDROID :
+                return nh_wsi_setAndroidWindowType(&Window_p->Android, Config.type);
         #endif
     }
 
@@ -123,6 +134,9 @@ static NH_API_RESULT nh_wsi_setWindowTitle(
         #elif defined(NH_PLATFORM_IOS)
             case NH_WSI_TYPE_IOS :
                 return nh_wsi_setIOSWindowTitle(&Window_p->IOS, Config.title_p);
+        #elif defined(NH_PLATFORM_ANDROID)
+            case NH_WSI_TYPE_ANDROID :
+                return nh_wsi_setAndroidWindowTitle(&Window_p->Android, Config.title_p);
         #endif
     }
 
@@ -145,6 +159,9 @@ NH_API_RESULT nh_wsi_setMouseCursor(
         #elif defined(NH_PLATFORM_IOS)
             case NH_WSI_TYPE_IOS :
                 return nh_wsi_setIOSWindowMouseCursor(&Window_p->IOS, type);
+        #elif defined(NH_PLATFORM_ANDROID)
+            case NH_WSI_TYPE_ANDROID :
+                return nh_wsi_setAndroidMouseCursor(&Window_p->Android, type);
         #endif
     }
 

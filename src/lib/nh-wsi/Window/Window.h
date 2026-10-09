@@ -21,6 +21,8 @@
     #include "../Platforms/Cocoa/Window.h"
 #elif defined(NH_PLATFORM_IOS)
     #include "../Platforms/IOS/Window.h"
+#elif defined(NH_PLATFORM_ANDROID)
+    #include "../Platforms/Android/Window.h"
 #endif
 
 #include "../../nh-gfx/Base/SurfaceRequirements.h"
@@ -113,7 +115,18 @@ typedef enum NH_WSI_TYPE_E {
     NH_WSI_TYPE_WIN32, 
     NH_WSI_TYPE_COCOA,
     NH_WSI_TYPE_IOS,
+    NH_WSI_TYPE_ANDROID,
 } NH_WSI_TYPE_E; 
+
+#if defined(NH_PLATFORM_ANDROID)
+NH_API_RESULT nh_wsi_setAndroidWindowType(
+    nh_wsi_AndroidWindow *Window_p, NH_WSI_WINDOW_TYPE_E type
+);
+
+NH_API_RESULT nh_wsi_setAndroidMouseCursor(
+    nh_wsi_AndroidWindow *Window_p, NH_WSI_CURSOR_E cursor
+);
+#endif
 
 // STRUCTS =====================================================================================
 
@@ -128,6 +141,8 @@ typedef struct NH_ALIGN_16 nh_wsi_Window {
     nh_wsi_CocoaWindow Cocoa;
 #elif defined(NH_PLATFORM_IOS)
     nh_wsi_IOSWindow IOS;
+#elif defined(NH_PLATFORM_ANDROID)
+    nh_wsi_AndroidWindow Android;
 #endif
     nh_core_RingBuffer Events;
     NH_WSI_CURSOR_E cursor;

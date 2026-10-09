@@ -28,6 +28,18 @@ nh_api_Window *nh_api_createWindow(
     return createWindow_f ? createWindow_f(namespace_p, Requirements_p) : NULL;
 }
 
+#if defined(__ANDROID__)
+NH_API_RESULT nh_api_setAndroidApp(
+    struct android_app *app_p)
+{
+    typedef NH_API_RESULT (*nh_wsi_setAndroidApp_f)(struct android_app *app_p);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setAndroidApp_f setAndroidApp_f = !Loader_p ? NULL :
+        Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setAndroidApp");
+    return setAndroidApp_f ? setAndroidApp_f(app_p) : NH_API_ERROR_BAD_STATE;
+}
+#endif
+
 NH_API_RESULT nh_api_setWindowEventListener(
     nh_api_Window *Window_p, nh_api_windowCallback_f callback_f)
 {

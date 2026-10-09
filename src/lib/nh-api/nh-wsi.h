@@ -257,6 +257,21 @@ nh_api_Window *nh_api_createWindow(
     char *namespace_p, nh_api_SurfaceRequirements *Requirements_p
 );
 
+#if defined(__ANDROID__)
+struct android_app;
+/**
+ * Register the android_native_app_glue application after nh_api_initialize()
+ * and before creating a Netzhaut window. Call after assigning the host's
+ * app callbacks; Netzhaut chains those callbacks and receives lifecycle/input
+ * events from the host-owned NativeActivity event loop. Create the Netzhaut
+ * window from the host's APP_CMD_INIT_WINDOW callback. Android applications
+ * using the EGL backend must configure nh-gfx.api as "opengl".
+ */
+NH_API_RESULT nh_api_setAndroidApp(
+    struct android_app *app_p
+);
+#endif
+
 NH_API_RESULT nh_api_setWindowEventListener(
     nh_api_Window *Window_p, nh_api_windowCallback_f callback_f
 );

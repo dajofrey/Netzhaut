@@ -10,13 +10,16 @@
 
 #include "Render.h"
 #include "RenderIOS.h"
+#if defined(NH_PLATFORM_ANDROID)
+    #include "ContextAndroid.h"
+#endif
 
 #include "../Base/Viewport.h"
 #include "../Base/Surface.h"
 
 #include "../../nh-wsi/Window/Window.h"
 
-#if defined(__unix__) && !defined(__APPLE__)
+#if defined(NH_PLATFORM_UNIX)
     #include "../../nh-wsi/Platforms/X11/Init.h"
 #elif defined(__APPLE__)
     #include <TargetConditionals.h>
@@ -30,7 +33,7 @@
 NH_API_RESULT nh_gfx_renderOpenGL(
     nh_gfx_Surface *Surface_p, nh_core_List *SortedViewports_p)
 {
-#if defined(__unix__) && !defined(__APPLE__)
+#if defined(NH_PLATFORM_UNIX)
     glXMakeCurrent(NH_WSI_X11.Display_p, Surface_p->Window_p->X11.Handle, 
         Surface_p->OpenGL.Context_p);
 
@@ -49,6 +52,12 @@ NH_API_RESULT nh_gfx_renderOpenGL(
             return NH_API_ERROR_BAD_STATE;
         }
     #endif
+#elif defined(NH_PLATFORM_ANDROID)
+    bool ready = false;
+    NH_CORE_CHECK(nh_gfx_prepareOpenGLAndroidContext(&Surface_p->OpenGL, Surface_p->Window_p, &ready))
+    if (!ready) {
+        return NH_API_SUCCESS;
+    }
 #endif
 
 // TARGET RESCUE: Force iOS to bind the layer-backed framebuffer before commands run
@@ -61,7 +70,7 @@ NH_API_RESULT nh_gfx_renderOpenGL(
         NH_CORE_CHECK(nh_gfx_freeOpenGLCommandBuffer(Viewport_p->OpenGL.CommandBuffer_p))
     }
 
-#if defined(__unix__) && !defined(__APPLE__)
+#if defined(NH_PLATFORM_UNIX)
     glXSwapBuffers(NH_WSI_X11.Display_p, Surface_p->Window_p->X11.Handle);
 
 #elif defined(__APPLE__)
@@ -70,6 +79,8 @@ NH_API_RESULT nh_gfx_renderOpenGL(
     #elif TARGET_OS_IPHONE
         nh_gfx_flushOpenGLDrawableIOS(Surface_p->OpenGL.Context_p, Surface_p->OpenGL.framebuffer, Surface_p->OpenGL.colorRenderbuffer);
     #endif
+#elif defined(NH_PLATFORM_ANDROID)
+    NH_CORE_CHECK(nh_gfx_swapOpenGLAndroidBuffers(&Surface_p->OpenGL))
 #endif
 
     return NH_API_SUCCESS;

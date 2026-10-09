@@ -5,7 +5,7 @@
 
 #include "Surface.h"
 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Viewport.h"
 #endif
 
@@ -36,7 +36,7 @@ typedef struct nh_gfx_ViewportOwner {
 typedef struct nh_gfx_Viewport {
     nh_gfx_ViewportOwner Owner;
     nh_gfx_Surface *Surface_p;
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
     nh_gfx_VulkanViewport Vulkan;
 #endif
     nh_gfx_OpenGLViewport OpenGL;

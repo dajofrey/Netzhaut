@@ -16,6 +16,8 @@
 
 #if defined(NH_PLATFORM_UNIX)
     #include "../Platforms/X11/Init.h"
+#elif defined(NH_PLATFORM_ANDROID)
+    #include "../Platforms/Android/Init.h"
 #endif
 
 #include "../../nh-core/Util/LinkedList.h"
@@ -30,6 +32,8 @@ NH_API_RESULT nh_wsi_terminate()
 {
     #if defined(NH_PLATFORM_UNIX)
         NH_CORE_CHECK(nh_wsi_closeX11())
+    #elif defined(NH_PLATFORM_ANDROID)
+        nh_wsi_terminateAndroid();
     #endif
 
     nh_wsi_freeClipboard();

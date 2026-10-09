@@ -17,6 +17,8 @@
     #include "../Platforms/Cocoa/Window.h"
 #elif defined(NH_PLATFORM_IOS)
     #include "../Platforms/IOS/Window.h"
+#elif defined(NH_PLATFORM_ANDROID)
+    #include "../Platforms/Android/Window.h"
 #endif
 
 #include "../../nh-core/System/Thread.h"
@@ -31,7 +33,7 @@
 
 // VARS ============================================================================================
 
-static nh_wsi_Listener NH_WSI_LISTENER;
+nh_wsi_Listener NH_WSI_LISTENER;
 
 // NORMALIZE ============================================================================================
 
@@ -55,6 +57,8 @@ static NH_API_RESULT nh_wsi_getInput(
         case NH_WSI_TYPE_COCOA : return nh_wsi_getCocoaInput(Window_p, idle_p);
 #elif defined(NH_PLATFORM_IOS)
         case NH_WSI_TYPE_IOS   : return nh_wsi_getIOSInput(Window_p, idle_p);
+#elif defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_getAndroidInput(Window_p, idle_p);
 #endif
         default                : return NH_API_ERROR_BAD_STATE;
     }
@@ -211,4 +215,3 @@ char *nh_wsi_getClipboard()
 
     return NH_WSI_LISTENER.Clipboard.updated ? NH_WSI_LISTENER.Clipboard.data_p : NULL;
 }
-

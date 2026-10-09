@@ -10,7 +10,7 @@
 
 #include "Viewport.h"
 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Viewport.h"
 #endif
 
@@ -85,7 +85,7 @@ nh_gfx_Viewport *nh_gfx_createViewport(
     switch (Surface_p->api)
     {
         case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             NH_CORE_CHECK_2(NULL, nh_gfx_createVulkanViewport(Viewport_p)) 
             break;
 #else
@@ -116,7 +116,7 @@ void nh_gfx_destroyViewport(
     switch (Surface_p->api)
     {
         case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             nh_gfx_destroyVulkanViewport(Viewport_p); 
             break;
 #endif
@@ -156,7 +156,7 @@ NH_API_RESULT nh_gfx_beginRecording(
     switch (Viewport_p->Surface_p->api)
     {
         case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             imageCount = Viewport_p->Vulkan.images = Viewport_p->Surface_p->Vulkan.imageCount; 
             break;
 #else
@@ -187,7 +187,7 @@ NH_API_RESULT nh_gfx_beginRecording(
         switch (Viewport_p->Surface_p->api)
         {
             case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
                 Viewport_p->Vulkan.CommandBuffers_pp[i] = &Viewport_p->Vulkan.CommandBuffers_p[bufferIndex];
                 break;
 #else
@@ -209,7 +209,7 @@ NH_API_RESULT nh_gfx_beginRecording(
     switch (Viewport_p->Surface_p->api)
     {
         case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             NH_CORE_CHECK(nh_gfx_beginVulkanRecording(Viewport_p))
             break;
 #else
@@ -234,7 +234,7 @@ NH_API_RESULT nh_gfx_endRecording(
     switch (Viewport_p->Surface_p->api)
     {
         case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             NH_CORE_CHECK(nh_gfx_endVulkanRecording(Viewport_p))
             break;
 #else

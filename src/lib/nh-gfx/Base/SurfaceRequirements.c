@@ -11,7 +11,7 @@
 #include "SurfaceRequirements.h"
 #include "Viewport.h"
 
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Vulkan.h"
     #include "../Vulkan/Render.h"
 #endif
@@ -40,7 +40,7 @@ nh_gfx_SurfaceRequirements *nh_gfx_getSurfaceRequirements()
 
 NH_API_RESULT nh_gfx_createSurfaceRequirements()
 {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     nh_gfx_createOpenGLX11ContextRequirements(&Requirements.OpenGL);
 #endif
 
@@ -52,7 +52,7 @@ NH_API_RESULT nh_gfx_createSurfaceRequirements()
 
 NH_API_RESULT nh_gfx_freeSurfaceRequirements()
 {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     nh_gfx_freeOpenGLX11ContextRequirements(&Requirements.OpenGL);
 #endif
     return NH_API_SUCCESS;

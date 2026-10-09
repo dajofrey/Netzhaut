@@ -5,7 +5,7 @@
 
 #include "../Common/Includes.h"
 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Surface.h"
 #endif
 
@@ -32,7 +32,7 @@ typedef struct nh_gfx_Surface {
     NH_GFX_API_E api;
     nh_wsi_Window *Window_p;
     nh_gfx_OpenGLSurface OpenGL;
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     nh_gfx_VulkanSurface Vulkan;
 #endif
 #if defined(NH_PLATFORM_MACOS)

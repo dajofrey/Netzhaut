@@ -14,7 +14,7 @@
 
 NH_API_RESULT nh_gfx_initOpenGL()
 {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     if (!sogl_loadOpenGL()) {
         const char **failures_pp = sogl_getFailures();
         while (*failures_pp) {
@@ -27,7 +27,7 @@ NH_API_RESULT nh_gfx_initOpenGL()
 
 NH_API_RESULT nh_gfx_terminateOpenGL()
 {
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     sogl_cleanup();
 #endif
     return NH_API_SUCCESS;

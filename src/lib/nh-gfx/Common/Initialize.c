@@ -12,7 +12,7 @@
 #include "IndexMap.h"
 #include "Macros.h"
 
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Vulkan.h"
 #endif
 
@@ -37,7 +37,7 @@ NH_API_RESULT nh_gfx_initialize()
     NH_CORE_CHECK(nh_gfx_initializeFontManager())
     NH_CORE_CHECK(nh_gfx_createSurfaceRequirements())
 
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     nh_gfx_initVulkan();
 #endif
     nh_gfx_initOpenGL();

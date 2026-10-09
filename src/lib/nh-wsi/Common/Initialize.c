@@ -19,6 +19,8 @@
     #include "../Platforms/Cocoa/Init.h"
 #elif defined(NH_PLATFORM_IOS)
     #include "../Platforms/IOS/Init.h"
+#elif defined(NH_PLATFORM_ANDROID)
+    #include "../Platforms/Android/Init.h"
 #endif
 #include "../../nh-core/Util/LinkedList.h"
 
@@ -37,5 +39,7 @@ NH_API_RESULT nh_wsi_initialize()
         NH_CORE_CHECK(nh_wsi_initializeCocoa())
 #elif defined(NH_PLATFORM_IOS)
         NH_CORE_CHECK(nh_wsi_initializeIOS())
+#elif defined(NH_PLATFORM_ANDROID)
+        NH_CORE_CHECK(nh_wsi_initializeAndroid())
 #endif
 }

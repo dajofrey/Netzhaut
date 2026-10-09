@@ -11,7 +11,7 @@
 #include "Surface.h"
 #include "Viewport.h"
 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Vulkan.h"
     #include "../Vulkan/Render.h"
 #endif
@@ -104,7 +104,7 @@ static void *nh_gfx_initSurface(
     Surface_p->Settings.BackgroundColor.b = 0.0f;
     Surface_p->Settings.BackgroundColor.a = 1.0f;
 
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     Surface_p->Vulkan = nh_gfx_initVulkanSurface();
 #endif
     Surface_p->OpenGL = nh_gfx_initOpenGLSurface();
@@ -112,7 +112,7 @@ static void *nh_gfx_initSurface(
     switch (Surface_p->api)
     {
         case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             if (NH_VULKAN.GPUs.size <= 0) {return NULL;}
             NH_CORE_CHECK_2(NULL, 
                 nh_gfx_createVulkanSurface(&Surface_p->Vulkan, (nh_api_Window*)Surface_p->Window_p, NH_VULKAN.GPUs.pp[0]))
@@ -155,7 +155,7 @@ void nh_gfx_freeSurface(
     switch (Surface_p->api)
     {
         case NH_GFX_API_VULKAN :
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             nh_gfx_destroyVulkanSurface(&Surface_p->Vulkan, true);
 #endif
             break;
@@ -253,7 +253,7 @@ static NH_API_RESULT nh_gfx_prepareRendering(
     switch (Surface_p->api)
     {
         case NH_GFX_API_VULKAN :
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             result = nh_gfx_prepareVulkanRendering(&Surface_p->Vulkan);
             break;
 #else
@@ -287,7 +287,7 @@ static NH_API_RESULT nh_gfx_render(
     switch (Surface_p->api)
     {
         case NH_GFX_API_VULKAN : 
-#if defined(_WIN32) || defined (WIN32) || defined(__unix__)
+#if defined(_WIN32) || defined (WIN32) || defined(NH_PLATFORM_UNIX)
             NH_CORE_CHECK(nh_gfx_renderVulkan(Surface_p, &SortedViewports))
             break;
 #else

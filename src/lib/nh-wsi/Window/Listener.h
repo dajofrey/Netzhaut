@@ -31,6 +31,8 @@
         nh_wsi_Clipboard Clipboard;
     } nh_wsi_Listener;
 
+    extern nh_wsi_Listener NH_WSI_LISTENER;
+
 /** @} */
 
 /** @addtogroup lib_nh-wsi_typedefs

@@ -19,9 +19,15 @@
 // STRUCTS =========================================================================================
 
 typedef struct nh_gfx_OpenGLSurface {
-#ifdef __unix__
+#if defined(NH_PLATFORM_UNIX)
     GLXContext Context_p;
-#elif __APPLE__
+#elif defined(NH_PLATFORM_ANDROID)
+    EGLDisplay Display;
+    EGLConfig Config;
+    EGLContext Context;
+    EGLSurface EGLSurface;
+    uint32_t WindowGeneration;
+#elif defined(__APPLE__)
     void* Context_p; // CGLContext
     void* OpenGLContext_p;
     void* PixelFormat_p;

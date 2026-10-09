@@ -14,7 +14,7 @@
 #include "../Fonts/FontManager.h"
 #include "../Base/Surface.h"
 #include "../OpenGL/OpenGL.h"
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
     #include "../Vulkan/Vulkan.h"
 #endif
 #if defined(NH_PLATFORM_MACOS) || defined(NH_PLATFORM_IOS)
@@ -41,4 +41,3 @@ NH_API_RESULT nh_gfx_terminate()
 
     return NH_API_SUCCESS;
 }
-

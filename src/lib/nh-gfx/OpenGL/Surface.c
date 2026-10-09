@@ -13,6 +13,9 @@
 #include "ContextX11.h"
 #include "ContextCocoa.h"
 #include "ContextIOS.h"
+#if defined(NH_PLATFORM_ANDROID)
+    #include "ContextAndroid.h"
+#endif
 
 #include "../Base/Surface.h"
 
@@ -40,7 +43,7 @@ NH_API_RESULT nh_gfx_createOpenGLSurface(
 {
     switch (((nh_wsi_Window*)Window_p)->type) {
         case NH_WSI_TYPE_X11 :
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
             NH_CORE_CHECK(nh_gfx_createOpenGLX11Context(Surface_p, Window_p))
             break;
 #else
@@ -56,6 +59,13 @@ NH_API_RESULT nh_gfx_createOpenGLSurface(
         case NH_WSI_TYPE_IOS :
 #if defined(NH_PLATFORM_IOS)
             NH_CORE_CHECK(nh_gfx_createOpenGLIOSContext(Surface_p, (nh_wsi_Window*)Window_p))
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
+        case NH_WSI_TYPE_ANDROID :
+#if defined(NH_PLATFORM_ANDROID)
+            NH_CORE_CHECK(nh_gfx_createOpenGLAndroidContext(Surface_p, (nh_wsi_Window*)Window_p))
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
@@ -82,7 +92,7 @@ NH_API_RESULT nh_gfx_destroyOpenGLSurface(
 {
     switch (((nh_wsi_Window*)Window_p)->type) {
         case NH_WSI_TYPE_X11 :
-#if defined(__unix__)
+#if defined(NH_PLATFORM_UNIX)
             nh_gfx_destroyOpenGLX11Context(Surface_p);
             break;
 #else
@@ -98,6 +108,13 @@ NH_API_RESULT nh_gfx_destroyOpenGLSurface(
         case NH_WSI_TYPE_IOS :
 #if defined(NH_PLATFORM_IOS)
             nh_gfx_destroyOpenGLIOSContext(Surface_p);
+            break;
+#else
+            return NH_API_ERROR_BAD_STATE;
+#endif
+        case NH_WSI_TYPE_ANDROID :
+#if defined(NH_PLATFORM_ANDROID)
+            NH_CORE_CHECK(nh_gfx_destroyOpenGLAndroidContext(Surface_p))
             break;
 #else
             return NH_API_ERROR_BAD_STATE;
@@ -129,6 +146,8 @@ NH_API_RESULT nh_gfx_updateOpenGLSurface(
 #else
             return NH_API_ERROR_BAD_STATE;
 #endif
+        case NH_WSI_TYPE_ANDROID :
+            break;
     }
 
     return NH_API_SUCCESS;
