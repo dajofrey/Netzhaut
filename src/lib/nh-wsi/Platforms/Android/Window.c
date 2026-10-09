@@ -223,11 +223,6 @@ static void nh_wsi_androidApplyContentRect(
     if (bottom > Window_p->keyboardInsetBottom) {
         Window_p->keyboardInsetBottom = bottom;
     }
-    __android_log_print(ANDROID_LOG_INFO, "Netzhaut",
-        "Content rect %d,%d-%d,%d in %dx%d -> safe %d,%d,%d,%d keyboard %d",
-        ContentRect_p->left, ContentRect_p->top, ContentRect_p->right, ContentRect_p->bottom,
-        width, height, Window_p->safeAreaTop, Window_p->safeAreaBottom,
-        Window_p->safeAreaLeft, Window_p->safeAreaRight, Window_p->keyboardInsetBottom);
 }
 
 static nh_api_Window *nh_wsi_getAndroidWindowForInput()
