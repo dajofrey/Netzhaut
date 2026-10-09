@@ -42,6 +42,47 @@ MacOS dependencies:
 brew install freetype harfbuzz openssl
 ```
 
+#### Android static libraries
+
+Install the Android SDK and NDK, then set `ANDROID_NDK_HOME` to the installed
+NDK directory. For example:
+
+```bash
+export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
+export ANDROID_NDK_HOME="$ANDROID_SDK_ROOT/ndk/<ndk-version>"
+```
+
+Build the five static libraries (`nh-api`, `nh-core`, `nh-wsi`,
+`nh-encoding`, and `nh-gfx`) with the NDK toolchain:
+
+```bash
+make -f build/automation/lib-android.mk
+```
+
+The default target is `arm64-v8a` with Android API level 24. Select another
+supported ABI or API level by passing make variables:
+
+```bash
+make -f build/automation/lib-android.mk ANDROID_ABI=arm64-v8a ANDROID_API=24
+make -f build/automation/lib-android.mk ANDROID_ABI=x86_64 ANDROID_API=24
+```
+
+Supported ABIs are `arm64-v8a`, `armeabi-v7a`, `x86_64`, and `x86`. Each
+ABI is written to its own output directory:
+`build/android/<abi>/lib/libnh-*.a`. To remove the selected ABI's objects and
+archives, run:
+
+```bash
+make -f build/automation/lib-android.mk clean
+```
+
+This Makefile compiles Netzhaut's archives; it does not build FreeType or
+HarfBuzz for Android. The Android app must provide Android-built FreeType and
+HarfBuzz when linking `libnh-gfx.a`, compile `android_native_app_glue.c`, and
+link the Android system libraries used by the backends (`-landroid -llog
+-lEGL -lGLESv3`). Configure `nh-gfx.api` as `opengl` when using the Android
+EGL backend.
+
 ### 3. Compile source-code into libraries and binaries 
 
 #### using [Make](https://en.wikipedia.org/wiki/Make_\(software\))

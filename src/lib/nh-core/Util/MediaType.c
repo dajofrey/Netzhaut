@@ -1872,7 +1872,7 @@ NH_MEDIA nh_core_getMediaTypeFromTemplate(
     char *template_p)
 {
     unsigned int *index_p = NULL;
-    if (hashmap_get(NH_INDEXMAP.MediaTypes, template_p, (void**)(&index)) != MAP_OK) {
+    if (hashmap_get(NH_INDEXMAP.MediaTypes, template_p, (void**)&index_p) != MAP_OK) {
         return -1;
     }
     if (index_p == NULL) {return -1;}

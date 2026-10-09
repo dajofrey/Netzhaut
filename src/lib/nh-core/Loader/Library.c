@@ -17,11 +17,10 @@
 #include "../System/Thread.h"
 #include "../Common/Platform.h"
 
-#if defined(__linux__)
+#if defined(__linux__) && !defined(__ANDROID__)
     #include <link.h>
-#elif defined(__APPLE__)
-    #include <dlfcn.h>
 #endif
+#include <dlfcn.h>
 
 #include <stddef.h>
 #include <stdio.h>

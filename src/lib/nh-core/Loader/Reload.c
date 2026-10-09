@@ -13,7 +13,7 @@
 #include "Reload.h"
 #include "Loader.h"
 
-#if defined(__unix__)
+#if defined(__linux__) && !defined(__ANDROID__)
     #include <link.h>
 #endif
 
@@ -41,7 +41,7 @@ char *nh_core_lastModified(
     const char *lib_name = NULL;
 
     // On Linux, use dlinfo to retrieve the library name
-#ifdef __linux__
+#if defined(__linux__) && !defined(__ANDROID__)
     struct link_map *info_p;
     dlinfo(lib_p, RTLD_DI_LINKMAP, &info_p);
     lib_name = info_p->l_name;
