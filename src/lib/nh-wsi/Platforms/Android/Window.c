@@ -86,27 +86,34 @@ static bool nh_wsi_androidGetInsets(
             env, typeClass, "systemBars", "()I") : NULL;
         jmethodID displayCutoutMethod = typeClass ? (*env)->GetStaticMethodID(
             env, typeClass, "displayCutout", "()I") : NULL;
+        jmethodID imeMethod = typeClass ? (*env)->GetStaticMethodID(
+            env, typeClass, "ime", "()I") : NULL;
         jclass insetsClass = (*env)->GetObjectClass(env, insets);
         jmethodID getInsets = insetsClass ? (*env)->GetMethodID(
             env, insetsClass, "getInsets", "(I)Landroid/graphics/Insets;") : NULL;
 
-        if (systemBarsMethod && displayCutoutMethod && getInsets) {
+        if (systemBarsMethod && displayCutoutMethod && imeMethod && getInsets) {
             jint safeTypes = (*env)->CallStaticIntMethod(env, typeClass, systemBarsMethod)
                 | (*env)->CallStaticIntMethod(env, typeClass, displayCutoutMethod);
             jobject safeInsets = (*env)->CallObjectMethod(env, insets, getInsets, safeTypes);
+            jobject imeInsets = (*env)->CallObjectMethod(
+                env, insets, getInsets,
+                (*env)->CallStaticIntMethod(env, typeClass, imeMethod));
             jclass pixelInsetsClass = (*env)->FindClass(env, "android/graphics/Insets");
             jfieldID topField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "top", "I") : NULL;
             jfieldID bottomField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "bottom", "I") : NULL;
             jfieldID leftField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "left", "I") : NULL;
             jfieldID rightField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "right", "I") : NULL;
-            if (safeInsets && topField && bottomField && leftField && rightField) {
+            if (safeInsets && imeInsets && topField && bottomField && leftField && rightField) {
                 top = (*env)->GetIntField(env, safeInsets, topField);
                 bottom = (*env)->GetIntField(env, safeInsets, bottomField);
                 left = (*env)->GetIntField(env, safeInsets, leftField);
                 right = (*env)->GetIntField(env, safeInsets, rightField);
+                keyboardBottom = (*env)->GetIntField(env, imeInsets, bottomField);
                 success = true;
             }
             if (safeInsets) (*env)->DeleteLocalRef(env, safeInsets);
+            if (imeInsets) (*env)->DeleteLocalRef(env, imeInsets);
             if (pixelInsetsClass) (*env)->DeleteLocalRef(env, pixelInsetsClass);
         }
         if (typeClass) (*env)->DeleteLocalRef(env, typeClass);
@@ -191,6 +198,38 @@ static bool nh_wsi_androidGetInsets(
     return true;
 }
 
+static void nh_wsi_androidApplyContentRect(
+    nh_wsi_Window *Window_p, const ARect *ContentRect_p, int width, int height)
+{
+    if (!Window_p || !ContentRect_p || width <= 0 || height <= 0
+     || ContentRect_p->right <= ContentRect_p->left
+     || ContentRect_p->bottom <= ContentRect_p->top) {
+        return;
+    }
+
+    int top = ContentRect_p->top > 0 ? ContentRect_p->top : 0;
+    int left = ContentRect_p->left > 0 ? ContentRect_p->left : 0;
+    int right = width - ContentRect_p->right;
+    int bottom = height - ContentRect_p->bottom;
+    if (right < 0) right = 0;
+    if (bottom < 0) bottom = 0;
+
+    if (top > Window_p->safeAreaTop) Window_p->safeAreaTop = top;
+    if (left > Window_p->safeAreaLeft) Window_p->safeAreaLeft = left;
+    if (right > Window_p->safeAreaRight) Window_p->safeAreaRight = right;
+    if (Window_p->keyboardInsetBottom == 0 && bottom > Window_p->safeAreaBottom) {
+        Window_p->safeAreaBottom = bottom;
+    }
+    if (bottom > Window_p->keyboardInsetBottom) {
+        Window_p->keyboardInsetBottom = bottom;
+    }
+    __android_log_print(ANDROID_LOG_INFO, "Netzhaut",
+        "Content rect %d,%d-%d,%d in %dx%d -> safe %d,%d,%d,%d keyboard %d",
+        ContentRect_p->left, ContentRect_p->top, ContentRect_p->right, ContentRect_p->bottom,
+        width, height, Window_p->safeAreaTop, Window_p->safeAreaBottom,
+        Window_p->safeAreaLeft, Window_p->safeAreaRight, Window_p->keyboardInsetBottom);
+}
+
 static nh_api_Window *nh_wsi_getAndroidWindowForInput()
 {
     for (int i = 0; i < NH_WSI_LISTENER.Windows.count; ++i) {
@@ -227,6 +266,12 @@ static void nh_wsi_updateAndroidWindows(bool clearWindow)
         int width = CurrentWindow_p ? ANativeWindow_getWidth(CurrentWindow_p) : 0;
         int height = CurrentWindow_p ? ANativeWindow_getHeight(CurrentWindow_p) : 0;
         float scale = nh_wsi_androidGetScale(NH_WSI_ANDROID_APP);
+        ARect contentRect = {0, 0, 0, 0};
+        if (!clearWindow && NH_WSI_ANDROID_APP) {
+            pthread_mutex_lock(&NH_WSI_ANDROID_APP->mutex);
+            contentRect = NH_WSI_ANDROID_APP->contentRect;
+            pthread_mutex_unlock(&NH_WSI_ANDROID_APP->mutex);
+        }
         Window_p->scale = scale;
         pthread_mutex_unlock(&NH_WSI_ANDROID_MUTEX);
 
@@ -234,6 +279,7 @@ static void nh_wsi_updateAndroidWindows(bool clearWindow)
             nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0, 0, 0);
         } else {
             nh_wsi_androidGetInsets(NH_WSI_ANDROID_APP, Window_p);
+            nh_wsi_androidApplyContentRect(Window_p, &contentRect, width, height);
             nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, 0, 0,
                 (int)(width / scale), (int)(height / scale), width, height);
         }
@@ -628,8 +674,15 @@ NH_API_RESULT nh_wsi_createAndroidWindow(
     Window_p->Android.Handle = NativeWindow_p;
     Window_p->Android.generation = 1;
     Window_p->scale = nh_wsi_androidGetScale(app_p);
+    int width = ANativeWindow_getWidth(NativeWindow_p);
+    int height = ANativeWindow_getHeight(NativeWindow_p);
     pthread_mutex_unlock(&NH_WSI_ANDROID_MUTEX);
     nh_wsi_androidGetInsets(app_p, Window_p);
+    ARect contentRect;
+    pthread_mutex_lock(&app_p->mutex);
+    contentRect = app_p->contentRect;
+    pthread_mutex_unlock(&app_p->mutex);
+    nh_wsi_androidApplyContentRect(Window_p, &contentRect, width, height);
     return NH_API_SUCCESS;
 }
 
