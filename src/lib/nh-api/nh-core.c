@@ -52,7 +52,11 @@ static void *nh_api_openCoreLibrary(
     char *path_p)
 {
 #if defined(NH_STATIC_LINK)
+    #if defined(__ANDROID__)
+        path_p = "libyalla.so";
+    #else
     path_p = NULL;
+    #endif
 #endif
 #if defined(__unix__) || defined(__APPLE__)
     char *error_p;

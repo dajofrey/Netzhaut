@@ -10,6 +10,8 @@
 #include <android/native_activity.h>
 #include <android/configuration.h>
 #include <android_native_app_glue.h>
+#include <android/log.h>
+#include <jni.h>
 #include <pthread.h>
 #include <string.h>
 
@@ -23,6 +25,170 @@ static float nh_wsi_androidGetScale(struct android_app *app_p)
     int density = app_p && app_p->config ? AConfiguration_getDensity(app_p->config) : 0;
     return density > 0 && density != ACONFIGURATION_DENSITY_ANY ?
         (float)density / 160.0f : 1.0f;
+}
+
+static bool nh_wsi_androidGetInsets(
+    struct android_app *app_p, nh_wsi_Window *Window_p)
+{
+    if (!app_p || !app_p->activity || !Window_p) {
+        return false;
+    }
+
+    JNIEnv *env = NULL;
+    bool detach = false;
+    jint status = (*app_p->activity->vm)->GetEnv(
+        app_p->activity->vm, (void**)&env, JNI_VERSION_1_6);
+    if (status == JNI_EDETACHED) {
+        if ((*app_p->activity->vm)->AttachCurrentThread(
+                app_p->activity->vm, &env, NULL) != JNI_OK) {
+            __android_log_print(ANDROID_LOG_ERROR, "Netzhaut",
+                "Could not attach to the Android VM to read window insets");
+            return false;
+        }
+        detach = true;
+    } else if (status != JNI_OK) {
+        __android_log_print(ANDROID_LOG_ERROR, "Netzhaut",
+            "Could not access the Android VM to read window insets");
+        return false;
+    }
+
+    int top = Window_p->safeAreaTop;
+    int bottom = Window_p->safeAreaBottom;
+    int left = Window_p->safeAreaLeft;
+    int right = Window_p->safeAreaRight;
+    int keyboardBottom = 0;
+    bool success = false;
+
+    jclass versionClass = (*env)->FindClass(env, "android/os/Build$VERSION");
+    jfieldID sdkField = versionClass ? (*env)->GetStaticFieldID(
+        env, versionClass, "SDK_INT", "I") : NULL;
+    int sdkVersion = sdkField ? (*env)->GetStaticIntField(env, versionClass, sdkField) : 0;
+
+    jclass activityClass = (*env)->GetObjectClass(env, app_p->activity->clazz);
+    jmethodID getWindow = activityClass ? (*env)->GetMethodID(
+        env, activityClass, "getWindow", "()Landroid/view/Window;") : NULL;
+    jobject window = getWindow ? (*env)->CallObjectMethod(
+        env, app_p->activity->clazz, getWindow) : NULL;
+    jclass windowClass = window ? (*env)->GetObjectClass(env, window) : NULL;
+    jmethodID getDecorView = windowClass ? (*env)->GetMethodID(
+        env, windowClass, "getDecorView", "()Landroid/view/View;") : NULL;
+    jobject decorView = getDecorView ? (*env)->CallObjectMethod(
+        env, window, getDecorView) : NULL;
+    jclass viewClass = decorView ? (*env)->GetObjectClass(env, decorView) : NULL;
+    jmethodID getRootWindowInsets = viewClass ? (*env)->GetMethodID(
+        env, viewClass, "getRootWindowInsets", "()Landroid/view/WindowInsets;") : NULL;
+    jobject insets = getRootWindowInsets ? (*env)->CallObjectMethod(
+        env, decorView, getRootWindowInsets) : NULL;
+
+    if (insets && sdkVersion >= 30) {
+        jclass typeClass = (*env)->FindClass(env, "android/view/WindowInsets$Type");
+        jmethodID systemBarsMethod = typeClass ? (*env)->GetStaticMethodID(
+            env, typeClass, "systemBars", "()I") : NULL;
+        jmethodID displayCutoutMethod = typeClass ? (*env)->GetStaticMethodID(
+            env, typeClass, "displayCutout", "()I") : NULL;
+        jclass insetsClass = (*env)->GetObjectClass(env, insets);
+        jmethodID getInsets = insetsClass ? (*env)->GetMethodID(
+            env, insetsClass, "getInsets", "(I)Landroid/graphics/Insets;") : NULL;
+
+        if (systemBarsMethod && displayCutoutMethod && getInsets) {
+            jint safeTypes = (*env)->CallStaticIntMethod(env, typeClass, systemBarsMethod)
+                | (*env)->CallStaticIntMethod(env, typeClass, displayCutoutMethod);
+            jobject safeInsets = (*env)->CallObjectMethod(env, insets, getInsets, safeTypes);
+            jclass pixelInsetsClass = (*env)->FindClass(env, "android/graphics/Insets");
+            jfieldID topField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "top", "I") : NULL;
+            jfieldID bottomField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "bottom", "I") : NULL;
+            jfieldID leftField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "left", "I") : NULL;
+            jfieldID rightField = pixelInsetsClass ? (*env)->GetFieldID(env, pixelInsetsClass, "right", "I") : NULL;
+            if (safeInsets && topField && bottomField && leftField && rightField) {
+                top = (*env)->GetIntField(env, safeInsets, topField);
+                bottom = (*env)->GetIntField(env, safeInsets, bottomField);
+                left = (*env)->GetIntField(env, safeInsets, leftField);
+                right = (*env)->GetIntField(env, safeInsets, rightField);
+                success = true;
+            }
+            if (safeInsets) (*env)->DeleteLocalRef(env, safeInsets);
+            if (pixelInsetsClass) (*env)->DeleteLocalRef(env, pixelInsetsClass);
+        }
+        if (typeClass) (*env)->DeleteLocalRef(env, typeClass);
+        if (insetsClass) (*env)->DeleteLocalRef(env, insetsClass);
+    } else if (insets) {
+        jclass insetsClass = (*env)->GetObjectClass(env, insets);
+        jmethodID topMethod = insetsClass ? (*env)->GetMethodID(
+            env, insetsClass, "getSystemWindowInsetTop", "()I") : NULL;
+        jmethodID bottomMethod = insetsClass ? (*env)->GetMethodID(
+            env, insetsClass, "getSystemWindowInsetBottom", "()I") : NULL;
+        jmethodID leftMethod = insetsClass ? (*env)->GetMethodID(
+            env, insetsClass, "getSystemWindowInsetLeft", "()I") : NULL;
+        jmethodID rightMethod = insetsClass ? (*env)->GetMethodID(
+            env, insetsClass, "getSystemWindowInsetRight", "()I") : NULL;
+        if (topMethod && bottomMethod && leftMethod && rightMethod) {
+            top = (*env)->CallIntMethod(env, insets, topMethod);
+            bottom = (*env)->CallIntMethod(env, insets, bottomMethod);
+            left = (*env)->CallIntMethod(env, insets, leftMethod);
+            right = (*env)->CallIntMethod(env, insets, rightMethod);
+            success = true;
+        }
+        if (insetsClass) (*env)->DeleteLocalRef(env, insetsClass);
+    }
+
+    if (success && decorView) {
+        jclass viewClass = (*env)->GetObjectClass(env, decorView);
+        jmethodID getHeight = viewClass ? (*env)->GetMethodID(
+            env, viewClass, "getHeight", "()I") : NULL;
+        jmethodID getLocationOnScreen = viewClass ? (*env)->GetMethodID(
+            env, viewClass, "getLocationOnScreen", "([I)V") : NULL;
+        jmethodID getWindowVisibleDisplayFrame = viewClass ? (*env)->GetMethodID(
+            env, viewClass, "getWindowVisibleDisplayFrame", "(Landroid/graphics/Rect;)V") : NULL;
+        jclass rectClass = (*env)->FindClass(env, "android/graphics/Rect");
+        jmethodID rectConstructor = rectClass ? (*env)->GetMethodID(
+            env, rectClass, "<init>", "()V") : NULL;
+        jfieldID rectBottom = rectClass ? (*env)->GetFieldID(env, rectClass, "bottom", "I") : NULL;
+        if (getHeight && getLocationOnScreen && getWindowVisibleDisplayFrame
+         && rectConstructor && rectBottom) {
+            jintArray location = (*env)->NewIntArray(env, 2);
+            jobject visibleFrame = (*env)->NewObject(env, rectClass, rectConstructor);
+            if (location && visibleFrame) {
+                (*env)->CallVoidMethod(env, decorView, getLocationOnScreen, location);
+                (*env)->CallVoidMethod(env, decorView, getWindowVisibleDisplayFrame, visibleFrame);
+                jint screenLocation[2] = {0, 0};
+                (*env)->GetIntArrayRegion(env, location, 0, 2, screenLocation);
+                int viewBottom = screenLocation[1] + (*env)->CallIntMethod(env, decorView, getHeight);
+                int visibleBottom = (*env)->GetIntField(env, visibleFrame, rectBottom);
+                keyboardBottom = viewBottom > visibleBottom ? viewBottom - visibleBottom : 0;
+            }
+            if (location) (*env)->DeleteLocalRef(env, location);
+            if (visibleFrame) (*env)->DeleteLocalRef(env, visibleFrame);
+        }
+        if (rectClass) (*env)->DeleteLocalRef(env, rectClass);
+        if (viewClass) (*env)->DeleteLocalRef(env, viewClass);
+    }
+
+    if ((*env)->ExceptionCheck(env)) {
+        (*env)->ExceptionClear(env);
+        success = false;
+    }
+    if (insets) (*env)->DeleteLocalRef(env, insets);
+    if (decorView) (*env)->DeleteLocalRef(env, decorView);
+    if (viewClass) (*env)->DeleteLocalRef(env, viewClass);
+    if (window) (*env)->DeleteLocalRef(env, window);
+    if (windowClass) (*env)->DeleteLocalRef(env, windowClass);
+    if (activityClass) (*env)->DeleteLocalRef(env, activityClass);
+    if (versionClass) (*env)->DeleteLocalRef(env, versionClass);
+    if (detach) {
+        (*app_p->activity->vm)->DetachCurrentThread(app_p->activity->vm);
+    }
+
+    if (!success) {
+        __android_log_print(ANDROID_LOG_WARN, "Netzhaut",
+            "Could not read Android window insets; retaining previous values");
+        return false;
+    }
+    Window_p->safeAreaTop = top;
+    Window_p->safeAreaBottom = bottom;
+    Window_p->safeAreaLeft = left;
+    Window_p->safeAreaRight = right;
+    Window_p->keyboardInsetBottom = keyboardBottom;
+    return true;
 }
 
 static nh_api_Window *nh_wsi_getAndroidWindowForInput()
@@ -67,6 +233,7 @@ static void nh_wsi_updateAndroidWindows(bool clearWindow)
         if (clearWindow) {
             nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_FOCUS_OUT, 0, 0, 0, 0, 0, 0);
         } else {
+            nh_wsi_androidGetInsets(NH_WSI_ANDROID_APP, Window_p);
             nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, 0, 0,
                 (int)(width / scale), (int)(height / scale), width, height);
         }
@@ -363,6 +530,7 @@ NH_API_RESULT nh_wsi_createAndroidWindow(
     Window_p->Android.generation = 1;
     Window_p->scale = nh_wsi_androidGetScale(app_p);
     pthread_mutex_unlock(&NH_WSI_ANDROID_MUTEX);
+    nh_wsi_androidGetInsets(app_p, Window_p);
     return NH_API_SUCCESS;
 }
 

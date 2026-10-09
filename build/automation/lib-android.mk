@@ -50,7 +50,7 @@ EXT_IOS_DIR := $(ROOT_DIR)/external/ios
 FREETYPE_DIR := $(EXT_IOS_DIR)/freetype
 HARFBUZZ_DIR := $(EXT_IOS_DIR)/harfbuzz
 
-CFLAGS := -g -std=gnu99 -DNH_STATIC_LINK
+CFLAGS := -g -std=gnu99 -fPIC -DNH_STATIC_LINK
 CFLAGS += -I$(ROOT_DIR)/src/lib -I$(ROOT_DIR)/external
 CFLAGS += -I$(FREETYPE_DIR)/include
 CFLAGS += -I$(HARFBUZZ_DIR)/include/harfbuzz
@@ -178,6 +178,10 @@ OBJ_FILES_NH_WSI := $(patsubst %.c,$(OBJ_DIR)/nh-wsi/%.o,$(SRC_FILES_NH_WSI))
 OBJ_FILES_NH_ENCODING := $(patsubst %.c,$(OBJ_DIR)/nh-encoding/%.o,$(SRC_FILES_NH_ENCODING))
 OBJ_FILES_NH_GFX := $(patsubst %.c,$(OBJ_DIR)/nh-gfx/%.o,$(SRC_FILES_NH_GFX))
 OBJ_FILES_FTGL := $(patsubst %.c,$(OBJ_DIR)/freetype-gl/%.o,$(SRC_FILES_FTGL))
+
+$(OBJ_FILES_NH_API) $(OBJ_FILES_NH_CORE) $(OBJ_FILES_NH_WSI) \
+$(OBJ_FILES_NH_ENCODING) $(OBJ_FILES_NH_GFX) $(OBJ_FILES_FTGL): \
+	$(ROOT_DIR)/build/automation/lib-android.mk
 
 LIB_NH_API := $(LIB_DIR)/libnh-api.a
 LIB_NH_CORE := $(LIB_DIR)/libnh-core.a

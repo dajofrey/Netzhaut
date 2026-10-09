@@ -302,16 +302,78 @@
 
 @interface NHCustomViewController : UIViewController
 @property (nonatomic, assign) nh_wsi_Window *Window_p;
+- (void)updateInsetsAndNotify;
 @end
 
 @implementation NHCustomViewController
+
+- (void)updateInsetsAndNotify {
+    if (!self.Window_p || !self.view.window) return;
+
+    CGFloat scale = self.view.contentScaleFactor;
+    UIEdgeInsets insets = self.view.safeAreaInsets;
+    int top = (int)lround(insets.top * scale);
+    int bottom = (int)lround(insets.bottom * scale);
+    int left = (int)lround(insets.left * scale);
+    int right = (int)lround(insets.right * scale);
+    nh_wsi_Window *Window_p = self.Window_p;
+    if (Window_p->safeAreaTop == top && Window_p->safeAreaBottom == bottom
+     && Window_p->safeAreaLeft == left && Window_p->safeAreaRight == right) {
+        return;
+    }
+
+    Window_p->safeAreaTop = top;
+    Window_p->safeAreaBottom = bottom;
+    Window_p->safeAreaLeft = left;
+    Window_p->safeAreaRight = right;
+    CGSize size = self.view.bounds.size;
+    nh_wsi_sendWindowEvent(Window_p, NH_API_WINDOW_CONFIGURE, 0, 0,
+        (int)size.width, (int)size.height,
+        (int)lround(size.width * scale), (int)lround(size.height * scale));
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self updateInsetsAndNotify];
+}
+
+- (void)keyboardFrameChanged:(NSNotification *)notification {
+    if (!self.Window_p || !self.view.window) return;
+
+    CGRect keyboardFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect keyboardInView = [self.view convertRect:keyboardFrame fromView:nil];
+    CGRect intersection = CGRectIntersection(self.view.bounds, keyboardInView);
+    CGFloat scale = self.view.contentScaleFactor;
+    int keyboardBottom = CGRectIsNull(intersection) ? 0 :
+        (int)lround(CGRectGetHeight(intersection) * scale);
+    if (self.Window_p->keyboardInsetBottom == keyboardBottom) return;
+
+    self.Window_p->keyboardInsetBottom = keyboardBottom;
+    CGSize size = self.view.bounds.size;
+    nh_wsi_sendWindowEvent(self.Window_p, NH_API_WINDOW_CONFIGURE, 0, 0,
+        (int)size.width, (int)size.height,
+        (int)lround(size.width * scale), (int)lround(size.height * scale));
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(keyboardFrameChanged:)
+        name:UIKeyboardWillChangeFrameNotification object:nil];
+    [center addObserver:self selector:@selector(keyboardFrameChanged:)
+        name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
     if (!self.Window_p) return;
 
-    CGFloat scale = [[UIScreen mainScreen] scale];
+    CGFloat scale = self.view.contentScaleFactor;
     int pointWidth  = (int)size.width;
     int pointHeight = (int)size.height;
     int pixelWidth  = (int)lround(size.width * scale);
@@ -373,15 +435,13 @@ NH_API_RESULT nh_wsi_createIOSWindow(
         Window_p->IOS.ViewController = (__bridge_retained void*)viewController;
         Window_p->IOS.Layer = (__bridge void*)view.layer;
 
-        // Retina scale universally accessible
-        Window_p->scale = (float)screenScale;
+        Window_p->scale = (float)nativeScale;
 
-        // Extract safe area in points and convert to physical pixels
         UIEdgeInsets insets = view.safeAreaInsets;
-        Window_p->safeAreaTop    = (int)(insets.top * screenScale);
-        Window_p->safeAreaBottom = (int)(insets.bottom * screenScale);
-        Window_p->safeAreaLeft   = (int)(insets.left * screenScale);
-        Window_p->safeAreaRight  = (int)(insets.right * screenScale);
+        Window_p->safeAreaTop    = (int)lround(insets.top * nativeScale);
+        Window_p->safeAreaBottom = (int)lround(insets.bottom * nativeScale);
+        Window_p->safeAreaLeft   = (int)lround(insets.left * nativeScale);
+        Window_p->safeAreaRight  = (int)lround(insets.right * nativeScale);
     }
 
     return NH_API_SUCCESS;

@@ -152,6 +152,7 @@ typedef struct NH_ALIGN_16 nh_wsi_Window {
     int safeAreaBottom;
     int safeAreaLeft;
     int safeAreaRight;
+    int keyboardInsetBottom;
 } nh_wsi_Window;
 
 // FUNCTIONS ===================================================================================

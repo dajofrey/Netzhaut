@@ -108,7 +108,11 @@ void *nh_core_loadLibrary(
     NH_MODULE_E type, char *path_p)
 {
 #if defined(NH_STATIC_LINK)
+    #if defined(__ANDROID__)
+    void* handle = dlopen("libyalla.so", RTLD_NOW | RTLD_GLOBAL);
+    #else
     void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
+    #endif
     if (!handle) {
         printf("dlopen failed: %s\n", dlerror());
         return NULL;
@@ -151,7 +155,11 @@ void *nh_core_loadExternalLibrary(
     void *lib_p = NULL;
 
 #if defined(NH_STATIC_LINK)
+    #if defined(__ANDROID__)
+    void* handle = dlopen("libyalla.so", RTLD_NOW | RTLD_GLOBAL);
+    #else
     void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
+    #endif
     if (!handle) {
         printf("dlopen failed: %s\n", dlerror());
         return NULL;
