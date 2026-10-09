@@ -353,6 +353,64 @@ static NH_ENCODING_UTF32 nh_wsi_androidCodepoint(int32_t keyCode, int32_t metaSt
     }
 }
 
+static void nh_wsi_androidSendTouchScroll(
+    nh_wsi_Window *Window_p, int x, int y, float deltaX, float deltaY,
+    nh_wsi_AndroidWindow *Android_p)
+{
+    Android_p->touchScrollX += deltaX;
+    Android_p->touchScrollY += deltaY;
+    float threshold = 40.0f * Window_p->scale;
+
+    while (Android_p->touchScrollX >= threshold) {
+        if (!Android_p->touchScrolling) {
+            nh_wsi_sendMouseEvent(Window_p, x, y,
+                NH_API_TRIGGER_CANCEL, NH_API_MOUSE_LEFT);
+            Android_p->touchScrolling = true;
+        }
+        nh_wsi_sendMouseEvent(Window_p, x, y,
+            NH_API_TRIGGER_RIGHT, NH_API_MOUSE_SCROLL);
+        Android_p->touchScrollX -= threshold;
+    }
+    while (Android_p->touchScrollX <= -threshold) {
+        if (!Android_p->touchScrolling) {
+            nh_wsi_sendMouseEvent(Window_p, x, y,
+                NH_API_TRIGGER_CANCEL, NH_API_MOUSE_LEFT);
+            Android_p->touchScrolling = true;
+        }
+        nh_wsi_sendMouseEvent(Window_p, x, y,
+            NH_API_TRIGGER_LEFT, NH_API_MOUSE_SCROLL);
+        Android_p->touchScrollX += threshold;
+    }
+    while (Android_p->touchScrollY >= threshold) {
+        if (!Android_p->touchScrolling) {
+            nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y,
+                NH_API_TRIGGER_CANCEL, NH_API_MOUSE_LEFT);
+            Android_p->touchScrolling = true;
+        }
+        nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y,
+            NH_API_TRIGGER_UP, NH_API_MOUSE_SCROLL);
+        Android_p->touchScrollY -= threshold;
+    }
+    while (Android_p->touchScrollY <= -threshold) {
+        if (!Android_p->touchScrolling) {
+            nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y,
+                NH_API_TRIGGER_CANCEL, NH_API_MOUSE_LEFT);
+            Android_p->touchScrolling = true;
+        }
+        nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y,
+            NH_API_TRIGGER_DOWN, NH_API_MOUSE_SCROLL);
+        Android_p->touchScrollY += threshold;
+    }
+}
+
+static void nh_wsi_androidResetTouch(nh_wsi_AndroidWindow *Android_p)
+{
+    Android_p->touchActive = false;
+    Android_p->touchScrolling = false;
+    Android_p->touchScrollX = 0.0f;
+    Android_p->touchScrollY = 0.0f;
+}
+
 static int32_t nh_wsi_androidOnInputEvent(
     struct android_app *app_p, AInputEvent *event_p)
 {
@@ -369,25 +427,66 @@ static int32_t nh_wsi_androidOnInputEvent(
             if (pointerIndex >= pointerCount) {
                 pointerIndex = 0;
             }
-            int x = (int)AMotionEvent_getX(event_p, pointerIndex);
-            int y = (int)AMotionEvent_getY(event_p, pointerIndex);
+            if (actionType == AMOTION_EVENT_ACTION_MOVE
+             && ((nh_wsi_Window*)Window_p)->Android.touchActive) {
+                for (size_t i = 0; i < pointerCount; ++i) {
+                    if (AMotionEvent_getPointerId(event_p, i) == ((nh_wsi_Window*)Window_p)->Android.touchPointerId) {
+                        pointerIndex = i;
+                        break;
+                    }
+                }
+            }
+            float currentX = AMotionEvent_getX(event_p, pointerIndex);
+            float currentY = AMotionEvent_getY(event_p, pointerIndex);
+            int x = (int)currentX;
+            int y = (int)currentY;
+            int32_t toolType = AMotionEvent_getToolType(event_p, pointerIndex);
+            nh_wsi_AndroidWindow *Android_p = &((nh_wsi_Window*)Window_p)->Android;
             switch (actionType) {
                 case AMOTION_EVENT_ACTION_DOWN:
+                    nh_wsi_androidResetTouch(Android_p);
+                    if (toolType == AMOTION_EVENT_TOOL_TYPE_FINGER) {
+                        Android_p->touchActive = true;
+                        Android_p->touchPointerId = AMotionEvent_getPointerId(event_p, pointerIndex);
+                        Android_p->touchLastX = currentX;
+                        Android_p->touchLastY = currentY;
+                    }
+                    nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y, NH_API_TRIGGER_PRESS, NH_API_MOUSE_LEFT);
+                    handled = 1;
+                    break;
                 case AMOTION_EVENT_ACTION_POINTER_DOWN:
                     nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y, NH_API_TRIGGER_PRESS, NH_API_MOUSE_LEFT);
                     handled = 1;
                     break;
                 case AMOTION_EVENT_ACTION_UP:
-                case AMOTION_EVENT_ACTION_POINTER_UP:
-                    nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y, NH_API_TRIGGER_RELEASE, NH_API_MOUSE_LEFT);
+                case AMOTION_EVENT_ACTION_POINTER_UP: {
+                    bool activeTouch = Android_p->touchActive
+                        && AMotionEvent_getPointerId(event_p, pointerIndex) == Android_p->touchPointerId;
+                    if (!activeTouch || !Android_p->touchScrolling) {
+                        nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y,
+                            NH_API_TRIGGER_RELEASE, NH_API_MOUSE_LEFT);
+                    }
+                    if (activeTouch) {
+                        nh_wsi_androidResetTouch(Android_p);
+                    }
                     handled = 1;
                     break;
+                }
                 case AMOTION_EVENT_ACTION_CANCEL:
                     nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y, NH_API_TRIGGER_CANCEL, NH_API_MOUSE_LEFT);
+                    nh_wsi_androidResetTouch(Android_p);
                     handled = 1;
                     break;
                 case AMOTION_EVENT_ACTION_MOVE:
                 case AMOTION_EVENT_ACTION_HOVER_MOVE:
+                    if (Android_p->touchActive && toolType == AMOTION_EVENT_TOOL_TYPE_FINGER) {
+                        float deltaX = currentX - Android_p->touchLastX;
+                        float deltaY = currentY - Android_p->touchLastY;
+                        Android_p->touchLastX = currentX;
+                        Android_p->touchLastY = currentY;
+                        nh_wsi_androidSendTouchScroll(
+                            (nh_wsi_Window*)Window_p, x, y, deltaX, deltaY, Android_p);
+                    }
                     nh_wsi_sendMouseEvent((nh_wsi_Window*)Window_p, x, y, NH_API_TRIGGER_MOVE, NH_API_MOUSE_MOVE);
                     handled = 1;
                     break;

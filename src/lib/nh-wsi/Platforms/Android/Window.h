@@ -14,6 +14,13 @@ struct android_app;
 typedef struct nh_wsi_AndroidWindow {
     ANativeWindow *Handle;
     uint32_t generation;
+    int32_t touchPointerId;
+    float touchScrollX;
+    float touchScrollY;
+    float touchLastX;
+    float touchLastY;
+    bool touchActive;
+    bool touchScrolling;
 } nh_wsi_AndroidWindow;
 
 NH_API_RESULT nh_wsi_createAndroidWindow(
