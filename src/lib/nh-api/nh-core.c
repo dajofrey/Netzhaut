@@ -53,7 +53,7 @@ static void *nh_api_openCoreLibrary(
 {
 #if defined(NH_STATIC_LINK)
     #if defined(__ANDROID__)
-        path_p = "libyalla.so";
+        path_p = "libmonoreader.so";
     #else
     path_p = NULL;
     #endif

@@ -109,7 +109,7 @@ void *nh_core_loadLibrary(
 {
 #if defined(NH_STATIC_LINK)
     #if defined(__ANDROID__)
-    void* handle = dlopen("libyalla.so", RTLD_NOW | RTLD_GLOBAL);
+    void* handle = dlopen("libmonoreader.so", RTLD_NOW | RTLD_GLOBAL);
     #else
     void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
     #endif
@@ -156,7 +156,7 @@ void *nh_core_loadExternalLibrary(
 
 #if defined(NH_STATIC_LINK)
     #if defined(__ANDROID__)
-    void* handle = dlopen("libyalla.so", RTLD_NOW | RTLD_GLOBAL);
+    void* handle = dlopen("libmonoreader.so", RTLD_NOW | RTLD_GLOBAL);
     #else
     void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
     #endif

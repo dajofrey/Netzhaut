@@ -254,7 +254,13 @@ self.backgroundColor = [NSColor clearColor];
     CGFloat dy = event.hasPreciseScrollingDeltas ? event.scrollingDeltaY : event.deltaY;
     CGFloat dx = event.hasPreciseScrollingDeltas ? event.scrollingDeltaX : event.deltaX;
 
-    if (dy > 0) {
+    if (dx > 0 && (dx >= 0 ? dx : -dx) > (dy >= 0 ? dy : -dy)) {
+        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+                              NH_API_TRIGGER_RIGHT, NH_API_MOUSE_SCROLL);
+    } else if (dx < 0 && (dx >= 0 ? dx : -dx) > (dy >= 0 ? dy : -dy)) {
+        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+                              NH_API_TRIGGER_LEFT, NH_API_MOUSE_SCROLL);
+    } else if (dy > 0) {
         nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
                               NH_API_TRIGGER_UP, NH_API_MOUSE_SCROLL);
     } else if (dy < 0) {
