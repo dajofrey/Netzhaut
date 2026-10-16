@@ -25,6 +25,7 @@
     #include <TargetConditionals.h>
     #if TARGET_OS_OSX
         #include <OpenGL/OpenGL.h>
+        #include "ContextCocoa.h"
     #endif
 #endif
 
@@ -47,6 +48,7 @@ NH_API_RESULT nh_gfx_renderOpenGL(
         if (CGLGetCurrentContext() == NULL) {
             return NH_API_ERROR_BAD_STATE;
         }
+        nh_gfx_updateOpenGLCocoaContext(&Surface_p->OpenGL);
     #elif TARGET_OS_IPHONE
         if (nh_gfx_makeOpenGLContextCurrentIOS(Surface_p->OpenGL.Context_p) != 0) {
             return NH_API_ERROR_BAD_STATE;
@@ -66,7 +68,8 @@ NH_API_RESULT nh_gfx_renderOpenGL(
 #endif
     for (int i = 0; i < SortedViewports_p->size; ++i) {
         nh_gfx_Viewport *Viewport_p = SortedViewports_p->pp[i];
-        NH_CORE_CHECK(nh_gfx_executeOpenGLCommandBuffer(Viewport_p->OpenGL.CommandBuffer_p))
+        NH_API_RESULT dbg_r = nh_gfx_executeOpenGLCommandBuffer(Viewport_p->OpenGL.CommandBuffer_p);
+        NH_CORE_CHECK(dbg_r)
         NH_CORE_CHECK(nh_gfx_freeOpenGLCommandBuffer(Viewport_p->OpenGL.CommandBuffer_p))
     }
 
@@ -75,7 +78,7 @@ NH_API_RESULT nh_gfx_renderOpenGL(
 
 #elif defined(__APPLE__)
     #if TARGET_OS_OSX
-        CGLFlushDrawable(Surface_p->OpenGL.Context_p);
+        nh_gfx_flushOpenGLCocoaContext(&Surface_p->OpenGL);
     #elif TARGET_OS_IPHONE
         nh_gfx_flushOpenGLDrawableIOS(Surface_p->OpenGL.Context_p, Surface_p->OpenGL.framebuffer, Surface_p->OpenGL.colorRenderbuffer);
     #endif

@@ -23,6 +23,10 @@
 
 @implementation CustomView
 
+- (BOOL)isOpaque {
+    return YES;
+}
+
 // Tell AppKit: yes, I want key events
 - (BOOL)acceptsFirstResponder {
     return YES;
@@ -171,16 +175,15 @@
                                defer:flag];
     if (self != nil) {
         Window_p = window;
-        self.opaque = NO; 
-self.backgroundColor = [NSColor clearColor];
+        self.opaque = YES;
+        self.backgroundColor = [NSColor blackColor];
         self.hasShadow = YES;
     }
     return self;
 }
 
-// ADD THIS METHOD: This tells the OS to stop trying to force an opaque background
 - (BOOL)isOpaque {
-    return NO;
+    return YES;
 }
 
 - (void)mouseDown:(NSEvent *)event
@@ -191,6 +194,7 @@ self.backgroundColor = [NSColor clearColor];
     CGFloat scale = self.backingScaleFactor;
     int px = (int)lround(localPoint.x * scale);
     int py = (int)lround(localPoint.y * scale);
+    fprintf(stderr, "[dbgm] mouseDown px=%d py=%d\n", px, py);
     nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_PRESS, NH_API_MOUSE_LEFT);
 }
 
@@ -442,20 +446,16 @@ NH_API_RESULT nh_wsi_createCocoaWindow(
         }
         
         // 2. Window Transparency & Visuals
-        window.opaque = NO;
-        window.backgroundColor = [NSColor clearColor];
+        window.opaque = YES;
+        window.backgroundColor = [NSColor blackColor];
         window.titlebarAppearsTransparent = YES;
         window.titleVisibility = NSWindowTitleHidden;
         
-        // 3. View Setup (The container that provides the shape)
+        // OpenGL contexts require a non-layer-backed view on macOS.
         CustomView *view = [[CustomView alloc] initWithFrame:[window.contentView bounds]];
         view.Window_p = Window_p;
         view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-        
-        // Ensure layer backing for clipping
-        view.wantsLayer = YES;
-        view.layer.cornerRadius = 10.0;
-        view.layer.masksToBounds = YES;
+        view.wantsLayer = NO;
         
         [window setContentView:view];
         [window setDelegate:delegate];

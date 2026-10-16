@@ -56,8 +56,12 @@ NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
         return NH_API_ERROR_BAD_STATE;
     }
 
+    [view setWantsBestResolutionOpenGLSurface:YES];
     [context setView:view];
     [context makeCurrentContext];
+
+    GLint opaque = 1;
+    [context setValues:&opaque forParameter:NSOpenGLCPSurfaceOpacity];
 
     // Enable vsync (optional)
     GLint swapInterval = 1;
@@ -79,6 +83,18 @@ void nh_gfx_updateOpenGLCocoaContext(
 {
     // this is needed after resize
     [Surface_p->OpenGLContext_p update];
+}
+
+void nh_gfx_flushOpenGLCocoaContext(
+    nh_gfx_OpenGLSurface *Surface_p)
+{
+    NSOpenGLContext *context = Surface_p->OpenGLContext_p;
+    NSView *view = [[context view] window] ? [context view] : nil;
+    NSView *content = [[[context view] window] contentView];
+    if (view && content && view != content) {
+        [context setView:content];
+    }
+    [context flushBuffer];
 }
 
 NH_API_RESULT nh_gfx_destroyOpenGLCocoaContext(
