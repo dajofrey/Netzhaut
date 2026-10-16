@@ -194,7 +194,6 @@
     CGFloat scale = self.backingScaleFactor;
     int px = (int)lround(localPoint.x * scale);
     int py = (int)lround(localPoint.y * scale);
-    fprintf(stderr, "[dbgm] mouseDown px=%d py=%d\n", px, py);
     nh_wsi_sendMouseEvent(Window_p, px, py, NH_API_TRIGGER_PRESS, NH_API_MOUSE_LEFT);
 }
 
