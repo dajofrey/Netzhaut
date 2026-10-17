@@ -32,6 +32,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#if defined(__ANDROID__)
+    #include <dirent.h>
+    #include <openssl/pem.h>
+#endif
+
 #ifndef MSG_NOSIGNAL
     #define MSG_NOSIGNAL 0
 #endif
@@ -86,6 +91,40 @@ static bool nh_network_appendToBuffer(
     return true;
 }
 
+#if defined(__ANDROID__)
+// Android keeps its trust store as one PEM file per certificate, named by the legacy OpenSSL
+// subject hash, so OpenSSL's directory lookup cannot find them. Load every file instead.
+static int nh_network_loadAndroidCertificates(
+    SSL_CTX *Context_p)
+{
+    const char *dirs_pp[] = {
+        "/apex/com.android.conscrypt/cacerts",
+        "/system/etc/security/cacerts",
+    };
+    X509_STORE *Store_p = SSL_CTX_get_cert_store(Context_p);
+    int loaded = 0;
+    for (size_t i = 0; i < sizeof(dirs_pp) / sizeof(dirs_pp[0]) && loaded == 0; ++i) {
+        DIR *Dir_p = opendir(dirs_pp[i]);
+        if (!Dir_p) {continue;}
+        struct dirent *Entry_p;
+        while ((Entry_p = readdir(Dir_p))) {
+            if (Entry_p->d_name[0] == '.') {continue;}
+            char path_p[512];
+            snprintf(path_p, sizeof(path_p), "%s/%s", dirs_pp[i], Entry_p->d_name);
+            FILE *File_p = fopen(path_p, "r");
+            if (!File_p) {continue;}
+            X509 *Certificate_p = PEM_read_X509(File_p, NULL, NULL, NULL);
+            fclose(File_p);
+            if (!Certificate_p) {continue;}
+            if (X509_STORE_add_cert(Store_p, Certificate_p) == 1) {++loaded;}
+            X509_free(Certificate_p);
+        }
+        closedir(Dir_p);
+    }
+    return loaded;
+}
+#endif
+
 static void nh_network_createSSLContextOnce()
 {
     SSL_CTX *Context_p = SSL_CTX_new(TLS_client_method());
@@ -110,6 +149,9 @@ static void nh_network_createSSLContextOnce()
             SSL_CTX_load_verify_locations(Context_p, bundles_pp[i], NULL);
         }
     }
+#if defined(__ANDROID__)
+    nh_network_loadAndroidCertificates(Context_p);
+#endif
     ERR_clear_error();
 
     NH_NETWORK_SSL_CONTEXT_P = Context_p;
