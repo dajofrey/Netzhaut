@@ -10,7 +10,7 @@ LINKER_FLAGS_NH_API = -ldl
 LINKER_FLAGS_NH_CORE = -v -lm -ldl
 LINKER_FLAGS_NH_GFX = -lfreetype -lharfbuzz -Lexternal/volk -l:libvolk.a -Lexternal/freetype-gl -lfreetype-gl -lGL
 LINKER_FLAGS_FREETYPE_GL = -L/usr/include/freetype2 -lfreetype -lharfbuzz
-LINKER_FLAGS_NH_NETWORK = -lssl
+LINKER_FLAGS_NH_NETWORK = -lssl -lcrypto -lpthread
 LINKER_FLAGS_NH_WSI += -lX11 -lX11-xcb -lXcursor -lxkbcommon -lxkbcommon-x11
 LINKER_FLAGS_NH_GFX += -lX11 -lXrender -lXext
 
@@ -44,6 +44,7 @@ SRC_FILES_NH_API = \
     nh-ecmascript.c \
     nh-encoding.c \
     nh-monitor.c \
+    nh-network.c \
 
 SRC_FILES_NH_CORE = \
     Loader/Library.c \
@@ -134,6 +135,7 @@ SRC_FILES_NH_DOM = \
     Common/About.c \
 
 SRC_FILES_NH_NETWORK = \
+    HTTPClient.c \
     Common/Log.c \
     Common/Result.c \
     Common/About.c \

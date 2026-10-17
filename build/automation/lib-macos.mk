@@ -13,7 +13,8 @@ LINKER_FLAGS_NH_API = -ldl
 LINKER_FLAGS_NH_CORE = -v -lm -ldl
 LINKER_FLAGS_NH_GFX = -L/opt/homebrew/lib -lfreetype -lharfbuzz -Lexternal/freetype-gl -lfreetype-gl -framework OpenGL
 LINKER_FLAGS_FREETYPE_GL = -L/opt/homebrew/lib -lfreetype -lharfbuzz
-LINKER_FLAGS_NH_NETWORK = -L/opt/homebrew/lib -lssl
+OPENSSL_PREFIX ?= $(shell brew --prefix openssl@3 2>/dev/null || echo /opt/homebrew/opt/openssl@3)
+LINKER_FLAGS_NH_NETWORK = -L$(OPENSSL_PREFIX)/lib -lssl -lcrypto
 LINKER_FLAGS_NH_WSI += -framework Cocoa -framework QuartzCore
 LINKER_FLAGS_NH_GFX += -framework Cocoa -framework QuartzCore
 
@@ -47,6 +48,7 @@ SRC_FILES_NH_API = \
     nh-ecmascript.c \
     nh-encoding.c \
     nh-monitor.c \
+    nh-network.c \
     nh-webidl.c \
 
 SRC_FILES_NH_CORE = \
@@ -138,6 +140,7 @@ SRC_FILES_NH_DOM = \
 #    Common/About.c \
 
 SRC_FILES_NH_NETWORK = \
+    HTTPClient.c \
     Common/Log.c \
     Common/Result.c \
     Common/About.c \
@@ -399,6 +402,7 @@ $(OBJ_FILES_NH_RENDERER): CFLAGS += -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR 
 $(OBJ_FILES_VOLK): CFLAGS += -ldl -DVK_VERSION_1_2 -DVK_USE_PLATFORM_XLIB_KHR -DVK_KHR_xlib_surface -DVOLK_VULKAN_H_PATH=\"../Vulkan-Headers/include/vulkan/vulkan.h\"
 $(OBJ_FILES_FREETYPE_GL): CFLAGS += -I/opt/homebrew/include/freetype2 -I/opt/homebrew/include/harfbuzz
 $(OBJ_FILES_NH_MONITOR): CFLAGS += -Isrc/lib
+$(OBJ_FILES_NH_NETWORK): CFLAGS += -I$(OPENSSL_PREFIX)/include
 
 # Rule to compile source files into object files
 %.o: $(SRC_DIR_NH_API)/%.c
