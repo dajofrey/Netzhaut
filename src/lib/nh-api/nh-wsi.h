@@ -22,6 +22,7 @@ typedef enum NH_API_WSI_EVENT_E {
     NH_API_WSI_EVENT_MOUSE,
     NH_API_WSI_EVENT_KEYBOARD,
     NH_API_WSI_EVENT_WINDOW,
+    NH_API_WSI_EVENT_STYLUS,
 } NH_API_WSI_EVENT_E;
 
 typedef enum NH_API_WINDOW_E {
@@ -210,6 +211,13 @@ typedef enum NH_API_MODIFIER_FLAG {
 
 // STRUCTS =========================================================================================
 
+typedef struct nh_api_Rect {
+    int32_t left;
+    int32_t top;
+    int32_t right;
+    int32_t bottom;
+} nh_api_Rect;
+
 typedef struct NH_ALIGN_16 nh_api_PixelPosition { 
     int x; 
     int y; 
@@ -239,11 +247,19 @@ typedef struct NH_ALIGN_16 nh_api_KeyboardEvent {
     NH_API_MODIFIER_FLAG state;
 } nh_api_KeyboardEvent;
 
+typedef struct NH_ALIGN_16 nh_api_StylusEvent {
+    NH_API_TRIGGER_E trigger;
+    float x;
+    float y;
+    float pressure;
+} nh_api_StylusEvent;
+
 typedef struct NH_ALIGN_16 nh_api_WSIEvent {
     NH_API_WSI_EVENT_E type;
     nh_api_WindowEvent Window;
     nh_api_MouseEvent Mouse;
     nh_api_KeyboardEvent Keyboard;
+    nh_api_StylusEvent Stylus;
 } nh_api_WSIEvent;
 
 typedef struct nh_api_SurfaceRequirements nh_api_SurfaceRequirements;
@@ -286,6 +302,41 @@ NH_API_RESULT nh_api_showKeyboard(
 
 NH_API_RESULT nh_api_hideKeyboard(
     nh_api_Window *Window_p
+);
+
+// E-PAPER FUNCTIONS ===============================================================================
+
+NH_API_RESULT nh_api_setEPaperRawDrawingEnabled(
+    nh_api_Window *Window_p, bool enabled
+);
+
+NH_API_RESULT nh_api_setEPaperRawDrawingRenderEnabled(
+    nh_api_Window *Window_p, bool enabled
+);
+
+NH_API_RESULT nh_api_setEPaperRawDrawingLimitRect(
+    nh_api_Window *Window_p, int left, int top, int right, int bottom,
+    const nh_api_Rect *excludeRects_p, int excludeCount
+);
+
+NH_API_RESULT nh_api_setEPaperRawDrawingStrokeWidth(
+    nh_api_Window *Window_p, float width
+);
+
+NH_API_RESULT nh_api_setEPaperRawDrawingStrokeStyle(
+    nh_api_Window *Window_p, int style
+);
+
+NH_API_RESULT nh_api_setEPaperRawDrawingEraserEnabled(
+    nh_api_Window *Window_p, bool enabled
+);
+
+NH_API_RESULT nh_api_setEPaperUpdateMode(
+    nh_api_Window *Window_p, int mode
+);
+
+NH_API_RESULT nh_api_requestEPaperRefreshRect(
+    nh_api_Window *Window_p, int left, int top, int right, int bottom, int mode
 );
 
 #endif // NH_API_NH_WSI_H

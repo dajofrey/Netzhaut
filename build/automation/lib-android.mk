@@ -136,7 +136,8 @@ SRC_FILES_NH_WSI := \
     Common/Config.c \
     Common/About.c \
     Platforms/Android/Init.c \
-    Platforms/Android/Window.c
+    Platforms/Android/Window.c \
+    Platforms/Android/Onyx.c
 
 SRC_FILES_NH_ENCODING := \
     Base/Encodings.c \

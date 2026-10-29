@@ -75,3 +75,60 @@ NH_API_RESULT nh_api_hideKeyboard(
     nh_wsi_hideKeyboard_f hideKeyboard_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_hideKeyboard");
     return hideKeyboard_f ? hideKeyboard_f(Window_p) : NH_API_ERROR_BAD_STATE;
 }
+
+// EPAPER FUNCTIONS ===============================================================
+
+NH_API_RESULT nh_api_setEPaperRawDrawingEnabled(
+    nh_api_Window *Window_p, bool enabled)
+{
+    typedef NH_API_RESULT (*nh_wsi_setEPaperRawDrawingEnabled_f)(nh_api_Window *Window_p, bool enabled);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setEPaperRawDrawingEnabled_f setEPaperRawDrawingEnabled_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEPaperRawDrawingEnabled");
+    return setEPaperRawDrawingEnabled_f ? setEPaperRawDrawingEnabled_f(Window_p, enabled) : NH_API_ERROR_BAD_STATE;
+}
+
+NH_API_RESULT nh_api_setEPaperRawDrawingRenderEnabled(
+    nh_api_Window *Window_p, bool enabled)
+{
+    typedef NH_API_RESULT (*nh_wsi_setEPaperRawDrawingRenderEnabled_f)(nh_api_Window *Window_p, bool enabled);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setEPaperRawDrawingRenderEnabled_f setEPaperRawDrawingRenderEnabled_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEPaperRawDrawingRenderEnabled");
+    return setEPaperRawDrawingRenderEnabled_f ? setEPaperRawDrawingRenderEnabled_f(Window_p, enabled) : NH_API_ERROR_BAD_STATE;
+}
+
+NH_API_RESULT nh_api_setEPaperRawDrawingLimitRect(
+    nh_api_Window *Window_p, int left, int top, int right, int bottom,
+    const nh_api_Rect *excludeRects_p, int excludeCount)
+{
+    return 0;
+}
+
+NH_API_RESULT nh_api_setEPaperRawDrawingStrokeWidth(
+    nh_api_Window *Window_p, float width)
+{
+    return 0;
+}
+
+NH_API_RESULT nh_api_setEPaperRawDrawingStrokeStyle(
+    nh_api_Window *Window_p, int style)
+{
+    return 0;
+}
+
+NH_API_RESULT nh_api_setEPaperRawDrawingEraserEnabled(
+    nh_api_Window *Window_p, bool enabled)
+{
+    return 0;
+}
+
+NH_API_RESULT nh_api_setEPaperUpdateMode(
+    nh_api_Window *Window_p, int mode)
+{
+    return 0;
+}
+
+NH_API_RESULT nh_api_requestEPaperRefreshRect(
+    nh_api_Window *Window_p, int left, int top, int right, int bottom, int mode)
+{
+    return 0;
+}

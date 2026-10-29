@@ -188,10 +188,60 @@ NH_API_RESULT nh_wsi_hideKeyboard(
     switch (Window_p->type)
     {
 #if defined(NH_PLATFORM_IOS)
-        case NH_WSI_TYPE_IOS   : return nh_wsi_hideIOSKeyboard(&Window_p->IOS);
+        case NH_WSI_TYPE_IOS     : return nh_wsi_hideIOSKeyboard(&Window_p->IOS);
 #elif defined(NH_PLATFORM_ANDROID)
         case NH_WSI_TYPE_ANDROID : return nh_wsi_hideAndroidKeyboard(&Window_p->Android);
 #endif
-        default                : return NH_API_ERROR_BAD_STATE;
+        default                  : return NH_API_ERROR_BAD_STATE;
     }
+}
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingEnabled(
+    nh_wsi_Window *Window_p, bool enabled)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_setAndroidRawDrawingEnabled(&Window_p->Android.Onyx, enabled);
+#endif
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+}
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingRenderEnabled(
+    nh_wsi_Window *Window_p, bool enabled)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_setAndroidRawDrawingRenderEnabled(&Window_p->Android.Onyx, enabled);
+#endif
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+}
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeWidth(
+    nh_wsi_Window *Window_p, float width)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID) 
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_setAndroidRawDrawingStrokeWidth(&Window_p->Android.Onyx, width);
+#endif  
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+
+}
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeStyle(
+    nh_wsi_Window *Window_p, int style)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID) 
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_setAndroidRawDrawingStrokeStyle(&Window_p->Android.Onyx, style);
+#endif  
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+
 }

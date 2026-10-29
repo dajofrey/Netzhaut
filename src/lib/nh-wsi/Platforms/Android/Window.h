@@ -1,6 +1,7 @@
 #ifndef NH_WSI_PLATFORMS_ANDROID_WINDOW_H
 #define NH_WSI_PLATFORMS_ANDROID_WINDOW_H
 
+#include "Onyx.h"
 #include "../../Common/Config.h"
 #include "../../Common/Includes.h"
 #include "../../../nh-gfx/Base/SurfaceRequirements.h"
@@ -13,6 +14,7 @@ struct android_app;
 
 typedef struct nh_wsi_AndroidWindow {
     ANativeWindow *Handle;
+    nh_wsi_AndroidOnyx Onyx;
     uint32_t generation;
     int32_t touchPointerId;
     float touchScrollX;

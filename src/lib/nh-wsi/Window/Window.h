@@ -173,4 +173,20 @@ NH_API_RESULT nh_wsi_hideKeyboard(
     nh_wsi_Window *Window_p
 );
 
+NH_API_RESULT nh_wsi_setEPaperRawDrawingEnabled(
+    nh_wsi_Window *Window_p, bool enabled
+);
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingRenderEnabled(
+    nh_wsi_Window *Window_p, bool enabled
+);
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeWidth(
+    nh_wsi_Window *Window_p, float width
+);
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeStyle(
+    nh_wsi_Window *Window_p, int style
+);
+
 #endif // NH_WSI_WINDOW_WINDOW_H 
