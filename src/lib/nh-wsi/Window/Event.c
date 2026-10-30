@@ -127,3 +127,29 @@ void nh_wsi_sendStylusEvent(
 
     return;
 }
+
+void nh_wsi_sendGestureEvent(
+    nh_wsi_Window *Window_p, NH_API_TRIGGER_E trigger, int pointers, float x, float y,
+    float deltaX, float deltaY, float scale)
+{
+    if (!Window_p) return;
+
+    nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_GESTURE);
+
+    Event.Gesture.trigger = trigger;
+    Event.Gesture.pointers = pointers;
+    Event.Gesture.x = x;
+    Event.Gesture.y = y;
+    Event.Gesture.deltaX = deltaX;
+    Event.Gesture.deltaY = deltaY;
+    Event.Gesture.scale = scale;
+
+    if (Window_p->callback_f) {
+        Window_p->callback_f((nh_api_Window*)Window_p, Event);
+    }
+
+    nh_api_WSIEvent *Event_p = (nh_api_WSIEvent*)nh_core_advanceRingBuffer(&Window_p->Events);
+    if (Event_p) {
+        *Event_p = Event;
+    }
+}

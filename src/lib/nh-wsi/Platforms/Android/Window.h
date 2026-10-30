@@ -23,6 +23,13 @@ typedef struct nh_wsi_AndroidWindow {
     float touchLastY;
     bool touchActive;
     bool touchScrolling;
+    struct {
+        int pointers;
+        float lastX, lastY, lastSpan;
+        float startX, startY, startSpan;
+        bool active;
+        bool blocked; // set by stylus contact until all fingers are lifted
+    } Gesture;
 } nh_wsi_AndroidWindow;
 
 NH_API_RESULT nh_wsi_createAndroidWindow(

@@ -25,4 +25,9 @@ void nh_wsi_sendStylusEvent(
     nh_wsi_Window *Window_p, int trigger, float x, float y, float pressure
 );
 
+void nh_wsi_sendGestureEvent(
+    nh_wsi_Window *Window_p, NH_API_TRIGGER_E trigger, int pointers, float x, float y,
+    float deltaX, float deltaY, float scale
+);
+
 #endif // NH_WSI_WINDOW_EVENT_H 

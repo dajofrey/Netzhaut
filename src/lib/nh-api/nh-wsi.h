@@ -23,6 +23,7 @@ typedef enum NH_API_WSI_EVENT_E {
     NH_API_WSI_EVENT_KEYBOARD,
     NH_API_WSI_EVENT_WINDOW,
     NH_API_WSI_EVENT_STYLUS,
+    NH_API_WSI_EVENT_GESTURE,
 } NH_API_WSI_EVENT_E;
 
 typedef enum NH_API_WINDOW_E {
@@ -254,12 +255,30 @@ typedef struct NH_ALIGN_16 nh_api_StylusEvent {
     float pressure;
 } nh_api_StylusEvent;
 
+/**
+ * Combined pan/pinch touch gesture.
+ * trigger: PRESS (begin), MOVE (update), RELEASE (end) or CANCEL (e.g. palm or stylus contact,
+ * receivers should revert changes made since PRESS).
+ * x/y is the current focus point (centroid of all fingers) in window pixels, deltaX/deltaY the
+ * focus movement and scale the relative span change, both since the previous gesture event.
+ */
+typedef struct NH_ALIGN_16 nh_api_GestureEvent {
+    NH_API_TRIGGER_E trigger;
+    int pointers;
+    float x;
+    float y;
+    float deltaX;
+    float deltaY;
+    float scale;
+} nh_api_GestureEvent;
+
 typedef struct NH_ALIGN_16 nh_api_WSIEvent {
     NH_API_WSI_EVENT_E type;
     nh_api_WindowEvent Window;
     nh_api_MouseEvent Mouse;
     nh_api_KeyboardEvent Keyboard;
     nh_api_StylusEvent Stylus;
+    nh_api_GestureEvent Gesture;
 } nh_api_WSIEvent;
 
 typedef struct nh_api_SurfaceRequirements nh_api_SurfaceRequirements;

@@ -15,6 +15,12 @@
 #include <jni.h>
 #include <pthread.h>
 #include <string.h>
+#include <math.h>
+
+// Set on POINTER_UP/UP for unintentional touches like palms (Android 13+, missing in older NDK headers).
+#ifndef AMOTION_EVENT_FLAG_CANCELED
+#define AMOTION_EVENT_FLAG_CANCELED 0x20
+#endif
 
 static pthread_mutex_t NH_WSI_ANDROID_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 static struct android_app *NH_WSI_ANDROID_APP;
@@ -491,6 +497,120 @@ static void nh_wsi_androidSendStylus(
     }
 }
 
+static void nh_wsi_androidEndGesture(
+    nh_wsi_Window *Window_p, NH_API_TRIGGER_E trigger)
+{
+    nh_wsi_AndroidWindow *Android_p = &Window_p->Android;
+    if (Android_p->Gesture.active) {
+        nh_wsi_sendGestureEvent(Window_p, trigger, Android_p->Gesture.pointers,
+            Android_p->Gesture.lastX, Android_p->Gesture.lastY, 0.0f, 0.0f, 1.0f);
+    }
+    Android_p->Gesture.active = false;
+}
+
+/**
+ * Recognizes combined one/two finger pan and pinch gestures, similar to Android's
+ * ScaleGestureDetector. Every change of the finger set re-bases focus and span, so adding or
+ * lifting fingers never causes jumps. Any stylus contact cancels the gesture (palm rejection).
+ */
+static void nh_wsi_androidUpdateGesture(
+    nh_wsi_Window *Window_p, AInputEvent *event_p, int32_t actionType, size_t actionIndex)
+{
+    nh_wsi_AndroidWindow *Android_p = &Window_p->Android;
+
+    switch (actionType) {
+        case AMOTION_EVENT_ACTION_DOWN:
+        case AMOTION_EVENT_ACTION_POINTER_DOWN:
+        case AMOTION_EVENT_ACTION_MOVE:
+        case AMOTION_EVENT_ACTION_POINTER_UP:
+        case AMOTION_EVENT_ACTION_UP:
+            break;
+        case AMOTION_EVENT_ACTION_CANCEL:
+            nh_wsi_androidEndGesture(Window_p, NH_API_TRIGGER_CANCEL);
+            Android_p->Gesture.pointers = 0;
+            Android_p->Gesture.blocked = false;
+            return;
+        default:
+            return;
+    }
+
+    bool lifting = actionType == AMOTION_EVENT_ACTION_POINTER_UP || actionType == AMOTION_EVENT_ACTION_UP;
+    bool canceled = lifting && (AMotionEvent_getFlags(event_p) & AMOTION_EVENT_FLAG_CANCELED);
+    size_t pointerCount = AMotionEvent_getPointerCount(event_p);
+
+    int fingers = 0;
+    bool stylus = false;
+    float sumX = 0.0f, sumY = 0.0f;
+    for (size_t i = 0; i < pointerCount; ++i) {
+        if (lifting && i == actionIndex) {continue;}
+        int32_t toolType = AMotionEvent_getToolType(event_p, i);
+        if (toolType == AMOTION_EVENT_TOOL_TYPE_FINGER) {
+            sumX += AMotionEvent_getX(event_p, i);
+            sumY += AMotionEvent_getY(event_p, i);
+            fingers++;
+        } else if (toolType == AMOTION_EVENT_TOOL_TYPE_STYLUS || toolType == AMOTION_EVENT_TOOL_TYPE_ERASER) {
+            stylus = true;
+        }
+    }
+
+    if (stylus || canceled) {
+        nh_wsi_androidEndGesture(Window_p, NH_API_TRIGGER_CANCEL);
+        Android_p->Gesture.blocked = stylus || fingers > 0;
+    }
+
+    if (fingers == 0) {
+        nh_wsi_androidEndGesture(Window_p, NH_API_TRIGGER_RELEASE);
+        Android_p->Gesture.pointers = 0;
+        Android_p->Gesture.blocked = false;
+        return;
+    }
+    if (Android_p->Gesture.blocked) {return;}
+
+    float focusX = sumX / fingers;
+    float focusY = sumY / fingers;
+    float span = 0.0f;
+    if (fingers > 1) {
+        for (size_t i = 0; i < pointerCount; ++i) {
+            if (lifting && i == actionIndex) {continue;}
+            if (AMotionEvent_getToolType(event_p, i) != AMOTION_EVENT_TOOL_TYPE_FINGER) {continue;}
+            span += hypotf(AMotionEvent_getX(event_p, i) - focusX, AMotionEvent_getY(event_p, i) - focusY);
+        }
+        span /= fingers;
+    }
+
+    if (fingers != Android_p->Gesture.pointers) {
+        Android_p->Gesture.pointers = fingers;
+        Android_p->Gesture.lastX = Android_p->Gesture.startX = focusX;
+        Android_p->Gesture.lastY = Android_p->Gesture.startY = focusY;
+        Android_p->Gesture.lastSpan = Android_p->Gesture.startSpan = span;
+        return;
+    }
+
+    if (!Android_p->Gesture.active) {
+        float slop = 8.0f * (Window_p->scale > 0.0f ? Window_p->scale : 1.0f);
+        float moved = hypotf(focusX - Android_p->Gesture.startX, focusY - Android_p->Gesture.startY);
+        float spanned = fabsf(span - Android_p->Gesture.startSpan);
+        if (moved < slop && spanned < slop) {return;}
+        Android_p->Gesture.active = true;
+        Android_p->Gesture.lastX = focusX;
+        Android_p->Gesture.lastY = focusY;
+        Android_p->Gesture.lastSpan = span;
+        nh_wsi_sendGestureEvent(Window_p, NH_API_TRIGGER_PRESS, fingers, focusX, focusY, 0.0f, 0.0f, 1.0f);
+        return;
+    }
+
+    float scale = fingers > 1 && Android_p->Gesture.lastSpan > 0.0f && span > 0.0f ?
+        span / Android_p->Gesture.lastSpan : 1.0f;
+    float deltaX = focusX - Android_p->Gesture.lastX;
+    float deltaY = focusY - Android_p->Gesture.lastY;
+    if (deltaX == 0.0f && deltaY == 0.0f && scale == 1.0f) {return;}
+
+    Android_p->Gesture.lastX = focusX;
+    Android_p->Gesture.lastY = focusY;
+    Android_p->Gesture.lastSpan = span;
+    nh_wsi_sendGestureEvent(Window_p, NH_API_TRIGGER_MOVE, fingers, focusX, focusY, deltaX, deltaY, scale);
+}
+
 static int32_t nh_wsi_androidOnInputEvent(
     struct android_app *app_p, AInputEvent *event_p)
 {
@@ -525,6 +645,8 @@ static int32_t nh_wsi_androidOnInputEvent(
             if (toolType == AMOTION_EVENT_TOOL_TYPE_STYLUS) {
                 nh_wsi_androidSendStylus((nh_wsi_Window*)Window_p, event_p, actionType, pointerIndex);
             }
+            nh_wsi_androidUpdateGesture((nh_wsi_Window*)Window_p, event_p, actionType,
+                (size_t)((action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT));
             switch (actionType) {
                 case AMOTION_EVENT_ACTION_DOWN:
                     nh_wsi_androidResetTouch(Android_p);
