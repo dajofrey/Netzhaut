@@ -1,6 +1,7 @@
 # Netzhaut Android static libraries
 #
 # Usage:
+#   make -f build/automation/lib-android.mk deps
 #   ANDROID_NDK_HOME=/path/to/ndk make -f build/automation/lib-android.mk
 #   ANDROID_NDK_HOME=/path/to/ndk make -f build/automation/lib-android.mk ANDROID_ABI=x86_64
 #
@@ -14,7 +15,9 @@ ANDROID_API ?= 24
 
 ifeq ($(strip $(ANDROID_NDK)),)
     ifneq ($(MAKECMDGOALS),clean)
-        $(error Set ANDROID_NDK_HOME or ANDROID_NDK_ROOT to your Android NDK path)
+        ifneq ($(MAKECMDGOALS),clean-deps)
+            $(error Set ANDROID_NDK_HOME or ANDROID_NDK_ROOT to your Android NDK path)
+        endif
     endif
 endif
 
@@ -50,9 +53,10 @@ TOOLCHAIN_BIN := $(ANDROID_NDK)/toolchains/llvm/prebuilt/$(ANDROID_HOST_TAG)/bin
 ANDROID_CC ?= $(TOOLCHAIN_BIN)/$(ANDROID_CC_NAME)
 ANDROID_AR ?= $(TOOLCHAIN_BIN)/llvm-ar
 
-EXT_IOS_DIR := $(ROOT_DIR)/external/ios
-FREETYPE_DIR := $(EXT_IOS_DIR)/freetype
-HARFBUZZ_DIR := $(EXT_IOS_DIR)/harfbuzz
+# --- External Dependencies ---
+EXT_ANDROID_DIR := $(ROOT_DIR)/external/android
+FREETYPE_DIR := $(EXT_ANDROID_DIR)/freetype
+HARFBUZZ_DIR := $(EXT_ANDROID_DIR)/harfbuzz
 
 CFLAGS := -g -std=gnu99 -fPIC -DNH_STATIC_LINK
 CFLAGS += -I$(ROOT_DIR)/src/lib -I$(ROOT_DIR)/external
@@ -179,7 +183,6 @@ SRC_FILES_NH_GFX := \
     Common/About.c \
     Common/IndexMap.c
 
-# Common/Result.c is left out: in one static binary its result names clash with nh-core's.
 SRC_FILES_NH_NETWORK := \
     HTTPClient.c \
     Common/Log.c \
@@ -218,6 +221,10 @@ LIB_NH_NETWORK := $(LIB_DIR)/libnh-network.a
 
 all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX) $(LIB_NH_NETWORK)
 openssl: $(OPENSSL_STAMP)
+
+# --- Dependency Builder ---
+deps:
+	@scripts/build-android-deps.sh $(ANDROID_ABI) $(ANDROID_API)
 
 $(OPENSSL_TARBALL):
 	@mkdir -p $(dir $@)
@@ -283,4 +290,7 @@ $(LIB_NH_NETWORK): $(LIB_DIR) $(OBJ_FILES_NH_NETWORK)
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR)
 
-.PHONY: all clean openssl
+clean-deps:
+	rm -rf $(EXT_ANDROID_DIR)
+
+.PHONY: all clean openssl deps clean-deps

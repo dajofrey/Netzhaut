@@ -7,4 +7,5 @@ test*
 *.o
 *.a
 /external/ios/
+/external/android/
 build/android
