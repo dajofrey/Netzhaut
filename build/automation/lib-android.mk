@@ -219,7 +219,7 @@ LIB_NH_ENCODING := $(LIB_DIR)/libnh-encoding.a
 LIB_NH_GFX := $(LIB_DIR)/libnh-gfx.a
 LIB_NH_NETWORK := $(LIB_DIR)/libnh-network.a
 
-all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX) $(LIB_NH_NETWORK)
+all: deps $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX) $(LIB_NH_NETWORK)
 openssl: $(OPENSSL_STAMP)
 
 # --- Dependency Builder ---

@@ -194,7 +194,7 @@ LIB_NH_WSI = $(LIB_DIR)/libnh-wsi.a
 LIB_NH_ENCODING = $(LIB_DIR)/libnh-encoding.a
 LIB_NH_GFX = $(LIB_DIR)/libnh-gfx.a
 
-all: $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX)
+all: deps $(LIB_NH_API) $(LIB_NH_CORE) $(LIB_NH_WSI) $(LIB_NH_ENCODING) $(LIB_NH_GFX)
 
 # --- Dependency Builder ---
 deps:
