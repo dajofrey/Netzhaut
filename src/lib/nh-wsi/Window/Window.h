@@ -181,6 +181,15 @@ NH_API_RESULT nh_wsi_setEPaperRawDrawingRenderEnabled(
     nh_wsi_Window *Window_p, bool enabled
 );
 
+NH_API_RESULT nh_wsi_setEPaperRawDrawingLimitRect(
+    nh_wsi_Window *Window_p, int left, int top, int right, int bottom,
+    const nh_api_Rect *excludeRects_p, int excludeCount
+);
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingEraserEnabled(
+    nh_wsi_Window *Window_p, bool enabled
+);
+
 NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeWidth(
     nh_wsi_Window *Window_p, float width
 );

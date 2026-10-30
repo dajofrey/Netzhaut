@@ -220,6 +220,32 @@ NH_API_RESULT nh_wsi_setEPaperRawDrawingRenderEnabled(
     }
 }
 
+NH_API_RESULT nh_wsi_setEPaperRawDrawingLimitRect(
+    nh_wsi_Window *Window_p, int left, int top, int right, int bottom,
+    const nh_api_Rect *excludeRects_p, int excludeCount)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_setAndroidRawDrawingLimitRect(
+            &Window_p->Android.Onyx, left, top, right, bottom, excludeRects_p, excludeCount);
+#endif
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+}
+
+NH_API_RESULT nh_wsi_setEPaperRawDrawingEraserEnabled(
+    nh_wsi_Window *Window_p, bool enabled)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_setAndroidRawDrawingEraserEnabled(&Window_p->Android.Onyx, enabled);
+#endif
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+}
+
 NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeWidth(
     nh_wsi_Window *Window_p, float width)
 {

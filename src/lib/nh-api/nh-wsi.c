@@ -100,25 +100,37 @@ NH_API_RESULT nh_api_setEPaperRawDrawingLimitRect(
     nh_api_Window *Window_p, int left, int top, int right, int bottom,
     const nh_api_Rect *excludeRects_p, int excludeCount)
 {
-    return 0;
+    typedef NH_API_RESULT (*nh_wsi_setEPaperRawDrawingLimitRect_f)(nh_api_Window *Window_p, int left, int top, int right, int bottom, const nh_api_Rect *excludeRects_p, int excludeCount);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setEPaperRawDrawingLimitRect_f setEPaperRawDrawingLimitRect_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEPaperRawDrawingLimitRect");
+    return setEPaperRawDrawingLimitRect_f ? setEPaperRawDrawingLimitRect_f(Window_p, left, top, right, bottom, excludeRects_p, excludeCount) : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_api_setEPaperRawDrawingStrokeWidth(
     nh_api_Window *Window_p, float width)
 {
-    return 0;
+    typedef NH_API_RESULT (*nh_wsi_setEPaperRawDrawingStrokeWidth_f)(nh_api_Window *Window_p, float width);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setEPaperRawDrawingStrokeWidth_f setEPaperRawDrawingStrokeWidth_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEPaperRawDrawingStrokeWidth");
+    return setEPaperRawDrawingStrokeWidth_f ? setEPaperRawDrawingStrokeWidth_f(Window_p, width) : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_api_setEPaperRawDrawingStrokeStyle(
     nh_api_Window *Window_p, int style)
 {
-    return 0;
+    typedef NH_API_RESULT (*nh_wsi_setEPaperRawDrawingStrokeStyle_f)(nh_api_Window *Window_p, int style);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setEPaperRawDrawingStrokeStyle_f setEPaperRawDrawingStrokeStyle_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEPaperRawDrawingStrokeStyle");
+    return setEPaperRawDrawingStrokeStyle_f ? setEPaperRawDrawingStrokeStyle_f(Window_p, style) : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_api_setEPaperRawDrawingEraserEnabled(
     nh_api_Window *Window_p, bool enabled)
 {
-    return 0;
+    typedef NH_API_RESULT (*nh_wsi_setEPaperRawDrawingEraserEnabled_f)(nh_api_Window *Window_p, bool enabled);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setEPaperRawDrawingEraserEnabled_f setEPaperRawDrawingEraserEnabled_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEPaperRawDrawingEraserEnabled");
+    return setEPaperRawDrawingEraserEnabled_f ? setEPaperRawDrawingEraserEnabled_f(Window_p, enabled) : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_api_setEPaperUpdateMode(

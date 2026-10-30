@@ -4,13 +4,39 @@
 #include "../../Common/Includes.h"
 #include <jni.h>
 
+// Boox/Onyx e-paper raw drawing.
+// Talks directly to the firmware class android.onyx.ViewUpdateHelper (the same class the
+// Onyx pen SDK reflects into), so no Onyx SDK jars are required. SurfaceFlinger then renders
+// the stylus strokes in hardware.
+
+typedef enum NH_WSI_ONYX_PEN_STATE_E {
+    NH_WSI_ONYX_PEN_STATE_STOP    = 0,
+    NH_WSI_ONYX_PEN_STATE_START   = 1,
+    NH_WSI_ONYX_PEN_STATE_DRAWING = 2,
+    NH_WSI_ONYX_PEN_STATE_PAUSE   = 3,
+} NH_WSI_ONYX_PEN_STATE_E;
+
 typedef struct nh_wsi_AndroidOnyx {
-    jobject touchHelperGlobalRef;
-    jobject rawInputCallbackGlobalRef;
+    bool initialized;
     bool isOnyxDevice;
-    int currentRefreshMode; // e.g., REGAL, DU, A2
+    jclass helperClass;
+    jobject hostView;
+    jmethodID setPenState;
+    jmethodID setRegionLimit;
+    jmethodID setRegionExclude;
+    jmethodID setStrokeWidth;
+    jmethodID setStrokeStyle;
+    jmethodID setStrokeColor;
+    jmethodID enablePost;
+    jmethodID setBrushRawDrawingEnabled;
+    jmethodID setEraserRawDrawingEnabled;
+    bool eraserHasStyle;
+    bool opened;
+    bool enabled;
+    bool renderEnabled;
+    bool eraserEnabled;
+    float currentStrokeWidth;
     int currentStrokeStyle;
-    int currentStrokeWidth;
 } nh_wsi_AndroidOnyx;
 
 NH_API_RESULT nh_wsi_setAndroidRawDrawingEnabled(
@@ -32,6 +58,14 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingStrokeWidth(
 
 NH_API_RESULT nh_wsi_setAndroidRawDrawingStrokeStyle(
     nh_wsi_AndroidOnyx *Onyx_p, int style
+);
+
+NH_API_RESULT nh_wsi_setAndroidRawDrawingEraserEnabled(
+    nh_wsi_AndroidOnyx *Onyx_p, bool enabled
+);
+
+void nh_wsi_closeAndroidOnyx(
+    nh_wsi_AndroidOnyx *Onyx_p
 );
 
 #endif

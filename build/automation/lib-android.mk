@@ -59,6 +59,8 @@ FREETYPE_DIR := $(EXT_ANDROID_DIR)/freetype
 HARFBUZZ_DIR := $(EXT_ANDROID_DIR)/harfbuzz
 
 CFLAGS := -g -std=gnu99 -fPIC -DNH_STATIC_LINK
+# Emit header dependency files so header changes rebuild their users.
+CFLAGS += -MMD -MP
 CFLAGS += -I$(ROOT_DIR)/src/lib -I$(ROOT_DIR)/external
 CFLAGS += -I$(FREETYPE_DIR)/include
 CFLAGS += -I$(HARFBUZZ_DIR)/include/harfbuzz
@@ -294,3 +296,5 @@ clean-deps:
 	rm -rf $(EXT_ANDROID_DIR)
 
 .PHONY: all clean openssl deps clean-deps
+
+-include $(shell find $(OBJ_DIR) -name '*.d' 2>/dev/null)

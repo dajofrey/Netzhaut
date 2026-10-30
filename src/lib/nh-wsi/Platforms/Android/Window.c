@@ -685,6 +685,7 @@ NH_API_RESULT nh_wsi_createAndroidWindow(
 NH_API_RESULT nh_wsi_destroyAndroidWindow(
     nh_wsi_AndroidWindow *Window_p)
 {
+    nh_wsi_closeAndroidOnyx(&Window_p->Onyx);
     pthread_mutex_lock(&NH_WSI_ANDROID_MUTEX);
     if (Window_p->Handle) {
         ANativeWindow_release(Window_p->Handle);
