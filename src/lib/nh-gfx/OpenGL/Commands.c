@@ -579,7 +579,21 @@ static NH_API_RESULT nh_gfx_glLinkProgram(
 // nh_gfx_glPixelMapuiv
 // nh_gfx_glPixelMapusv
 // nh_gfx_glPixelStoref
-// nh_gfx_glPixelStorei
+
+static NH_API_RESULT nh_gfx_glPixelStorei(
+    nh_gfx_OpenGLCommand *Command_p)
+{
+    nh_gfx_logOpenGLCommand("glPixelStorei(pname: %d, param: %d)\n",
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[1])->p));
+
+    glPixelStorei(
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[1])->p));
+
+    return NH_API_SUCCESS;
+}
+
 // nh_gfx_glPixelTransferf
 // nh_gfx_glPixelTransferi
 // nh_gfx_glPixelZoom
@@ -771,7 +785,42 @@ static NH_API_RESULT nh_gfx_glTexParameteri(
 // nh_gfx_glTexParameterfv
 // nh_gfx_glTexParameteriv
 // nh_gfx_glTexSubImage1D
-// nh_gfx_glTexSubImage2D
+
+/**
+ * The pixel data argument is either passed by reference (pp, see nh_gfx_glchar) or
+ * directly (p, see nh_gfx_glpointer/nh_gfx_glubyte).
+ */
+static NH_API_RESULT nh_gfx_glTexSubImage2D(
+    nh_gfx_OpenGLCommand *Command_p)
+{
+    nh_gfx_OpenGLData *Pixels_p = Command_p->Arguments.pp[8];
+    const void *pixels_p = Pixels_p->pp ? *((const void**)Pixels_p->pp) : Pixels_p->p;
+
+    nh_gfx_logOpenGLCommand("glTexSubImage2D(target: %d, level: %d, xoffset: %d, yoffset: %d, width: %d, height: %d, format: %d, type: %d, data: %p)\n",
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[1])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[2])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[3])->p),
+        *((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[4])->p),
+        *((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[5])->p),
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[6])->p),
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[7])->p),
+        pixels_p);
+
+    glTexSubImage2D(
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[1])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[2])->p),
+        *((GLint*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[3])->p),
+        *((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[4])->p),
+        *((GLsizei*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[5])->p),
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[6])->p),
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[7])->p),
+        pixels_p);
+
+    return NH_API_SUCCESS;
+}
+
 // nh_gfx_glTranslated
 // nh_gfx_glTranslatef
 
@@ -1101,7 +1150,7 @@ nh_gfx_command_f commands_p[] = {
     NULL, // nh_gfx_glPixelMapuiv,
     NULL, // nh_gfx_glPixelMapusv,
     NULL, // nh_gfx_glPixelStoref,
-    NULL, // nh_gfx_glPixelStorei,
+    nh_gfx_glPixelStorei,
     NULL, // nh_gfx_glPixelTransferf,
     NULL, // nh_gfx_glPixelTransferi,
     NULL, // nh_gfx_glPixelZoom,
@@ -1213,7 +1262,7 @@ nh_gfx_command_f commands_p[] = {
     NULL, // nh_gfx_glTexParameterfv,
     NULL, // nh_gfx_glTexParameteriv,
     NULL, // nh_gfx_glTexSubImage1D,
-    NULL, // nh_gfx_glTexSubImage2D,
+    nh_gfx_glTexSubImage2D,
     NULL, // nh_gfx_glTranslated,
     NULL, // nh_gfx_glTranslatef,
     nh_gfx_glUniform1i,

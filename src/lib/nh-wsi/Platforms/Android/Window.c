@@ -453,6 +453,44 @@ static void nh_wsi_androidResetTouch(nh_wsi_AndroidWindow *Android_p)
     Android_p->touchScrollY = 0.0f;
 }
 
+/**
+ * Stylus input is forwarded as dedicated stylus events, in addition to the regular mouse
+ * emulation. Batched (historical) samples of move events are forwarded too, so that strokes
+ * keep their full input resolution.
+ */
+static void nh_wsi_androidSendStylus(
+    nh_wsi_Window *Window_p, AInputEvent *event_p, int32_t actionType, size_t pointerIndex)
+{
+    float x = AMotionEvent_getX(event_p, pointerIndex);
+    float y = AMotionEvent_getY(event_p, pointerIndex);
+    float pressure = AMotionEvent_getPressure(event_p, pointerIndex);
+
+    switch (actionType) {
+        case AMOTION_EVENT_ACTION_DOWN:
+        case AMOTION_EVENT_ACTION_POINTER_DOWN:
+            nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_PRESS, x, y, pressure);
+            break;
+        case AMOTION_EVENT_ACTION_MOVE: {
+            size_t history = AMotionEvent_getHistorySize(event_p);
+            for (size_t h = 0; h < history; ++h) {
+                nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_MOVE,
+                    AMotionEvent_getHistoricalX(event_p, pointerIndex, h),
+                    AMotionEvent_getHistoricalY(event_p, pointerIndex, h),
+                    AMotionEvent_getHistoricalPressure(event_p, pointerIndex, h));
+            }
+            nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_MOVE, x, y, pressure);
+            break;
+        }
+        case AMOTION_EVENT_ACTION_UP:
+        case AMOTION_EVENT_ACTION_POINTER_UP:
+            nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_RELEASE, x, y, pressure);
+            break;
+        case AMOTION_EVENT_ACTION_CANCEL:
+            nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_CANCEL, x, y, pressure);
+            break;
+    }
+}
+
 static int32_t nh_wsi_androidOnInputEvent(
     struct android_app *app_p, AInputEvent *event_p)
 {
@@ -484,6 +522,9 @@ static int32_t nh_wsi_androidOnInputEvent(
             int y = (int)currentY;
             int32_t toolType = AMotionEvent_getToolType(event_p, pointerIndex);
             nh_wsi_AndroidWindow *Android_p = &((nh_wsi_Window*)Window_p)->Android;
+            if (toolType == AMOTION_EVENT_TOOL_TYPE_STYLUS) {
+                nh_wsi_androidSendStylus((nh_wsi_Window*)Window_p, event_p, actionType, pointerIndex);
+            }
             switch (actionType) {
                 case AMOTION_EVENT_ACTION_DOWN:
                     nh_wsi_androidResetTouch(Android_p);
