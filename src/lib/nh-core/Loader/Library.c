@@ -32,6 +32,22 @@
 
 // FUNCTIONS =======================================================================================
 
+#if defined(NH_STATIC_LINK)
+// On Android the app's native code is a shared library, so dlopen(NULL) would return app_process.
+// Open the library that statically contains Netzhaut instead.
+static void *nh_core_openSelf()
+{
+#if defined(__ANDROID__)
+    Dl_info Info;
+    if (!dladdr((void*)nh_core_openSelf, &Info) || !Info.dli_fname) {return NULL;}
+    const char *name_p = strrchr(Info.dli_fname, '/');
+    return dlopen(name_p ? name_p + 1 : Info.dli_fname, RTLD_NOW | RTLD_GLOBAL);
+#else
+    return dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
+#endif
+}
+#endif
+
 static bool nh_fileExists(
     char *filename_p)
 {
@@ -108,11 +124,7 @@ void *nh_core_loadLibrary(
     NH_MODULE_E type, char *path_p)
 {
 #if defined(NH_STATIC_LINK)
-    #if defined(__ANDROID__)
-    void* handle = dlopen("libmonoreader.so", RTLD_NOW | RTLD_GLOBAL);
-    #else
-    void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
-    #endif
+    void* handle = nh_core_openSelf();
     if (!handle) {
         printf("dlopen failed: %s\n", dlerror());
         return NULL;
@@ -155,11 +167,7 @@ void *nh_core_loadExternalLibrary(
     void *lib_p = NULL;
 
 #if defined(NH_STATIC_LINK)
-    #if defined(__ANDROID__)
-    void* handle = dlopen("libmonoreader.so", RTLD_NOW | RTLD_GLOBAL);
-    #else
-    void* handle = dlopen(NULL, RTLD_NOW | RTLD_GLOBAL);
-    #endif
+    void* handle = nh_core_openSelf();
     if (!handle) {
         printf("dlopen failed: %s\n", dlerror());
         return NULL;

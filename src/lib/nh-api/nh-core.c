@@ -48,12 +48,25 @@ typedef void (*nh_api_setLogCallback_f)(
 
 // FUNCTIONS =======================================================================================
 
+#if defined(NH_STATIC_LINK) && defined(__ANDROID__)
+// Android apps load their native code as a shared library, so dlopen(NULL) would return app_process.
+// Resolve the soname of the library that statically contains Netzhaut instead.
+static char *nh_api_getOwnLibraryName()
+{
+    Dl_info Info;
+    if (!dladdr((void*)nh_api_getOwnLibraryName, &Info) || !Info.dli_fname) {return NULL;}
+    char *name_p = strrchr(Info.dli_fname, '/');
+    return name_p ? name_p + 1 : (char*)Info.dli_fname;
+}
+#endif
+
 static void *nh_api_openCoreLibrary(
     char *path_p)
 {
 #if defined(NH_STATIC_LINK)
     #if defined(__ANDROID__)
-        path_p = "libmonoreader.so";
+        path_p = nh_api_getOwnLibraryName();
+        if (!path_p) {return NULL;}
     #else
     path_p = NULL;
     #endif
