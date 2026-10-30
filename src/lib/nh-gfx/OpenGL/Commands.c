@@ -452,6 +452,17 @@ static NH_API_RESULT nh_gfx_glGenVertexArrays(
     return NH_API_SUCCESS;
 }
 
+static NH_API_RESULT nh_gfx_glGenerateMipmap(
+    nh_gfx_OpenGLCommand *Command_p)
+{
+    nh_gfx_logOpenGLCommand("glGenerateMipmap(target: %d)\n",
+        *((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p));
+
+    glGenerateMipmap(*((GLenum*)((nh_gfx_OpenGLData*)Command_p->Arguments.pp[0])->p));
+
+    return NH_API_SUCCESS;
+}
+
 // nh_gfx_glGetBooleanv
 // nh_gfx_glGetClipPlane
 // nh_gfx_glGetColorTableEXT
@@ -1050,6 +1061,7 @@ nh_gfx_command_f commands_p[] = {
     NULL, // nh_gfx_glGenLists,
     nh_gfx_glGenTextures,
     nh_gfx_glGenVertexArrays,
+    nh_gfx_glGenerateMipmap,
     NULL, // nh_gfx_glGetBooleanv,
     NULL, // nh_gfx_glGetClipPlane,
     NULL, // nh_gfx_glGetColorTableEXT,

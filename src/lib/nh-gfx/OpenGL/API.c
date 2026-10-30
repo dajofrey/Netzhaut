@@ -129,6 +129,7 @@ const char *NH_GFX_OPENGL_COMMAND_NAMES_PP[] = {
     "glGenLists",
     "glGenTextures",
     "glGenVertexArrays",
+    "glGenerateMipmap",
     "glGetBooleanv",
     "glGetClipPlane",
     "glGetColorTableEXT",
@@ -494,6 +495,7 @@ const int NH_GFX_OPENGL_COMMAND_PARAMETER_COUNTS_P[] = {
     1, // glGenLists
     2, // glGenTextures
     2, // glGenVertexArrays
+    1, // glGenerateMipmap
     2, // glGetBooleanv
     2, // glGetClipPlane
     4, // glGetColorTableEXT
