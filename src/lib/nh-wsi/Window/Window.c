@@ -271,3 +271,28 @@ NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeStyle(
     }
 
 }
+
+NH_API_RESULT nh_wsi_setEPaperUpdateMode(
+    nh_wsi_Window *Window_p, int mode)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_setAndroidEPaperUpdateMode(&Window_p->Android.Onyx, mode);
+#endif
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+}
+
+NH_API_RESULT nh_wsi_requestEPaperRefreshRect(
+    nh_wsi_Window *Window_p, int left, int top, int right, int bottom, int mode)
+{
+    switch (Window_p->type)
+    {
+#if defined(NH_PLATFORM_ANDROID)
+        case NH_WSI_TYPE_ANDROID : return nh_wsi_requestAndroidEPaperRefreshRect(
+            &Window_p->Android.Onyx, left, top, right, bottom, mode);
+#endif
+        default : return NH_API_ERROR_BAD_STATE;
+    }
+}

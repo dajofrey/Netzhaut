@@ -198,4 +198,12 @@ NH_API_RESULT nh_wsi_setEPaperRawDrawingStrokeStyle(
     nh_wsi_Window *Window_p, int style
 );
 
+NH_API_RESULT nh_wsi_setEPaperUpdateMode(
+    nh_wsi_Window *Window_p, int mode
+);
+
+NH_API_RESULT nh_wsi_requestEPaperRefreshRect(
+    nh_wsi_Window *Window_p, int left, int top, int right, int bottom, int mode
+);
+
 #endif // NH_WSI_WINDOW_WINDOW_H 

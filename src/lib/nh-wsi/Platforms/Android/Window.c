@@ -504,6 +504,8 @@ static void nh_wsi_androidEndGesture(
     if (Android_p->Gesture.active) {
         nh_wsi_sendGestureEvent(Window_p, trigger, Android_p->Gesture.pointers,
             Android_p->Gesture.lastX, Android_p->Gesture.lastY, 0.0f, 0.0f, 1.0f);
+        // Enough for the final frame to be rendered and shown by the panel.
+        nh_wsi_scheduleAndroidOnyxPostDisable(&Android_p->Onyx, 600);
     }
     Android_p->Gesture.active = false;
 }
@@ -595,6 +597,8 @@ static void nh_wsi_androidUpdateGesture(
         Android_p->Gesture.lastX = focusX;
         Android_p->Gesture.lastY = focusY;
         Android_p->Gesture.lastSpan = span;
+        // The gesture changes what is on screen, so the frames must be shown again.
+        nh_wsi_enableAndroidOnyxPost(&Android_p->Onyx);
         nh_wsi_sendGestureEvent(Window_p, NH_API_TRIGGER_PRESS, fingers, focusX, focusY, 0.0f, 0.0f, 1.0f);
         return;
     }
@@ -905,9 +909,11 @@ NH_API_RESULT nh_wsi_hideAndroidKeyboard(nh_wsi_AndroidWindow *Window_p)
 
 NH_API_RESULT nh_wsi_getAndroidInput(nh_wsi_Window *Window_p, bool *idle_p)
 {
-    (void)Window_p;
     if (!idle_p) {
         return NH_API_ERROR_BAD_STATE;
+    }
+    if (Window_p) {
+        nh_wsi_updateAndroidOnyx(&Window_p->Android.Onyx);
     }
     *idle_p = true;
     return NH_API_SUCCESS;

@@ -5,6 +5,7 @@
 #include <android/log.h>
 #include <android_native_app_glue.h>
 #include <string.h>
+#include <time.h>
 
 #define NH_WSI_ONYX_TAG "Netzhaut-Onyx"
 #define NH_WSI_ONYX_LOG(...) __android_log_print(ANDROID_LOG_INFO, NH_WSI_ONYX_TAG, __VA_ARGS__)
@@ -132,6 +133,18 @@ static bool nh_wsi_initAndroidOnyx(
     if (!Onyx_p->setEraserRawDrawingEnabled) {
         Onyx_p->setEraserRawDrawingEnabled = nh_wsi_onyxGetStaticMethod(env, helperClass, "setEraserRawDrawingEnabled", "(Z)V", false);
     }
+    Onyx_p->applyTransientUpdate = nh_wsi_onyxGetStaticMethod(env, helperClass, "applyTransientUpdate", "(I)V", false);
+    Onyx_p->clearTransientUpdate = nh_wsi_onyxGetStaticMethod(env, helperClass, "clearTransientUpdate", "(Z)V", false);
+    Onyx_p->refreshScreen        = nh_wsi_onyxGetStaticMethod(env, helperClass, "refreshScreen", "(IIIII)V", false);
+
+    jclass viewClass = (*env)->FindClass(env, "android/view/View");
+    if (!nh_wsi_onyxCheckException(env, "FindClass android.view.View") && viewClass) {
+        Onyx_p->getLocationOnScreen = (*env)->GetMethodID(env, viewClass, "getLocationOnScreen", "([I)V");
+        if (nh_wsi_onyxCheckException(env, "View.getLocationOnScreen")) {
+            Onyx_p->getLocationOnScreen = NULL;
+        }
+        (*env)->DeleteLocalRef(env, viewClass);
+    }
 
     if (!Onyx_p->setPenState || !Onyx_p->setRegionLimit || !Onyx_p->setStrokeWidth || !Onyx_p->setStrokeStyle) {
         (*env)->DeleteLocalRef(env, helperClass);
@@ -235,6 +248,7 @@ static void nh_wsi_onyxSetRender(
         nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_DRAWING);
     } else {
         // Equivalent to the SDK's leaveScribbleMode + pauseDrawing.
+        Onyx_p->disablePostAt = 0;
         nh_wsi_onyxCallInt(Onyx_p, env, Onyx_p->enablePost, 1, "enablePost");
         nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_PAUSE);
     }
@@ -375,6 +389,146 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingEraserEnabled(
     return NH_API_SUCCESS;
 }
 
+void nh_wsi_enableAndroidOnyxPost(
+    nh_wsi_AndroidOnyx *Onyx_p)
+{
+    if (Onyx_p) {Onyx_p->disablePostAt = 0;}
+    if (!Onyx_p || !Onyx_p->opened || !Onyx_p->renderEnabled || !Onyx_p->enablePost) {
+        return;
+    }
+    nh_wsi_OnyxJNI JNI;
+    if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        return;
+    }
+    nh_wsi_onyxCallInt(Onyx_p, JNI.env, Onyx_p->enablePost, 1, "enablePost");
+    nh_wsi_onyxDetach(&JNI);
+}
+
+static int64_t nh_wsi_onyxNow()
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (int64_t)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+}
+
+void nh_wsi_scheduleAndroidOnyxPostDisable(
+    nh_wsi_AndroidOnyx *Onyx_p, int delayMs)
+{
+    if (!Onyx_p || !Onyx_p->opened || !Onyx_p->renderEnabled || !Onyx_p->enablePost) {
+        return;
+    }
+    Onyx_p->disablePostAt = nh_wsi_onyxNow() + (delayMs > 0 ? delayMs : 1);
+}
+
+void nh_wsi_updateAndroidOnyx(
+    nh_wsi_AndroidOnyx *Onyx_p)
+{
+    if (!Onyx_p || Onyx_p->disablePostAt == 0 || nh_wsi_onyxNow() < Onyx_p->disablePostAt) {
+        return;
+    }
+    Onyx_p->disablePostAt = 0;
+    if (!Onyx_p->opened || !Onyx_p->renderEnabled || !Onyx_p->enablePost) {
+        return;
+    }
+    nh_wsi_OnyxJNI JNI;
+    if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        return;
+    }
+    nh_wsi_onyxCallInt(Onyx_p, JNI.env, Onyx_p->enablePost, 0, "enablePost");
+    nh_wsi_onyxDetach(&JNI);
+}
+
+// Values of android.onyx.ViewUpdateHelper.UI_*_MODE.
+static int nh_wsi_onyxGetWaveform(
+    int mode)
+{
+    switch (mode)
+    {
+        case NH_API_EPAPER_UPDATE_MODE_A2 : return 4;  // UI_A2_PERFORMANCE_MODE
+        case NH_API_EPAPER_UPDATE_MODE_DU : return 1;  // UI_DU_MODE
+        case NH_API_EPAPER_UPDATE_MODE_GU : return 2;  // UI_GU_MODE
+        case NH_API_EPAPER_UPDATE_MODE_GC : return 98; // UI_GC_MODE
+        default                           : return 5;  // UI_DEFAULT_MODE
+    }
+}
+
+static bool nh_wsi_onyxIsValidMode(
+    int mode)
+{
+    return mode >= NH_API_EPAPER_UPDATE_MODE_DEFAULT && mode <= NH_API_EPAPER_UPDATE_MODE_GC;
+}
+
+NH_API_RESULT nh_wsi_setAndroidEPaperUpdateMode(
+    nh_wsi_AndroidOnyx *Onyx_p, int mode)
+{
+    if (!nh_wsi_onyxIsValidMode(mode)) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+    nh_wsi_OnyxJNI JNI;
+    if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+
+    NH_API_RESULT result = NH_API_SUCCESS;
+    if (!Onyx_p->applyTransientUpdate || !Onyx_p->clearTransientUpdate) {
+        result = NH_API_ERROR_BAD_STATE;
+    } else if (mode != Onyx_p->updateMode) {
+        if (mode == NH_API_EPAPER_UPDATE_MODE_DEFAULT) {
+            (*JNI.env)->CallStaticVoidMethod(JNI.env, Onyx_p->helperClass, Onyx_p->clearTransientUpdate, JNI_FALSE);
+            nh_wsi_onyxCheckException(JNI.env, "clearTransientUpdate");
+        } else {
+            nh_wsi_onyxCallInt(Onyx_p, JNI.env, Onyx_p->applyTransientUpdate, nh_wsi_onyxGetWaveform(mode), "applyTransientUpdate");
+        }
+        Onyx_p->updateMode = mode;
+    }
+
+    nh_wsi_onyxDetach(&JNI);
+    return result;
+}
+
+NH_API_RESULT nh_wsi_requestAndroidEPaperRefreshRect(
+    nh_wsi_AndroidOnyx *Onyx_p, int left, int top, int right, int bottom, int mode)
+{
+    if (!nh_wsi_onyxIsValidMode(mode) || right <= left || bottom <= top) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+    nh_wsi_OnyxJNI JNI;
+    if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+    JNIEnv *env = JNI.env;
+
+    NH_API_RESULT result = NH_API_SUCCESS;
+    if (!Onyx_p->refreshScreen) {
+        result = NH_API_ERROR_BAD_STATE;
+    } else {
+        // refreshScreen expects screen coordinates, the rect is relative to the host view.
+        int offsetX = 0, offsetY = 0;
+        if (Onyx_p->hostView && Onyx_p->getLocationOnScreen) {
+            jintArray location = (*env)->NewIntArray(env, 2);
+            if (location) {
+                (*env)->CallVoidMethod(env, Onyx_p->hostView, Onyx_p->getLocationOnScreen, location);
+                if (!nh_wsi_onyxCheckException(env, "View.getLocationOnScreen")) {
+                    jint values[2] = {0};
+                    (*env)->GetIntArrayRegion(env, location, 0, 2, values);
+                    offsetX = values[0];
+                    offsetY = values[1];
+                }
+                (*env)->DeleteLocalRef(env, location);
+            } else {
+                nh_wsi_onyxCheckException(env, "NewIntArray");
+            }
+        }
+        (*env)->CallStaticVoidMethod(env, Onyx_p->helperClass, Onyx_p->refreshScreen,
+            (jint)(left + offsetX), (jint)(top + offsetY), (jint)(right - left), (jint)(bottom - top),
+            (jint)nh_wsi_onyxGetWaveform(mode));
+        nh_wsi_onyxCheckException(env, "refreshScreen");
+    }
+
+    nh_wsi_onyxDetach(&JNI);
+    return result;
+}
+
 void nh_wsi_closeAndroidOnyx(
     nh_wsi_AndroidOnyx *Onyx_p)
 {
@@ -384,6 +538,10 @@ void nh_wsi_closeAndroidOnyx(
     nh_wsi_OnyxJNI JNI;
     if (nh_wsi_onyxAttach(&JNI)) {
         JNIEnv *env = JNI.env;
+        if (Onyx_p->isOnyxDevice && Onyx_p->updateMode != NH_API_EPAPER_UPDATE_MODE_DEFAULT && Onyx_p->clearTransientUpdate) {
+            (*env)->CallStaticVoidMethod(env, Onyx_p->helperClass, Onyx_p->clearTransientUpdate, JNI_FALSE);
+            nh_wsi_onyxCheckException(env, "clearTransientUpdate");
+        }
         if (Onyx_p->isOnyxDevice && Onyx_p->opened) {
             nh_wsi_onyxSetRender(Onyx_p, env, false);
             nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_STOP);

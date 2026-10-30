@@ -136,11 +136,17 @@ NH_API_RESULT nh_api_setEPaperRawDrawingEraserEnabled(
 NH_API_RESULT nh_api_setEPaperUpdateMode(
     nh_api_Window *Window_p, int mode)
 {
-    return 0;
+    typedef NH_API_RESULT (*nh_wsi_setEPaperUpdateMode_f)(nh_api_Window *Window_p, int mode);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_setEPaperUpdateMode_f setEPaperUpdateMode_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_setEPaperUpdateMode");
+    return setEPaperUpdateMode_f ? setEPaperUpdateMode_f(Window_p, mode) : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_api_requestEPaperRefreshRect(
     nh_api_Window *Window_p, int left, int top, int right, int bottom, int mode)
 {
-    return 0;
+    typedef NH_API_RESULT (*nh_wsi_requestEPaperRefreshRect_f)(nh_api_Window *Window_p, int left, int top, int right, int bottom, int mode);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    nh_wsi_requestEPaperRefreshRect_f requestEPaperRefreshRect_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_requestEPaperRefreshRect");
+    return requestEPaperRefreshRect_f ? requestEPaperRefreshRect_f(Window_p, left, top, right, bottom, mode) : NH_API_ERROR_BAD_STATE;
 }

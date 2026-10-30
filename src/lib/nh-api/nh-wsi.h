@@ -210,6 +210,17 @@ typedef enum NH_API_MODIFIER_FLAG {
     NH_API_MODIFIER_MOD5    = 1 << 7,
 } NH_API_MODIFIER_FLAG;
 
+/**
+ * E-paper waveforms, from fastest to cleanest.
+ */
+typedef enum NH_API_EPAPER_UPDATE_MODE_E {
+    NH_API_EPAPER_UPDATE_MODE_DEFAULT = 0, // Platform default.
+    NH_API_EPAPER_UPDATE_MODE_A2,          // Black/white only, fastest, ghosts. For panning, zooming, scrolling.
+    NH_API_EPAPER_UPDATE_MODE_DU,          // Black/white only, fast, less ghosting than A2.
+    NH_API_EPAPER_UPDATE_MODE_GU,          // Grayscale, no flash.
+    NH_API_EPAPER_UPDATE_MODE_GC,          // Grayscale with flash, removes ghosting.
+} NH_API_EPAPER_UPDATE_MODE_E;
+
 // STRUCTS =========================================================================================
 
 typedef struct nh_api_Rect {
@@ -350,10 +361,20 @@ NH_API_RESULT nh_api_setEPaperRawDrawingEraserEnabled(
     nh_api_Window *Window_p, bool enabled
 );
 
+/**
+ * Selects the e-paper waveform used for all following screen updates of the window, until
+ * NH_API_EPAPER_UPDATE_MODE_DEFAULT restores the platform default. Use a fast mode only for
+ * the duration of an interaction like panning or zooming and request a refresh afterwards to
+ * remove ghosting. mode is a NH_API_EPAPER_UPDATE_MODE_E value.
+ */
 NH_API_RESULT nh_api_setEPaperUpdateMode(
     nh_api_Window *Window_p, int mode
 );
 
+/**
+ * Redraws the given window rectangle (window pixels, right/bottom exclusive) with the given
+ * NH_API_EPAPER_UPDATE_MODE_E waveform.
+ */
 NH_API_RESULT nh_api_requestEPaperRefreshRect(
     nh_api_Window *Window_p, int left, int top, int right, int bottom, int mode
 );
