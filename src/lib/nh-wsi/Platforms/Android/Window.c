@@ -1,6 +1,6 @@
 #include "Window.h"
-
 #include "Init.h"
+
 #include "../../Window/Window.h"
 #include "../../Window/Listener.h"
 #include "../../Window/Event.h"
@@ -11,6 +11,7 @@
 #include <android/configuration.h>
 #include <android_native_app_glue.h>
 #include <android/log.h>
+
 #include <jni.h>
 #include <pthread.h>
 #include <string.h>

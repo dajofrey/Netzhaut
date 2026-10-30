@@ -9,6 +9,8 @@ typedef struct nh_wsi_AndroidOnyx {
     jobject rawInputCallbackGlobalRef;
     bool isOnyxDevice;
     int currentRefreshMode; // e.g., REGAL, DU, A2
+    int currentStrokeStyle;
+    int currentStrokeWidth;
 } nh_wsi_AndroidOnyx;
 
 NH_API_RESULT nh_wsi_setAndroidRawDrawingEnabled(

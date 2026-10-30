@@ -103,3 +103,27 @@ void nh_wsi_sendKeyboardEvent(
 
     return;
 }
+
+void nh_wsi_sendStylusEvent(
+    nh_wsi_Window *Window_p, int trigger, float x, float y, float pressure)
+{
+    if (!Window_p) return;
+
+    nh_api_WSIEvent Event = nh_wsi_initEvent(NH_API_WSI_EVENT_STYLUS);
+
+    Event.Stylus.trigger = trigger;
+    Event.Stylus.x = x;
+    Event.Stylus.y = y;
+    Event.Stylus.pressure = pressure;
+
+    if (Window_p->callback_f) {
+        Window_p->callback_f((nh_api_Window*)Window_p, Event);
+    }
+
+    nh_api_WSIEvent *Event_p = (nh_api_WSIEvent*)nh_core_advanceRingBuffer(&Window_p->Events);
+    if (Event_p) {
+        *Event_p = Event;
+    }
+
+    return;
+}

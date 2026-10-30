@@ -1,9 +1,12 @@
 #include "Onyx.h"
-#include <android/log.h>
+#include "Window.h"
+
+#include "../../Window/Event.h"
 
 #include <jni.h>
 #include <android/rect.h>
 #include <android/log.h>
+#include <android_native_app_glue.h>
 
 NH_API_RESULT nh_wsi_setAndroidRawDrawingEnabled(
     nh_wsi_AndroidOnyx *Onyx_p, bool enabled)
@@ -235,42 +238,33 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingStrokeStyle(
     return NH_API_SUCCESS;
 }
 
-static void dispatch_stylus_event(
+static void nh_wsi_dispatchOnyxStylusEvent(
     JNIEnv *env, jobject thiz, jlong window_ptr, NH_API_TRIGGER_E trigger, jfloat x, jfloat y, jfloat pressure) 
 {
     nh_api_Window *Window_p = (nh_api_Window *)window_ptr;
-    if (!Window_p || !Window_p->eventListener_f) {
+    if (!Window_p) {
         return;
     }
-
-    nh_api_WSIEvent event = {0};
-    event.type = NH_API_WSI_EVENT_STYLUS;
-    event.Stylus.trigger = trigger;
-    event.Stylus.x = (float)x;
-    event.Stylus.y = (float)y;
-    event.Stylus.pressure = (float)pressure;
-
-    // Call the application's registered window event listener!
-    Window_p->eventListener_f(Window_p, event);
+    nh_wsi_sendStylusEvent(Window_p, trigger, x, y, pressure);
 }
 
 JNIEXPORT void JNICALL
 Java_com_netzhaut_wsi_OnyxTouchBridge_nativeOnBeginRawDrawing(
     JNIEnv *env, jobject thiz, jlong window_ptr, jfloat x, jfloat y, jfloat pressure) 
 {
-    dispatch_stylus_event(env, thiz, window_ptr, NH_API_TRIGGER_PRESS, x, y, pressure);
+    nh_wsi_dispatchOnyxStylusEvent(env, thiz, window_ptr, NH_API_TRIGGER_PRESS, x, y, pressure);
 }
 
 JNIEXPORT void JNICALL
 Java_com_netzhaut_wsi_OnyxTouchBridge_nativeOnRawDrawingPointMove(
     JNIEnv *env, jobject thiz, jlong window_ptr, jfloat x, jfloat y, jfloat pressure) 
 {
-    dispatch_stylus_event(env, thiz, window_ptr, NH_API_TRIGGER_MOVE, x, y, pressure);
+    nh_wsi_dispatchOnyxStylusEvent(env, thiz, window_ptr, NH_API_TRIGGER_MOVE, x, y, pressure);
 }
 
 JNIEXPORT void JNICALL
 Java_com_netzhaut_wsi_OnyxTouchBridge_nativeOnEndRawDrawing(
     JNIEnv *env, jobject thiz, jlong window_ptr, jfloat x, jfloat y, jfloat pressure) 
 {
-    dispatch_stylus_event(env, thiz, window_ptr, NH_API_TRIGGER_RELEASE, x, y, pressure);
+    nh_wsi_dispatchOnyxStylusEvent(env, thiz, window_ptr, NH_API_TRIGGER_RELEASE, x, y, pressure);
 }

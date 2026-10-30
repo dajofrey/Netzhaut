@@ -21,4 +21,8 @@ void nh_wsi_sendKeyboardEvent(
     NH_API_MODIFIER_FLAG state
 );
 
+void nh_wsi_sendStylusEvent(
+    nh_wsi_Window *Window_p, int trigger, float x, float y, float pressure
+);
+
 #endif // NH_WSI_WINDOW_EVENT_H 
