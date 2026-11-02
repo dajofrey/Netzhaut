@@ -372,6 +372,14 @@ NH_API_RESULT nh_api_setEPaperUpdateMode(
 );
 
 /**
+ * Shows or hides the system status bar (time, battery, ...) above the window. Only implemented
+ * on Android. The window receives a configure event with the new safe area afterwards.
+ */
+NH_API_RESULT nh_api_setStatusBarVisible(
+    nh_api_Window *Window_p, bool visible
+);
+
+/**
  * Redraws the given window rectangle (window pixels, right/bottom exclusive) with the given
  * NH_API_EPAPER_UPDATE_MODE_E waveform.
  */

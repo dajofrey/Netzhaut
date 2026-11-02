@@ -327,6 +327,12 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingLimitRect(
     }
     JNIEnv *env = JNI.env;
 
+    // SurfaceFlinger rejects region changes while the pen is in drawing state, so pause around the update.
+    bool resume = Onyx_p->opened && Onyx_p->renderEnabled;
+    if (resume) {
+        nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_PAUSE);
+    }
+
     // Coordinates are relative to the host view; ViewUpdateHelper adds the view's screen offset.
     nh_api_Rect Limit = {left, top, right, bottom};
     jintArray limit = nh_wsi_onyxNewRectArray(env, &Limit, 1);
@@ -343,6 +349,10 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingLimitRect(
             nh_wsi_onyxCheckException(env, "setScreenHandWritingRegionExclude");
             (*env)->DeleteLocalRef(env, exclude);
         }
+    }
+
+    if (resume) {
+        nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_DRAWING);
     }
 
     nh_wsi_onyxDetach(&JNI);

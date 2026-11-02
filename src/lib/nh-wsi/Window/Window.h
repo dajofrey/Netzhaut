@@ -202,6 +202,10 @@ NH_API_RESULT nh_wsi_setEPaperUpdateMode(
     nh_wsi_Window *Window_p, int mode
 );
 
+NH_API_RESULT nh_wsi_setStatusBarVisible(
+    nh_wsi_Window *Window_p, bool visible
+);
+
 NH_API_RESULT nh_wsi_requestEPaperRefreshRect(
     nh_wsi_Window *Window_p, int left, int top, int right, int bottom, int mode
 );

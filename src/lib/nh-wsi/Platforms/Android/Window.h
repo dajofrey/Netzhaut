@@ -7,6 +7,7 @@
 #include "../../../nh-gfx/Base/SurfaceRequirements.h"
 
 #include <android/native_window.h>
+#include <android/window.h>
 #include <stdint.h>
 
 typedef struct nh_wsi_Window nh_wsi_Window;
@@ -55,6 +56,10 @@ NH_API_RESULT nh_wsi_showAndroidKeyboard(
 
 NH_API_RESULT nh_wsi_hideAndroidKeyboard(
     nh_wsi_AndroidWindow *Window_p
+);
+
+NH_API_RESULT nh_wsi_setAndroidStatusBarVisible(
+    nh_wsi_AndroidWindow *Window_p, bool visible
 );
 
 NH_API_RESULT nh_wsi_getAndroidInput(

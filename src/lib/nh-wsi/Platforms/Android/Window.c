@@ -907,6 +907,20 @@ NH_API_RESULT nh_wsi_hideAndroidKeyboard(nh_wsi_AndroidWindow *Window_p)
     return NH_API_SUCCESS;
 }
 
+NH_API_RESULT nh_wsi_setAndroidStatusBarVisible(nh_wsi_AndroidWindow *Window_p, bool visible)
+{
+    (void)Window_p;
+    struct android_app *app_p = nh_wsi_getAndroidApp();
+    if (!app_p || !app_p->activity) {
+        return NH_API_ERROR_BAD_STATE;
+    }
+    // Posted to the UI thread by the native activity, the resulting content rect change
+    // updates the safe area and sends a configure event.
+    ANativeActivity_setWindowFlags(app_p->activity,
+        visible ? 0 : AWINDOW_FLAG_FULLSCREEN, visible ? AWINDOW_FLAG_FULLSCREEN : 0);
+    return NH_API_SUCCESS;
+}
+
 NH_API_RESULT nh_wsi_getAndroidInput(nh_wsi_Window *Window_p, bool *idle_p)
 {
     if (!idle_p) {
