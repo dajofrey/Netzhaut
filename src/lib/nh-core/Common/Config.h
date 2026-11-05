@@ -19,6 +19,7 @@ typedef struct nh_core_Config {
     bool loaderUnload;
     bool monitor_on;
     bool dump_on;
+    int threads;
 } nh_core_Config;
 
 // FUNCTIONS =======================================================================================

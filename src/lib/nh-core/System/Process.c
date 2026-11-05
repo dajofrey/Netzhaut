@@ -12,6 +12,7 @@
 
 #include "../../nh-ecmascript/Engine/Agent.h"
 #include "../Common/Platform.h"
+#include "../Common/Config.h"
 
 #include <signal.h>
 #include <stdio.h>
@@ -36,7 +37,7 @@ NH_API_RESULT nh_core_initProcessPool()
     NH_PROCESS_POOL.IPC.LastUpdate = nh_core_getSystemTime();
 
     NH_PROCESS_POOL.Main.id = 0;
-    NH_PROCESS_POOL.Main.ThreadPool = nh_core_initThreadPool();
+    NH_CORE_CHECK(nh_core_initThreadPool(&NH_PROCESS_POOL.Main.ThreadPool, nh_core_getConfig().threads))
 
     nh_core_initChannel(&NH_PROCESS_POOL.Main.IPC.In);
     nh_core_initChannel(&NH_PROCESS_POOL.Main.IPC.Out);
@@ -54,7 +55,7 @@ NH_API_RESULT nh_core_initProcessPool()
 
 NH_API_RESULT nh_core_freeProcessPool() 
 {
-    nh_core_freeThreadPool(&NH_PROCESS_POOL.Main.ThreadPool);
+    NH_CORE_CHECK(nh_core_freeThreadPool(&NH_PROCESS_POOL.Main.ThreadPool))
     init = false;
 
     return NH_API_SUCCESS;
@@ -254,4 +255,3 @@ NH_SIGNAL nh_core_runIPCHandler(
 
     return NH_SIGNAL_OK;
 }
-

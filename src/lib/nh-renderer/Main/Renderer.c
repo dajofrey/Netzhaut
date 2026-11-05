@@ -141,7 +141,7 @@ nh_renderer_Renderer *nh_renderer_createRenderer(
     nh_css_LayoutEngine *LayoutEngine_p) 
 {
     nh_renderer_Renderer *Renderer_p = 
-        nh_core_activateWorkload(nh_renderer_initRenderer, nh_renderer_runRenderer, NULL, NULL, LayoutEngine_p, true);
+        nh_core_activateWorkload(nh_renderer_initRenderer, nh_renderer_runRenderer, NULL, NULL, LayoutEngine_p, true, 0);
 
     return Renderer_p;
 }

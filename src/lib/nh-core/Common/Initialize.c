@@ -40,7 +40,10 @@ nh_core_Loader *nh_core_initialize(
     }
 
     nh_core_initMemory();
-    nh_core_initProcessPool();
+    if (nh_core_initProcessPool() != NH_API_SUCCESS) {
+        nh_core_freeGlobalConfig();
+        return NULL;
+    }
     nh_core_createIndexMap();
     nh_core_initSystem();
     nh_core_startSystemWorkload();

@@ -37,6 +37,8 @@
 
 #if defined(__unix__) || defined(__APPLE__)
     typedef pid_t NH_PROCESS;
+#elif defined(_WIN32) || defined(WIN32)
+    typedef DWORD NH_PROCESS;
 #endif
 
     typedef struct nh_IPC {

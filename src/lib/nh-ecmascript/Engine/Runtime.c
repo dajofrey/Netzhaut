@@ -121,7 +121,7 @@ nh_api_Runtime *nh_ecmascript_startRuntime(
         nh_ecmascript_freeRuntime,
         nh_ecmascript_runRuntimeCommand,
         args_p,
-        false
+        false, 0
     );
 }
 

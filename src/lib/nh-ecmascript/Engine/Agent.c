@@ -185,7 +185,7 @@ NH_API_RESULT nh_ecmascript_startAgentCluster(
         nh_ecmascript_freeAgentCluster,
         nh_ecmascript_enqueueHostCommandOrJob,
         &Args,
-        false
+        false, 0
     );
 
     return NH_API_SUCCESS;
@@ -254,4 +254,3 @@ nh_ecmascript_Agent *nh_ecmascript_getRunningAgent()
 {
 return NULL;
 }
-

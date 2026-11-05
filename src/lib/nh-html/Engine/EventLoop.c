@@ -28,6 +28,6 @@ NH_API_RESULT nh_html_startEventLoop(
         nh_html_freeEventLoop,
         nh_html_enqueueTask,
         Agent_p,
-        false
+        false, 0
     );
 }

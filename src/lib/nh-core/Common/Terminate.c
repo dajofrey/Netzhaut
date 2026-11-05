@@ -32,7 +32,7 @@ NH_API_RESULT nh_core_terminate(
     nh_core_Loader *Loader_p)
 {
     // This also deactivates all workloads.
-    nh_core_freeProcessPool();
+    NH_CORE_CHECK(nh_core_freeProcessPool())
 
     // Next, we "decouple" all loaded libs aka modules.
     nh_core_freeLoader();    

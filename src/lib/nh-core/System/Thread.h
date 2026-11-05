@@ -49,6 +49,7 @@
         void *p;
         int length;
         void *result_p;
+        struct nh_core_WorkloadCommand *next_p;
     } nh_core_WorkloadCommand;
 
     typedef struct nh_SignalCounter {
@@ -59,8 +60,13 @@
     typedef struct nh_core_Workload {
         nh_core_Thread *Thread_p;
         nh_SignalCounter SignalCounter;
-        nh_core_RingBuffer Commands;
-        nh_core_RingBufferMarker Marker;
+        nh_core_WorkloadCommand *FirstCommand_p;
+        nh_core_WorkloadCommand *LastCommand_p;
+        bool initialized;
+        bool activating;
+        bool deactivate;
+        int running;
+        int waiters;
         NH_SIGNAL signal;
         bool crucial;
         NH_MODULE_E module;
@@ -82,6 +88,7 @@
 
     typedef struct nh_core_Thread {
         int depth;
+        bool started;
         nh_core_Workload *CurrentWorkload_p;
         struct {
     #if defined(__unix__) || defined(__APPLE__)
@@ -92,7 +99,8 @@
     #if defined(__unix__) || defined(__APPLE__)
         pthread_t id;              
     #elif defined(_WIN32) || defined (WIN32)
-        DWORD id;              
+        DWORD id;
+        HANDLE handle;
     #endif
     } nh_core_Thread;
 
@@ -100,7 +108,11 @@
         nh_core_Thread Main;
         nh_core_Thread Threads_p[NH_MAX_THREADS];
         nh_core_Workload Workloads_p[NH_MAX_WORKLOADS];
-        int threadCount;    
+        int threadCount;
+        bool stopping;
+        bool closing;
+        bool failed;
+        bool ready;
     } nh_core_ThreadPool;
 
 /** @} */
@@ -109,7 +121,11 @@
  *  @{
  */
 
-    nh_core_ThreadPool nh_core_initThreadPool(
+    int nh_core_run(
+    );
+
+    NH_API_RESULT nh_core_initThreadPool(
+        nh_core_ThreadPool *ThreadPool_p, int threadCount
     );
     
     NH_API_RESULT nh_core_freeThreadPool(
@@ -119,9 +135,16 @@
     bool nh_core_keepRunning(
     );
 
+    /**
+     * thread: 0 selects main; 1..threadCount selects an extra worker.
+     * An empty worker pool falls back to main for nonnegative selections.
+     * Invalid selections with a pool return NULL with a diagnostic.
+     * Init completes on the selected thread before returning. Keep init short;
+     * place blocking work in run_f. crucial independently controls keepRunning.
+     */
     void *nh_core_activateWorkload(
         void *(*init_f)(nh_core_Workload*), NH_SIGNAL (*run_f)(void*), void (*free_f)(void*), 
-        NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, bool crucial
+        NH_SIGNAL (*runCommand_f)(void*, nh_core_WorkloadCommand*), void *args_p, bool crucial, int thread
     );
     
     NH_API_RESULT nh_core_deactivateWorkload(

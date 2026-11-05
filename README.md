@@ -23,6 +23,33 @@ The app (src/ios/NetzhautApp/) uses UIApplicationMain, initializes Netzhaut in A
 
 ## Build
 
+### Workload threading
+
+`nh-core.threads` is a startup-only count of **extra** native worker threads
+(`0..64`, default `0`), in addition to the application's main thread. Supply
+overrides to `nh_api_initialize`; loading a config file after initialization
+does not resize the pool. Invalid counts fail initialization.
+
+`nh_core_activateWorkload(..., args, crucial, thread)` uses `0` for main and
+`1..threadCount` for `Threads_p[thread - 1]`. An empty pool falls back to main
+for nonnegative selections; negative selections and selections above a
+nonempty pool's count fail activation. Existing workloads explicitly select
+`0` and retain their original `crucial` application-lifetime policy.
+
+Init, run, commands and free execute on the selected thread. Activation waits
+for init, so keep init short. Commands and deactivation are synchronous; avoid
+cyclic cross-thread waits and keep UI/platform-affine work on main. Callbacks
+that deactivate themselves defer cleanup until they return. Callbacks
+run outside the scheduler lock. Workloads sharing one thread execute
+cooperatively: return from each run callback to let other workloads execute.
+Idle/empty workers stay alive until pool shutdown; shutdown frees workloads,
+stops and joins workers before unloading libraries. POSIX (including macOS)
+and Windows native worker primitives are implemented; this does not remove
+the rest of the engine's existing platform limitations.
+
+Run the standalone scheduler regression tests from the Netzhaut root with
+`make -f tests/thread.mk test-thread`.
+
 ### 0. Check OS support
 * Linux ✅  
 * MacOs ❌

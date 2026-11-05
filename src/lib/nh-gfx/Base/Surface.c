@@ -367,7 +367,7 @@ nh_gfx_Surface *nh_gfx_createSurface(
     Args.api = nh_gfx_getConfig().api;
 
     nh_gfx_Surface *Surface_p = 
-        nh_core_activateWorkload(nh_gfx_initSurface, nh_gfx_runSurface, nh_gfx_freeSurface, NULL, &Args, true);
+        nh_core_activateWorkload(nh_gfx_initSurface, nh_gfx_runSurface, nh_gfx_freeSurface, NULL, &Args, true, 0);
 
     Window_p->surface_p = Surface_p;
 

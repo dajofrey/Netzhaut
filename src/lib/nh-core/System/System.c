@@ -221,6 +221,6 @@ static NH_SIGNAL nh_core_runSystemWorkload(
 
 NH_API_RESULT nh_core_startSystemWorkload() 
 {
-    nh_core_activateWorkload(nh_core_initSystemWorkload, nh_core_runSystemWorkload, NULL, NULL, NULL, false);
+    nh_core_activateWorkload(nh_core_initSystemWorkload, nh_core_runSystemWorkload, NULL, NULL, NULL, false, 0);
     return NH_API_SUCCESS;
 }

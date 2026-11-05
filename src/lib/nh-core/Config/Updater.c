@@ -160,7 +160,7 @@ NH_API_RESULT nh_core_startConfigWorkload()
 {
     NH_CORE_CHECK_NULL(nh_core_activateWorkload(
         nh_core_initConfigWorkload, nh_core_runConfigWorkload, nh_core_freeConfigWorkload,
-        nh_core_runConfigWorkloadCommand, NULL, false))
+        nh_core_runConfigWorkloadCommand, NULL, false, 0))
 
     return NH_API_SUCCESS;
 }

@@ -114,7 +114,7 @@ NH_API_RESULT nh_wsi_enableWindowListener(
     nh_wsi_Window *Window_p)
 {
     if (!NH_WSI_LISTENER.running) {
-        nh_core_activateWorkload(nh_wsi_initListener, nh_wsi_runListener, nh_wsi_terminateListener, NULL, NULL, true);
+        nh_core_activateWorkload(nh_wsi_initListener, nh_wsi_runListener, nh_wsi_terminateListener, NULL, NULL, true, 0);
         NH_WSI_LISTENER.running = true;
     }
 

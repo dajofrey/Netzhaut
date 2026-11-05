@@ -2,6 +2,11 @@
 /bin/
 /include/
 test*
+!/tests/
+/tests/*
+!/tests/thread.c
+!/tests/thread-config.c
+!/tests/thread.mk
 *.pdf
 *.DS_Store
 *.o

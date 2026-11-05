@@ -363,6 +363,6 @@ static void *nh_monitor_initLoggerWorkload(
 
 NH_API_RESULT nh_monitor_startLoggerWorkload() 
 {
-    nh_core_activateWorkload(nh_monitor_initLoggerWorkload, nh_monitor_runLoggerWorkload, NULL, NULL, NULL, false);
+    nh_core_activateWorkload(nh_monitor_initLoggerWorkload, nh_monitor_runLoggerWorkload, NULL, NULL, NULL, false, 0);
     return NH_API_SUCCESS;
 }

@@ -153,7 +153,7 @@ nh_css_LayoutEngine *nh_css_createLayoutEngine(
     if (DocumentContext_p->LayoutEngine_p) {return NULL;}
 
     nh_css_LayoutEngine *LayoutEngine_p = 
-        nh_core_activateWorkload(nh_css_initLayoutEngine, nh_css_runLayoutEngine, NULL, NULL,  DocumentContext_p, true);
+        nh_core_activateWorkload(nh_css_initLayoutEngine, nh_css_runLayoutEngine, NULL, NULL,  DocumentContext_p, true, 0);
 
     DocumentContext_p->LayoutEngine_p = LayoutEngine_p;
 

@@ -9,6 +9,7 @@
 // INCLUDES ========================================================================================
 
 #include "Config.h"
+#include "../System/Thread.h"
 
 #include "../Config/Config.h"
 
@@ -17,6 +18,7 @@
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
+#include <errno.h>
 
 // FUNCTIONS =======================================================================================
 
@@ -40,6 +42,20 @@ static NH_API_RESULT nh_core_getSetting(
             if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
             Config_p->dump_on = atoi(Setting_p->pp[0]) == 1;
             break;
+        case 3 :
+        {
+            Config_p->threads = -1;
+            if (Setting_p->size != 1) {return NH_API_ERROR_BAD_STATE;}
+            char *end = NULL;
+            errno = 0;
+            long threads = strtol(Setting_p->pp[0], &end, 10);
+            if (errno || end == Setting_p->pp[0] || *end || threads < 0 || threads > NH_MAX_THREADS) {
+                fprintf(stderr, "Netzhaut: invalid nh-core.threads setting (expected 0..%d)\n", NH_MAX_THREADS);
+                return NH_API_ERROR_BAD_STATE;
+            }
+            Config_p->threads = (int)threads;
+            break;
+        }
     }
 
     return NH_API_SUCCESS;
@@ -49,11 +65,13 @@ static nh_core_Config nh_core_getStaticConfig()
 { 
     nh_core_Config Config; 
     memset(&Config, 0, sizeof(nh_core_Config)); 
+    Config.threads = -1;
 
     static const char *options_pp[] = {
         "nh-core.loader.unload",
         "nh-core.debug.monitor_on",
         "nh-core.debug.dump_on",
+        "nh-core.threads",
     };
 
     int options = sizeof(options_pp)/sizeof(options_pp[0]);
