@@ -13,7 +13,7 @@ NH_API_RESULT nh_gfx_prepareOpenGLAndroidContext(
 );
 
 NH_API_RESULT nh_gfx_swapOpenGLAndroidBuffers(
-    nh_gfx_OpenGLSurface *Surface_p
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_AndroidOnyx *Onyx_p, uint64_t generation
 );
 
 NH_API_RESULT nh_gfx_destroyOpenGLAndroidContext(

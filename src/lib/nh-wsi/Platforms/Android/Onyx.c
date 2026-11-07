@@ -6,6 +6,18 @@
 #include <android_native_app_glue.h>
 #include <string.h>
 #include <time.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/system_properties.h>
+
+static pthread_mutex_t NH_WSI_ONYX_POST_MUTEX = PTHREAD_MUTEX_INITIALIZER;
+
+bool nh_wsi_isAndroidOnyxTraceEnabled(void)
+{
+    char value[PROP_VALUE_MAX];
+    return __system_property_get("debug.monodraw.handoff", value) > 0 && !strcmp(value, "1");
+}
 
 #define NH_WSI_ONYX_TAG "Netzhaut-Onyx"
 #define NH_WSI_ONYX_LOG(...) __android_log_print(ANDROID_LOG_INFO, NH_WSI_ONYX_TAG, __VA_ARGS__)
@@ -172,6 +184,9 @@ static bool nh_wsi_initAndroidOnyx(
 static bool nh_wsi_onyxBegin(
     nh_wsi_AndroidOnyx *Onyx_p, nh_wsi_OnyxJNI *JNI_p)
 {
+    char value[PROP_VALUE_MAX];
+    if (__system_property_get("debug.monodraw.software", value) > 0 && !strcmp(value, "1"))
+        return false;
     if (!Onyx_p || !nh_wsi_onyxAttach(JNI_p)) {
         return false;
     }
@@ -206,10 +221,22 @@ static void nh_wsi_onyxSetPenState(
     nh_wsi_onyxCallInt(Onyx_p, env, Onyx_p->setPenState, state, "setScreenHandWritingPenState");
 }
 
-static void nh_wsi_onyxSetEraser(
+static bool nh_wsi_onyxSetEraser(
     nh_wsi_AndroidOnyx *Onyx_p, JNIEnv *env, bool enabled)
 {
-    if (!Onyx_p->setEraserRawDrawingEnabled) {return;}
+    // Eraser raw drawing configures eraser input, not the normal pencil tip.
+    if (!Onyx_p->setStrokeColor && enabled) {
+        NH_WSI_ONYX_ERR("setStrokeColor not available for pencil-tip erasing");
+        return false;
+    }
+    if (Onyx_p->setStrokeColor) {
+        (*env)->CallStaticVoidMethod(env, Onyx_p->helperClass, Onyx_p->setStrokeColor,
+            enabled ? (jint)0xFFFFFFFF : (jint)0xFF000000);
+        if (nh_wsi_onyxCheckException(env, "setStrokeColor")) return false;
+    }
+    if (!Onyx_p->setEraserRawDrawingEnabled) {
+        return true;
+    }
     if (Onyx_p->eraserHasStyle) {
         (*env)->CallStaticVoidMethod(env, Onyx_p->helperClass, Onyx_p->setEraserRawDrawingEnabled,
             enabled ? JNI_TRUE : JNI_FALSE, (jint)5);
@@ -217,7 +244,7 @@ static void nh_wsi_onyxSetEraser(
         (*env)->CallStaticVoidMethod(env, Onyx_p->helperClass, Onyx_p->setEraserRawDrawingEnabled,
             enabled ? JNI_TRUE : JNI_FALSE);
     }
-    nh_wsi_onyxCheckException(env, "setEraserRawDrawingEnabled");
+    return !nh_wsi_onyxCheckException(env, "setEraserRawDrawingEnabled");
 }
 
 static void nh_wsi_onyxApplyStroke(
@@ -226,7 +253,8 @@ static void nh_wsi_onyxApplyStroke(
     (*env)->CallStaticVoidMethod(env, Onyx_p->helperClass, Onyx_p->setStrokeWidth, (jfloat)Onyx_p->currentStrokeWidth);
     nh_wsi_onyxCheckException(env, "setStrokeWidth");
     nh_wsi_onyxCallInt(Onyx_p, env, Onyx_p->setStrokeStyle, Onyx_p->currentStrokeStyle, "setStrokeStyle");
-    nh_wsi_onyxCallInt(Onyx_p, env, Onyx_p->setStrokeColor, (int)0xFF000000, "setStrokeColor");
+    nh_wsi_onyxCallInt(Onyx_p, env, Onyx_p->setStrokeColor,
+        Onyx_p->eraserEnabled ? (jint)0xFFFFFFFF : (jint)0xFF000000, "setStrokeColor");
 }
 
 static void nh_wsi_onyxOpen(
@@ -248,7 +276,7 @@ static void nh_wsi_onyxSetRender(
         nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_DRAWING);
     } else {
         // Equivalent to the SDK's leaveScribbleMode + pauseDrawing.
-        Onyx_p->disablePostAt = 0;
+        __atomic_store_n(&Onyx_p->disablePostAt, 0, __ATOMIC_SEQ_CST);
         nh_wsi_onyxCallInt(Onyx_p, env, Onyx_p->enablePost, 1, "enablePost");
         nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_PAUSE);
     }
@@ -321,8 +349,18 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingLimitRect(
     nh_wsi_AndroidOnyx *Onyx_p, int left, int top, int right, int bottom,
     const nh_api_Rect *excludeRects_p, int excludeCount)
 {
+    nh_api_Rect *excludes_p = NULL;
+    if (excludeRects_p && excludeCount > 0) {
+        excludes_p = malloc(sizeof(*excludes_p) * (size_t)excludeCount);
+        if (!excludes_p) {
+            NH_WSI_ONYX_ERR("Could not allocate raw drawing exclusion rectangles");
+            return NH_API_ERROR_BAD_STATE;
+        }
+        memcpy(excludes_p, excludeRects_p, sizeof(*excludes_p) * (size_t)excludeCount);
+    }
     nh_wsi_OnyxJNI JNI;
     if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        free(excludes_p);
         return NH_API_ERROR_BAD_STATE;
     }
     JNIEnv *env = JNI.env;
@@ -355,6 +393,13 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingLimitRect(
         nh_wsi_onyxSetPenState(Onyx_p, env, NH_WSI_ONYX_PEN_STATE_DRAWING);
     }
 
+    pthread_mutex_lock(&NH_WSI_ONYX_POST_MUTEX);
+    Onyx_p->Limit = Limit;
+    Onyx_p->hasLimit = true;
+    free(Onyx_p->excludeRects_p);
+    Onyx_p->excludeRects_p = excludes_p;
+    Onyx_p->excludeCount = excludes_p ? excludeCount : 0;
+    pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
     nh_wsi_onyxDetach(&JNI);
     return NH_API_SUCCESS;
 }
@@ -366,11 +411,15 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingStrokeWidth(
     if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
         return NH_API_ERROR_BAD_STATE;
     }
-    Onyx_p->currentStrokeWidth = width;
+    if (!(width > 0.0f)) {
+        nh_wsi_onyxDetach(&JNI);
+        return NH_API_ERROR_BAD_STATE;
+    }
     (*JNI.env)->CallStaticVoidMethod(JNI.env, Onyx_p->helperClass, Onyx_p->setStrokeWidth, (jfloat)width);
-    nh_wsi_onyxCheckException(JNI.env, "setStrokeWidth");
+    bool success = !nh_wsi_onyxCheckException(JNI.env, "setStrokeWidth");
+    if (success) Onyx_p->currentStrokeWidth = width;
     nh_wsi_onyxDetach(&JNI);
-    return NH_API_SUCCESS;
+    return success ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
 }
 
 NH_API_RESULT nh_wsi_setAndroidRawDrawingStrokeStyle(
@@ -393,25 +442,73 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingEraserEnabled(
     if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
         return NH_API_ERROR_BAD_STATE;
     }
-    Onyx_p->eraserEnabled = enabled;
-    nh_wsi_onyxSetEraser(Onyx_p, JNI.env, enabled);
+    bool success = nh_wsi_onyxSetEraser(Onyx_p, JNI.env, enabled);
+    if (success) Onyx_p->eraserEnabled = enabled;
     nh_wsi_onyxDetach(&JNI);
-    return NH_API_SUCCESS;
+    return success ? NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
 }
 
 void nh_wsi_enableAndroidOnyxPost(
     nh_wsi_AndroidOnyx *Onyx_p)
 {
-    if (Onyx_p) {Onyx_p->disablePostAt = 0;}
-    if (!Onyx_p || !Onyx_p->opened || !Onyx_p->renderEnabled || !Onyx_p->enablePost) {
+    pthread_mutex_lock(&NH_WSI_ONYX_POST_MUTEX);
+    if (Onyx_p) {__atomic_store_n(&Onyx_p->disablePostAt, 0, __ATOMIC_SEQ_CST);}
+    if (!Onyx_p || !Onyx_p->opened || !Onyx_p->renderEnabled || !Onyx_p->enablePost ||
+        (__atomic_load_n(&Onyx_p->Frame.generation, __ATOMIC_SEQ_CST) & 1)) {
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
         return;
     }
     nh_wsi_OnyxJNI JNI;
     if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
         return;
     }
-    nh_wsi_onyxCallInt(Onyx_p, JNI.env, Onyx_p->enablePost, 1, "enablePost");
+    (*JNI.env)->CallStaticVoidMethod(JNI.env, Onyx_p->helperClass, Onyx_p->enablePost, (jint)1);
+    if (!nh_wsi_onyxCheckException(JNI.env, "enablePost")) {
+        __atomic_store_n(&Onyx_p->Frame.posted,
+            __atomic_load_n(&Onyx_p->Frame.generation, __ATOMIC_SEQ_CST), __ATOMIC_SEQ_CST);
+    }
     nh_wsi_onyxDetach(&JNI);
+    pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+}
+
+static bool nh_wsi_onyxContains(nh_api_Rect rect, float x, float y)
+{
+    int left = rect.left < rect.right ? rect.left : rect.right;
+    int right = rect.left < rect.right ? rect.right : rect.left;
+    int top = rect.top < rect.bottom ? rect.top : rect.bottom;
+    int bottom = rect.top < rect.bottom ? rect.bottom : rect.top;
+    return x >= left && x < right && y >= top && y < bottom;
+}
+
+void nh_wsi_beginAndroidOnyxStroke(
+    nh_wsi_AndroidOnyx *Onyx_p, float x, float y)
+{
+    pthread_mutex_lock(&NH_WSI_ONYX_POST_MUTEX);
+    bool hardware = Onyx_p->opened && Onyx_p->renderEnabled &&
+        (!Onyx_p->hasLimit || nh_wsi_onyxContains(Onyx_p->Limit, x, y));
+    for (int i = 0; hardware && i < Onyx_p->excludeCount; ++i)
+        if (nh_wsi_onyxContains(Onyx_p->excludeRects_p[i], x, y)) hardware = false;
+    if (!hardware) {
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+        return;
+    }
+    __atomic_store_n(&Onyx_p->disablePostAt, 0, __ATOMIC_SEQ_CST);
+    nh_wsi_beginOnyxStroke(&Onyx_p->Frame);
+    if (nh_wsi_isAndroidOnyxTraceEnabled())
+        NH_WSI_ONYX_LOG("handoff pen-down generation=%llu at %.1f,%.1f",
+            (unsigned long long)__atomic_load_n(&Onyx_p->Frame.generation, __ATOMIC_SEQ_CST), x, y);
+    if (Onyx_p->opened && Onyx_p->renderEnabled) {
+        nh_wsi_OnyxJNI JNI;
+        if (Onyx_p->enablePost && nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+            (*JNI.env)->CallStaticVoidMethod(JNI.env, Onyx_p->helperClass, Onyx_p->enablePost, (jint)0);
+            nh_wsi_onyxCheckException(JNI.env, "enablePost pen down");
+            nh_wsi_onyxDetach(&JNI);
+        } else {
+            NH_WSI_ONYX_ERR("Cannot block app posting on pen down");
+        }
+    }
+    pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
 }
 
 static int64_t nh_wsi_onyxNow()
@@ -427,25 +524,102 @@ void nh_wsi_scheduleAndroidOnyxPostDisable(
     if (!Onyx_p || !Onyx_p->opened || !Onyx_p->renderEnabled || !Onyx_p->enablePost) {
         return;
     }
-    Onyx_p->disablePostAt = nh_wsi_onyxNow() + (delayMs > 0 ? delayMs : 1);
+    __atomic_store_n(&Onyx_p->disablePostAt,
+        nh_wsi_onyxNow() + (delayMs > 0 ? delayMs : 1), __ATOMIC_SEQ_CST);
+}
+
+NH_API_RESULT nh_wsi_postAndroidOnyxFrame(
+    nh_wsi_AndroidOnyx *Onyx_p, uint64_t generation,
+    NH_API_RESULT (*post_f)(void *), void *user_p)
+{
+    pthread_mutex_lock(&NH_WSI_ONYX_POST_MUTEX);
+    bool pending = __atomic_load_n(&Onyx_p->Frame.generation, __ATOMIC_SEQ_CST) !=
+        __atomic_load_n(&Onyx_p->Frame.posted, __ATOMIC_SEQ_CST);
+    if (Onyx_p->opened && Onyx_p->renderEnabled && pending &&
+        !nh_wsi_canPostOnyxFrame(&Onyx_p->Frame, generation)) {
+        if (nh_wsi_isAndroidOnyxTraceEnabled())
+            NH_WSI_ONYX_LOG("handoff skip buffer=%llu current=%llu",
+                (unsigned long long)generation,
+                (unsigned long long)__atomic_load_n(&Onyx_p->Frame.generation, __ATOMIC_SEQ_CST));
+        // Do not queue partial or stale buffers for a later enablePost to expose.
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+        return NH_API_SUCCESS;
+    }
+    if (!Onyx_p->opened || !Onyx_p->renderEnabled ||
+        !nh_wsi_canPostOnyxFrame(&Onyx_p->Frame, generation)) {
+        NH_API_RESULT result = post_f(user_p);
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+        return result;
+    }
+    if (!Onyx_p->enablePost) {
+        NH_WSI_ONYX_ERR("Cannot post finalized canvas: enablePost unavailable");
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+        return NH_API_ERROR_BAD_STATE;
+    }
+    nh_wsi_OnyxJNI JNI;
+    if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+        return NH_API_ERROR_BAD_STATE;
+    }
+    if (nh_wsi_isAndroidOnyxTraceEnabled())
+        NH_WSI_ONYX_LOG("handoff enable-post generation=%llu", (unsigned long long)generation);
+    (*JNI.env)->CallStaticVoidMethod(JNI.env, Onyx_p->helperClass, Onyx_p->enablePost, (jint)1);
+    bool failed = nh_wsi_onyxCheckException(JNI.env, "enablePost finalized canvas");
+    char pause[PROP_VALUE_MAX];
+    if (!failed && __system_property_get("debug.monodraw.handoff.pause", pause) > 0 &&
+        !strcmp(pause, "1")) {
+        NH_WSI_ONYX_LOG("handoff diagnostic pause START generation=%llu (800 ms before swap)",
+            (unsigned long long)generation);
+        struct timespec remaining = {0, 800000000};
+        int sleepResult;
+        do {
+            sleepResult = nanosleep(&remaining, &remaining);
+        } while (sleepResult != 0 && errno == EINTR);
+        if (sleepResult != 0)
+            NH_WSI_ONYX_ERR("handoff diagnostic pause failed: %s", strerror(errno));
+        NH_WSI_ONYX_LOG("handoff diagnostic pause END generation=%llu; submitting canvas now",
+            (unsigned long long)generation);
+    }
+    NH_API_RESULT result = failed ? NH_API_ERROR_BAD_STATE : post_f(user_p);
+    if (result == NH_API_SUCCESS) {
+        if (nh_wsi_isAndroidOnyxTraceEnabled())
+            NH_WSI_ONYX_LOG("handoff swap-complete generation=%llu", (unsigned long long)generation);
+        __atomic_store_n(&Onyx_p->Frame.posted, generation, __ATOMIC_SEQ_CST);
+        nh_wsi_scheduleAndroidOnyxPostDisable(Onyx_p, 600);
+    } else {
+        nh_wsi_onyxCallInt(Onyx_p, JNI.env, Onyx_p->enablePost, 0, "enablePost failed handoff");
+    }
+    nh_wsi_onyxDetach(&JNI);
+    pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+    return result;
 }
 
 void nh_wsi_updateAndroidOnyx(
     nh_wsi_AndroidOnyx *Onyx_p)
 {
-    if (!Onyx_p || Onyx_p->disablePostAt == 0 || nh_wsi_onyxNow() < Onyx_p->disablePostAt) {
+    if (!Onyx_p) return;
+    int64_t deadline = __atomic_load_n(&Onyx_p->disablePostAt, __ATOMIC_SEQ_CST);
+    if (!deadline || nh_wsi_onyxNow() < deadline) {
         return;
     }
-    Onyx_p->disablePostAt = 0;
+    pthread_mutex_lock(&NH_WSI_ONYX_POST_MUTEX);
+    if (!__atomic_compare_exchange_n(&Onyx_p->disablePostAt, &deadline, 0,
+            false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
+        return;
+    }
     if (!Onyx_p->opened || !Onyx_p->renderEnabled || !Onyx_p->enablePost) {
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
         return;
     }
     nh_wsi_OnyxJNI JNI;
     if (!nh_wsi_onyxBegin(Onyx_p, &JNI)) {
+        pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
         return;
     }
     nh_wsi_onyxCallInt(Onyx_p, JNI.env, Onyx_p->enablePost, 0, "enablePost");
     nh_wsi_onyxDetach(&JNI);
+    pthread_mutex_unlock(&NH_WSI_ONYX_POST_MUTEX);
 }
 
 // Values of android.onyx.ViewUpdateHelper.UI_*_MODE.
@@ -564,5 +738,6 @@ void nh_wsi_closeAndroidOnyx(
         }
         nh_wsi_onyxDetach(&JNI);
     }
+    free(Onyx_p->excludeRects_p);
     memset(Onyx_p, 0, sizeof(nh_wsi_AndroidOnyx));
 }

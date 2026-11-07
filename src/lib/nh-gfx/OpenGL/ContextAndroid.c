@@ -4,6 +4,7 @@
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include <android/log.h>
 
 static void nh_gfx_destroyAndroidEGLSurface(
     nh_gfx_OpenGLSurface *Surface_p)
@@ -143,11 +144,21 @@ NH_API_RESULT nh_gfx_prepareOpenGLAndroidContext(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_gfx_swapOpenGLAndroidBuffers(
-    nh_gfx_OpenGLSurface *Surface_p)
+static NH_API_RESULT nh_gfx_postAndroidBuffer(void *user_p)
 {
-    return eglSwapBuffers(Surface_p->Display, Surface_p->EGLSurface) ?
-        NH_API_SUCCESS : NH_API_ERROR_BAD_STATE;
+    nh_gfx_OpenGLSurface *Surface_p = user_p;
+    if (!eglSwapBuffers(Surface_p->Display, Surface_p->EGLSurface)) {
+        __android_log_print(ANDROID_LOG_ERROR, "Netzhaut-gfx",
+            "eglSwapBuffers failed: 0x%x", eglGetError());
+        return NH_API_ERROR_BAD_STATE;
+    }
+    return NH_API_SUCCESS;
+}
+
+NH_API_RESULT nh_gfx_swapOpenGLAndroidBuffers(
+    nh_gfx_OpenGLSurface *Surface_p, nh_wsi_AndroidOnyx *Onyx_p, uint64_t generation)
+{
+    return nh_wsi_postAndroidOnyxFrame(Onyx_p, generation, nh_gfx_postAndroidBuffer, Surface_p);
 }
 
 NH_API_RESULT nh_gfx_destroyOpenGLAndroidContext(

@@ -27,6 +27,7 @@ typedef struct nh_gfx_OpenGLSurface {
     EGLContext Context;
     EGLSurface EGLSurface;
     uint32_t WindowGeneration;
+    uint64_t rawDrawingGeneration;
 #elif defined(__APPLE__)
     void* Context_p; // CGLContext
     void* OpenGLContext_p;

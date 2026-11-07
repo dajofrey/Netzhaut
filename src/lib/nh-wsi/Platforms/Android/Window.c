@@ -474,6 +474,7 @@ static void nh_wsi_androidSendStylus(
     switch (actionType) {
         case AMOTION_EVENT_ACTION_DOWN:
         case AMOTION_EVENT_ACTION_POINTER_DOWN:
+            nh_wsi_beginAndroidOnyxStroke(&Window_p->Android.Onyx, x, y);
             nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_PRESS, x, y, pressure);
             break;
         case AMOTION_EVENT_ACTION_MOVE: {
@@ -489,9 +490,11 @@ static void nh_wsi_androidSendStylus(
         }
         case AMOTION_EVENT_ACTION_UP:
         case AMOTION_EVENT_ACTION_POINTER_UP:
+            nh_wsi_endOnyxStroke(&Window_p->Android.Onyx.Frame);
             nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_RELEASE, x, y, pressure);
             break;
         case AMOTION_EVENT_ACTION_CANCEL:
+            nh_wsi_endOnyxStroke(&Window_p->Android.Onyx.Frame);
             nh_wsi_sendStylusEvent(Window_p, NH_API_TRIGGER_CANCEL, x, y, pressure);
             break;
     }

@@ -25,7 +25,7 @@
 
 nh_gfx_OpenGLCommandBuffer nh_gfx_initOpenGLCommandBuffer()
 {
-    nh_gfx_OpenGLCommandBuffer CommandBuffer;
+    nh_gfx_OpenGLCommandBuffer CommandBuffer = {0};
     CommandBuffer.Commands = nh_core_initList(64);
 
     return CommandBuffer;
@@ -118,6 +118,13 @@ NH_API_RESULT nh_gfx_freeOpenGLCommandBuffer(
 NH_API_RESULT nh_gfx_appendOpenGLCommandBuffer(
     nh_gfx_OpenGLCommandBuffer *CommandBuffer_p, nh_gfx_OpenGLCommandBuffer *ToBeAppended_p)
 {
+    CommandBuffer_p->deferRawDrawing |= ToBeAppended_p->deferRawDrawing;
+    if (ToBeAppended_p->RawDrawingProbe.enabled)
+        CommandBuffer_p->RawDrawingProbe = ToBeAppended_p->RawDrawingProbe;
+    if (ToBeAppended_p->commitRawDrawing) {
+        CommandBuffer_p->commitRawDrawing = true;
+        CommandBuffer_p->rawDrawingGeneration = ToBeAppended_p->rawDrawingGeneration;
+    }
     for (int i = 0; i < ToBeAppended_p->Commands.size; ++i) {
         nh_core_appendToList(&CommandBuffer_p->Commands, ToBeAppended_p->Commands.pp[i]);
     }

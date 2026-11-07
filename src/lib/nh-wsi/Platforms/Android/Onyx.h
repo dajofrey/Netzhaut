@@ -3,6 +3,7 @@
 
 #include "../../Common/Includes.h"
 #include <jni.h>
+#include "OnyxFrame.h"
 
 // Boox/Onyx e-paper raw drawing.
 // Talks directly to the firmware class android.onyx.ViewUpdateHelper (the same class the
@@ -43,6 +44,11 @@ typedef struct nh_wsi_AndroidOnyx {
     int currentStrokeStyle;
     int updateMode;
     int64_t disablePostAt; // Monotonic ms, 0 if not scheduled.
+    nh_wsi_OnyxFrame Frame;
+    nh_api_Rect Limit;
+    nh_api_Rect *excludeRects_p;
+    int excludeCount;
+    bool hasLimit;
 } nh_wsi_AndroidOnyx;
 
 NH_API_RESULT nh_wsi_setAndroidRawDrawingEnabled(
@@ -74,12 +80,18 @@ NH_API_RESULT nh_wsi_setAndroidRawDrawingEraserEnabled(
  * The firmware stops posting the app's frames to the panel as soon as the pen touches down in
  * the raw drawing region, so that app rendering doesn't overwrite the hardware strokes. This
  * posts them again and must be called before the app shows content the hardware strokes don't
- * already show, e.g. on panning. It is not done on pen up, because each pen down with posting
- * enabled makes the firmware wait ~200 ms before the hardware strokes start.
+ * already show, e.g. on panning. Stroke handoff uses nh_wsi_postAndroidOnyxFrame
+ * to enable posting immediately before submitting a GPU-completed canvas buffer.
  */
 void nh_wsi_enableAndroidOnyxPost(
     nh_wsi_AndroidOnyx *Onyx_p
 );
+
+void nh_wsi_beginAndroidOnyxStroke(
+    nh_wsi_AndroidOnyx *Onyx_p, float x, float y
+);
+
+bool nh_wsi_isAndroidOnyxTraceEnabled(void);
 
 /**
  * Stops posting the app's frames again after delayMs, once the last frame reached the panel.
@@ -88,6 +100,11 @@ void nh_wsi_enableAndroidOnyxPost(
  */
 void nh_wsi_scheduleAndroidOnyxPostDisable(
     nh_wsi_AndroidOnyx *Onyx_p, int delayMs
+);
+
+NH_API_RESULT nh_wsi_postAndroidOnyxFrame(
+    nh_wsi_AndroidOnyx *Onyx_p, uint64_t generation,
+    NH_API_RESULT (*post_f)(void *), void *user_p
 );
 
 /**

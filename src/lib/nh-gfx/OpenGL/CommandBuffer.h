@@ -15,6 +15,15 @@ typedef struct nh_gfx_OpenGLCommand {
 
 typedef struct nh_gfx_OpenGLCommandBuffer {
     nh_core_List Commands;
+    uint64_t rawDrawingGeneration;
+    bool commitRawDrawing; // Finalized canvas; publish only after successful frame submission.
+    bool deferRawDrawing;
+    struct {
+        bool enabled;
+        int x, y;
+        unsigned int revision;
+        unsigned char expected[17 * 17]; // 0: unchecked, 1: ink, 2: paper; bottom-up.
+    } RawDrawingProbe;
 } nh_gfx_OpenGLCommandBuffer;
 
 nh_gfx_OpenGLCommandBuffer nh_gfx_initOpenGLCommandBuffer(

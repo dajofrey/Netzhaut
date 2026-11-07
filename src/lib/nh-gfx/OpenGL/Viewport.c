@@ -13,6 +13,9 @@
 
 #include "../Base/Viewport.h"
 #include "../../nh-core/System/Thread.h"
+#if defined(NH_PLATFORM_ANDROID)
+#include "../../nh-wsi/Window/Window.h"
+#endif
 
 #include <string.h>
 
@@ -38,6 +41,12 @@ NH_API_RESULT nh_gfx_beginOpenGLRecording(
     nh_gfx_Viewport *Viewport_p)
 {
     *(Viewport_p->OpenGL.CommandBuffer_p) = nh_gfx_initOpenGLCommandBuffer();
+#if defined(NH_PLATFORM_ANDROID)
+    Viewport_p->OpenGL.CommandBuffer_p->rawDrawingGeneration = __atomic_load_n(
+        &Viewport_p->Surface_p->Window_p->Android.Onyx.Frame.generation, __ATOMIC_SEQ_CST);
+    // Ordinary UI frames are complete; custom drawing callbacks can defer their handoff.
+    Viewport_p->OpenGL.CommandBuffer_p->commitRawDrawing = true;
+#endif
 
     // Set viewport.
     nh_gfx_addOpenGLCommand(
