@@ -144,7 +144,7 @@ NH_API_RESULT nh_gfx_renderOpenGL(
             ink, paper, missing, extra, before, error);
     }
     NH_CORE_CHECK(nh_gfx_swapOpenGLAndroidBuffers(
-        &Surface_p->OpenGL, &Surface_p->Window_p->Android.Onyx, generation))
+        &Surface_p->OpenGL, Surface_p->Window_p, generation))
     if (Surface_p->OpenGL.rawDrawingGeneration ==
             __atomic_load_n(&Surface_p->Window_p->Android.Onyx.Frame.posted, __ATOMIC_SEQ_CST) ||
         Surface_p->OpenGL.rawDrawingGeneration !=
