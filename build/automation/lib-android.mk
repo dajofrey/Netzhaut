@@ -143,8 +143,8 @@ SRC_FILES_NH_WSI := \
     Common/About.c \
     Platforms/Android/Init.c \
     Platforms/Android/Window.c \
-    Platforms/Android/Onyx.c
-SRC_FILES_NH_WSI += Platforms/Android/Supernote.c
+    Platforms/Android/Onyx.c \
+    Platforms/Android/Supernote.c
 
 SRC_FILES_NH_ENCODING := \
     Base/Encodings.c \

@@ -145,7 +145,7 @@ NH_API_RESULT nh_gfx_prepareOpenGLAndroidContext(
     return NH_API_SUCCESS;
 }
 
-typedef struct {
+typedef struct nh_gfx_AndroidPost {
     nh_gfx_OpenGLSurface *Surface_p;
     nh_wsi_Window *Window_p;
 } nh_gfx_AndroidPost;
@@ -154,9 +154,9 @@ static NH_API_RESULT nh_gfx_postAndroidBuffer(void *user_p)
 {
     nh_gfx_AndroidPost *Post_p = user_p;
     nh_gfx_OpenGLSurface *Surface_p = Post_p->Surface_p;
-    ANativeWindow *window = nh_wsi_acquireAndroidNativeWindow(Post_p->Window_p, NULL);
-    NH_API_RESULT result = nh_wsi_markAndroidSupernoteFrameDirty(window);
-    nh_wsi_releaseAndroidNativeWindow(window);
+    ANativeWindow *NativeWindow_p = nh_wsi_acquireAndroidNativeWindow(Post_p->Window_p, NULL);
+    NH_API_RESULT result = nh_wsi_markAndroidSupernoteFrameDirty(NativeWindow_p);
+    nh_wsi_releaseAndroidNativeWindow(NativeWindow_p);
     NH_CORE_CHECK(result)
     if (!eglSwapBuffers(Surface_p->Display, Surface_p->EGLSurface)) {
         __android_log_print(ANDROID_LOG_ERROR, "Netzhaut-gfx",
@@ -170,7 +170,8 @@ NH_API_RESULT nh_gfx_swapOpenGLAndroidBuffers(
     nh_gfx_OpenGLSurface *Surface_p, nh_wsi_Window *Window_p, uint64_t generation)
 {
     nh_gfx_AndroidPost Post = {Surface_p, Window_p};
-    return nh_wsi_postAndroidOnyxFrame(&Window_p->Android.Onyx, generation, nh_gfx_postAndroidBuffer, &Post);
+    return nh_wsi_postAndroidOnyxFrame(&Window_p->Android.Onyx, generation,
+        nh_gfx_postAndroidBuffer, &Post);
 }
 
 NH_API_RESULT nh_gfx_destroyOpenGLAndroidContext(

@@ -9,6 +9,14 @@
 
 #define TAG "Netzhaut-Supernote"
 
+// Same values Surface::unlockAndPost passes for software-rendered buffers:
+// an empty rect covers the whole surface.
+#define NH_WSI_SUPERNOTE_DATA_MODE 3
+#define NH_WSI_SUPERNOTE_DISP_MODE 3
+#define NH_WSI_SUPERNOTE_A2_GATE   0
+#define NH_WSI_SUPERNOTE_RSVD0     4
+#define NH_WSI_SUPERNOTE_RSVD1     0
+
 typedef jobject (*nh_wsi_toSurface_f)(JNIEnv *, ANativeWindow *);
 static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 static bool initialized, available;
@@ -27,6 +35,7 @@ static bool exception(JNIEnv *env)
 static bool initialize(JNIEnv *env)
 {
     initialized = true;
+    // Introduced in API 26; minSdk may be lower.
     toSurface = (nh_wsi_toSurface_f)dlsym(RTLD_DEFAULT, "ANativeWindow_toSurface");
     if (!toSurface) {
         __android_log_print(ANDROID_LOG_INFO, TAG, "ANativeWindow_toSurface unavailable");
@@ -95,7 +104,10 @@ NH_API_RESULT nh_wsi_markAndroidSupernoteFrameDirty(ANativeWindow *window)
     failed |= exception(env);
     if (!failed && surface && rect) {
         // Same full-surface metadata as Supernote's Surface::unlockAndPost (MonoReader's fix).
-        jboolean accepted = (*env)->CallBooleanMethod(env, surface, addDirty, rect, 3, 3, 0, 4, 0);
+        jboolean accepted = (*env)->CallBooleanMethod(env, surface, addDirty, rect,
+            (jint)NH_WSI_SUPERNOTE_DATA_MODE, (jint)NH_WSI_SUPERNOTE_DISP_MODE,
+            (jint)NH_WSI_SUPERNOTE_A2_GATE, (jint)NH_WSI_SUPERNOTE_RSVD0,
+            (jint)NH_WSI_SUPERNOTE_RSVD1);
         failed = exception(env);
         if (accepted && !failed) result = NH_API_SUCCESS;
     }
