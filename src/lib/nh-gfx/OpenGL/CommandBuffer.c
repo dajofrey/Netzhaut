@@ -118,6 +118,8 @@ NH_API_RESULT nh_gfx_freeOpenGLCommandBuffer(
 NH_API_RESULT nh_gfx_appendOpenGLCommandBuffer(
     nh_gfx_OpenGLCommandBuffer *CommandBuffer_p, nh_gfx_OpenGLCommandBuffer *ToBeAppended_p)
 {
+    if (ToBeAppended_p->Presentation.validate_f)
+        CommandBuffer_p->Presentation = ToBeAppended_p->Presentation;
     CommandBuffer_p->deferRawDrawing |= ToBeAppended_p->deferRawDrawing;
     if (ToBeAppended_p->RawDrawingProbe.enabled)
         CommandBuffer_p->RawDrawingProbe = ToBeAppended_p->RawDrawingProbe;

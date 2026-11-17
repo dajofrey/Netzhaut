@@ -15,6 +15,12 @@ typedef struct nh_gfx_OpenGLCommand {
 
 typedef struct nh_gfx_OpenGLCommandBuffer {
     nh_core_List Commands;
+    struct {
+        bool (*validate_f)(void *user, uint64_t serial);
+        void (*submitted_f)(void *user);
+        void *user;
+        uint64_t serial;
+    } Presentation;
     uint64_t rawDrawingGeneration;
     bool commitRawDrawing; // Finalized canvas; publish only after successful frame submission.
     bool deferRawDrawing;

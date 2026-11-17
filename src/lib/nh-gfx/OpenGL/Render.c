@@ -74,6 +74,8 @@ NH_API_RESULT nh_gfx_renderOpenGL(
     for (int i = 0; i < SortedViewports_p->size; ++i) {
         nh_gfx_Viewport *Viewport_p = SortedViewports_p->pp[i];
 #if defined(NH_PLATFORM_ANDROID)
+        if (Viewport_p->OpenGL.CommandBuffer_p->Presentation.validate_f)
+            probe.Presentation = Viewport_p->OpenGL.CommandBuffer_p->Presentation;
         deferRawDrawing |= Viewport_p->OpenGL.CommandBuffer_p->deferRawDrawing;
         if (Viewport_p->OpenGL.CommandBuffer_p->RawDrawingProbe.enabled) {
             probe.RawDrawingProbe = Viewport_p->OpenGL.CommandBuffer_p->RawDrawingProbe;
@@ -97,6 +99,10 @@ NH_API_RESULT nh_gfx_renderOpenGL(
         nh_gfx_flushOpenGLDrawableIOS(Surface_p->OpenGL.Context_p, Surface_p->OpenGL.framebuffer, Surface_p->OpenGL.colorRenderbuffer);
     #endif
 #elif defined(NH_PLATFORM_ANDROID)
+    // Execute resource commands even for stale frames, but never publish stale canvas pixels.
+    if (probe.Presentation.validate_f &&
+        !probe.Presentation.validate_f(probe.Presentation.user, probe.Presentation.serial))
+        return NH_API_SUCCESS;
     uint64_t generation = deferRawDrawing ? 0 : Surface_p->OpenGL.rawDrawingGeneration;
     if (nh_wsi_canPostOnyxFrame(&Surface_p->Window_p->Android.Onyx.Frame, generation))
         glFinish();
@@ -144,7 +150,9 @@ NH_API_RESULT nh_gfx_renderOpenGL(
             ink, paper, missing, extra, before, error);
     }
     NH_CORE_CHECK(nh_gfx_swapOpenGLAndroidBuffers(
-        &Surface_p->OpenGL, &Surface_p->Window_p->Android.Onyx, generation))
+        &Surface_p->OpenGL, Surface_p->Window_p, generation))
+    if (probe.Presentation.submitted_f)
+        probe.Presentation.submitted_f(probe.Presentation.user);
     if (Surface_p->OpenGL.rawDrawingGeneration ==
             __atomic_load_n(&Surface_p->Window_p->Android.Onyx.Frame.posted, __ATOMIC_SEQ_CST) ||
         Surface_p->OpenGL.rawDrawingGeneration !=
