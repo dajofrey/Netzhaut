@@ -57,7 +57,9 @@
 - (void)showKeyboard {
     // Since the view itself handles text input now, we make the view the first responder
     if ([self canBecomeFirstResponder]) {
-        [self becomeFirstResponder];
+        if (![self becomeFirstResponder]) {
+            NSLog(@"Netzhaut: Could not activate the native keyboard");
+        }
     }
 }
 
@@ -80,7 +82,17 @@
 
     for (NSUInteger i = 0; i < text.length; i++) {
         NH_ENCODING_UTF32 codepoint = [text characterAtIndex:i];
-        
+        if (CFStringIsSurrogateHighCharacter(codepoint) && i + 1 < text.length) {
+            unichar low = [text characterAtIndex:i + 1];
+            if (CFStringIsSurrogateLowCharacter(low)) {
+                codepoint = CFStringGetLongCharacterForSurrogatePair(codepoint, low);
+                ++i;
+            }
+        }
+        if (codepoint >= 0xD800 && codepoint <= 0xDFFF) {
+            NSLog(@"Netzhaut: Ignoring invalid UTF-16 keyboard input");
+            continue;
+        }
         // Dispatch key triggers directly into your engine backend
         nh_wsi_sendKeyboardEvent(self.Window_p, codepoint, 0, NH_API_TRIGGER_PRESS, 0);
         nh_wsi_sendKeyboardEvent(self.Window_p, codepoint, 0, NH_API_TRIGGER_RELEASE, 0);
@@ -307,6 +319,18 @@
 
 @implementation NHCustomViewController
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        [center addObserver:self selector:@selector(keyboardFrameChanged:)
+            name:UIKeyboardWillChangeFrameNotification object:nil];
+        [center addObserver:self selector:@selector(keyboardFrameChanged:)
+            name:UIKeyboardWillHideNotification object:nil];
+    }
+    return self;
+}
+
 - (void)updateInsetsAndNotify {
     if (!self.Window_p || !self.view.window) return;
 
@@ -344,7 +368,9 @@
     CGRect keyboardInView = [self.view convertRect:keyboardFrame fromView:nil];
     CGRect intersection = CGRectIntersection(self.view.bounds, keyboardInView);
     CGFloat scale = self.view.contentScaleFactor;
-    int keyboardBottom = CGRectIsNull(intersection) ? 0 :
+    int keyboardBottom = [notification.name isEqualToString:UIKeyboardWillHideNotification] ||
+        CGRectIsNull(intersection) || CGRectGetWidth(intersection) < CGRectGetWidth(self.view.bounds) - 1 ||
+        CGRectGetMaxY(intersection) < CGRectGetMaxY(self.view.bounds) - 1 ? 0 :
         (int)lround(CGRectGetHeight(intersection) * scale);
     if (self.Window_p->keyboardInsetBottom == keyboardBottom) return;
 
@@ -353,15 +379,6 @@
     nh_wsi_sendWindowEvent(self.Window_p, NH_API_WINDOW_CONFIGURE, 0, 0,
         (int)size.width, (int)size.height,
         (int)lround(size.width * scale), (int)lround(size.height * scale));
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self selector:@selector(keyboardFrameChanged:)
-        name:UIKeyboardWillChangeFrameNotification object:nil];
-    [center addObserver:self selector:@selector(keyboardFrameChanged:)
-        name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)dealloc {
