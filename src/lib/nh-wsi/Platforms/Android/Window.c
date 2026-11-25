@@ -26,6 +26,7 @@ static pthread_mutex_t NH_WSI_ANDROID_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 static struct android_app *NH_WSI_ANDROID_APP;
 static void (*NH_WSI_ANDROID_PREVIOUS_COMMAND)(struct android_app *, int32_t);
 static int32_t (*NH_WSI_ANDROID_PREVIOUS_INPUT)(struct android_app *, AInputEvent *);
+static jmethodID NH_WSI_ANDROID_KEYBOARD_INPUT;
 
 static float nh_wsi_androidGetScale(struct android_app *app_p)
 {
@@ -786,6 +787,7 @@ void nh_wsi_terminateAndroid()
     NH_WSI_ANDROID_APP = NULL;
     NH_WSI_ANDROID_PREVIOUS_COMMAND = NULL;
     NH_WSI_ANDROID_PREVIOUS_INPUT = NULL;
+    NH_WSI_ANDROID_KEYBOARD_INPUT = NULL;
     pthread_mutex_unlock(&NH_WSI_ANDROID_MUTEX);
 }
 
@@ -888,26 +890,86 @@ NH_API_RESULT nh_wsi_getAndroidWindowSize(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_wsi_showAndroidKeyboard(nh_wsi_AndroidWindow *Window_p)
+static bool nh_wsi_androidKeyboardEnv(struct android_app *app_p, JNIEnv **env, bool *detach)
 {
-    (void)Window_p;
+    *detach = false;
+    JavaVM *vm = app_p->activity->vm;
+    jint status = (*vm)->GetEnv(vm, (void**)env, JNI_VERSION_1_6);
+    if (status == JNI_EDETACHED) {
+        status = (*vm)->AttachCurrentThread(vm, env, NULL);
+        *detach = status == JNI_OK;
+    }
+    if (status != JNI_OK) {
+        __android_log_print(ANDROID_LOG_ERROR, "Netzhaut", "Could not access keyboard activity");
+        return false;
+    }
+    return true;
+}
+
+static NH_API_RESULT nh_wsi_androidKeyboard(bool visible)
+{
     struct android_app *app_p = nh_wsi_getAndroidApp();
     if (!app_p || !app_p->activity) {
         return NH_API_ERROR_BAD_STATE;
     }
-    ANativeActivity_showSoftInput(app_p->activity, ANATIVEACTIVITY_SHOW_SOFT_INPUT_IMPLICIT);
-    return NH_API_SUCCESS;
+    JNIEnv *env = NULL;
+    bool detach;
+    if (!nh_wsi_androidKeyboardEnv(app_p, &env, &detach)) return NH_API_ERROR_BAD_STATE;
+    JavaVM *vm = app_p->activity->vm;
+    jclass cls = (*env)->GetObjectClass(env, app_p->activity->clazz);
+    jmethodID method = cls ? (*env)->GetMethodID(env, cls, "setNativeKeyboardVisible", "(Z)V") : NULL;
+    NH_API_RESULT result = NH_API_SUCCESS;
+    bool missingBridge = false;
+    if (!method && (*env)->ExceptionCheck(env)) {
+        jthrowable exception = (*env)->ExceptionOccurred(env);
+        (*env)->ExceptionClear(env);
+        jclass missingMethod = (*env)->FindClass(env, "java/lang/NoSuchMethodError");
+        missingBridge = missingMethod && (*env)->IsInstanceOf(env, exception, missingMethod);
+        if (missingMethod) (*env)->DeleteLocalRef(env, missingMethod);
+        (*env)->DeleteLocalRef(env, exception);
+    }
+    if (method) {
+        jmethodID input = (*env)->GetMethodID(env, cls, "takeNativeKeyboardInput", "()[I");
+        if (input) {
+            pthread_mutex_lock(&NH_WSI_ANDROID_MUTEX);
+            NH_WSI_ANDROID_KEYBOARD_INPUT = input;
+            pthread_mutex_unlock(&NH_WSI_ANDROID_MUTEX);
+            (*env)->CallVoidMethod(env, app_p->activity->clazz, method, (jboolean)visible);
+        } else result = NH_API_ERROR_BAD_STATE;
+        if ((*env)->ExceptionCheck(env)) {
+            (*env)->ExceptionDescribe(env);
+            (*env)->ExceptionClear(env);
+            result = NH_API_ERROR_BAD_STATE;
+        }
+    } else if (missingBridge) {
+        // Hosts without a text-input bridge retain the NativeActivity keyboard path.
+        if (visible)
+            ANativeActivity_showSoftInput(app_p->activity, ANATIVEACTIVITY_SHOW_SOFT_INPUT_IMPLICIT);
+        else
+            ANativeActivity_hideSoftInput(app_p->activity, ANATIVEACTIVITY_HIDE_SOFT_INPUT_NOT_ALWAYS);
+    } else {
+        __android_log_print(ANDROID_LOG_ERROR, "Netzhaut", "Could not resolve keyboard activity bridge");
+        if ((*env)->ExceptionCheck(env)) {
+            (*env)->ExceptionDescribe(env);
+            (*env)->ExceptionClear(env);
+        }
+        result = NH_API_ERROR_BAD_STATE;
+    }
+    if (cls) (*env)->DeleteLocalRef(env, cls);
+    if (detach) (*vm)->DetachCurrentThread(vm);
+    return result;
+}
+
+NH_API_RESULT nh_wsi_showAndroidKeyboard(nh_wsi_AndroidWindow *Window_p)
+{
+    (void)Window_p;
+    return nh_wsi_androidKeyboard(true);
 }
 
 NH_API_RESULT nh_wsi_hideAndroidKeyboard(nh_wsi_AndroidWindow *Window_p)
 {
     (void)Window_p;
-    struct android_app *app_p = nh_wsi_getAndroidApp();
-    if (!app_p || !app_p->activity) {
-        return NH_API_ERROR_BAD_STATE;
-    }
-    ANativeActivity_hideSoftInput(app_p->activity, ANATIVEACTIVITY_HIDE_SOFT_INPUT_NOT_ALWAYS);
-    return NH_API_SUCCESS;
+    return nh_wsi_androidKeyboard(false);
 }
 
 NH_API_RESULT nh_wsi_setAndroidStatusBarVisible(nh_wsi_AndroidWindow *Window_p, bool visible)
@@ -933,7 +995,38 @@ NH_API_RESULT nh_wsi_getAndroidInput(nh_wsi_Window *Window_p, bool *idle_p)
         nh_wsi_updateAndroidOnyx(&Window_p->Android.Onyx);
     }
     *idle_p = true;
-    return NH_API_SUCCESS;
+    pthread_mutex_lock(&NH_WSI_ANDROID_MUTEX);
+    jmethodID input = NH_WSI_ANDROID_KEYBOARD_INPUT;
+    pthread_mutex_unlock(&NH_WSI_ANDROID_MUTEX);
+    if (!Window_p || !input) return NH_API_SUCCESS;
+    struct android_app *app_p = nh_wsi_getAndroidApp();
+    if (!app_p || !app_p->activity) return NH_API_ERROR_BAD_STATE;
+    JNIEnv *env = NULL;
+    bool detach;
+    if (!nh_wsi_androidKeyboardEnv(app_p, &env, &detach)) return NH_API_ERROR_BAD_STATE;
+    jintArray events = (*env)->CallObjectMethod(env, app_p->activity->clazz, input);
+    NH_API_RESULT result = NH_API_SUCCESS;
+    if (events && !(*env)->ExceptionCheck(env)) {
+        jsize count = (*env)->GetArrayLength(env, events);
+        jint *codepoints = (*env)->GetIntArrayElements(env, events, NULL);
+        if (codepoints) {
+            for (jsize i = 0; i < count; ++i)
+                nh_wsi_sendKeyboardEvent(Window_p, codepoints[i], NH_API_KEY_NONE, NH_API_TRIGGER_PRESS, 0);
+            (*env)->ReleaseIntArrayElements(env, events, codepoints, JNI_ABORT);
+            *idle_p = count == 0;
+        } else result = NH_API_ERROR_BAD_STATE;
+    }
+    if (result != NH_API_SUCCESS)
+        __android_log_print(ANDROID_LOG_ERROR, "Netzhaut", "Could not acquire system keyboard input");
+    if ((*env)->ExceptionCheck(env)) {
+        __android_log_print(ANDROID_LOG_ERROR, "Netzhaut", "Could not read system keyboard input");
+        (*env)->ExceptionDescribe(env);
+        (*env)->ExceptionClear(env);
+        result = NH_API_ERROR_BAD_STATE;
+    }
+    if (events) (*env)->DeleteLocalRef(env, events);
+    if (detach) (*app_p->activity->vm)->DetachCurrentThread(app_p->activity->vm);
+    return result;
 }
 
 NH_API_RESULT nh_wsi_setAndroidWindowDecorated(nh_wsi_AndroidWindow *Window_p, bool decorated)
