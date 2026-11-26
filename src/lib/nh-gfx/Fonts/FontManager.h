@@ -47,6 +47,7 @@ typedef struct nh_gfx_Font {
     size_t fileSize;
     nh_gfx_FontFamily Family;
     nh_gfx_FontStyle Style;
+    size_t atlasRevision;
 } nh_gfx_Font;
 
 typedef struct nh_gfx_FontInstance {

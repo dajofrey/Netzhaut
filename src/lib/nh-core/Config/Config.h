@@ -58,6 +58,9 @@
     nh_core_RawConfig *nh_core_getGlobalConfig(
     );
 
+    unsigned long long nh_core_getGlobalConfigRevision(
+    );
+
     bool nh_core_popGlobalConfigMark(
         char *namespace_p
     );

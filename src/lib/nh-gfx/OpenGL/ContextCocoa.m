@@ -72,7 +72,7 @@ NH_API_RESULT nh_gfx_createOpenGLCocoaContext(
 
     CGLContextObj cglContext = [context CGLContextObj];
     Surface_p->Context_p = cglContext;
-    Surface_p->OpenGLContext_p = context;
+    Surface_p->OpenGLContext_p = (__bridge_retained void *)context;
     Surface_p->PixelFormat_p = (__bridge_retained void *)pixelFormat;
 
     return NH_API_SUCCESS;
@@ -82,13 +82,13 @@ void nh_gfx_updateOpenGLCocoaContext(
     nh_gfx_OpenGLSurface *Surface_p)
 {
     // this is needed after resize
-    [Surface_p->OpenGLContext_p update];
+    [(__bridge NSOpenGLContext *)Surface_p->OpenGLContext_p update];
 }
 
 void nh_gfx_flushOpenGLCocoaContext(
     nh_gfx_OpenGLSurface *Surface_p)
 {
-    NSOpenGLContext *context = Surface_p->OpenGLContext_p;
+    NSOpenGLContext *context = (__bridge NSOpenGLContext *)Surface_p->OpenGLContext_p;
     NSView *view = [[context view] window] ? [context view] : nil;
     NSView *content = [[[context view] window] contentView];
     if (view && content && view != content) {
@@ -100,11 +100,16 @@ void nh_gfx_flushOpenGLCocoaContext(
 NH_API_RESULT nh_gfx_destroyOpenGLCocoaContext(
     nh_gfx_OpenGLSurface *Surface_p)
 {
-    if (Surface_p->Context_p) {
-        [Surface_p->Context_p clearDrawable];
-        Surface_p->Context_p = nil;
+    if (Surface_p->OpenGLContext_p) {
+        NSOpenGLContext *context = (__bridge_transfer NSOpenGLContext *)Surface_p->OpenGLContext_p;
+        [context clearDrawable];
+        Surface_p->OpenGLContext_p = NULL;
     }
-    Surface_p->PixelFormat_p = nil;
+    Surface_p->Context_p = NULL;
+    if (Surface_p->PixelFormat_p) {
+        CFRelease(Surface_p->PixelFormat_p);
+        Surface_p->PixelFormat_p = NULL;
+    }
 
     return NH_API_SUCCESS;
 }

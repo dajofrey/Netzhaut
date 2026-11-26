@@ -251,23 +251,27 @@
 
 - (void)scrollWheel:(NSEvent *)event
 {
-    NSPoint point = [self convertPointFromScreen:[event locationInWindow]];
+    NSPoint point = [self.contentView convertPoint:event.locationInWindow fromView:nil];
+    point.y = self.contentView.bounds.size.height - point.y;
+    CGFloat scale = self.backingScaleFactor;
+    int px = (int)lround(point.x * scale);
+    int py = (int)lround(point.y * scale);
 
     // Use precise deltas if available (trackpad / Magic Mouse)
     CGFloat dy = event.hasPreciseScrollingDeltas ? event.scrollingDeltaY : event.deltaY;
     CGFloat dx = event.hasPreciseScrollingDeltas ? event.scrollingDeltaX : event.deltaX;
 
     if (dx > 0 && (dx >= 0 ? dx : -dx) > (dy >= 0 ? dy : -dy)) {
-        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+        nh_wsi_sendMouseEvent(Window_p, px, py,
                               NH_API_TRIGGER_RIGHT, NH_API_MOUSE_SCROLL);
     } else if (dx < 0 && (dx >= 0 ? dx : -dx) > (dy >= 0 ? dy : -dy)) {
-        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+        nh_wsi_sendMouseEvent(Window_p, px, py,
                               NH_API_TRIGGER_LEFT, NH_API_MOUSE_SCROLL);
     } else if (dy > 0) {
-        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+        nh_wsi_sendMouseEvent(Window_p, px, py,
                               NH_API_TRIGGER_UP, NH_API_MOUSE_SCROLL);
     } else if (dy < 0) {
-        nh_wsi_sendMouseEvent(Window_p, point.x, point.y,
+        nh_wsi_sendMouseEvent(Window_p, px, py,
                               NH_API_TRIGGER_DOWN, NH_API_MOUSE_SCROLL);
     }
 }

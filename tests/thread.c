@@ -128,6 +128,23 @@ static void testNested(void)
     assert(child.freed == 1);
 }
 
+static void testIdleWorkerWake(void)
+{
+    nh_core_ThreadPool *threads = &NH_PROCESS_POOL.Main.ThreadPool;
+    assert(nh_core_initThreadPool(threads, 1) == NH_API_SUCCESS);
+    for (int i = 0; i < 10; ++i) {
+        State state = {0};
+        nh_sleepMs(20);
+        assert(nh_core_activateWorkload(init, run, destroy, command, &state, false, 1) == &state);
+        int value = 7;
+        assert(nh_core_executeWorkloadCommand(&state, 0, &value, sizeof(value)) == &state.value);
+        assert(state.value == value);
+        assert(nh_core_deactivateWorkload(nh_core_getWorkload(&state)) == NH_API_SUCCESS);
+        assert(state.freed == 1);
+    }
+    assert(nh_core_freeThreadPool(threads) == NH_API_SUCCESS);
+}
+
 int main(void)
 {
     assert(nh_core_initThreadPool(&NH_PROCESS_POOL.Main.ThreadPool, -1) != NH_API_SUCCESS);
@@ -138,6 +155,7 @@ int main(void)
     testTermination(false);
     testTermination(true);
     testNested();
+    testIdleWorkerWake();
     puts("thread tests passed");
     return 0;
 }

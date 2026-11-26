@@ -8,6 +8,7 @@
 
 #include "../../nh-core/System/Memory.h"
 #include <stdlib.h>
+#include <string.h>
 
 #ifndef MAX
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -25,8 +26,7 @@ NH_API_RESULT nh_gfx_createMetalViewport(
         return NH_API_ERROR_BAD_STATE;
     }
 
-    Viewport_p->Metal_p->commandBuffer = nil; 
-    Viewport_p->Metal_p->renderEncoder = nil;
+    memset(Viewport_p->Metal_p, 0, sizeof(*Viewport_p->Metal_p));
 
     return NH_API_SUCCESS;
 }

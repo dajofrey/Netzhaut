@@ -2,10 +2,9 @@
 #define NH_GFX_METAL_SURFACE_IOS_H
 
 #include "../../nh-wsi/Window/Window.h"
+#include "SurfaceImpl.h"
 
-typedef struct nh_gfx_MetalIOSSurface {
-    void *layer;
-} nh_gfx_MetalIOSSurface;
+typedef nh_gfx_MetalSurface nh_gfx_MetalIOSSurface;
 
 nh_gfx_MetalIOSSurface *nh_gfx_createMetalIOSSurface(
     nh_wsi_Window *Window_p);

@@ -36,6 +36,7 @@
 
 #include <string.h>
 #include <limits.h>
+#include <stdio.h>
 
 // FUNCTIONS =======================================================================================
 
@@ -127,13 +128,18 @@ static void *nh_gfx_initSurface(
         case NH_GFX_API_METAL :
 #if defined(NH_PLATFORM_MACOS)
             Surface_p->Metal_p = nh_gfx_createMetalSurface(Surface_p->Window_p);
-            break;
 #elif defined(NH_PLATFORM_IOS)
             Surface_p->Metal_p = nh_gfx_createMetalIOSSurface(Surface_p->Window_p);
-            break;
 #else
             return NULL;
 #endif
+            if (!Surface_p->Metal_p) {
+                fprintf(stderr, "Netzhaut: could not create Metal surface\n");
+                nh_core_freeList(&Surface_p->Viewports, false);
+                nh_core_free(Surface_p);
+                return NULL;
+            }
+            break;
         default : return NULL;
     }
 

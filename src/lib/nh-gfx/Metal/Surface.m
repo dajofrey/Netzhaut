@@ -13,13 +13,14 @@
 void *nh_gfx_createMetalSurface(
     nh_api_Window *Window_p)
 {
-    nh_gfx_MetalSurface *Surface_p = malloc(sizeof(nh_gfx_MetalSurface));
-
     NSWindow *nsWindow = (__bridge NSWindow*)((nh_wsi_Window*)Window_p)->Cocoa.Handle;
     if (!nsWindow) { return NULL; }
 
     NSView *contentView = [nsWindow contentView];
     if (!contentView) { return NULL; }
+
+    nh_gfx_MetalSurface *Surface_p = calloc(1, sizeof(nh_gfx_MetalSurface));
+    if (!Surface_p) { return NULL; }
 
     CAMetalLayer *layer = [CAMetalLayer layer];
     layer.device = NH_METAL.Device_p->device;
@@ -50,7 +51,8 @@ void nh_gfx_destroyMetalSurface(
     void *surface)
 {
     nh_gfx_MetalSurface *Surface_p = (nh_gfx_MetalSurface *)surface;
-    if (Surface_p && Surface_p->layer) {
+    if (Surface_p) {
+        Surface_p->currentDrawable = nil;
         Surface_p->layer = NULL;
         free(Surface_p);
     }

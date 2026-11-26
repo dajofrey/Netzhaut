@@ -123,7 +123,7 @@ static NH_API_RESULT runWorkload(nh_core_Workload *workload, bool *idle)
         }
     }
     if (command) command->done = true;
-    wake();
+    if (workload->waiters) wake();
     unlock();
     return result == NH_SIGNAL_ERROR ? NH_API_ERROR_BAD_STATE : NH_API_SUCCESS;
 }
@@ -170,6 +170,16 @@ static void *runThread(void *arg)
     }
     for (;;) {
         lock();
+        bool assigned = false;
+        while (!pool()->stopping && !assigned) {
+            for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+                if (pool()->Workloads_p[i].Thread_p == NH_CURRENT_THREAD) {
+                    assigned = true;
+                    break;
+                }
+            }
+            if (!assigned) waitForChange();
+        }
         bool stop = pool()->stopping;
         unlock();
         if (stop) break;

@@ -4,6 +4,7 @@
 #import <UIKit/UIKit.h>
 
 #include "../../nh-wsi/Platforms/IOS/Window.h"
+#include <stdlib.h>
 
 static void nh_gfx_configureMetalLayer(CAMetalLayer *layer, UIView *view)
 {
@@ -22,18 +23,17 @@ static void nh_gfx_configureMetalLayer(CAMetalLayer *layer, UIView *view)
 nh_gfx_MetalIOSSurface *nh_gfx_createMetalIOSSurface(
     nh_wsi_Window *Window_p)
 {
-    nh_gfx_MetalIOSSurface *Surface_p = malloc(sizeof(nh_gfx_MetalIOSSurface));
-
-    if (!Surface_p || !Window_p || !Window_p->IOS.Layer) {
-        return Surface_p;
-    }
+    if (!Window_p || !Window_p->IOS.Layer || !Window_p->IOS.Handle) return NULL;
 
     CAMetalLayer *layer = (__bridge CAMetalLayer*)Window_p->IOS.Layer;
     UIWindow *window = (__bridge UIWindow*)Window_p->IOS.Handle;
     UIView *view = window.rootViewController.view;
+    if (!view) return NULL;
+    nh_gfx_MetalIOSSurface *Surface_p = calloc(1, sizeof(*Surface_p));
+    if (!Surface_p) return NULL;
 
     nh_gfx_configureMetalLayer(layer, view);
-    Surface_p->layer = Window_p->IOS.Layer;
+    Surface_p->layer = layer;
 
     return Surface_p;
 }
@@ -58,6 +58,8 @@ void nh_gfx_destroyMetalIOSSurface(
     nh_gfx_MetalIOSSurface *Surface_p)
 {
     if (Surface_p) {
-        Surface_p->layer = NULL;
+        Surface_p->currentDrawable = nil;
+        Surface_p->layer = nil;
+        free(Surface_p);
     }
 }

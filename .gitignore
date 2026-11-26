@@ -9,6 +9,8 @@ test*
 !/tests/thread.mk
 !/tests/ios-keyboard.m
 !/tests/ios-keyboard.mk
+!/tests/cocoa-scroll.m
+!/tests/cocoa-scroll.mk
 *.pdf
 *.DS_Store
 *.o

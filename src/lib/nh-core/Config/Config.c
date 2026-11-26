@@ -25,12 +25,18 @@
 
 static nh_core_RawConfig NH_GLOBAL_CONFIG;
 static nh_core_HashMap MARK;
+static unsigned long long NH_GLOBAL_CONFIG_REVISION;
 
 // FUNCTIONS =======================================================================================
 
 nh_core_RawConfig *nh_core_getGlobalConfig()
 {
     return &NH_GLOBAL_CONFIG;
+}
+
+unsigned long long nh_core_getGlobalConfigRevision()
+{
+    return __atomic_load_n(&NH_GLOBAL_CONFIG_REVISION, __ATOMIC_ACQUIRE);
 }
 
 bool nh_core_popGlobalConfigMark(
@@ -155,6 +161,7 @@ NH_API_RESULT nh_core_updateConfig(
             Default_p->priority = priority;
 
             NH_CORE_CHECK(nh_core_appendToList(&NH_GLOBAL_CONFIG.Settings, Default_p))
+            __atomic_add_fetch(&NH_GLOBAL_CONFIG_REVISION, 1, __ATOMIC_RELEASE);
             continue;
         }
 
@@ -172,6 +179,7 @@ NH_API_RESULT nh_core_updateConfig(
                 Default_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
                 Default_p->mark = true;
                 Default_p->priority = priority;
+                __atomic_add_fetch(&NH_GLOBAL_CONFIG_REVISION, 1, __ATOMIC_RELEASE);
                 continue;
             }
         }
@@ -191,6 +199,7 @@ NH_API_RESULT nh_core_updateConfig(
                         Setting_p->Values = nh_core_copyConfigValues(&NewSetting_p->Values);
                         Setting_p->mark = true;
                         nh_core_markNamespace(Setting_p->namespace_p);
+                        __atomic_add_fetch(&NH_GLOBAL_CONFIG_REVISION, 1, __ATOMIC_RELEASE);
                         break;
                     }
                 }
@@ -216,6 +225,7 @@ NH_API_RESULT nh_core_updateConfig(
             NH_CORE_CHECK(nh_core_appendToList(&NH_GLOBAL_CONFIG.Settings, NamespaceSetting_p))
 
             nh_core_markNamespace(NamespaceSetting_p->namespace_p);
+            __atomic_add_fetch(&NH_GLOBAL_CONFIG_REVISION, 1, __ATOMIC_RELEASE);
         }
     }
 
@@ -261,6 +271,7 @@ NH_API_RESULT nh_core_initGlobalConfig()
     NH_GLOBAL_CONFIG = nh_core_initRawConfig();
     MARK = nh_core_createHashMap();
     nh_core_parseRawConfig(&NH_GLOBAL_CONFIG, default_conf_inc, default_conf_inc_len);
+    __atomic_add_fetch(&NH_GLOBAL_CONFIG_REVISION, 1, __ATOMIC_RELEASE);
     return NH_API_SUCCESS;
 }
 

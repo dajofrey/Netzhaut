@@ -67,6 +67,7 @@ static NH_API_RESULT nh_gfx_addFont(
     Font_p->fileSize         = internal ? size : 0;
     Font_p->Atlas.external_p = NULL;
     Font_p->Atlas.data_p     = NULL;
+    Font_p->atlasRevision    = 0;
     Font_p->Instances        = nh_core_initArray(sizeof(nh_gfx_FontInstance), 8);
     Font_p->internal         = internal;
 
@@ -177,6 +178,7 @@ static nh_gfx_FontInstance *nh_gfx_loadFontInstance(
     Instance_p->external_p = texture_font_new_from_memory(&FreeType, Font_p->Atlas.external_p, fontSize, Font_p->file_p, Font_p->fileSize);
 
     NH_CORE_CHECK_NULL_2(NULL, Instance_p->external_p)
+    ++Font_p->atlasRevision;
     ((texture_font_t*)Instance_p->external_p)->rendermode = RENDER_SIGNED_DISTANCE_FIELD;
 
     Instance_p->Font_p    = Font_p;
@@ -214,6 +216,7 @@ NH_API_RESULT nh_gfx_unclaimFontInstance(
     // TODO unclaim check
 
     texture_atlas_clear(Instance_p->Font_p->Atlas.external_p);
+    ++Instance_p->Font_p->atlasRevision;
     texture_font_delete(Instance_p->external_p);
     Instance_p->external_p = NULL;
 
@@ -223,7 +226,11 @@ NH_API_RESULT nh_gfx_unclaimFontInstance(
 NH_API_RESULT nh_gfx_loadGlyphs(
     nh_gfx_FontInstance *Instance_p, NH_ENCODING_UTF32 *text_p, unsigned int textLength)
 {
-    if (texture_font_load_glyphs(&FreeType, Instance_p->external_p, text_p, textLength, "en")) {
+    texture_atlas_t *atlas = Instance_p->Font_p->Atlas.external_p;
+    size_t used = atlas->used;
+    size_t missed = texture_font_load_glyphs(&FreeType, Instance_p->external_p, text_p, textLength, "en");
+    if (atlas->used != used) ++Instance_p->Font_p->atlasRevision;
+    if (missed) {
         return NH_API_ERROR_BAD_STATE;
     }
 

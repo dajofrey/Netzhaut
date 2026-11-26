@@ -204,6 +204,7 @@ $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
 
 # --- Compilation Rules ---
+$(OBJ_FILES_NH_GFX): $(ROOT_DIR)/$(SRC_DIR_NH_GFX)/Metal/SurfaceImpl.h
 $(OBJ_DIR)/nh-api/%.o: $(ROOT_DIR)/$(SRC_DIR_NH_API)/%.c
 	@mkdir -p $(dir $@)
 	$(IOS_CC) $(CFLAGS) -c $< -o $@

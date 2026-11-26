@@ -331,16 +331,18 @@ SRC_FILES_FREETYPE_GL = \
 # Object files derived from source files for each library
 OBJ_FILES_NH_API = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_API)/, $(SRC_FILES_NH_API)))
 OBJ_FILES_NH_CORE = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_CORE)/, $(SRC_FILES_NH_CORE)))
-OBJ_FILES_NH_WSI = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_WSI)/, $(SRC_FILES_NH_WSI)))
-OBJ_FILES_NH_WSI += $(patsubst %.m, %.o, $(addprefix $(SRC_DIR_NH_WSI)/, $(wildcard *.m)))
+OBJ_FILES_NH_WSI = $(patsubst %.c,%.o,$(addprefix $(SRC_DIR_NH_WSI)/,$(filter %.c,$(SRC_FILES_NH_WSI))))
+OBJ_FILES_NH_WSI_OBJC = $(patsubst %.m,%.o,$(addprefix $(SRC_DIR_NH_WSI)/,$(filter %.m,$(SRC_FILES_NH_WSI))))
+OBJ_FILES_NH_WSI += $(OBJ_FILES_NH_WSI_OBJC)
 OBJ_FILES_NH_HTML = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_HTML)/, $(SRC_FILES_NH_HTML)))
 OBJ_FILES_NH_DOM = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_DOM)/, $(SRC_FILES_NH_DOM)))
 OBJ_FILES_NH_NETWORK = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_NETWORK)/, $(SRC_FILES_NH_NETWORK)))
 OBJ_FILES_NH_WEBIDL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_WEBIDL)/, $(SRC_FILES_NH_WEBIDL)))
 OBJ_FILES_NH_ECMASCRIPT = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_ECMASCRIPT)/, $(SRC_FILES_NH_ECMASCRIPT)))
 OBJ_FILES_NH_ENCODING = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_ENCODING)/, $(SRC_FILES_NH_ENCODING)))
-OBJ_FILES_NH_GFX = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_GFX)/, $(SRC_FILES_NH_GFX)))
-OBJ_FILES_NH_GFX += $(patsubst %.m, %.o, $(addprefix $(SRC_DIR_NH_GFX)/, $(wildcard *.m)))
+OBJ_FILES_NH_GFX = $(patsubst %.c,%.o,$(addprefix $(SRC_DIR_NH_GFX)/,$(filter %.c,$(SRC_FILES_NH_GFX))))
+OBJ_FILES_NH_GFX_OBJC = $(patsubst %.m,%.o,$(addprefix $(SRC_DIR_NH_GFX)/,$(filter %.m,$(SRC_FILES_NH_GFX))))
+OBJ_FILES_NH_GFX += $(OBJ_FILES_NH_GFX_OBJC)
 OBJ_FILES_NH_RENDERER = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_RENDERER)/, $(SRC_FILES_NH_RENDERER)))
 OBJ_FILES_NH_CSS = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_CSS)/, $(SRC_FILES_NH_CSS)))
 OBJ_FILES_NH_URL = $(patsubst %.c, %.o, $(addprefix $(SRC_DIR_NH_URL)/, $(SRC_FILES_NH_URL)))
@@ -440,7 +442,8 @@ $(OBJ_FILES_NH_NETWORK): CFLAGS += -I$(OPENSSL_PREFIX)/include
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Add rule for Objective-C files
-%.o: $(SRC_DIR_NH_WSI)/%.m
+$(OBJ_FILES_NH_GFX): $(SRC_DIR_NH_GFX)/Metal/SurfaceImpl.h
+$(OBJ_FILES_NH_WSI_OBJC) $(OBJ_FILES_NH_GFX_OBJC): %.o: %.m build/automation/lib-macos.mk
 	$(OBJC) $(CFLAGS) $(OBJC_FLAGS) -c $< -o $@
 
 INSTALL_NAME = -Wl,-install_name,@rpath/$(1)
