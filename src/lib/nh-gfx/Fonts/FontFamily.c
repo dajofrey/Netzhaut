@@ -298,7 +298,7 @@ NH_API_RESULT nh_gfx_parseFontFamily(
     FontFamily_p->name_p = nh_core_allocateBytes(name_p);
     NH_CORE_CHECK_MEM(FontFamily_p->name_p)
     for (int i = 0; i < strlen(FontFamily_p->name_p); ++i) {
-        FontFamily_p->name_p[i] = tolower(FontFamily_p->name_p[i]);
+        FontFamily_p->name_p[i] = tolower((unsigned char)FontFamily_p->name_p[i]);
     }
    
     memset(FontFamily_p->generic_p, false, sizeof(bool)*NH_GFX_GENERIC_FONT_FAMILY_COUNT);

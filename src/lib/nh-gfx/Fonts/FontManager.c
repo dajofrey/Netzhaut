@@ -29,11 +29,14 @@
 #include "../../nh-encoding/Encodings/UTF8.h"
 
 #include <ctype.h>
+#include <limits.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
 #ifdef __unix__ 	
     #include <dirent.h>
+    #include <sys/stat.h>
 #elif defined(_WIN32) || defined(WIN32)
 #endif
 
@@ -71,6 +74,7 @@ static NH_API_RESULT nh_gfx_addFont(
     NH_CORE_CHECK_MEM(Font_p->id_p)
 
     NH_CORE_CHECK(nh_gfx_parseFontFamily(&Font_p->Family, Face->family_name))
+    Font_p->Family.generic_p[NH_GFX_GENERIC_FONT_FAMILY_MONOSPACE] = FT_IS_FIXED_WIDTH(Face);
     NH_CORE_CHECK(nh_gfx_parseFontStyle(&Font_p->Style, Face->style_name))
 
     nh_core_appendToList(&NH_GFX_FONT_MANAGER.Fonts, Font_p);
@@ -94,10 +98,11 @@ NH_API_RESULT nh_gfx_addFontDirectory(
   
     while ((entry_p = readdir(dir_p)) != NULL) 
     {
-        if (dirPath_p[strlen(dirPath_p) - 1] != '/') {
-            sprintf(absolutePath_p, "%s/%s", dirPath_p, entry_p->d_name);
-        } else {
-            sprintf(absolutePath_p, "%s%s", dirPath_p, entry_p->d_name);
+        int length = snprintf(absolutePath_p, sizeof(absolutePath_p), "%s%s%s", dirPath_p,
+            dirPath_p[strlen(dirPath_p) - 1] == '/' ? "" : "/", entry_p->d_name);
+        if (length < 0 || (size_t)length >= sizeof(absolutePath_p)) {
+            fprintf(stderr, "Netzhaut: Font path is too long in %s\n", dirPath_p);
+            continue;
         }
 
         NH_API_RESULT result = nh_gfx_addFontUsingAbsolutePath(absolutePath_p);
@@ -106,7 +111,9 @@ NH_API_RESULT nh_gfx_addFontDirectory(
             return result;
         }
 
-        if (strcmp(entry_p->d_name, "..") != 0 && strcmp(entry_p->d_name, ".") != 0) {
+        struct stat info;
+        if (strcmp(entry_p->d_name, "..") != 0 && strcmp(entry_p->d_name, ".") != 0 &&
+            !lstat(absolutePath_p, &info) && S_ISDIR(info.st_mode)) {
             NH_CORE_CHECK(nh_gfx_addFontDirectory(absolutePath_p))
         }
     }
@@ -159,6 +166,8 @@ static nh_gfx_FontInstance *nh_gfx_loadFontInstance(
     if (!Instance_p) {
         Instance_p = (nh_gfx_FontInstance*)nh_core_incrementArray(&Font_p->Instances);
         NH_CORE_CHECK_MEM_2(NULL, Instance_p)
+        Instance_p->Font_p = Font_p;
+        Instance_p->fontSize = fontSize;
     }
 
     if (!Font_p->file_p) {
@@ -338,10 +347,25 @@ static NH_API_RESULT nh_gfx_addInitialFonts()
         snprintf(path, sizeof(path), "%s/Library/Fonts/", home);
         NH_CORE_CHECK(nh_gfx_addFontDirectory(path))
     }
+#elif defined(__ANDROID__)
+    NH_CORE_CHECK(nh_gfx_addFontDirectory("/system/fonts/"))
 #elif defined(__unix__)
     NH_CORE_CHECK(nh_gfx_addFontDirectory("/usr/share/fonts/"))
     NH_CORE_CHECK(nh_gfx_addFontDirectory("/usr/local/share/fonts/"))
-    NH_CORE_CHECK(nh_gfx_addFontDirectory("~/.fonts/"))
+    const char *home = getenv("HOME");
+    if (home) {
+        char path[PATH_MAX];
+        snprintf(path, sizeof(path), "%s/.fonts/", home);
+        NH_CORE_CHECK(nh_gfx_addFontDirectory(path))
+        snprintf(path, sizeof(path), "%s/.local/share/fonts/", home);
+        NH_CORE_CHECK(nh_gfx_addFontDirectory(path))
+    }
+    const char *dataHome = getenv("XDG_DATA_HOME");
+    if (dataHome && dataHome[0]) {
+        char path[PATH_MAX];
+        snprintf(path, sizeof(path), "%s/fonts/", dataHome);
+        NH_CORE_CHECK(nh_gfx_addFontDirectory(path))
+    }
 #elif defined(_WIN32) || defined (WIN32)
     // TODO
 #endif
@@ -375,7 +399,7 @@ void nh_gfx_terminateFontManager()
 
         for (int j = 0; j < Font_p->Instances.length; ++j) {
             nh_gfx_FontInstance *Instance_p = &((nh_gfx_FontInstance*)Font_p->Instances.p)[j];
-            texture_font_delete(Instance_p->external_p);
+            if (Instance_p->external_p) texture_font_delete(Instance_p->external_p);
         }
 
         nh_core_freeArray(&Font_p->Instances);
