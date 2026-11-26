@@ -39,7 +39,7 @@ NH_API_RESULT nh_wsi_destroyCocoaWindow(
 );
 
 NH_API_RESULT nh_wsi_setCocoaClipboardOwner(
-    nh_wsi_CocoaWindow *Window_p
+    nh_wsi_CocoaWindow *Window_p, const char *text_p
 );
 
 bool nh_wsi_isCocoaClipboardOwner(

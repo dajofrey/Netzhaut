@@ -334,6 +334,11 @@ NH_API_RESULT nh_api_hideKeyboard(
     nh_api_Window *Window_p
 );
 
+NH_API_RESULT nh_api_setClipboardText(const char *text_p);
+
+/* Borrowed UTF-8 text, valid until the next clipboard call. NULL means unavailable. */
+const char *nh_api_getClipboardText(void);
+
 // E-PAPER FUNCTIONS ===============================================================================
 
 NH_API_RESULT nh_api_setEPaperRawDrawingEnabled(

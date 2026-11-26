@@ -144,14 +144,15 @@ void nh_wsi_freeClipboard()
 }
 
 NH_API_RESULT nh_wsi_setClipboard(
-    char *utf8_p, int size, bool selfOwned)
+    const char *utf8_p, int size, bool selfOwned)
 {
+    if (!utf8_p || size < 0) return NH_API_ERROR_BAD_STATE;
+    char *copy_p = nh_core_allocate((size_t)size + 1);
+    NH_CORE_CHECK_MEM(copy_p)
+    memcpy(copy_p,utf8_p,(size_t)size);
+    copy_p[size] = '\0';
     nh_wsi_freeClipboard();
-
-    NH_WSI_LISTENER.Clipboard.data_p = nh_core_allocate(sizeof(char)*(size+1));
-    NH_CORE_CHECK_MEM(NH_WSI_LISTENER.Clipboard.data_p)
-
-    strcpy(NH_WSI_LISTENER.Clipboard.data_p, utf8_p);
+    NH_WSI_LISTENER.Clipboard.data_p = copy_p;
 
     if (NH_WSI_LISTENER.Windows.count > 0 && selfOwned) {
         nh_wsi_Window *Window_p = nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, 0);
@@ -159,9 +160,9 @@ NH_API_RESULT nh_wsi_setClipboard(
             #if defined(NH_PLATFORM_UNIX)
                 case NH_WSI_TYPE_X11 : NH_CORE_CHECK(nh_wsi_setX11ClipboardOwner(&Window_p->X11)) break;
             #elif defined(NH_PLATFORM_MACOS)
-                case NH_WSI_TYPE_COCOA : NH_CORE_CHECK(nh_wsi_setCocoaClipboardOwner(&Window_p->Cocoa)) break;
+                case NH_WSI_TYPE_COCOA : NH_CORE_CHECK(nh_wsi_setCocoaClipboardOwner(&Window_p->Cocoa,copy_p)) break;
             #elif defined(NH_PLATFORM_IOS)
-                case NH_WSI_TYPE_IOS : NH_CORE_CHECK(nh_wsi_setIOSClipboardOwner(&Window_p->IOS)) break;
+                case NH_WSI_TYPE_IOS : NH_CORE_CHECK(nh_wsi_setIOSClipboardOwner(&Window_p->IOS,copy_p)) break;
             #endif
         }
     }
@@ -201,9 +202,11 @@ char *nh_wsi_getClipboard()
         #if defined(NH_PLATFORM_UNIX)
             case NH_WSI_TYPE_X11 : NH_CORE_CHECK_2(NULL, nh_wsi_requestX11ClipboardConversion(&Window_p->X11)) break;
         #elif defined(NH_PLATFORM_MACOS)
-            case NH_WSI_TYPE_COCOA : NH_CORE_CHECK_2(NULL, nh_wsi_requestCocoaClipboardConversion(&Window_p->Cocoa)) break;
+            case NH_WSI_TYPE_COCOA : NH_CORE_CHECK_2(NULL, nh_wsi_requestCocoaClipboardConversion(&Window_p->Cocoa))
+                return NH_WSI_LISTENER.Clipboard.updated ? NH_WSI_LISTENER.Clipboard.data_p : NULL;
         #elif defined(NH_PLATFORM_IOS)
-            case NH_WSI_TYPE_IOS : NH_CORE_CHECK_2(NULL, nh_wsi_requestIOSClipboardConversion(&Window_p->IOS)) break;
+            case NH_WSI_TYPE_IOS : NH_CORE_CHECK_2(NULL, nh_wsi_requestIOSClipboardConversion(&Window_p->IOS))
+                return NH_WSI_LISTENER.Clipboard.updated ? NH_WSI_LISTENER.Clipboard.data_p : NULL;
         #endif
     }
 

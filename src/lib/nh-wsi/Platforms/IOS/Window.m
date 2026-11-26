@@ -486,12 +486,13 @@ NH_API_RESULT nh_wsi_destroyIOSWindow(
 }
 
 NH_API_RESULT nh_wsi_setIOSClipboardOwner(
-    nh_wsi_IOSWindow *Window_p)
+    nh_wsi_IOSWindow *Window_p, const char *text_p)
 {
     (void)Window_p;
     @autoreleasepool {
-        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        pasteboard.string = @"";
+        NSString *text = [NSString stringWithUTF8String:text_p];
+        if (!text) return NH_API_ERROR_BAD_STATE;
+        UIPasteboard.generalPasteboard.string = text;
     }
     return NH_API_SUCCESS;
 }
@@ -500,7 +501,7 @@ bool nh_wsi_isIOSClipboardOwner(
     nh_wsi_IOSWindow *Window_p)
 {
     (void)Window_p;
-    return true;
+    return false;
 }
 
 NH_API_RESULT nh_wsi_requestIOSClipboardConversion(
@@ -513,7 +514,7 @@ NH_API_RESULT nh_wsi_requestIOSClipboardConversion(
             NSString *string = pasteboard.string;
             if (string) {
                 const char *utf8 = [string UTF8String];
-                nh_wsi_setClipboard(utf8, strlen(utf8), false);
+                return nh_wsi_setClipboard(utf8,strlen(utf8),false);
             }
         }
     }

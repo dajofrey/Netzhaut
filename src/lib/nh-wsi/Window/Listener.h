@@ -40,7 +40,7 @@
  */
 
     typedef NH_API_RESULT (*nh_wsi_setClipboard_f)(
-        char *utf8_p, int size, bool selfOwned
+        const char *utf8_p, int size, bool selfOwned
     );
 
     typedef char *(*nh_wsi_getClipboard_f)(
@@ -67,7 +67,7 @@
     );
 
     NH_API_RESULT nh_wsi_setClipboard(
-        char *utf8_p, int size, bool selfOwned
+        const char *utf8_p, int size, bool selfOwned
     );
 
     char *nh_wsi_getClipboard(

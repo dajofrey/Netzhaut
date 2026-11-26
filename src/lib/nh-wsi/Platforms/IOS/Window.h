@@ -39,7 +39,7 @@ NH_API_RESULT nh_wsi_destroyIOSWindow(
 );
 
 NH_API_RESULT nh_wsi_setIOSClipboardOwner(
-    nh_wsi_IOSWindow *Window_p
+    nh_wsi_IOSWindow *Window_p, const char *text_p
 );
 
 bool nh_wsi_isIOSClipboardOwner(

@@ -12,6 +12,7 @@
 #include "../nh-core/Loader/Loader.h"
 
 #include <dlfcn.h>
+#include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,6 +75,25 @@ NH_API_RESULT nh_api_hideKeyboard(
     nh_core_Loader *Loader_p = nh_api_getLoader();
     nh_wsi_hideKeyboard_f hideKeyboard_f = !Loader_p || !Window_p ? NULL : Loader_p->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_hideKeyboard");
     return hideKeyboard_f ? hideKeyboard_f(Window_p) : NH_API_ERROR_BAD_STATE;
+}
+
+NH_API_RESULT nh_api_setClipboardText(const char *text_p)
+{
+    if (!text_p) return NH_API_ERROR_NULL_POINTER;
+    size_t size = strlen(text_p);
+    if (size > INT_MAX) return NH_API_ERROR_BAD_STATE;
+    typedef NH_API_RESULT (*setClipboard_f)(const char *, int, bool);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    setClipboard_f set_f = Loader_p ? Loader_p->loadSymbol_f(NH_MODULE_WSI,0,"nh_wsi_setClipboard") : NULL;
+    return set_f ? set_f(text_p,(int)size,true) : NH_API_ERROR_BAD_STATE;
+}
+
+const char *nh_api_getClipboardText(void)
+{
+    typedef char *(*getClipboard_f)(void);
+    nh_core_Loader *Loader_p = nh_api_getLoader();
+    getClipboard_f get_f = Loader_p ? Loader_p->loadSymbol_f(NH_MODULE_WSI,0,"nh_wsi_getClipboard") : NULL;
+    return get_f ? get_f() : NULL;
 }
 
 // EPAPER FUNCTIONS ===============================================================

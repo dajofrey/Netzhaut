@@ -503,11 +503,14 @@ NH_API_RESULT nh_wsi_destroyCocoaWindow(
 }
 
 NH_API_RESULT nh_wsi_setCocoaClipboardOwner(
-    nh_wsi_CocoaWindow *Window_p)
+    nh_wsi_CocoaWindow *Window_p, const char *text_p)
 {
     @autoreleasepool {
+        NSString *text = [NSString stringWithUTF8String:text_p];
+        if (!text) return NH_API_ERROR_BAD_STATE;
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         [pasteboard clearContents];
+        if (![pasteboard setString:text forType:NSPasteboardTypeString]) return NH_API_ERROR_BAD_STATE;
     }
     return NH_API_SUCCESS;
 }
@@ -515,8 +518,7 @@ NH_API_RESULT nh_wsi_setCocoaClipboardOwner(
 bool nh_wsi_isCocoaClipboardOwner(
     nh_wsi_CocoaWindow *Window_p)
 {
-    // On macOS, we don't need to track clipboard ownership
-    return true;
+    return false;
 }
 
 NH_API_RESULT nh_wsi_requestCocoaClipboardConversion(
@@ -527,7 +529,7 @@ NH_API_RESULT nh_wsi_requestCocoaClipboardConversion(
         NSString *string = [pasteboard stringForType:NSPasteboardTypeString];
         if (string) {
             const char *utf8 = [string UTF8String];
-            nh_wsi_setClipboard(utf8, strlen(utf8), false);
+            return nh_wsi_setClipboard(utf8,strlen(utf8),false);
         }
     }
     return NH_API_SUCCESS;
