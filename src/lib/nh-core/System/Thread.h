@@ -151,6 +151,11 @@
         nh_core_Workload *Workload_p 
     );
 
+    /* Wake a parked workload; a wake during a callback is retained for its next run. */
+    NH_API_RESULT nh_core_wakeWorkload(
+        nh_core_Workload *Workload_p
+    );
+
     /**
      * @param byteSize Specify 0 for no allocation.
      */

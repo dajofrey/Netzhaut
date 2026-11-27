@@ -46,6 +46,12 @@ static void waitForChange(void) {checkThreadResult(pthread_cond_wait(&NH_THREAD_
 #endif
 
 static nh_core_ThreadPool *pool(void) {return &NH_PROCESS_POOL.Main.ThreadPool;}
+static bool NH_WORKLOAD_WAKE_REQUESTED[NH_MAX_WORKLOADS];
+
+static bool *wakeRequested(nh_core_Workload *workload)
+{
+    return &NH_WORKLOAD_WAKE_REQUESTED[workload - pool()->Workloads_p];
+}
 
 static void initWorkload(nh_core_Workload *workload)
 {
@@ -53,13 +59,21 @@ static void initWorkload(nh_core_Workload *workload)
     memset(workload, 0, sizeof(*workload));
     workload->waiters = waiters;
     workload->signal = NH_SIGNAL_INACTIVE;
+    *wakeRequested(workload) = false;
+}
+
+static bool workloadReady(nh_core_Workload *workload, nh_core_Thread *thread)
+{
+    return workload->Thread_p == thread && workload->signal != NH_SIGNAL_INACTIVE &&
+        (workload->signal != NH_SIGNAL_PARK || *wakeRequested(workload) ||
+         workload->deactivate || workload->FirstCommand_p);
 }
 
 /* The registry and command queues are locked, never user callbacks or I/O. */
 static NH_API_RESULT runWorkload(nh_core_Workload *workload, bool *idle)
 {
     lock();
-    if (workload->Thread_p != NH_CURRENT_THREAD || workload->signal == NH_SIGNAL_INACTIVE) {
+    if (!workloadReady(workload, NH_CURRENT_THREAD)) {
         unlock();
         return NH_API_SUCCESS;
     }
@@ -80,6 +94,7 @@ static NH_API_RESULT runWorkload(nh_core_Workload *workload, bool *idle)
             workload->FirstCommand_p = command->next_p;
             if (!workload->FirstCommand_p) workload->LastCommand_p = NULL;
         }
+        if (!command || command->dummy) *wakeRequested(workload) = false;
     }
     ++workload->running;
     unlock();
@@ -111,7 +126,7 @@ static NH_API_RESULT runWorkload(nh_core_Workload *workload, bool *idle)
         initWorkload(workload);
     } else {
         workload->signal = result;
-        if (result == NH_SIGNAL_IDLE) ++workload->SignalCounter.idle;
+        if (result == NH_SIGNAL_IDLE || result == NH_SIGNAL_PARK) ++workload->SignalCounter.idle;
         else {
             if (result == NH_SIGNAL_OK) ++workload->SignalCounter.ok;
             if (idle) *idle = false;
@@ -173,7 +188,7 @@ static void *runThread(void *arg)
         bool assigned = false;
         while (!pool()->stopping && !assigned) {
             for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
-                if (pool()->Workloads_p[i].Thread_p == NH_CURRENT_THREAD) {
+                if (workloadReady(&pool()->Workloads_p[i], NH_CURRENT_THREAD)) {
                     assigned = true;
                     break;
                 }
@@ -421,6 +436,21 @@ NH_API_RESULT nh_core_deactivateWorkload(nh_core_Workload *workload)
     nh_core_waitForCompletion(workload, NH_SIGNAL_INACTIVE);
     lock();
     --workload->waiters;
+    unlock();
+    return NH_API_SUCCESS;
+}
+
+NH_API_RESULT nh_core_wakeWorkload(nh_core_Workload *workload)
+{
+    NH_CORE_CHECK_NULL(workload)
+    lock();
+    if (workload->signal == NH_SIGNAL_INACTIVE || workload->deactivate) {
+        fprintf(stderr, "Netzhaut: cannot wake an inactive workload\n");
+        unlock();
+        return NH_API_ERROR_BAD_STATE;
+    }
+    *wakeRequested(workload) = true;
+    wake();
     unlock();
     return NH_API_SUCCESS;
 }

@@ -145,6 +145,91 @@ static void testIdleWorkerWake(void)
     assert(nh_core_freeThreadPool(threads) == NH_API_SUCCESS);
 }
 
+typedef struct ParkState {
+    unsigned runs;
+    unsigned commands;
+    bool release;
+} ParkState;
+
+static NH_SIGNAL parkedCommand(void *arg, nh_core_WorkloadCommand *cmd)
+{
+    ParkState *state = arg;
+    ++state->commands;
+    cmd->result_p = state;
+    return NH_SIGNAL_PARK;
+}
+
+static NH_SIGNAL parkedRun(void *arg)
+{
+    ParkState *state = arg;
+    unsigned run = __atomic_add_fetch(&state->runs, 1, __ATOMIC_SEQ_CST);
+    if (run == 1) {
+        while (!__atomic_load_n(&state->release, __ATOMIC_SEQ_CST)) nh_sleepMs(1);
+    }
+    return NH_SIGNAL_PARK;
+}
+
+static void testParkedWorker(void)
+{
+    nh_core_ThreadPool *threads = &NH_PROCESS_POOL.Main.ThreadPool;
+    assert(nh_core_initThreadPool(threads, 1) == NH_API_SUCCESS);
+    ParkState state = {0};
+    assert(nh_core_activateWorkload(NULL, parkedRun, NULL, parkedCommand, &state, false, 1) == &state);
+    nh_core_Workload *workload = nh_core_getWorkload(&state);
+    assert(workload);
+    for (int i = 0; i < 1000 && !__atomic_load_n(&state.runs, __ATOMIC_SEQ_CST); ++i) nh_sleepMs(1);
+    assert(__atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) == 1);
+    assert(nh_core_wakeWorkload(workload) == NH_API_SUCCESS);
+    __atomic_store_n(&state.release, true, __ATOMIC_SEQ_CST);
+    for (int i = 0; i < 1000 && __atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) < 2; ++i) nh_sleepMs(1);
+    assert(__atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) == 2);
+    nh_sleepMs(50);
+    assert(__atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) == 2);
+    assert(nh_core_wakeWorkload(workload) == NH_API_SUCCESS);
+    for (int i = 0; i < 1000 && __atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) < 3; ++i) nh_sleepMs(1);
+    assert(__atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) == 3);
+    assert(nh_core_executeWorkloadCommand(&state, 0, NULL, 0) == &state);
+    assert(state.commands == 1);
+    State polling = {0};
+    assert(nh_core_activateWorkload(init, run, destroy, command, &polling, false, 1) == &polling);
+    nh_sleepMs(50);
+    assert(__atomic_load_n(&polling.runs, __ATOMIC_SEQ_CST) > 0);
+    assert(__atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) == 3);
+    for (unsigned expected = 4; expected < 24; ++expected) {
+        assert(nh_core_wakeWorkload(workload) == NH_API_SUCCESS);
+        for (int i = 0; i < 1000 &&
+                __atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) < expected; ++i) nh_sleepMs(1);
+        assert(__atomic_load_n(&state.runs, __ATOMIC_SEQ_CST) == expected);
+    }
+    assert(nh_core_deactivateWorkload(workload) == NH_API_SUCCESS);
+    assert(nh_core_freeThreadPool(threads) == NH_API_SUCCESS);
+}
+
+static NH_SIGNAL wakeBeforeCommand(void *arg)
+{
+    ParkState *state = *(ParkState **)arg;
+    assert(nh_core_wakeWorkload(nh_core_getWorkload(state)) == NH_API_SUCCESS);
+    assert(nh_core_executeWorkloadCommand(state, 0, NULL, 0) == state);
+    return NH_SIGNAL_PARK;
+}
+
+static void testWakeBeforeCommand(void)
+{
+    nh_core_ThreadPool *threads = &NH_PROCESS_POOL.Main.ThreadPool;
+    assert(nh_core_initThreadPool(threads, 0) == NH_API_SUCCESS);
+    ParkState state = {.release = true};
+    assert(nh_core_activateWorkload(NULL, parkedRun, NULL, parkedCommand, &state, false, 0) == &state);
+    assert(nh_core_run() > 0);
+    assert(state.runs == 1);
+    ParkState *driver = &state;
+    assert(nh_core_activateWorkload(NULL, wakeBeforeCommand, NULL, NULL, &driver, false, 0) == &driver);
+    assert(nh_core_run() > 0);
+    assert(state.commands == 1 && state.runs == 1);
+    assert(nh_core_run() > 0);
+    assert(state.runs == 2);
+    assert(nh_core_freeThreadPool(threads) == NH_API_SUCCESS);
+}
+
 int main(void)
 {
     assert(nh_core_initThreadPool(&NH_PROCESS_POOL.Main.ThreadPool, -1) != NH_API_SUCCESS);
@@ -156,6 +241,8 @@ int main(void)
     testTermination(true);
     testNested();
     testIdleWorkerWake();
+    testParkedWorker();
+    testWakeBeforeCommand();
     puts("thread tests passed");
     return 0;
 }

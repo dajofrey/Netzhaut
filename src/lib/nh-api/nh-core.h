@@ -115,6 +115,7 @@ typedef enum NH_SIGNAL {
     NH_SIGNAL_RESTART,
     NH_SIGNAL_SET_BACKGROUND_COLOR,
     NH_SIGNAL_SET_TITLE,
+    NH_SIGNAL_PARK, /* Wait for an explicit wake, command, or deactivation. */
 } NH_SIGNAL;
 
 // TYPEDEFS ========================================================================================
