@@ -124,6 +124,15 @@
     int nh_core_run(
     );
 
+    int nh_core_runOnce(int *waitMs_p);
+
+    /* Called by the current workload to replace its default 10 ms idle poll. */
+    NH_API_RESULT nh_core_setWorkloadIdleDelay(int milliseconds);
+    int nh_core_getWorkloadIdleDelay(void);
+
+    /* Callback must only post a native wake event and must not call the scheduler. */
+    void nh_core_setMainWakeCallback(void (*callback_f)(void));
+
     NH_API_RESULT nh_core_initThreadPool(
         nh_core_ThreadPool *ThreadPool_p, int threadCount
     );
@@ -177,6 +186,8 @@
     nh_core_Workload *nh_core_getWorkload(
         void *args_p
     );
+
+    nh_core_Workload *nh_core_currentWorkload(void);
 
     nh_core_Workload *nh_core_getWorkloads(
     );

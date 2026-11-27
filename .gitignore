@@ -11,6 +11,8 @@ test*
 !/tests/ios-keyboard.mk
 !/tests/cocoa-scroll.m
 !/tests/cocoa-scroll.mk
+!/tests/cocoa-wait.m
+!/tests/viewport-wake.c
 *.pdf
 *.DS_Store
 *.o

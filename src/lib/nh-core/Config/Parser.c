@@ -139,9 +139,7 @@ NH_API_RESULT nh_core_freeRawConfig(
 {
     for (int i = 0; i < Config_p->Settings.size; ++i) {
         nh_core_RawConfigSetting *Setting_p = Config_p->Settings.pp[i];
-        if (Setting_p->Default_p == NULL) {
-            nh_core_free(Setting_p->name_p);
-        } 
+        nh_core_free(Setting_p->name_p);
         nh_core_freeList(&Setting_p->Values, true);
     } 
 

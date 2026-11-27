@@ -101,6 +101,7 @@ static NH_SIGNAL nh_core_runConfigWorkload(
 //        Setting_p->mark = false;
     }
 
+    if (nh_core_setWorkloadIdleDelay(1000) != NH_API_SUCCESS) return NH_SIGNAL_ERROR;
     return signal;
 }
 

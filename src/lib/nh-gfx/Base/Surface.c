@@ -358,6 +358,7 @@ static NH_SIGNAL nh_gfx_runSurface(
         }
     }
 
+    if (idle && nh_core_setWorkloadIdleDelay(1000) != NH_API_SUCCESS) return NH_SIGNAL_ERROR;
     return idle ? NH_SIGNAL_IDLE : NH_SIGNAL_OK;
 }
 

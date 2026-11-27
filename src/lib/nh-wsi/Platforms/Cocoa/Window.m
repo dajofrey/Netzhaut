@@ -539,22 +539,55 @@ NH_API_RESULT nh_wsi_requestCocoaClipboardConversion(
     return NH_API_SUCCESS;
 }
 
-NH_API_RESULT nh_wsi_getCocoaInput(
-    nh_wsi_Window *Window_p, bool *idle_p)
+static const short NH_COCOA_WAKE_SUBTYPE = 0x4e48;
+static bool NH_COCOA_WAKE_PENDING;
+
+void nh_wsi_wakeCocoa(void)
+{
+    if (__atomic_exchange_n(&NH_COCOA_WAKE_PENDING, true, __ATOMIC_ACQ_REL)) return;
+    @autoreleasepool {
+        NSEvent *event = [NSEvent otherEventWithType:NSEventTypeApplicationDefined
+            location:NSZeroPoint modifierFlags:0 timestamp:0 windowNumber:0 context:nil
+            subtype:NH_COCOA_WAKE_SUBTYPE data1:0 data2:0];
+        [NSApp postEvent:event atStart:NO];
+    }
+}
+
+static NH_API_RESULT nh_wsi_cocoaInput(int milliseconds, bool *idle_p)
 {
     @autoreleasepool {
         NSEvent *event = [NSApp nextEventMatchingMask:NSEventMaskAny
-                                           untilDate:[NSDate distantPast]
+                                           untilDate:milliseconds ?
+                                               [NSDate dateWithTimeIntervalSinceNow:milliseconds / 1000.0] :
+                                               [NSDate distantPast]
                                               inMode:NSDefaultRunLoopMode
                                              dequeue:YES];
         if (event) {
-            [NSApp sendEvent:event];
+            if (event.type == NSEventTypeApplicationDefined && event.subtype == NH_COCOA_WAKE_SUBTYPE)
+                __atomic_store_n(&NH_COCOA_WAKE_PENDING, false, __ATOMIC_RELEASE);
+            else [NSApp sendEvent:event];
             *idle_p = false;
         } else {
             *idle_p = true;
         }
     }
     return NH_API_SUCCESS;
+}
+
+NH_API_RESULT nh_wsi_waitCocoaInput(int milliseconds, bool *idle_p)
+{
+    if (milliseconds < 0 || !idle_p || ![NSThread isMainThread] || !NSApp) {
+        fprintf(stderr, "Netzhaut: invalid Cocoa event wait\n");
+        return NH_API_ERROR_BAD_STATE;
+    }
+    return nh_wsi_cocoaInput(milliseconds, idle_p);
+}
+
+NH_API_RESULT nh_wsi_getCocoaInput(
+    nh_wsi_Window *Window_p, bool *idle_p)
+{
+    (void)Window_p;
+    return nh_wsi_cocoaInput(0, idle_p);
 }
 
 NH_API_RESULT nh_wsi_moveCocoaWindow(

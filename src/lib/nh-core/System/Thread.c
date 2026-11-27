@@ -12,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <limits.h>
 
 #if defined(_WIN32) || defined(WIN32)
 static SRWLOCK NH_THREAD_LOCK = SRWLOCK_INIT;
@@ -19,7 +20,7 @@ static CONDITION_VARIABLE NH_THREAD_WAKE = CONDITION_VARIABLE_INIT;
 static __declspec(thread) nh_core_Thread *NH_CURRENT_THREAD;
 static void lock(void) {AcquireSRWLockExclusive(&NH_THREAD_LOCK);}
 static void unlock(void) {ReleaseSRWLockExclusive(&NH_THREAD_LOCK);}
-static void wake(void) {WakeAllConditionVariable(&NH_THREAD_WAKE);}
+static void wakeCondition(void) {WakeAllConditionVariable(&NH_THREAD_WAKE);}
 static void waitForChange(void)
 {
     if (!SleepConditionVariableSRW(&NH_THREAD_WAKE, &NH_THREAD_LOCK, INFINITE, 0)) {
@@ -41,12 +42,27 @@ static void checkThreadResult(int rc)
 }
 static void lock(void) {checkThreadResult(pthread_mutex_lock(&NH_THREAD_LOCK));}
 static void unlock(void) {checkThreadResult(pthread_mutex_unlock(&NH_THREAD_LOCK));}
-static void wake(void) {checkThreadResult(pthread_cond_broadcast(&NH_THREAD_WAKE));}
+static void wakeCondition(void) {checkThreadResult(pthread_cond_broadcast(&NH_THREAD_WAKE));}
 static void waitForChange(void) {checkThreadResult(pthread_cond_wait(&NH_THREAD_WAKE, &NH_THREAD_LOCK));}
 #endif
 
 static nh_core_ThreadPool *pool(void) {return &NH_PROCESS_POOL.Main.ThreadPool;}
 static bool NH_WORKLOAD_WAKE_REQUESTED[NH_MAX_WORKLOADS];
+static int NH_WORKLOAD_IDLE_DELAY[NH_MAX_WORKLOADS];
+static void (*NH_MAIN_WAKE_F)(void);
+
+static void wake(void)
+{
+    wakeCondition();
+    if (NH_MAIN_WAKE_F && NH_CURRENT_THREAD != &pool()->Main) NH_MAIN_WAKE_F();
+}
+
+void nh_core_setMainWakeCallback(void (*callback_f)(void))
+{
+    lock();
+    NH_MAIN_WAKE_F = callback_f;
+    unlock();
+}
 
 static bool *wakeRequested(nh_core_Workload *workload)
 {
@@ -60,6 +76,31 @@ static void initWorkload(nh_core_Workload *workload)
     workload->waiters = waiters;
     workload->signal = NH_SIGNAL_INACTIVE;
     *wakeRequested(workload) = false;
+    NH_WORKLOAD_IDLE_DELAY[workload - pool()->Workloads_p] = 10;
+}
+
+NH_API_RESULT nh_core_setWorkloadIdleDelay(int milliseconds)
+{
+    if (milliseconds < 1 || !NH_CURRENT_THREAD || !NH_CURRENT_THREAD->CurrentWorkload_p) {
+        fprintf(stderr, "Netzhaut: invalid workload idle delay\n");
+        return NH_API_ERROR_BAD_STATE;
+    }
+    lock();
+    NH_WORKLOAD_IDLE_DELAY[NH_CURRENT_THREAD->CurrentWorkload_p - pool()->Workloads_p] = milliseconds;
+    unlock();
+    return NH_API_SUCCESS;
+}
+
+int nh_core_getWorkloadIdleDelay(void)
+{
+    if (!NH_CURRENT_THREAD || !NH_CURRENT_THREAD->CurrentWorkload_p) {
+        fprintf(stderr, "Netzhaut: no current workload for idle delay\n");
+        return -1;
+    }
+    lock();
+    int delay = NH_WORKLOAD_IDLE_DELAY[NH_CURRENT_THREAD->CurrentWorkload_p - pool()->Workloads_p];
+    unlock();
+    return delay;
 }
 
 static bool workloadReady(nh_core_Workload *workload, nh_core_Thread *thread)
@@ -89,6 +130,7 @@ static NH_API_RESULT runWorkload(nh_core_Workload *workload, bool *idle)
     }
     nh_core_WorkloadCommand *command = NULL;
     if (phase != NH_SIGNAL_INIT && phase != NH_SIGNAL_FREE) {
+        NH_WORKLOAD_IDLE_DELAY[workload - pool()->Workloads_p] = 10;
         command = workload->FirstCommand_p;
         if (command) {
             workload->FirstCommand_p = command->next_p;
@@ -143,9 +185,9 @@ static NH_API_RESULT runWorkload(nh_core_Workload *workload, bool *idle)
     return result == NH_SIGNAL_ERROR ? NH_API_ERROR_BAD_STATE : NH_API_SUCCESS;
 }
 
-int nh_core_run(void)
+int nh_core_runOnce(int *waitMs_p)
 {
-    if (!NH_CURRENT_THREAD) {
+    if (!NH_CURRENT_THREAD || !waitMs_p) {
         fprintf(stderr, "Netzhaut: scheduler called from an unregistered thread\n");
         return -1;
     }
@@ -161,9 +203,31 @@ int nh_core_run(void)
     }
     lock();
     bool failed = pool()->failed;
+    int waitMs = INT_MAX;
+    if (idle) {
+        for (int i = 0; i < NH_MAX_WORKLOADS; ++i) {
+            nh_core_Workload *workload = &pool()->Workloads_p[i];
+            if (workload->Thread_p != NH_CURRENT_THREAD || workload->signal == NH_SIGNAL_INACTIVE) continue;
+            if (workload->deactivate || workload->FirstCommand_p || *wakeRequested(workload) ||
+                    (workload->signal != NH_SIGNAL_IDLE && workload->signal != NH_SIGNAL_PARK)) {
+                waitMs = 0;
+                break;
+            }
+            if (workload->signal == NH_SIGNAL_IDLE && NH_WORKLOAD_IDLE_DELAY[i] < waitMs)
+                waitMs = NH_WORKLOAD_IDLE_DELAY[i];
+        }
+    } else waitMs = 0;
     unlock();
-    if (idle) nh_sleepMs(10);
+    *waitMs_p = waitMs == INT_MAX ? 1000 : waitMs;
     return failed ? -1 : count;
+}
+
+int nh_core_run(void)
+{
+    int waitMs;
+    int result = nh_core_runOnce(&waitMs);
+    if (result >= 0 && waitMs > 0) nh_sleepMs(10);
+    return result;
 }
 
 #if defined(_WIN32) || defined(WIN32)
@@ -458,6 +522,11 @@ NH_API_RESULT nh_core_wakeWorkload(nh_core_Workload *workload)
 void *nh_core_getWorkloadArg(void)
 {
     return NH_CURRENT_THREAD && NH_CURRENT_THREAD->CurrentWorkload_p ? NH_CURRENT_THREAD->CurrentWorkload_p->args_p : NULL;
+}
+
+nh_core_Workload *nh_core_currentWorkload(void)
+{
+    return NH_CURRENT_THREAD ? NH_CURRENT_THREAD->CurrentWorkload_p : NULL;
 }
 
 static NH_API_RESULT execute(void *handle, nh_core_WorkloadCommand *command)

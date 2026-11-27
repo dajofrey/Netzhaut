@@ -32,6 +32,12 @@
 
 nh_core_Loader *LOADER_P = NULL;
 static void *CORE_P  = NULL;
+#if defined(NH_PLATFORM_MACOS)
+static bool NH_WAIT_INITIALIZED;
+static int (*NH_RUN_ONCE_F)(int *);
+static void (*NH_SET_MAIN_WAKE_F)(void (*)(void));
+static NH_API_RESULT (*NH_WAIT_COCOA_F)(int, bool *);
+#endif
 
 typedef void  *(*nh_core_initialize_f)( 
     char *path_p, char *config_p, int length 
@@ -157,6 +163,13 @@ NH_API_RESULT nh_api_terminate()
 {
     if (CORE_P == NULL || LOADER_P == NULL) {return NH_API_ERROR_BAD_STATE;}
 
+#if defined(NH_PLATFORM_MACOS)
+    if (NH_WAIT_INITIALIZED) NH_SET_MAIN_WAKE_F(NULL);
+    NH_WAIT_INITIALIZED = false;
+    NH_RUN_ONCE_F = NULL;
+    NH_SET_MAIN_WAKE_F = NULL;
+    NH_WAIT_COCOA_F = NULL;
+#endif
     nh_core_terminate_f terminate_f = nh_api_loadCoreFunction("nh_core_terminate");
     if (terminate_f) {terminate_f(LOADER_P);}
 
@@ -172,6 +185,52 @@ int nh_api_run()
 {
     nh_core_run_f run_f = nh_api_loadCoreFunction("nh_core_run");
     return run_f ? run_f() : -1;
+}
+
+int nh_api_runWait(void)
+{
+#if defined(NH_PLATFORM_MACOS)
+    if (!CORE_P || !LOADER_P) {
+        fprintf(stderr, "Netzhaut: event wait requires initialization\n");
+        return -1;
+    }
+    if (!NH_WAIT_INITIALIZED) {
+        NH_RUN_ONCE_F = nh_api_loadCoreFunction("nh_core_runOnce");
+        NH_SET_MAIN_WAKE_F = nh_api_loadCoreFunction("nh_core_setMainWakeCallback");
+        NH_WAIT_COCOA_F = LOADER_P->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_waitCocoaInput");
+        void (*wake_f)(void) = LOADER_P->loadSymbol_f(NH_MODULE_WSI, 0, "nh_wsi_wakeCocoa");
+        if (!NH_RUN_ONCE_F || !NH_SET_MAIN_WAKE_F || !NH_WAIT_COCOA_F || !wake_f) {
+            fprintf(stderr, "Netzhaut: could not initialize Cocoa event wait\n");
+            return -1;
+        }
+        NH_SET_MAIN_WAKE_F(wake_f);
+        NH_WAIT_INITIALIZED = true;
+    }
+    int waitMs;
+    int count = NH_RUN_ONCE_F(&waitMs);
+    if (count < 0) return -1;
+    if (waitMs > 0) {
+        bool idle;
+        if (NH_WAIT_COCOA_F(waitMs, &idle) != NH_API_SUCCESS) return -1;
+    }
+    return count;
+#else
+    return nh_api_run();
+#endif
+}
+
+NH_API_RESULT nh_api_setWorkloadIdleDelay(int milliseconds)
+{
+    typedef NH_API_RESULT (*Function)(int);
+    Function function = nh_api_loadCoreFunction("nh_core_setWorkloadIdleDelay");
+    return function ? function(milliseconds) : NH_API_ERROR_BAD_STATE;
+}
+
+nh_api_Workload *nh_api_currentWorkload(void)
+{
+    typedef nh_api_Workload *(*Function)(void);
+    Function function = nh_api_loadCoreFunction("nh_core_currentWorkload");
+    return function ? function() : NULL;
 }
 
 bool nh_api_keepRunning()

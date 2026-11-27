@@ -153,6 +153,15 @@ NH_API_RESULT nh_api_terminate(
 int nh_api_run(
 );
 
+/* macOS main thread: run a scheduler pass and wait for input or an idle deadline.
+ * Other platforms use nh_api_run(). Returns the workload count or -1 on error. */
+int nh_api_runWait(void);
+
+/* Set a positive maximum idle polling delay during a workload callback. The
+ * delay resets to 10 ms on each callback and applies when it returns idle. */
+NH_API_RESULT nh_api_setWorkloadIdleDelay(int milliseconds);
+nh_api_Workload *nh_api_currentWorkload(void);
+
 /**
  * Todo. 
  */

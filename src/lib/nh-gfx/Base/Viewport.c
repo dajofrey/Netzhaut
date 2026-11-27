@@ -25,6 +25,7 @@
 #include "../../nh-core/System/Thread.h"
 #include "../../nh-core/Util/List.h"
 
+#include <stdio.h>
 #include <string.h>
 
 // FUNCTIONS =======================================================================================
@@ -256,9 +257,16 @@ NH_API_RESULT nh_gfx_endRecording(
     if (Viewport_p->Surface_p->renderRequests <= 1) {
         Viewport_p->Surface_p->renderRequests++;
     }
- 
+
     if (blockUntilRender) {
-        nh_core_executeWorkload(Viewport_p->Surface_p);
+        NH_CORE_CHECK(nh_core_executeWorkload(Viewport_p->Surface_p))
+    } else {
+        nh_core_Workload *surfaceWorkload = nh_core_getWorkload(Viewport_p->Surface_p);
+        if (!surfaceWorkload) {
+            fprintf(stderr, "Netzhaut: cannot wake missing surface workload\n");
+            return NH_API_ERROR_BAD_STATE;
+        }
+        NH_CORE_CHECK(nh_core_wakeWorkload(surfaceWorkload))
     }
 
     return NH_API_SUCCESS;

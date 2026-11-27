@@ -90,11 +90,16 @@ static NH_SIGNAL nh_wsi_runListener(
     NH_WSI_LISTENER.Clipboard.updated = false;
 
     for (int i = 0; i < NH_WSI_LISTENER.Windows.count; ++i) {
-        if (nh_wsi_getInput(nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, i), &idle) != NH_API_SUCCESS) {
+        bool windowIdle = true;
+        if (nh_wsi_getInput(nh_core_getFromLinkedList(&NH_WSI_LISTENER.Windows, i), &windowIdle) != NH_API_SUCCESS) {
             return NH_SIGNAL_ERROR;
         }
+        idle = idle && windowIdle;
     }
 
+#if defined(NH_PLATFORM_MACOS)
+    if (idle && nh_core_setWorkloadIdleDelay(1000) != NH_API_SUCCESS) return NH_SIGNAL_ERROR;
+#endif
     return idle ? NH_SIGNAL_IDLE : NH_SIGNAL_OK;
 }
 

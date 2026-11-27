@@ -230,6 +230,61 @@ static void testWakeBeforeCommand(void)
     assert(nh_core_freeThreadPool(threads) == NH_API_SUCCESS);
 }
 
+static NH_SIGNAL delayedRun(void *arg)
+{
+    int *milliseconds = arg;
+    assert(nh_core_setWorkloadIdleDelay(*milliseconds) == NH_API_SUCCESS);
+    return NH_SIGNAL_IDLE;
+}
+
+static void testIdleDeadlines(void)
+{
+    nh_core_ThreadPool *threads = &NH_PROCESS_POOL.Main.ThreadPool;
+    assert(nh_core_initThreadPool(threads, 0) == NH_API_SUCCESS);
+    int delay = 250, wait = -1;
+    assert(nh_core_activateWorkload(NULL, delayedRun, NULL, NULL, &delay, false, 0) == &delay);
+    assert(nh_core_runOnce(&wait) == 1 && wait == 250);
+    State legacy = {0};
+    assert(nh_core_activateWorkload(init, run, destroy, command, &legacy, false, 0) == &legacy);
+    assert(nh_core_runOnce(&wait) == 2 && wait == 10);
+    assert(nh_core_deactivateWorkload(nh_core_getWorkload(&legacy)) == NH_API_SUCCESS);
+    assert(nh_core_runOnce(&wait) == 1 && wait == 250);
+    assert(nh_core_freeThreadPool(threads) == NH_API_SUCCESS);
+}
+
+static unsigned mainWakeCount;
+
+static void mainWake(void)
+{
+    __atomic_add_fetch(&mainWakeCount, 1, __ATOMIC_SEQ_CST);
+}
+
+static void *sendOneCommand(void *arg)
+{
+    int value = 7;
+    assert(nh_core_executeWorkloadCommand(arg, 0, &value, sizeof(value)));
+    return NULL;
+}
+
+static void testMainWake(void)
+{
+    nh_core_ThreadPool *threads = &NH_PROCESS_POOL.Main.ThreadPool;
+    assert(nh_core_initThreadPool(threads, 1) == NH_API_SUCCESS);
+    State state = {0};
+    assert(nh_core_activateWorkload(init, run, destroy, command, &state, false, 0) == &state);
+    nh_core_setMainWakeCallback(mainWake);
+    pthread_t sender;
+    assert(!pthread_create(&sender, NULL, sendOneCommand, &state));
+    for (int i = 0; i < 1000 && !__atomic_load_n(&mainWakeCount, __ATOMIC_SEQ_CST); ++i) nh_sleepMs(1);
+    assert(__atomic_load_n(&mainWakeCount, __ATOMIC_SEQ_CST));
+    int wait;
+    assert(nh_core_runOnce(&wait) == 1 && wait == 0);
+    assert(!pthread_join(sender, NULL));
+    assert(state.value == 7);
+    nh_core_setMainWakeCallback(NULL);
+    assert(nh_core_freeThreadPool(threads) == NH_API_SUCCESS);
+}
+
 int main(void)
 {
     assert(nh_core_initThreadPool(&NH_PROCESS_POOL.Main.ThreadPool, -1) != NH_API_SUCCESS);
@@ -243,6 +298,8 @@ int main(void)
     testIdleWorkerWake();
     testParkedWorker();
     testWakeBeforeCommand();
+    testIdleDeadlines();
+    testMainWake();
     puts("thread tests passed");
     return 0;
 }

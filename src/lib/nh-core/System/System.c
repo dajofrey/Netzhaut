@@ -209,7 +209,12 @@ static void *nh_core_initSystemWorkload(
 static NH_SIGNAL nh_core_runSystemWorkload(
     void *args_p)
 {
-    if (nh_core_getSystemTimeDiffInSeconds(NH_SYSTEM.Updater.LastUpdate, nh_core_getSystemTime()) < NH_SYSTEM.Updater.updateIntervalInSeconds) {
+    double elapsed = nh_core_getSystemTimeDiffInSeconds(NH_SYSTEM.Updater.LastUpdate, nh_core_getSystemTime());
+    if (elapsed < NH_SYSTEM.Updater.updateIntervalInSeconds) {
+        double remaining = NH_SYSTEM.Updater.updateIntervalInSeconds - elapsed;
+        int milliseconds = remaining >= 1 ? 1000 : (int)(remaining * 1000);
+        if (nh_core_setWorkloadIdleDelay(milliseconds > 0 ? milliseconds : 1) != NH_API_SUCCESS)
+            return NH_SIGNAL_ERROR;
         return NH_SIGNAL_IDLE;
     }
 
